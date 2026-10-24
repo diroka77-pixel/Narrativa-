@@ -7,11 +7,11 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.media.session.MediaSession
-import android.media.session.PlaybackState
 import android.os.IBinder
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import org.json.JSONArray
 import org.json.JSONObject
@@ -38,13 +38,13 @@ class NarrationService : Service(), TextToSpeech.OnInitListener {
     private var paused = false
     private var ready = false
     private var tts: TextToSpeech? = null
-    private lateinit var mediaSession: MediaSession
+    private lateinit var mediaSession: MediaSessionCompat
 
     override fun onCreate() {
         super.onCreate()
         createChannel()
-        mediaSession = MediaSession(this, "HistoriasVivasNarrador").apply {
-            setCallback(object : MediaSession.Callback() {
+        mediaSession = MediaSessionCompat(this, "HistoriasVivasNarrador").apply {
+            setCallback(object : MediaSessionCompat.Callback() {
                 override fun onPlay() = resumeReading()
                 override fun onPause() = pauseReading()
                 override fun onSkipToNext() = nextPart()
@@ -105,12 +105,12 @@ class NarrationService : Service(), TextToSpeech.OnInitListener {
         tts?.setSpeechRate(p.rate)
         tts?.speak(p.text, TextToSpeech.QUEUE_FLUSH, null, "hv-bg-$index-${System.nanoTime()}")
         saveState("playing")
-        updatePlayback(PlaybackState.STATE_PLAYING)
+        updatePlayback(PlaybackStateCompat.STATE_PLAYING)
     }
 
     private fun pauseReading() {
         if (queue.isEmpty()) return
-        paused = true; tts?.stop(); saveState("paused"); updatePlayback(PlaybackState.STATE_PAUSED); updateNotification()
+        paused = true; tts?.stop(); saveState("paused"); updatePlayback(PlaybackStateCompat.STATE_PAUSED); updateNotification()
     }
 
     private fun resumeReading() {
@@ -126,7 +126,7 @@ class NarrationService : Service(), TextToSpeech.OnInitListener {
 
     private fun stopReading() {
         tts?.stop(); queue.clear(); index = 0; paused = false; saveState("stopped")
-        updatePlayback(PlaybackState.STATE_STOPPED)
+        updatePlayback(PlaybackStateCompat.STATE_STOPPED)
         stopForeground(STOP_FOREGROUND_REMOVE); stopSelf()
     }
 
@@ -136,8 +136,8 @@ class NarrationService : Service(), TextToSpeech.OnInitListener {
     }
 
     private fun updatePlayback(state: Int) {
-        mediaSession.setPlaybackState(PlaybackState.Builder()
-            .setActions(PlaybackState.ACTION_PLAY or PlaybackState.ACTION_PAUSE or PlaybackState.ACTION_SKIP_TO_NEXT or PlaybackState.ACTION_STOP)
+        mediaSession.setPlaybackState(PlaybackStateCompat.Builder()
+            .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE or PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_STOP)
             .setState(state, index.toLong(), 1f).build())
     }
 
