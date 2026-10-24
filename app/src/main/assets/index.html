@@ -230,14 +230,38 @@ body.hc #bgart,body.hc #bgmist,body.hc #fx{display:none}
 body.hc #bgshade{background:#000}
 body.hc .rd.t-noche{background:#000;color:#fff}
 body.hc .big,body.hc .rw,body.hc .psheet,body.hc .dnav{background:#000;border-color:#aaa}
+/* v0.9: tema claro real, contraste legible y objetivos táctiles de al menos 44 px. */
+:root[data-theme="light"]{--bg:#f7f1e7;--ink:#211a12;--mute:#5b5044;--line:#9f8e78;--card:#fffaf2;--acc:#8b4100;--acc2:#b85c00;--accink:#fff}
+:root[data-theme="light"] body{background:var(--bg)!important;color:var(--ink)}
+:root[data-theme="light"] .top{background:rgba(247,241,231,.97);border-bottom:1px solid var(--line)}
+:root[data-theme="light"] .big,:root[data-theme="light"] .rw,:root[data-theme="light"] .pcard,:root[data-theme="light"] .psheet,:root[data-theme="light"] .dnav,:root[data-theme="light"] .lore{background:var(--card);color:var(--ink);border-color:var(--line);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+:root[data-theme="light"] .bar{background:linear-gradient(180deg,transparent,var(--bg) 40%)}
+:root[data-theme="light"] button.go,:root[data-theme="light"] .fab{background:#8b4100;color:#fff}
+:root[data-theme="light"] .hero{color:var(--ink)}
+:root[data-theme="light"] .hero h1,:root[data-theme="light"] .hero p.syn{text-shadow:none}
+:root:not([data-theme="light"]){--mute:#c2b9aa}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme]){--bg:#f7f1e7;--ink:#211a12;--mute:#5b5044;--line:#9f8e78;--card:#fffaf2;--acc:#8b4100;--acc2:#b85c00;--accink:#fff;background:var(--bg)}
+  :root:not([data-theme]) #bgart,:root:not([data-theme]) #bgmist,:root:not([data-theme]) #fx,:root:not([data-theme]) #bgshade{display:none}
+  :root:not([data-theme]) body{background:var(--bg)!important;color:var(--ink)}
+  :root:not([data-theme]) .top{background:rgba(247,241,231,.97);border-bottom:1px solid var(--line)}
+  :root:not([data-theme]) .big,:root:not([data-theme]) .rw,:root:not([data-theme]) .pcard,:root:not([data-theme]) .psheet,:root:not([data-theme]) .dnav,:root:not([data-theme]) .lore{background:var(--card);color:var(--ink);border-color:var(--line);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
+  :root:not([data-theme]) .bar{background:linear-gradient(180deg,transparent,var(--bg) 40%)}
+  :root:not([data-theme]) button.go,:root:not([data-theme]) .fab{background:#8b4100;color:#fff}
+  :root:not([data-theme]) .hero{color:var(--ink)}
+  :root:not([data-theme]) .hero h1,:root:not([data-theme]) .hero p.syn{text-shadow:none}
+  :root:not([data-theme]) #tabs{background:rgba(255,250,240,.95)}
+}
+button.small,.fb,.lvs button,.sh .more{min-height:44px}
+summary,select,input[type="checkbox"]{min-height:44px}
 [hidden]{display:none!important}
 </style>
 </head>
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><svg class="mk" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="16" width="18" height="4" rx="1"/><rect x="5" y="11" width="15" height="4" rx="1"/><rect x="4" y="6" width="16" height="4" rx="1"/><path d="M8 6V4.5h6V6"/></svg> Historias vivas</button><div class="hr"><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
-<div id="drawer" hidden><div class="dov" id="dov"></div><nav class="dnav"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · prototipo</p></nav></div>
-<div id="gmodal" hidden><div class="psheet" id="gsheet" tabindex="-1"></div></div>
+<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
+<div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
 <p class="hint" id="pstat"></p>
 <textarea id="ptxt" readonly></textarea>
@@ -650,8 +674,10 @@ function renderLib() {
   var sgb = el("button", "small", "Enviar sugerencia"); sgb.onclick = feedbackSheet; ft.appendChild(sgb);
   ir.parentNode.appendChild(ft);
 }
-var VERSION = "0.8";
+// v0.9: versión visible y notas de las funciones nativas incorporadas.
+var VERSION = "0.9";
 var NEWS = [
+  ["0.9", "Copias automáticas en una carpeta elegida, restauración sin borrar lo existente, lectura en segundo plano, widget Continuar leyendo, modo sin conexión, contador local de uso y tema claro accesible."],
   ["0.8", "Asistente paso a paso para conectar tu IA con costes comparados. Memoria reforzada para novelas largas (resúmenes por capítulo y por acto), reparación automática de la memoria, fusión de personajes, reglas inamovibles y fichas editables. Lector crítico, tu propio estilo, voz por personaje, mapa de relaciones, compartir escena como imagen, marcador de lectura y alto contraste."],
   ["0.7", "Nuevas portadas y fondos por género."]
 ];
@@ -824,6 +850,8 @@ function openStory(s) {
   if (!s.scenes.length) turn("Empieza la historia: presenta al protagonista, el lugar y el conflicto inicial.", "");
   else if (s.read != null && s.read > 0 && s.read < s.scenes.length - 1) { setTimeout(function () { var e = $("sc-" + s.read); if (e) { e.scrollIntoView({ block: "start" }); showToEnd(); } }, 80); }
 }
+// v0.9: destino seguro del widget; abre por id sin duplicar ni cambiar el almacén.
+window.hvOpenStory = function (id) { var s = LIB.filter(function (x) { return x.id === id; })[0]; if (s) openStory(s); else goHome(); };
 var RDT = 0;
 function showToEnd() {
   var b = $("toend"); if (!b) { b = el("button", "go", "Ir al final de la historia"); b.id = "toend"; b.style.cssText = "position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));width:auto;z-index:9;padding:.6rem 1.2rem;min-height:44px"; b.onclick = function () { b.hidden = true; var l = $("book").lastElementChild; if (l) l.scrollIntoView({ behavior: "smooth", block: "end" }); }; document.body.appendChild(b); }
@@ -1235,6 +1263,8 @@ function reviewPrompt(s, d) {
 
 function errMsg(e) {
   var c = e && e.code;
+  // v0.9: las acciones sin red se conservan para que el usuario decida cuándo reenviarlas.
+  if (c === "offline") return "No hay conexión. Se enviará cuando vuelva la conexión y tú lo confirmes.";
   if (c === "not_granted") return "Necesito tu permiso para escribir la historia. Vuelve a pulsar y acéptalo.";
   if (c === "cancelled") return "Has cancelado el envío a tu IA. Pulsa «Reintentar» cuando quieras seguir.";
   if (c && e.message && ["rate_limited", "bad_key", "bad_model", "busy", "blocked", "network"].indexOf(c) >= 0) return e.message;
@@ -1280,10 +1310,12 @@ async function turn(action, shown, extra) {
     }
     if (sp) s.ls = s.turn;
     s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3); s.lastAct = [action, shown];
-    save(); renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
+    save(); autoBackup(false); renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
     dg(s, "turns");
     if (s.critic && s.scenes.length % 5 === 0) criticChapter(s);
   } catch (e) {
+    // v0.9: una petición pendiente se guarda localmente; nunca se reenvía sin confirmación.
+    if (e && e.code === "offline") queueOffline(action, shown, extra);
     dg(s, "errs", String((e && (e.code || e.message)) || e).slice(0, 40));
     var m = errMsg(e);
     $("err").textContent = m + " ";
@@ -1761,7 +1793,8 @@ function renderRead() {
     optRow(b, [[0.8, "Lenta"], [1, "Normal"], [1.25, "Rápida"]], function () { return RD.rate; }, function (v) { RD.rate = v; });
   }
   }
-var TS = { ch: [], i: 0, on: false, paused: false, ps: [], scene: -1 };
+// v0.9: el servicio nativo continúa leyendo con la pantalla apagada; el lector web queda como respaldo.
+var TS = { ch: [], i: 0, on: false, paused: false, ps: [], scene: -1, native: false, poll: 0 };
 function setListen() {
   var b = $("listen");
   b.textContent = !TS.on ? "Escuchar la última escena" : TS.paused ? "Seguir escuchando" : "Pausa";
@@ -1771,7 +1804,7 @@ function hilite(k) {
   Array.prototype.forEach.call($("book").querySelectorAll(".speaking"), function (x) { x.classList.remove("speaking"); });
   var e = TS.ps[k]; if (e) { e.classList.add("speaking"); if (e.scrollIntoView) e.scrollIntoView({ behavior: "smooth", block: "center" }); }
 }
-function stopTalk() { try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} TS.on = false; TS.paused = false; hilite(-1); setListen(); }
+function stopTalk() { if (TS.poll) { clearInterval(TS.poll); TS.poll = 0; } if (TS.native && window.hvBackgroundSpeech) window.hvBackgroundSpeech.action("stop"); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} TS.on = false; TS.paused = false; TS.native = false; hilite(-1); setListen(); }
 function sentences(t) {
   var a = String(t).match(/[^.!?…]+[.!?…]*["»”)]*\s*/g) || [t], out = [], cur = "";
   a.forEach(function (x) { if ((cur + x).length > 220 && cur) { out.push(cur); cur = x; } else cur += x; });
@@ -1787,17 +1820,22 @@ function speakNext() {
   hilite(c.p); speechSynthesis.speak(u);
 }
 function startTalk(i) {
-  if (!window.speechSynthesis) { emsg("Este navegador no permite leer en voz alta."); return; }
+  if (!window.speechSynthesis && !(window.hvBackgroundSpeech && window.hvBackgroundSpeech.available)) { emsg("Este dispositivo no permite leer en voz alta."); return; }
   if (!cur || !cur.scenes.length) return;
   if (i == null) i = cur.scenes.length - 1;
   try { speechSynthesis.cancel(); } catch (e) {}
   var w = $("sc-" + i); if (!w) return;
   TS.ps = Array.prototype.filter.call(w.querySelectorAll("p"), function (p) { return !p.classList.contains("act"); });
   TS.ch = []; TS.ps.forEach(function (p, k) { sentences(p.textContent).forEach(function (t) { TS.ch.push({ t: t.trim(), p: k }); }); });
-  TS.i = 0; TS.on = true; TS.paused = false; TS.scene = i; setListen(); speakNext();
+  TS.i = 0; TS.on = true; TS.paused = false; TS.scene = i; TS.native = !!(window.hvBackgroundSpeech && window.hvBackgroundSpeech.available); setListen();
+  if (TS.native) {
+    window.hvBackgroundSpeech.play(TS.ch.map(function (c) { return c.t; }), RD.rate); hilite(0);
+    TS.poll = setInterval(function () { var st = window.hvBackgroundSpeech.state(); if (!TS.on) return; TS.i = Number(st.index || 0); TS.paused = st.status === "paused"; hilite(TS.ch[TS.i] ? TS.ch[TS.i].p : -1); setListen(); if (st.status === "stopped") stopTalk(); }, 700);
+  } else speakNext();
 }
 $("listen").onclick = function () {
   if (!TS.on) { startTalk(); return; }
+  if (TS.native) { window.hvBackgroundSpeech.action("toggle"); TS.paused = !TS.paused; setListen(); return; }
   if (TS.paused) { TS.paused = false; setListen(); speakNext(); }
   else { TS.paused = true; try { speechSynthesis.cancel(); } catch (e) {} setListen(); }
 };
@@ -1978,13 +2016,37 @@ function closeBtn(sh, t) { var b = el("button", null, t || "Cerrar"); b.style.ma
 /* Copia de seguridad */
 var BKEYS = ["narrador:v1", "narrador:chars:v1", "narrador:read:v1"];
 function today() { return new Date().toISOString().slice(0, 10); }
-async function exportBackup(msg) {
-  var o = { app: "historias-vivas", v: 1, date: new Date().toISOString(), data: {} };
+// v0.9: una sola función arma la copia manual y la copia SAF; las claves no viven en BKEYS.
+function backupData() {
+  var o = { app: "historias-vivas", v: 2, date: new Date().toISOString(), data: {} };
   BKEYS.forEach(function (k) { var v = localStorage.getItem(k); if (v != null) o.data[k] = v; });
+  return o;
+}
+window.hvBackupPayload = function () { return JSON.stringify(backupData()); };
+async function exportBackup(msg) {
+  var o = backupData();
   var dl = null; try { dl = await claude.use("downloads"); } catch (e) {}
   if (!dl) { msg.textContent = "Guardar archivos no está disponible en esta vista."; return; }
   try { await dl.save({ filename: "historias-vivas-copia-" + today() + ".json", data: new TextEncoder().encode(JSON.stringify(o)) }); msg.textContent = "Copia guardada: historias-vivas-copia-" + today() + ".json"; }
   catch (e) { msg.textContent = e && e.code === "declined" ? "Descarga cancelada." : "No se pudo guardar la copia."; }
+}
+function mergeBackup(o, msg) {
+  if (!o || o.app !== "historias-vivas" || !o.data) { msg.textContent = "Esa copia no pertenece a Historias vivas."; return false; }
+  var added = 0, updated = 0, st = [];
+  try { st = JSON.parse(o.data["narrador:v1"] || "[]"); } catch (e) { st = []; }
+  if (!Array.isArray(st)) st = [];
+  st.forEach(function (n) {
+    if (!n || !n.id || !Array.isArray(n.scenes)) return;
+    var ex = LIB.filter(function (x) { return x.id === n.id; })[0];
+    if (!ex) { LIB.push(n); added++; }
+    else if ((n.at || 0) > (ex.at || 0)) { LIB[LIB.indexOf(ex)] = n; updated++; }
+  });
+  var ch = []; try { ch = JSON.parse(o.data["narrador:chars:v1"] || "[]"); } catch (e) {}
+  if (Array.isArray(ch)) ch.forEach(function (c) { if (c && c.name && !CHARS.some(function (x) { return (c.id && x.id === c.id) || nk(x.name) === nk(c.name); })) CHARS.push(c); });
+  if (o.data["narrador:read:v1"] && !localStorage.getItem("narrador:read:v1")) localStorage.setItem("narrador:read:v1", o.data["narrador:read:v1"]);
+  save(); saveChars(); renderLib();
+  msg.textContent = "Recuperado: " + added + " historia" + (added === 1 ? "" : "s") + " nueva" + (added === 1 ? "" : "s") + " y " + updated + " actualizada" + (updated === 1 ? "" : "s") + ". No se ha borrado nada del móvil.";
+  return true;
 }
 function importBackup(file, msg) {
   var fr = new FileReader();
@@ -1992,27 +2054,38 @@ function importBackup(file, msg) {
   fr.onload = function () {
     try {
       var o = JSON.parse(fr.result);
-      if (!o || o.app !== "historias-vivas" || !o.data) { msg.textContent = "Ese archivo no es una copia de Historias vivas."; return; }
-      var added = 0, updated = 0, st = [];
-      try { st = JSON.parse(o.data["narrador:v1"] || "[]"); } catch (e) { st = []; }
-      if (!Array.isArray(st)) st = [];
-      st.forEach(function (n) {
-        if (!n || !n.id || !Array.isArray(n.scenes)) return;
-        var ex = LIB.filter(function (x) { return x.id === n.id; })[0];
-        if (!ex) { LIB.push(n); added++; }
-        else if ((n.at || 0) > (ex.at || 0)) { LIB[LIB.indexOf(ex)] = n; updated++; }
-      });
-      var ch = []; try { ch = JSON.parse(o.data["narrador:chars:v1"] || "[]"); } catch (e) {}
-      if (Array.isArray(ch)) ch.forEach(function (c) { if (c && c.name && !CHARS.some(function (x) { return (c.id && x.id === c.id) || x.name === c.name; })) CHARS.push(c); });
-      save(); saveChars(); renderLib();
-      msg.textContent = "Importado: " + added + " historia" + (added === 1 ? "" : "s") + " nueva" + (added === 1 ? "" : "s") + " y " + updated + " actualizada" + (updated === 1 ? "" : "s") + ". Tus historias actuales no se han borrado.";
+      mergeBackup(o, msg);
     } catch (e) { msg.textContent = "El archivo está dañado o no es válido."; }
   };
   fr.readAsText(file);
 }
 function backupSheet() {
   sheet("Copia de seguridad", function (sh) {
-    para(sh, "Guarda todas tus historias, personajes y ajustes de lectura en un archivo, y recupéralos cuando quieras (por ejemplo en otro móvil). No incluye tus claves de API. Haz una copia de vez en cuando.");
+    para(sh, "Guarda historias, personajes, avances y memoria. Las claves de IA nunca se incluyen.");
+    if (window.hvBackup && window.hvBackup.available) {
+      var cloud = el("div", "lore"), title = el("b", null, "Copia automática en una carpeta"), state = el("p", "hint", "Comprobando…"), actions = el("div", "row");
+      cloud.appendChild(title); cloud.appendChild(state); cloud.appendChild(actions); sh.appendChild(cloud);
+      var every = Number(localStorage.getItem("hv:backup:every") || 5), lab = el("label", "f", "Copiar automáticamente cada");
+      var sel = el("select"); [3,5,10].forEach(function (n) { var o = document.createElement("option"); o.value = n; o.textContent = n + " escenas"; o.selected = n === every; sel.appendChild(o); });
+      sel.onchange = function () { localStorage.setItem("hv:backup:every", sel.value); }; lab.appendChild(sel); cloud.appendChild(lab);
+      (async function drawCloud() {
+        var st = await window.hvBackup.status(); actions.innerHTML = "";
+        if (!st || !st.folder) {
+          state.textContent = "Elige una carpeta de Google Drive, Dropbox o de tu móvil. Si Drive no aparece, puedes usar una carpeta local.";
+          var pick = el("button", "go", "Elegir carpeta"); pick.onclick = async function () { var x = await window.hvBackup.choose(); if (x && x.ok) drawCloud(); else state.textContent = "No se eligió ninguna carpeta."; }; actions.appendChild(pick); return;
+        }
+        state.textContent = "Carpeta: " + st.folder + ". " + (st.last ? "Última copia: " + new Date(st.last).toLocaleString("es-ES") + " ✓" : "Todavía no hay copias.") + (st.error ? " Error: " + st.error : "");
+        var now = el("button", "go", "Copiar ahora"); now.style.flex = "1"; now.onclick = async function () { now.disabled = true; var x = await window.hvBackup.write(JSON.stringify(backupData())); now.disabled = false; state.textContent = x && x.ok ? "Copia creada: " + x.name + " ✓" : "No se pudo copiar: " + ((x && x.error) || "revisa la carpeta"); }; actions.appendChild(now);
+        var restore = el("button", null, "Restaurar"); restore.onclick = async function () {
+          var list = await window.hvBackup.list(); actions.innerHTML = "";
+          if (!list || !list.length) { state.textContent = "No hay copias en esta carpeta."; return; }
+          state.textContent = "Elige una copia. Se fusionará con el móvil sin borrar tus historias actuales.";
+          list.forEach(async function (f) { var raw = await window.hvBackup.read(f.name), count = 0; try { count = JSON.parse(JSON.parse(raw).data["narrador:v1"] || "[]").length; } catch (e) {} var b = el("button", "small", new Date(f.modified || 0).toLocaleString("es-ES") + " · " + count + " historia" + (count === 1 ? "" : "s") + " · " + Math.max(1, Math.round((f.size || 0) / 1024)) + " KB"); b.style.width = "100%"; b.onclick = function () { try { mergeBackup(JSON.parse(raw), state); } catch (e) { state.textContent = "Esa copia está dañada."; } }; actions.appendChild(b); });
+        }; actions.appendChild(restore);
+        var clear = el("button", null, "Dejar de usar esta carpeta"); clear.onclick = async function () { await window.hvBackup.clear(); drawCloud(); }; actions.appendChild(clear);
+      })();
+    }
+    para(sh, "También puedes guardar una copia manual en Descargas o recuperar un archivo JSON.");
     var r = el("div", "row"), msg = el("p", "hint");
     var ex = el("button", "go", "Guardar copia ahora"); ex.style.flex = "1"; ex.onclick = function () { exportBackup(msg); }; r.appendChild(ex);
     var l = el("label", "fb", "Recuperar desde un archivo"), inp = el("input", "fpick"); inp.type = "file"; inp.accept = ".json,application/json";
@@ -2023,6 +2096,28 @@ function backupSheet() {
   });
 }
 $("dbackup").onclick = function () { drawer(false); backupSheet(); };
+
+// v0.9: copia no bloqueante al cerrar/ocultar y según el número de escenas.
+async function autoBackup(force) {
+  if (!window.hvBackup || !window.hvBackup.available) return;
+  var st = await window.hvBackup.status(); if (!st || !st.folder) return;
+  var n = cur && cur.scenes ? cur.scenes.length : 0, every = Number(localStorage.getItem("hv:backup:every") || 5);
+  if (!force && (!n || n % every !== 0 || Number(localStorage.getItem("hv:backup:lastScene") || -1) === n)) return;
+  var r = await window.hvBackup.write(JSON.stringify(backupData()));
+  if (r && r.ok && n) localStorage.setItem("hv:backup:lastScene", String(n));
+}
+document.addEventListener("visibilitychange", function () { if (document.hidden) autoBackup(true); });
+
+// v0.9: cola local de una acción sin red; al volver la conexión siempre se pide permiso.
+var OFFLINE_KEY = "hv:offline:v1";
+function queueOffline(action, shown, extra) { localStorage.setItem(OFFLINE_KEY, JSON.stringify({ action: action, shown: shown, extra: extra || "", at: Date.now(), story: cur && cur.id })); }
+window.__onlineChanged = function (isOnline) {
+  if (!isOnline) return;
+  var raw = localStorage.getItem(OFFLINE_KEY); if (!raw) return;
+  var q; try { q = JSON.parse(raw); } catch (e) { localStorage.removeItem(OFFLINE_KEY); return; }
+  if (!q || !q.action || busy || !cur || q.story !== cur.id) return;
+  if (confirm("Ha vuelto la conexión. ¿Quieres enviar ahora la acción que quedó pendiente?")) { localStorage.removeItem(OFFLINE_KEY); turn(q.action, q.shown, q.extra); }
+};
 
 /* Privacidad y ayuda */
 var PRIV = [

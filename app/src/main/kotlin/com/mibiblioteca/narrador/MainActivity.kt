@@ -1,12 +1,18 @@
 package com.mibiblioteca.narrador
 
 import android.annotation.SuppressLint
+import android.Manifest
+import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.security.keystore.KeyGenParameterSpec
@@ -24,9 +30,11 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
 import org.json.JSONObject
 import java.io.File
@@ -36,6 +44,7 @@ import java.net.URLDecoder
 import java.net.URLEncoder
 import java.security.KeyStore
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import javax.crypto.Cipher
@@ -51,6 +60,13 @@ class MainActivity : ComponentActivity() {
     private val ttsPending = ArrayList<Triple<String, Float, String>>()
     private var chooserCb: ValueCallback<Array<Uri>>? = null
     private val writer = Executors.newSingleThreadExecutor()
+    private lateinit var backupManager: BackupManager
+    private lateinit var usageTracker: UsageTracker
+    private var pendingBackupPickerId: String? = null
+    private var pendingSpeechQueue: String? = null
+    private var pendingStoryId: String? = null
+    private lateinit var connectivity: ConnectivityManager
+    private val networkRegistered = AtomicBoolean(false)
 
     // Solo estas webs pueden recibir peticiones de IA o abrirse desde la app
     private val apiHosts = setOf(
@@ -60,8 +76,14 @@ class MainActivity : ComponentActivity() {
     )
     private val openHosts = setOf(
         "aistudio.google.com",
+        "ai.google.dev",
+        "accounts.google.com",
+        "support.google.com",
         "platform.openai.com",
-        "console.anthropic.com"
+        "openai.com",
+        "console.anthropic.com",
+        "www.anthropic.com",
+        "anthropic.com"
     )
 
     private val chooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
@@ -74,9 +96,35 @@ class MainActivity : ComponentActivity() {
         js("window.__dictDone&&window.__dictDone(${JSONObject.quote(t)})")
     }
 
+    private val backupFolder = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        val id = pendingBackupPickerId ?: ""
+        pendingBackupPickerId = null
+        if (uri == null) { backupDone(id, JSONObject().put("ok", false).put("name", "")); return@registerForActivityResult }
+        try {
+            val name = backupManager.setFolder(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            backupDone(id, JSONObject().put("ok", true).put("name", name))
+        } catch (e: Exception) {
+            backupDone(id, JSONObject().put("ok", false).put("name", "").put("error", e.message ?: "No se pudo usar esa carpeta."))
+        }
+    }
+
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        pendingSpeechQueue?.let { q -> pendingSpeechQueue = null; launchNarration(q) }
+    }
+
+    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) { js("window.__onlineChanged&&window.__onlineChanged(true)") }
+        override fun onLost(network: Network) { js("window.__onlineChanged&&window.__onlineChanged(${online()})") }
+    }
+
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        backupManager = BackupManager(this)
+        usageTracker = UsageTracker(this)
+        connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        pendingStoryId = intent.getStringExtra("story_id")
+        try { connectivity.registerDefaultNetworkCallback(networkCallback); networkRegistered.set(true) } catch (_: Exception) {}
 
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -116,6 +164,7 @@ class MainActivity : ComponentActivity() {
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             mediaPlaybackRequiresUserGesture = false
             cacheMode = WebSettings.LOAD_DEFAULT
+            textZoom = (resources.configuration.fontScale * 100).toInt().coerceIn(90, 170)
         }
 
         web.webViewClient = object : WebViewClient() {
@@ -129,6 +178,13 @@ class MainActivity : ComponentActivity() {
                     try { startActivity(Intent(Intent.ACTION_VIEW, u)) } catch (e: Exception) {}
                 }
                 return true
+            }
+
+            override fun onPageFinished(view: WebView, url: String) {
+                pendingStoryId?.let { id ->
+                    js("window.hvOpenStory&&window.hvOpenStory(${JSONObject.quote(id)})")
+                    pendingStoryId = null
+                }
             }
         }
 
@@ -166,14 +222,48 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onDestroy() {
+        if (networkRegistered.get()) try { connectivity.unregisterNetworkCallback(networkCallback) } catch (_: Exception) {}
         tts?.stop()
         tts?.shutdown()
         super.onDestroy()
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.getStringExtra("story_id")?.let { js("window.hvOpenStory&&window.hvOpenStory(${JSONObject.quote(it)})") }
+    }
+
     private fun toast(t: String) = runOnUiThread { Toast.makeText(this, t, Toast.LENGTH_LONG).show() }
 
     private fun js(code: String) = web.post { web.evaluateJavascript(code, null) }
+
+    private fun backupDone(id: String, payload: Any) = js("window.__backupDone&&window.__backupDone(${JSONObject.quote(id)},${payload})")
+
+    private fun online(): Boolean {
+        val network = connectivity.activeNetwork ?: return false
+        val caps = connectivity.getNetworkCapabilities(network) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    }
+
+    private fun launchNarration(queueJson: String) {
+        val intent = Intent(this, NarrationService::class.java).setAction(NarrationService.ACTION_START).putExtra("queue", queueJson)
+        ContextCompat.startForegroundService(this, intent)
+    }
+
+    private fun startBackgroundNarration(queueJson: String) = runOnUiThread {
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            val prefs = getSharedPreferences("permissions", Context.MODE_PRIVATE)
+            if (!prefs.getBoolean("tts_notice", false)) {
+                pendingSpeechQueue = queueJson
+                AlertDialog.Builder(this).setTitle("Lectura con la pantalla apagada")
+                    .setMessage("Historias vivas usa una notificación con Pausa y Siguiente mientras lee. Android puede pedir permiso para mostrarla.")
+                    .setPositiveButton("Continuar") { _, _ -> prefs.edit().putBoolean("tts_notice", true).apply(); notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS) }
+                    .setNegativeButton("Ahora no") { _, _ -> pendingSpeechQueue = null }.show()
+                return@runOnUiThread
+            }
+        }
+        launchNarration(queueJson)
+    }
 
     private fun ttsDone(id: String?) {
         if (id != null) js("window.__ttsDone&&window.__ttsDone(${JSONObject.quote(id)})")
@@ -236,6 +326,18 @@ class MainActivity : ComponentActivity() {
                 synchronized(ttsPending) { ttsPending.clear() }
                 tts?.stop()
             }
+        }
+
+        @JavascriptInterface
+        fun speakQueue(arrayJson: String) = startBackgroundNarration(arrayJson)
+
+        @JavascriptInterface
+        fun speakState(): String = NarrationService.state(this@MainActivity)
+
+        @JavascriptInterface
+        fun speakAction(action: String) {
+            val a = when (action) { "toggle" -> NarrationService.ACTION_TOGGLE; "next" -> NarrationService.ACTION_NEXT; else -> NarrationService.ACTION_STOP }
+            runOnUiThread { startService(Intent(this@MainActivity, NarrationService::class.java).setAction(a)) }
         }
 
         // ----- dictado -----
@@ -357,6 +459,7 @@ class MainActivity : ComponentActivity() {
                     }
                 } catch (e: Exception) {
                 }
+                if (key == "narrador:v1") WidgetUpdater.update(this@MainActivity)
             }
         }
 
@@ -384,6 +487,34 @@ class MainActivity : ComponentActivity() {
             return try { decrypt(v) } catch (e: Exception) { "" }
         }
 
+        // v0.9: copias SAF. Todas responden por window.__backupDone(id, payload).
+        @JavascriptInterface
+        fun backupChooseFolder(id: String) = runOnUiThread { pendingBackupPickerId = id; backupFolder.launch(null) }
+
+        @JavascriptInterface
+        fun backupStatus(id: String) { writer.execute { backupDone(id, backupManager.status()) } }
+
+        @JavascriptInterface
+        fun backupWrite(id: String, json: String) { writer.execute { backupDone(id, backupManager.write(json)) } }
+
+        @JavascriptInterface
+        fun backupList(id: String) { writer.execute { backupDone(id, backupManager.list()) } }
+
+        @JavascriptInterface
+        fun backupRead(id: String, name: String) { writer.execute { backupDone(id, JSONObject.quote(backupManager.read(name))) } }
+
+        @JavascriptInterface
+        fun backupClear(id: String) { writer.execute { backupManager.clear(); backupDone(id, JSONObject().put("ok", true)) } }
+
+        @JavascriptInterface
+        fun usageGet(): String = usageTracker.get().toString()
+
+        @JavascriptInterface
+        fun usageAdd(model: String): String = usageTracker.add(model).toString()
+
+        @JavascriptInterface
+        fun online(): Boolean = this@MainActivity.online()
+
         // ----- red: solo hacia los proveedores de IA permitidos -----
         @JavascriptInterface
         fun http(id: String, url: String, headersJson: String, body: String) {
@@ -404,6 +535,13 @@ class MainActivity : ComponentActivity() {
                     status = c.responseCode
                     val stream = if (status >= 400) c.errorStream else c.inputStream
                     text = stream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
+                    if (status in 200..299) {
+                        val model = try {
+                            if (u.host == "generativelanguage.googleapis.com") u.path.substringAfter("/models/").substringBefore(":")
+                            else JSONObject(body).optString("model", u.host)
+                        } catch (_: Exception) { u.host }
+                        usageTracker.add(model)
+                    }
                 } catch (e: Exception) {
                     status = 0
                     text = e.message ?: "Sin conexión"

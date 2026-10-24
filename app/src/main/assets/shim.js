@@ -503,6 +503,8 @@
 
   async function sample(input) {
     var prompt = typeof input === "string" ? input : (input || []).map(function (m) { return m.content; }).join("\n\n");
+    // v0.9: no intentamos enviar cuando Android confirma que no hay red.
+    if (typeof N.online === "function" && !N.online()) throw { code: "offline", message: "No hay conexión. La acción se guardará en el móvil." };
     var c = cfg();
     if (!c.mode || (c.mode !== "manual" && !KEYS[c.mode])) { var ok = await wiz({}); if (!ok) throw { code: "not_granted", message: "No has conectado ninguna IA." }; c = cfg(); }
     var t;
@@ -550,6 +552,46 @@
   window.__dictDone = function (t) { var f = dictCb; dictCb = null; if (f) f(String(t || "")); };
   window.hvDictate = function (cb) { dictCb = cb; N.dictate(); };
   window.hvSupport = { email: "", send: function (subject, body) { N.sendMail(this.email || "", subject, body); } };
+
+  // v0.9: puente asíncrono de copias SAF, uso local, red y lectura en segundo plano.
+  var backupWait = {}, backupSeq = 0;
+  window.__backupDone = function (id, payload) { var f = backupWait[id]; delete backupWait[id]; if (f) f(payload); };
+  function backupCall(method, args) {
+    return new Promise(function (resolve) {
+      if (typeof N[method] !== "function") { resolve(null); return; }
+      var id = "b" + (++backupSeq); backupWait[id] = resolve;
+      // Android WebView no garantiza Function.apply sobre objetos @JavascriptInterface.
+      try {
+        if (method === "backupChooseFolder") N.backupChooseFolder(id);
+        else if (method === "backupStatus") N.backupStatus(id);
+        else if (method === "backupWrite") N.backupWrite(id, args[0]);
+        else if (method === "backupList") N.backupList(id);
+        else if (method === "backupRead") N.backupRead(id, args[0]);
+        else if (method === "backupClear") N.backupClear(id);
+        else throw new Error("Método de copia no permitido");
+      } catch (e) { delete backupWait[id]; resolve(null); }
+    });
+  }
+  window.hvBackup = {
+    available: typeof N.backupStatus === "function",
+    choose: function () { return backupCall("backupChooseFolder"); },
+    status: function () { return backupCall("backupStatus"); },
+    write: function (json) { return backupCall("backupWrite", [String(json || "")]); },
+    list: function () { return backupCall("backupList"); },
+    read: function (name) { return backupCall("backupRead", [String(name || "")]); },
+    clear: function () { return backupCall("backupClear"); }
+  };
+  window.hvUsage = {
+    get: function () { try { return JSON.parse(typeof N.usageGet === "function" ? N.usageGet() : "{}"); } catch (e) { return {}; } },
+    add: function (model) { try { return JSON.parse(typeof N.usageAdd === "function" ? N.usageAdd(model) : "{}"); } catch (e) { return {}; } }
+  };
+  window.hvOnline = function () { try { return typeof N.online !== "function" || !!N.online(); } catch (e) { return true; } };
+  window.hvBackgroundSpeech = {
+    available: typeof N.speakQueue === "function",
+    play: function (parts, rate) { if (typeof N.speakQueue !== "function") return false; N.speakQueue(JSON.stringify((parts || []).map(function (t) { return { text: String(t || ""), rate: rate || 1 }; }))); return true; },
+    state: function () { try { return JSON.parse(typeof N.speakState === "function" ? N.speakState() : "{}"); } catch (e) { return {}; } },
+    action: function (a) { if (typeof N.speakAction === "function") N.speakAction(a); }
+  };
 
   var cbs = {}, k = 0;
   window.__ttsDone = function (id) { var u = cbs[id]; delete cbs[id]; if (u && u.onend) u.onend(); };

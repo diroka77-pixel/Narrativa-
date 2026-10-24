@@ -5,8 +5,7 @@
 **Responsable:** [TU NOMBRE] — contacto: [TU CORREO]
 
 ## Qué datos trata la app
-- **Tus historias, personajes y ajustes** se guardan en tu dispositivo. La app no tiene cuentas, servidor propio, analítica ni publicidad.
-- **Copia opcional en la nube:** si eliges una carpeta mediante el selector de Android, la app crea dentro una carpeta `HistoriasVivas` y guarda el archivo `historias-vivas-respaldo.json`. Puede estar en Google Drive u otro proveedor compatible. La app solo accede a la carpeta que selecciones y no incluye las claves de API.
+- **Tus historias, personajes y ajustes** se guardan en tu dispositivo. Si eliges una carpeta de copia en Google Drive, Dropbox u otro proveedor del selector de Android, los archivos de copia también se guardan en esa carpeta bajo el control de tu cuenta y de ese proveedor. La app no tiene cuentas, servidor propio, analítica ni publicidad.
 - **Tu clave de API** (si la introduces) se guarda cifrada con el Android Keystore, solo en tu dispositivo, y solo se envía al proveedor al que pertenece.
 - **Voz:** si usas el dictado, el reconocimiento de voz lo realiza el servicio de Android de tu dispositivo. La app solo recibe el texto.
 
@@ -16,7 +15,7 @@ Para generar cada escena, la app envía el texto de tu historia y de tu acción 
 ## Tus derechos y control
 - Puedes borrar historias desde la app, y todos los datos desinstalando la app o borrando su almacenamiento.
 - Puedes borrar tu clave en «Conectar mi IA».
-- «Copia de seguridad» permite guardar un archivo manual o mantener una copia automática en la carpeta que tú elijas. Puedes desvincularla desde la aplicación; nunca incluye claves.
+- «Copia de seguridad» crea archivos que guardas tú en la carpeta elegida, conserva las cinco copias más recientes y no incluye claves de API.
 
 ## Menores
 La app contiene ficción con temas adultos y no está dirigida a menores de 18 años.
