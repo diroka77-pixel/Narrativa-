@@ -223,8 +223,8 @@ class MainActivity : ComponentActivity() {
                 try {
                     val c = URL(url).openConnection() as HttpURLConnection
                     c.requestMethod = "POST"
-                    c.connectTimeout = 30000
-                    c.readTimeout = 180000
+                    c.connectTimeout = 20000
+                    c.readTimeout = 60000
                     c.doOutput = true
                     val h = JSONObject(headersJson)
                     for (k in h.keys()) c.setRequestProperty(k, h.getString(k))

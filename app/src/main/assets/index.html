@@ -459,9 +459,13 @@ $("make").onclick = async function () {
     LIB.push(s); save(); drawSteps(3); busy = false; showCreated(s);
   } catch (e) {
     busy = false;
-    var m = e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento." : e && e.code === "not_granted" ? "Necesito tu permiso para crear la historia." : "No pude crear la aventura.";
-    $("merr").textContent = m + " "; var rb = el("button", "small", "Volver al formulario");
-    rb.onclick = function () { view("create"); }; $("merr").appendChild(rb); $("merr").hidden = false;
+    var m = e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento." : e && e.code === "not_granted" ? "No se ha configurado ninguna IA." : e && e.message ? e.message : "No pude crear la aventura.";
+    $("merr").textContent = m + " ";
+    var rb = el("button", "small", "Volver al formulario");
+    rb.onclick = function () { view("create"); };
+    var ai = el("button", "small", "Configurar IA");
+    ai.onclick = function () { if (window.openAISettings) window.openAISettings(); };
+    $("merr").appendChild(rb); $("merr").appendChild(document.createTextNode(" ")); $("merr").appendChild(ai); $("merr").hidden = false;
   }
 };
 

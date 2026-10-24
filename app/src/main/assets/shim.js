@@ -83,12 +83,28 @@
   window.openAISettings = openSettings;
 
   /* ---------- HTTP nativo ---------- */
-  var waits = {}, hid = 0;
-  window.__httpDone = function (id, status, text) { var w = waits[id]; delete waits[id]; if (w) w(status, text); };
+  var waits = {}, hid = 0, HTTP_TIMEOUT = 65000;
+  window.__httpDone = function (id, status, text) {
+    var w = waits[id];
+    if (!w) return;
+    delete waits[id]; clearTimeout(w.timer); w.done(status, text);
+  };
   function http(url, headers, body) {
     return new Promise(function (res) {
-      var id = "h" + (++hid); waits[id] = function (s, t) { res({ status: s, text: t }); };
-      N.http(id, url, JSON.stringify(headers), JSON.stringify(body));
+      var id = "h" + (++hid);
+      waits[id] = {
+        done: function (s, t) { res({ status: s, text: t }); },
+        timer: setTimeout(function () {
+          if (!waits[id]) return;
+          delete waits[id];
+          res({ status: 0, text: "La conexión ha superado 65 segundos." });
+        }, HTTP_TIMEOUT)
+      };
+      try { N.http(id, url, JSON.stringify(headers), JSON.stringify(body)); }
+      catch (e) {
+        clearTimeout(waits[id].timer); delete waits[id];
+        res({ status: 0, text: e && e.message ? e.message : "No se pudo iniciar la conexión." });
+      }
     });
   }
   function fail(r, who) {
@@ -157,10 +173,19 @@
     var c = cfg();
     if (!c.mode) { var ok = await openSettings(); if (!ok) throw { code: "not_granted", message: "No has conectado ninguna IA." }; c = cfg(); }
     var t;
-    if (c.mode === "gemini") t = await viaGemini(prompt, c);
-    else if (c.mode === "openai") t = await viaOpenAI(prompt, c);
-    else if (c.mode === "anthropic") t = await viaAnthropic(prompt, c);
-    else t = await viaManual(prompt);
+    if (c.mode === "manual") t = await viaManual(prompt);
+    else {
+      try {
+        if (c.mode === "gemini") t = await viaGemini(prompt, c);
+        else if (c.mode === "openai") t = await viaOpenAI(prompt, c);
+        else if (c.mode === "anthropic") t = await viaAnthropic(prompt, c);
+        else t = await viaManual(prompt);
+      } catch (e) {
+        var reason = e && e.message ? e.message : "El proveedor no respondió.";
+        N.toast(reason + " Puedes continuar con copiar y pegar.");
+        t = await viaManual(prompt);
+      }
+    }
     return { text: String(t), truncated: false };
   }
 
