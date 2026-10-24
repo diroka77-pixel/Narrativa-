@@ -124,7 +124,6 @@ class MainActivity : ComponentActivity() {
         usageTracker = UsageTracker(this)
         connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         pendingStoryId = intent.getStringExtra("story_id")
-        try { connectivity.registerDefaultNetworkCallback(networkCallback); networkRegistered.set(true) } catch (_: Exception) {}
 
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
@@ -210,6 +209,9 @@ class MainActivity : ComponentActivity() {
         web.addJavascriptInterface(Bridge(), "Native")
         web.loadUrl("https://appassets.androidplatform.net/assets/index.html")
 
+        // v0.9.1: el callback puede responder de inmediato; se registra cuando el WebView ya existe.
+        try { connectivity.registerDefaultNetworkCallback(networkCallback); networkRegistered.set(true) } catch (_: Exception) {}
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 web.evaluateJavascript(
@@ -235,7 +237,11 @@ class MainActivity : ComponentActivity() {
 
     private fun toast(t: String) = runOnUiThread { Toast.makeText(this, t, Toast.LENGTH_LONG).show() }
 
-    private fun js(code: String) = web.post { web.evaluateJavascript(code, null) }
+    // v0.9.1: evita cierres si Android entrega un callback durante el arranque o la destrucción.
+    private fun js(code: String) {
+        if (!::web.isInitialized || isFinishing || isDestroyed) return
+        web.post { if (!isFinishing && !isDestroyed) web.evaluateJavascript(code, null) }
+    }
 
     private fun backupDone(id: String, payload: Any) = js("window.__backupDone&&window.__backupDone(${JSONObject.quote(id)},${payload})")
 

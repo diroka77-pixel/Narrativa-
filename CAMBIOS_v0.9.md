@@ -4,6 +4,12 @@
 
 La v0.9 conserva la web y el arte de la v0.8 y añade las piezas nativas que faltaban. Se ha subido `versionCode` a 9 y `versionName` a `0.9`.
 
+### Corrección 0.9.1
+
+- Corregido un cierre inmediato en algunos móviles: `ConnectivityManager` podía ejecutar su callback antes de que el WebView estuviera creado.
+- El detector de red se registra después de inicializar la vista y `js()` ignora callbacks durante el arranque incompleto o la destrucción de la actividad.
+- `versionCode` 10 / `versionName` `0.9.1`.
+
 ## Paso 0: validación de la v0.8 antes de modificarla
 
 - ✓ El proyecto original del ZIP compiló en GitHub Actions con el workflow «Compilar APK».
