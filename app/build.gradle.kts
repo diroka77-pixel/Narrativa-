@@ -11,8 +11,8 @@ android {
         applicationId = "com.mibiblioteca.narrador"
         minSdk = 29
         targetSdk = 34
-        versionCode = 7
-        versionName = "0.7"
+        versionCode = 8
+        versionName = "0.8"
     }
     signingConfigs {
         create("release") {
@@ -42,4 +42,5 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-ktx:1.9.2")
     implementation("androidx.webkit:webkit:1.11.0")
+    implementation("androidx.documentfile:documentfile:1.0.1")
 }

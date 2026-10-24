@@ -335,6 +335,26 @@
   window.hvDictate = function (cb) { dictCb = cb; N.dictate(); };
   window.hvSupport = { email: "", send: function (subject, body) { N.sendMail(this.email || "", subject, body); } };
 
+  /* ---------- Copia automática en carpeta de Drive elegida por el usuario ---------- */
+  var cloudSeq = 0, cloudWait = {}, cloudFolderCb = null;
+  window.__cloudFolderDone = function (ok, name) {
+    var cb = cloudFolderCb; cloudFolderCb = null;
+    if (cb) cb({ ok: !!ok, folder: String(name || "") });
+  };
+  window.__cloudSaved = function (id, ok) {
+    var cb = cloudWait[id]; delete cloudWait[id]; if (cb) cb({ ok: !!ok });
+  };
+  window.__cloudRead = function (id, data) {
+    var cb = cloudWait[id]; delete cloudWait[id]; if (cb) cb({ ok: !!data, data: String(data || "") });
+  };
+  window.hvCloud = {
+    state: function () { try { return JSON.parse(N.cloudState() || "{}"); } catch (e) { return { linked: false }; } },
+    choose: function () { return new Promise(function (res) { cloudFolderCb = res; N.cloudChooseFolder(); }); },
+    save: function () { return new Promise(function (res) { var id = "c" + (++cloudSeq); cloudWait[id] = res; N.cloudSaveNow(id); }); },
+    read: function () { return new Promise(function (res) { var id = "c" + (++cloudSeq); cloudWait[id] = res; N.cloudRead(id); }); },
+    disconnect: function () { N.cloudDisconnect(); }
+  };
+
   var cbs = {}, k = 0;
   window.__ttsDone = function (id) { var u = cbs[id]; delete cbs[id]; if (u && u.onend) u.onend(); };
   function Utt(t) { this.text = t; this.lang = "es-ES"; this.rate = 1; this.voice = null; this.onend = null; this.onerror = null; }
