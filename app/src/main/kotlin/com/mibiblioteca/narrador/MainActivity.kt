@@ -8,8 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -29,7 +27,6 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.documentfile.provider.DocumentFile
 import androidx.webkit.WebViewAssetLoader
 import org.json.JSONObject
 import java.io.File
@@ -54,9 +51,6 @@ class MainActivity : ComponentActivity() {
     private val ttsPending = ArrayList<Triple<String, Float, String>>()
     private var chooserCb: ValueCallback<Array<Uri>>? = null
     private val writer = Executors.newSingleThreadExecutor()
-    private val cloudHandler = Handler(Looper.getMainLooper())
-    private val cloudPrefs by lazy { getSharedPreferences("cloud_backup", Context.MODE_PRIVATE) }
-    private val cloudBackupRunnable = Runnable { writer.execute { writeCloudBackup() } }
 
     // Solo estas webs pueden recibir peticiones de IA o abrirse desde la app
     private val apiHosts = setOf(
@@ -73,27 +67,6 @@ class MainActivity : ComponentActivity() {
     private val chooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
         chooserCb?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(r.resultCode, r.data))
         chooserCb = null
-    }
-
-    private val cloudFolder = registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
-        if (uri == null) {
-            js("window.__cloudFolderDone&&window.__cloudFolderDone(false,'')")
-            return@registerForActivityResult
-        }
-        try {
-            contentResolver.takePersistableUriPermission(
-                uri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            cloudPrefs.edit().putString("tree_uri", uri.toString()).apply()
-            val name = DocumentFile.fromTreeUri(this, uri)?.name ?: "Google Drive"
-            js("window.__cloudFolderDone&&window.__cloudFolderDone(true,${JSONObject.quote(name)})")
-            writer.execute { writeCloudBackup() }
-        } catch (e: Exception) {
-            cloudPrefs.edit().remove("tree_uri").apply()
-            toast("No se pudo conservar el acceso a esa carpeta.")
-            js("window.__cloudFolderDone&&window.__cloudFolderDone(false,'')")
-        }
     }
 
     private val dictation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
@@ -214,71 +187,6 @@ class MainActivity : ComponentActivity() {
     // ---------- Almacenamiento en ficheros ----------
     private fun storeDir(): File = File(filesDir, "store").also { it.mkdirs() }
     private fun storeFile(key: String) = File(storeDir(), URLEncoder.encode(key, "UTF-8") + ".json")
-
-    // ---------- Copia privada en una carpeta elegida por el usuario ----------
-    private fun cloudRoot(): DocumentFile? {
-        val value = cloudPrefs.getString("tree_uri", null) ?: return null
-        return try { DocumentFile.fromTreeUri(this, Uri.parse(value)) } catch (e: Exception) { null }
-    }
-
-    private fun appCloudDir(create: Boolean): DocumentFile? {
-        val root = cloudRoot() ?: return null
-        var dir = root.findFile("HistoriasVivas")
-        if (dir == null && create) dir = root.createDirectory("HistoriasVivas")
-        return dir?.takeIf { it.isDirectory && it.canRead() }
-    }
-
-    private fun backupJson(): String {
-        val data = JSONObject()
-        storeDir().listFiles()?.forEach { file ->
-            if (!file.name.endsWith(".json")) return@forEach
-            try {
-                val key = URLDecoder.decode(file.name.removeSuffix(".json"), "UTF-8")
-                // Las claves de API viven en Keystore y la configuración del proveedor tampoco se copia.
-                if (key != "hv:ai:v1") data.put(key, file.readText(Charsets.UTF_8))
-            } catch (_: Exception) {}
-        }
-        return JSONObject()
-            .put("app", "historias-vivas")
-            .put("v", 2)
-            .put("date", java.time.Instant.now().toString())
-            .put("data", data)
-            .toString()
-    }
-
-    private fun writeCloudBackup(): Boolean {
-        return try {
-            val dir = appCloudDir(true) ?: return false
-            var file = dir.findFile("historias-vivas-respaldo.json")
-            if (file == null) file = dir.createFile("application/json", "historias-vivas-respaldo.json")
-            val uri = file?.uri ?: return false
-            contentResolver.openOutputStream(uri, "wt")?.use {
-                it.write(backupJson().toByteArray(Charsets.UTF_8))
-            } ?: return false
-            cloudPrefs.edit().putLong("last_ok", System.currentTimeMillis()).remove("last_error").apply()
-            true
-        } catch (e: Exception) {
-            cloudPrefs.edit().putString("last_error", e.message ?: "No se pudo escribir en Drive").apply()
-            false
-        }
-    }
-
-    private fun scheduleCloudBackup() {
-        if (cloudPrefs.getString("tree_uri", null).isNullOrBlank()) return
-        cloudHandler.removeCallbacks(cloudBackupRunnable)
-        cloudHandler.postDelayed(cloudBackupRunnable, 5000)
-    }
-
-    private fun cloudStateJson(): String {
-        val linked = !cloudPrefs.getString("tree_uri", null).isNullOrBlank()
-        val name = if (linked) cloudRoot()?.name ?: "Carpeta seleccionada" else ""
-        return JSONObject()
-            .put("linked", linked)
-            .put("folder", name)
-            .put("lastOk", cloudPrefs.getLong("last_ok", 0L))
-            .put("error", cloudPrefs.getString("last_error", "") ?: "")
-            .toString()
-    }
 
     // ---------- Claves cifradas con el Keystore de Android ----------
     private fun secretKey(): SecretKey {
@@ -450,55 +358,11 @@ class MainActivity : ComponentActivity() {
                 } catch (e: Exception) {
                 }
             }
-            if (key != "hv:ai:v1") scheduleCloudBackup()
         }
 
         @JavascriptInterface
         fun storeRemove(key: String) {
             writer.execute { try { storeFile(key).delete() } catch (e: Exception) {} }
-            if (key != "hv:ai:v1") scheduleCloudBackup()
-        }
-
-        // ----- sincronización opcional con Drive mediante el selector de Android -----
-        @JavascriptInterface
-        fun cloudChooseFolder() = runOnUiThread { cloudFolder.launch(null) }
-
-        @JavascriptInterface
-        fun cloudState(): String = cloudStateJson()
-
-        @JavascriptInterface
-        fun cloudSaveNow(id: String) {
-            writer.execute {
-                val ok = writeCloudBackup()
-                js("window.__cloudSaved&&window.__cloudSaved(${JSONObject.quote(id)},$ok)")
-            }
-        }
-
-        @JavascriptInterface
-        fun cloudRead(id: String) {
-            writer.execute {
-                var text = ""
-                try {
-                    val file = appCloudDir(false)?.findFile("historias-vivas-respaldo.json")
-                    if (file != null) text = contentResolver.openInputStream(file.uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
-                } catch (_: Exception) {}
-                js("window.__cloudRead&&window.__cloudRead(${JSONObject.quote(id)},${JSONObject.quote(text)})")
-            }
-        }
-
-        @JavascriptInterface
-        fun cloudDisconnect() {
-            val value = cloudPrefs.getString("tree_uri", null)
-            if (!value.isNullOrBlank()) {
-                try {
-                    contentResolver.releasePersistableUriPermission(
-                        Uri.parse(value),
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    )
-                } catch (_: Exception) {}
-            }
-            cloudHandler.removeCallbacks(cloudBackupRunnable)
-            cloudPrefs.edit().clear().apply()
         }
 
         // ----- claves de API cifradas -----

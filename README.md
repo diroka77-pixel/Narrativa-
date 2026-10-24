@@ -7,4 +7,4 @@ Aplicación Android que envuelve la web de Historias vivas en un WebView con pue
 - Compilar para probar: pestaña Actions → «Compilar APK» → descarga `historias-vivas-apk`.
 - Publicar en Play: ver `PLAY_STORE.md` y `PRIVACIDAD.md`.
 
-Versión 0.8: copia automática opcional en una carpeta elegida de Google Drive, asistente local de memoria, mapa vivo, planificador de escenas y mejoras de accesibilidad.
+Versión 0.3: copia de seguridad, escritura progresiva, buscar y marcar escenas, Lugares, voz con pausa y resaltado, lectura inmersiva, dictado, edición y regeneración de escenas, revisión del libro, claves cifradas con Keystore, almacenamiento en archivos y política CSP.
