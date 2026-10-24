@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Historias vivas</title>
+<script src="shim.js"></script>
+<script src="jszip.min.js"></script>
+<script src="pdf-lib.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f1e8;--ink:#241a10;--mute:#7a6a58;--line:#d9ccb8;--card:#fffaf0;--acc:#b85c00;--accink:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1118;--ink:#f2ece1;--mute:#9a9183;--line:#2a2f3a;--card:#161b24;--acc:#ffa51f;--accink:#1a1000}}
+:root[data-theme="dark"]{--bg:#0d1118;--ink:#f2ece1;--mute:#9a9183;--line:#2a2f3a;--card:#161b24;--acc:#ffa51f;--accink:#1a1000}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style",Georgia,"Times New Roman",serif;line-height:1.65;font-size:18px}
+main{max-width:36rem;margin:0 auto;padding:1.25rem 1.1rem 6rem}
+h1,h2,.ttl{font-family:"Cormorant Garamond",Georgia,serif;font-variant:small-caps;letter-spacing:.03em;line-height:1.15}
+h1{font-size:2rem;margin:.2rem 0 .1rem}
+h2{font-size:1.5rem;margin:1.5rem 0 .6rem}
+.sub,.hint{color:var(--mute);font-size:.95rem;margin:0 0 1rem}
+button,input,textarea{font:inherit;font-size:1rem;color:var(--ink)}
+button{text-align:left;padding:.75rem 1rem;border:1.5px solid var(--line);background:var(--card);border-radius:12px;cursor:pointer;min-height:46px}
+button:hover{border-color:var(--acc)}
+button.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc);color:var(--acc)}
+button.go{background:var(--acc);color:var(--accink);border-color:var(--acc);font-weight:700;width:100%;text-align:center;border-radius:999px;min-height:54px}
+button.small{min-height:38px;padding:.4rem .8rem;font-size:.88rem;color:var(--mute)}
+button:disabled{opacity:.5}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+input,textarea{width:100%;padding:.75rem 1rem;border:1.5px solid var(--line);background:var(--card);border-radius:12px}
+textarea{min-height:5.5rem;resize:vertical}
+.row{display:flex;gap:.5rem;flex-wrap:wrap}
+.card{border-radius:16px;overflow:hidden;margin-bottom:.4rem;position:relative}
+.cover{padding:6.5rem 1.1rem 1rem;color:#fff;text-align:left;width:100%;border:0;border-radius:16px;background-size:cover}
+.cover .ttl{font-size:1.7rem;display:block}
+.cover small{opacity:.85;font-size:.88rem}
+.item{margin-bottom:1.1rem}
+.fab{position:fixed;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));width:auto;padding:.9rem 1.4rem;box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:5}
+.big{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:1.1rem}
+.big h2{margin-top:0}
+.rw{border:1.5px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:.6rem}
+.rw summary{display:flex;justify-content:space-between;align-items:center;gap:.75rem;padding:.8rem 1rem;cursor:pointer;list-style:none;min-height:56px}
+.rw summary::-webkit-details-marker{display:none}
+.rt b{display:block;font-size:1.02rem}.rt small{color:var(--mute);font-size:.86rem}
+.rb{padding:0 1rem 1rem}
+.rb p{margin:.8rem 0 .4rem;font-weight:600;font-size:.95rem}
+.bd{font-size:.72rem;letter-spacing:.06em;border:1.5px dashed var(--line);border-radius:999px;padding:.25rem .65rem;color:var(--mute);flex:none}
+.bd.cus{border-style:solid;border-color:var(--acc);color:var(--acc)}
+.lvs{display:grid;grid-template-columns:repeat(4,1fr);gap:.3rem;margin-bottom:.4rem}
+.lvs button{min-height:38px;padding:.3rem .1rem;font-size:.82rem;text-align:center}
+.bar{position:sticky;bottom:0;background:var(--bg);padding:.8rem 0 .4rem;margin-top:1rem}
+.steps{list-style:none;padding:0;margin:1.5rem 0}
+.steps li{padding:.8rem 0 .8rem 2.2rem;position:relative;color:var(--mute)}
+.steps li::before{content:"○";position:absolute;left:.3rem}
+.steps li.run{color:var(--ink)}.steps li.run::before{content:"◐";color:var(--acc)}
+.steps li.done{color:var(--ink)}.steps li.done::before{content:"✓";color:var(--acc)}
+.tag{letter-spacing:.14em;font-size:.78rem;color:var(--acc);font-weight:700}
+.scene p{margin:0 0 1rem}
+.ch{font-family:"Cormorant Garamond",Georgia,serif;font-variant:small-caps;font-size:1.2rem;color:var(--mute);margin:2rem 0 .8rem;border-top:1px solid var(--line);padding-top:.9rem}
+.act{color:var(--mute);font-style:italic;border-left:3px solid var(--acc);padding-left:.9rem;margin:1.4rem 0 1rem}
+.opts{display:grid;gap:.6rem;margin-top:.8rem}
+.status{color:var(--mute);margin:1.5rem 0}
+.err{border:1.5px solid var(--acc);border-radius:12px;padding:.8rem 1rem;margin-top:1.2rem}
+.fin{text-align:center;color:var(--mute);margin:2rem 0;font-style:italic}
+.tail{margin-top:2rem;border-top:1px solid var(--line);padding-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+details.pl{margin-top:1rem;color:var(--mute);font-size:.95rem}
+details.pl summary{cursor:pointer}
+.lore{border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;margin:.5rem 0;background:var(--card);color:var(--ink);font-size:.92rem}
+.lore b{color:var(--acc)}
+.chk{display:flex;gap:.6rem;align-items:center;font-size:.95rem}
+.chk input{width:auto}
+body{overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;display:flex;justify-content:space-between;align-items:center;padding:.4rem 1.1rem;background:var(--bg);border-bottom:1px solid var(--line)}
+.mk{vertical-align:-5px;color:var(--acc)}
+.brand{border:0;background:none;padding:.3rem 0;min-height:40px;font-family:"Cormorant Garamond",Georgia,serif;font-variant:small-caps;font-size:1.5rem;font-weight:700;letter-spacing:.03em}
+.mk{color:var(--acc)}
+.car{display:flex;gap:.8rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.2rem 1.1rem .8rem;margin:0 -1.1rem}
+.cc{flex:none;width:68%;max-width:15rem;scroll-snap-align:start}
+.cc .cover{min-height:11rem;padding-top:6rem}
+.cc .card{margin:0 0 .3rem}
+.chip{position:absolute;top:.7rem;left:.7rem;font-size:.68rem;letter-spacing:.08em;background:rgba(0,0,0,.55);color:#fff;padding:.2rem .55rem;border-radius:999px;z-index:1}
+.cover.big{padding-top:8.5rem}
+.prog{height:4px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:.6rem}.prog i{display:block;height:100%;background:var(--acc);border-radius:4px}
+.pcard{display:flex;gap:.8rem;align-items:center;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:.7rem .9rem;margin-bottom:.6rem}
+.pcard .tx{flex:1;min-width:0}.pcard small{color:var(--mute);display:block}
+.av{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;font-weight:700}
+.cc.pc{width:40%;max-width:9rem}
+.pc button.pb{width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.4rem;padding:.9rem .5rem;border-radius:16px;min-height:8.5rem;justify-content:center}
+.pc button.new{border-style:dashed;color:var(--acc)}
+.pc small{color:var(--mute);font-size:.78rem;line-height:1.2}
+#drawer{position:fixed;inset:0;z-index:20}
+.dov{position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.dnav{position:absolute;right:0;top:0;bottom:0;width:78%;max-width:18rem;background:var(--card);border-left:1px solid var(--line);padding:calc(1rem + env(safe-area-inset-top,0px)) 1rem 1rem;display:flex;flex-direction:column;gap:.6rem}
+.dnav button{width:100%}
+label.f{display:block;margin:1rem 0 .4rem;font-weight:600;font-size:.95rem}
+h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormorant Garamond",Georgia,serif;font-variant:small-caps}
+.simg{margin:.2rem 0 1rem}
+.simg img,.pv{display:block;max-width:100%;border-radius:12px;margin:.4rem 0}
+.pv{max-height:14rem;margin:.6rem 0}
+#pmodal{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;background:rgba(0,0,0,.55)}
+.psheet{width:100%;max-width:36rem;margin:0 auto;background:var(--card);border-radius:18px 18px 0 0;padding:1rem 1.1rem calc(1rem + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto}
+.psheet textarea{min-height:11rem}
+.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.2rem 1.3rem;min-height:12rem;outline:1px solid rgba(255,214,150,.38);outline-offset:-9px;position:relative}
+.cc .cover{min-height:13.5rem;padding:2rem 1rem}
+.cover.big{min-height:15rem;padding:2.4rem 1.4rem}
+.cover .ttl{font-size:1.65rem;line-height:1.1;margin:.2rem 0 .4rem;display:block}
+.cover .ttl::before{content:"";display:block;width:2.2rem;height:2px;background:#ffd596;margin:0 auto .7rem}
+.cover small{display:block;opacity:.85;font-size:.85rem;letter-spacing:.04em}
+.cover .tag{color:#ffd596}
+.cover.hasimg{justify-content:flex-end;min-height:16rem;outline:0;padding-top:6rem}
+.cover.hasimg .ttl::before{display:none}
+.fb{position:relative;display:inline-flex;align-items:center;overflow:hidden;border:1.5px solid var(--line);background:var(--btn);border-radius:10px;padding:.4rem .8rem;min-height:38px;font-size:.88rem;color:var(--mute);cursor:pointer}
+.fpick{position:absolute;inset:0;width:100%;height:100%;opacity:0;padding:0;border:0;background:none;cursor:pointer;font-size:0}
+.rd{border-radius:14px;padding:1.1rem 1rem;margin:1rem 0;font-size:18px}
+.rd:empty{display:none}
+.rd.t-noche{background:#0f1720;color:#e8e2d4}
+.rd.t-dia{background:#fff;color:#1c1c1c}
+.rd.t-sepia{background:#f1e4c8;color:#3b2f1e}
+.rd.t-perg{background:#e6d5a8;color:#33270f}
+.rd.tex{background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.04) 0 1px,transparent 1px 3px),radial-gradient(rgba(0,0,0,.06) 1px,transparent 1.5px);background-size:auto,5px 5px}
+.rd.f-sans{font-family:system-ui,-apple-system,Roboto,sans-serif}
+.rd .act,.rd .ch{color:inherit;opacity:.72}
+.sz{display:flex;align-items:center;gap:.6rem;margin:.3rem 0 .6rem}
+.cover{aspect-ratio:2/3;min-height:0!important;overflow:hidden;max-width:15rem;margin-left:auto;margin-right:auto;border-radius:6px 12px 12px 6px;box-shadow:inset 6px 0 8px -4px rgba(0,0,0,.45),0 6px 16px rgba(0,0,0,.28)}
+.cover .ttl{font-size:1.45rem}
+.cc{width:44%!important;max-width:10.5rem!important}
+.cc .cover{padding:1.2rem .7rem;max-width:none}
+.cc .cover .ttl{font-size:1.05rem}
+.cc .cover small{font-size:.72rem}
+.cover.hasimg{padding-top:1rem}
+.cover.big{padding:1.8rem 1.2rem}
+.pastebox{min-height:46px;border:1.5px dashed var(--line);border-radius:10px;padding:.7rem;margin-top:.6rem;color:var(--mute);font-size:.88rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><button class="brand" id="home"><svg class="mk" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="16" width="18" height="4" rx="1"/><rect x="5" y="11" width="15" height="4" rx="1"/><rect x="4" y="6" width="16" height="4" rx="1"/><path d="M8 6V4.5h6V6"/></svg> Historias vivas</button><button class="small" id="menu" aria-label="Menú">☰ Menú</button></header>
+<div id="drawer" hidden><div class="dov" id="dov"></div><nav class="dnav"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · prototipo</p></nav></div>
+<div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
+<p class="hint" id="pstat"></p>
+<textarea id="ptxt" readonly></textarea>
+<div class="row" style="margin-top:.6rem"><button class="go" id="pcopy" style="width:auto;flex:1">Copiar prompt</button><button id="pclose">Cerrar</button></div>
+<p class="hint" style="margin-top:.8rem">Pégalo en la IA de imágenes que uses, descarga el resultado y súbelo aquí con «+ Imagen» o «Subir mi portada».</p></div></div>
+<main>
+<section id="lib">
+<div id="hero"></div>
+<h2>Mis historias</h2><div class="car" id="list"></div>
+<h2>Mis personajes</h2><div class="car" id="pchars"></div>
+<h2>Ideas para empezar</h2><div class="car" id="ideasrow"></div>
+<button class="go fab" id="new">+ Crear nuevo</button>
+<p class="hint" id="nosample" hidden>Esta función necesita abrir la página dentro de claude.ai.</p>
+</section>
+
+<section id="create" hidden>
+<div class="row" style="align-items:center;margin-bottom:.5rem"><button class="small" id="back1">← Volver</button></div>
+<div class="big">
+<h2>¿Cuál es tu aventura?</h2>
+<textarea id="idea" placeholder="Por ejemplo: un alquimista caído en desgracia planea un golpe en una ciudad que flota sobre las nubes…"></textarea>
+<div class="row" style="margin-top:.6rem" id="ideas"></div>
+<p class="hint" style="margin:1rem 0 .4rem">Título (opcional)</p>
+<input id="ttl0" type="text" autocomplete="off" placeholder="Si lo dejas vacío, lo inventa la IA">
+<p class="hint" style="margin:1rem 0 .4rem">Protagonistas (opcional)</p>
+<div class="row" id="plist"></div>
+<div class="row" style="margin-top:.5rem"><button class="small" id="paddnew">+ Diseñar protagonista</button><button class="small" id="paddpick">+ Elegir de Mis personajes</button></div>
+<div class="row" id="ppick" hidden style="margin-top:.5rem"></div>
+</div>
+<h2>Hazla tuya</h2>
+<p class="hint">Opcional. Lo que dejes en Auto lo decide la IA.</p>
+<div id="rows"></div>
+<div class="bar"><button class="go" id="make">Crear aventura</button>
+<p class="hint" style="text-align:center;margin:.5rem 0 0">Si no escribes nada, la IA inventa la aventura.</p></div>
+</section>
+
+<section id="chars" hidden>
+<h2>Mis personajes</h2>
+<p class="hint">Diséñalos una vez y úsalos en todas tus historias.</p>
+<button class="go" id="cnew" style="margin-bottom:1rem">+ Nuevo personaje</button>
+<div id="clist"></div>
+</section>
+
+<section id="chared" hidden>
+<div class="row" style="align-items:center"><button class="small" id="cdback">← Volver</button></div>
+<h2 id="cdtitle">Diseña a tu protagonista</h2>
+<p class="hint">Lo que dejes vacío lo inventa la IA. Los protagonistas son siempre adultos.</p>
+<label class="f" for="cn">Nombre</label><input id="cn" type="text" autocomplete="off">
+<label class="f" for="ca">Edad (18 o más)</label><input id="ca" type="number" min="18" max="120" inputmode="numeric">
+<h3>Físico</h3>
+<label class="f">Altura</label><div class="row" id="cheight"></div>
+<label class="f">Complexión</label><div class="row" id="cbuild"></div>
+<label class="f" for="ch">Pelo</label><input id="ch" type="text" placeholder="Por ejemplo: negro, largo y rizado">
+<label class="f" for="ce">Ojos</label><input id="ce" type="text" placeholder="Por ejemplo: grises">
+<label class="f" for="cm">Rasgos distintivos</label><input id="cm" type="text" placeholder="Cicatriz, tatuaje, forma de vestir…">
+<h3>Carácter</h3>
+<p class="hint">Elige hasta 4.</p><div class="row" id="ctraits"></div>
+<h3>Personalidad profunda</h3>
+<label class="f" for="cg">Qué quiere conseguir</label><input id="cg" type="text">
+<label class="f" for="cf">A qué le tiene miedo</label><input id="cf" type="text">
+<label class="f" for="cl">Su defecto principal</label><input id="cl" type="text">
+<label class="f" for="cp">Pasado que lo marcó</label><input id="cp" type="text">
+<div class="err" id="cderr" hidden></div>
+<button class="go" id="csave" style="margin-top:1.2rem">Guardar protagonista</button>
+</section>
+
+<section id="making" hidden>
+<h2>Creando tu aventura</h2>
+<p class="sub">Suele tardar menos de un minuto. La IA sigue estos pasos:</p>
+<ul class="steps" id="steps"></ul>
+<div class="err" id="merr" hidden></div>
+</section>
+
+<section id="created" hidden>
+<div class="card"><div class="cover" id="ccover"><span class="tag">AVENTURA CREADA</span><span class="ttl" id="ctitle"></span></div></div>
+<p id="csyn" style="margin:1rem 0 .4rem"></p>
+<p class="hint" id="clore"></p>
+<div id="cedit" hidden><input id="etitle" type="text"><textarea id="esyn" style="margin-top:.5rem"></textarea><button class="go" id="esave" style="margin-top:.6rem">Guardar cambios</button></div>
+<div id="cimg" style="margin-top:1rem"></div>
+<p class="hint" id="cmsg" hidden></p>
+<button class="go" id="cplay" style="margin-top:1rem">▶ Empezar a jugar</button>
+<button id="cedbtn" style="width:100%;margin-top:.6rem;text-align:center;border-radius:999px">Editar aventura</button>
+<button class="small" id="cback" style="margin-top:.8rem">Ir a mis historias</button>
+</section>
+
+<section id="play" hidden>
+<div class="row" style="align-items:center;margin-bottom:.4rem"><button class="small" id="back2">← Mis historias</button></div>
+<h2 id="ptitle" style="margin-top:.4rem"></h2>
+<details class="pl" id="set"><summary>Ajustes de la partida</summary><div id="setbody"></div></details>
+<details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
+<details class="pl" id="imgbox"><summary>Título, portada e imágenes</summary><div id="imgbody"></div></details>
+<details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
+<div class="row" id="rdbar" style="margin:.8rem 0 0"><button id="listen" class="small on">🔊 Escuchar la última escena</button></div>
+<div class="scene rd" id="book"></div>
+<p class="status" id="status" hidden>El narrador está escribiendo…</p>
+<div class="err" id="err" hidden></div>
+<div id="ctrl" hidden>
+<p class="hint" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora?</p>
+<div class="row" id="actors" hidden style="margin-bottom:.6rem;align-items:center"></div>
+<div class="row" id="modes" style="margin-bottom:.6rem"></div>
+<textarea id="own" style="min-height:5.5rem" placeholder="Por ejemplo: Erik se asoma al acantilado y ve una aldea ardiendo a lo lejos"></textarea>
+<button class="go" id="do" style="margin-top:.6rem">Continuar</button>
+<details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
+</div>
+<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="exp" class="small">Exportar para leer</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<p class="hint" id="emsg" hidden></p>
+</section>
+</main>
+<script>
+var GENRES = ["Fantasía", "Ciencia ficción", "Terror", "Misterio", "Novela negra", "Drama", "Romance", "Aventura", "Aventura histórica", "Comedia", "Realismo mágico", "Acción"];
+var COV = { "Fantasía": ["#3b2a63", "#9a5a2a"], "Misterio": ["#1b2a3a", "#4a4332"], "Ciencia ficción": ["#0d284a", "#1d7a82"], "Terror": ["#2a0d12", "#5a2030"], "Aventura histórica": ["#3b2c1a", "#8a6a34"], "Realismo mágico": ["#1c3b2f", "#7a6a2a"], "Novela negra": ["#16181f", "#5a4a38"], "Drama": ["#2a2236", "#6a3a3a"], "Romance": ["#3a1f35", "#a24a5a"], "Aventura": ["#173a3a", "#b07a2a"], "Comedia": ["#2a3a5a", "#c9892a"], "Acción": ["#2a1212", "#b04a1a"], "Auto": ["#22222e", "#5a4430"] };
+var DIR = { "Auto": "El narrador elige el estilo que mejor encaje con la historia.", "Clásico": "Aventura equilibrada, buen ritmo, tono accesible.", "Literario": "Prosa cuidada y pausada; atmósfera y psicología por encima de la acción.", "Misterio": "Pistas, giros y pocas respuestas gratuitas; el lector debe deducir.", "Duro": "El mundo es peligroso y cruel; los errores cuestan caro y las pérdidas son reales.", "Épico": "Conflictos a gran escala, destino, aliados y enemigos memorables.", "Romántico": "Relaciones y emociones en primer plano, con tensión afectiva.", "Imprevisible": "Más giros y sucesos inesperados; rompe las expectativas." };
+var AUT = { "Jugador": "Solo controla a su personaje; el mundo no está obligado a cumplir sus ideas.", "Coautor": "Puede proponer hechos del mundo; el narrador los integra si encajan.", "Libre": "Todo lo que escribe es canon; el narrador reajusta la historia para acomodarlo." };
+var AXES = ["Violencia", "Terror", "Romance", "Sensualidad", "Crudeza", "Tragedia", "Humor"];
+var LV = ["ausente", "bajo", "medio", "alto"];
+var LEN = { "Conciso": "60 a 100", "Regular": "90 a 150", "Detallado": "150 a 230" };
+var STY = {
+  "Sencillo": "Estilo sencillo y directo: frases cortas o medianas, vocabulario cotidiano y ritmo ágil. Describe solo lo necesario (uno o dos detalles concretos). Evita metáforas y comparaciones (máximo una por escena, y solo si aporta) y no encadenes adjetivos. Prioriza lo que ocurre, la acción y el diálogo.",
+  "Literario": "Prosa cuidada, con atmósfera e imágenes, pero sin recargar: como máximo dos comparaciones por escena y sin acumular adjetivos. Mantén frases claras."
+};
+var IDEAS = ["Un faro encantado en una isla sin mapa", "Un detective que investiga sus propios recuerdos", "Una ciudad que flota sobre las nubes", "El último tren antes del fin del mundo", "Una bibliotecaria descubre que los libros cambian de noche", "Un reino donde la magia se paga con recuerdos", "Una nave dormida despierta con un pasajero de más", "Un pueblo costero que olvida a quien se marcha"];
+var TEN = {
+  "Pasado": "Narra en pasado. Ejemplo de tono: «Elena vio un arma sobre la mesa y la cogió sin vacilar; nadie estaba preparado para esa reacción.»",
+  "Presente": "Narra en presente. Ejemplo de tono: «Elena ve un arma sobre la mesa y la coge sin vacilar; nadie se espera esa reacción.»"
+};
+var IDEA_G = ["Misterio", "Misterio", "Fantasía", "Ciencia ficción", "Realismo mágico", "Fantasía", "Ciencia ficción", "Terror"];
+function gtxt(s) { return (s.genres && s.genres.length ? s.genres : [s.genre]).join(" + "); }
+var DEF = { genres: [], dir: "Auto", len: "Regular", sty: "Sencillo", ten: "Pasado", aut: "Coautor", rev: true, lv: { Violencia: 1, Terror: 1, Romance: 1, Sensualidad: 0, Crudeza: 1, Tragedia: 1, Humor: 1 } };
+var C = JSON.parse(JSON.stringify(DEF));
+var KEY = "narrador:v1", LIB = [], cur = null, sample = null, busy = false, pending = null, MODE = "idea", rows = [];
+var $ = function (id) { return document.getElementById(id); };
+function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(LIB)); return true; } catch (e) { return false; } }
+function view(n) { ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); window.scrollTo(0, 0); }
+function bg(g, seed, g2) {
+  var c = COV[g] || COV["Auto"], d = g2 && COV[g2] ? COV[g2] : c;
+  return "radial-gradient(circle at 50% 18%,rgba(255,214,150,.24),rgba(255,214,150,0) 58%),linear-gradient(165deg," + c[0] + "," + d[1] + ")";
+}
+function coverBg(s) {
+  if (s.cover) return "linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.7)),url(\"" + s.cover + "\") center/cover";
+  return bg(s.genre, s.id, (s.genres || [])[1]);
+}
+function ask(p) { return sample(p, { cache: false, modelTier: "complex" }); }
+function parse(t) { var a = t.indexOf("{"), b = t.lastIndexOf("}"); return JSON.parse(t.slice(a, b + 1)); }
+
+claude.use("sample").then(function (s) {
+  sample = s;
+  if (!s) { $("nosample").hidden = false; $("new").disabled = true; }
+}).catch(function () { $("nosample").hidden = false; $("new").disabled = true; });
+
+/* ---------- Inicio ---------- */
+function lastStory() { return LIB.length ? LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); })[0] : null; }
+function renderLib() {
+  var h = $("hero"); h.innerHTML = "";
+  var s0 = lastStory(), card = el("div", "card"), b = el("button", "cover big");
+  if (s0) {
+    b.style.background = coverBg(s0); if (s0.cover) b.classList.add("hasimg");
+    b.appendChild(el("span", "tag", "CONTINÚA TU PRÓXIMA AVENTURA"));
+    b.appendChild(el("span", "ttl", s0.title));
+    b.appendChild(el("small", null, "Capítulo " + (Math.floor(s0.turn / 5) + 1) + " · turno " + s0.turn + (s0.fin ? " · finalizada" : "")));
+    var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 16 * 100)) + "%"; pr.appendChild(bar); b.appendChild(pr);
+    b.onclick = function () { openStory(s0); };
+  } else {
+    b.style.background = bg("Auto", "inicio");
+    b.appendChild(el("span", "tag", "BIENVENIDO"));
+    b.appendChild(el("span", "ttl", "Empieza tu primera aventura"));
+    b.appendChild(el("small", null, "Una historia que recuerda lo que haces."));
+    b.onclick = function () { startCreate(""); };
+  }
+  card.appendChild(b); h.appendChild(card);
+
+  var box = $("list"); box.innerHTML = "";
+  if (!LIB.length) box.appendChild(el("p", "hint", "Aún no tienes historias. Pulsa «Crear nuevo»."));
+  LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
+    var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
+    cv.style.background = coverBg(s); if (s.cover) cv.classList.add("hasimg");
+    cd.appendChild(el("span", "chip", s.fin ? "FINAL" : "EN CURSO"));
+    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, gtxt(s) + " · turno " + s.turn));
+    cv.onclick = function () { openStory(s); };
+    cd.appendChild(cv); it.appendChild(cd);
+    var d = el("button", "small", "Borrar");
+    d.onclick = function () {
+      if (d.textContent === "Borrar") { d.textContent = "¿Seguro?"; return; }
+      LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); renderLib();
+    };
+    it.appendChild(d); box.appendChild(it);
+  });
+
+  var pc = $("pchars"); pc.innerHTML = "";
+  var nw = el("div", "cc pc"), nb = el("button", "pb new"); nb.appendChild(el("span", null, "+")); nb.appendChild(el("small", null, "Nuevo personaje"));
+  nb.onclick = function () { openDesigner(null, "lib"); }; nw.appendChild(nb); pc.appendChild(nw);
+  CHARS.forEach(function (c) {
+    var it = el("div", "cc pc"), x = el("button", "pb");
+    x.appendChild(avatar(c)); x.appendChild(el("b", null, c.name)); x.appendChild(el("small", null, (c.traits || []).slice(0, 2).join(" · ") || "Sin carácter definido"));
+    x.onclick = function () { openDesigner(c, "lib"); }; it.appendChild(x); pc.appendChild(it);
+  });
+
+  var ir = $("ideasrow"); ir.innerHTML = "";
+  IDEAS.forEach(function (t, i) {
+    var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
+    cv.style.background = bg(IDEA_G[i], "idea" + i);
+    cd.appendChild(el("span", "chip", IDEA_G[i].toUpperCase()));
+    cv.appendChild(el("span", "ttl", t)); cv.onclick = function () { startCreate(t); };
+    cd.appendChild(cv); it.appendChild(cd); ir.appendChild(it);
+  });
+}
+
+/* ---------- Crear: formulario ---------- */
+function chips(box, list, get, set) {
+  list.forEach(function (g) {
+    var b = el("button", get() === g ? "on" : "", g);
+    b.onclick = function () { set(g); Array.prototype.forEach.call(box.children, function (c) { c.className = c.textContent === g ? "on" : ""; }); upd(); };
+    box.appendChild(b);
+  });
+}
+function upd() { rows.forEach(function (u) { u(); }); }
+function addRow(title, sub, isDef, fill) {
+  var d = el("details", "rw"), s = el("summary"), t = el("div", "rt"), b = el("span", "bd");
+  t.appendChild(el("b", null, title)); t.appendChild(el("small", null, sub));
+  s.appendChild(t); s.appendChild(b); d.appendChild(s);
+  var body = el("div", "rb"); fill(body); d.appendChild(body); $("rows").appendChild(d);
+  var u = function () { var a = isDef(); b.textContent = a ? "AUTO" : "PERSONALIZADO"; b.className = "bd" + (a ? "" : " cus"); };
+  rows.push(u); u();
+}
+function grp(body, label, list, get, set) { body.appendChild(el("p", null, label)); var r = el("div", "row"); body.appendChild(r); chips(r, list, get, set); }
+
+IDEAS.slice(0, 3).forEach(function (t) { var b = el("button", "small", t); b.onclick = function () { $("idea").value = t; }; $("ideas").appendChild(b); });
+var sb = el("button", "small", "Sorpréndeme"); sb.style.color = "var(--acc)";
+sb.onclick = function () { $("idea").value = IDEAS[Math.floor(Math.random() * IDEAS.length)]; };
+$("ideas").appendChild(sb);
+
+function buildForm() {
+$("rows").innerHTML = ""; rows = [];
+addRow("Géneros", "Hasta 4, y se pueden mezclar", function () { return C.genres.length === 0; }, function (b) {
+  b.appendChild(el("p", null, "Elige hasta 4 (por ejemplo, Terror + Ciencia ficción)"));
+  var r = el("div", "row"); b.appendChild(r);
+  function draw() {
+    r.innerHTML = "";
+    var a = el("button", C.genres.length === 0 ? "on" : "", "Auto"); a.onclick = function () { C.genres = []; draw(); upd(); }; r.appendChild(a);
+    GENRES.forEach(function (g) {
+      var x = el("button", C.genres.indexOf(g) >= 0 ? "on" : "", g);
+      x.onclick = function () { var i = C.genres.indexOf(g); if (i >= 0) C.genres.splice(i, 1); else if (C.genres.length < 4) C.genres.push(g); draw(); upd(); };
+      r.appendChild(x);
+    });
+  }
+  draw();
+});
+addRow("Director narrativo", "El carácter con que se cuenta", function () { return C.dir === "Auto"; }, function (b) {
+  var d = el("p", "hint", DIR[C.dir]);
+  grp(b, "Director", Object.keys(DIR), function () { return C.dir; }, function (g) { C.dir = g; d.textContent = DIR[g]; });
+  b.appendChild(d);
+});
+addRow("Longitud, estilo y tiempo", "Cuánto y cómo se narra", function () { return C.len === DEF.len && C.sty === DEF.sty && C.ten === DEF.ten; }, function (b) {
+  grp(b, "Longitud de cada escena", Object.keys(LEN), function () { return C.len; }, function (g) { C.len = g; });
+  grp(b, "Estilo", Object.keys(STY), function () { return C.sty; }, function (g) { C.sty = g; });
+  grp(b, "Tiempo verbal", Object.keys(TEN), function () { return C.ten; }, function (g) { C.ten = g; });
+});
+addRow("Intensidad", "Violencia, terror, romance y más", function () { return JSON.stringify(C.lv) === JSON.stringify(DEF.lv); }, function (b) {
+  AXES.forEach(function (a) {
+    b.appendChild(el("p", null, a));
+    var box = el("div", "lvs"); b.appendChild(box);
+    LV.forEach(function (n, i) {
+      var x = el("button", C.lv[a] === i ? "on" : "", n);
+      x.onclick = function () { C.lv[a] = i; Array.prototype.forEach.call(box.children, function (c, j) { c.className = j === i ? "on" : ""; }); upd(); };
+      box.appendChild(x);
+    });
+  });
+});
+addRow("Autoridad del jugador", "Cuánto control tienen tus ideas", function () { return C.aut === DEF.aut; }, function (b) {
+  var d = el("p", "hint", AUT[C.aut]);
+  grp(b, "Autoridad", Object.keys(AUT), function () { return C.aut; }, function (g) { C.aut = g; d.textContent = AUT[g]; });
+  b.appendChild(d);
+});
+addRow("Revisión de coherencia", "Más lento, más fiel", function () { return C.rev === DEF.rev; }, function (b) {
+  var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = C.rev;
+  i.onchange = function () { C.rev = i.checked; upd(); };
+  l.appendChild(i); l.appendChild(document.createTextNode("Revisar cada escena antes de mostrarla")); b.appendChild(l);
+});
+
+}
+
+/* ---------- Crear: generación en pasos ---------- */
+var STEPS = ["Escribiendo tu historia", "Escribiendo cartas de lore", "Preparando la aventura"];
+function drawSteps(n) {
+  var ul = $("steps"); ul.innerHTML = "";
+  STEPS.forEach(function (t, i) { ul.appendChild(el("li", i < n ? "done" : i === n ? "run" : "", t)); });
+}
+function genesisPrompt(idea) {
+  var ps = P.length ? "\nPROTAGONISTAS (ya definidos por el jugador):\n" + P.map(function (c) { return "- " + c.name + ": " + charTxt(c); }).join("\n") : "\nPROTAGONISTA: invéntalo (adulto), con nombre propio.";
+  return "Eres un novelista que crea la base de una novela interactiva en español claro y accesible.\nIDEA DEL JUGADOR: " + (idea || "Inventa una premisa original y sorprendente.") + (UT ? "\nTÍTULO ELEGIDO POR EL JUGADOR (úsalo tal cual): " + UT : "") + ps +
+    "\nGÉNEROS: " + (C.genres.length ? C.genres.join(" + ") + " (combínalos con naturalidad en una misma historia)" : "elige uno o dos que encajen con la idea") +
+    "\nTodos los personajes importantes son adultos. Responde SOLO con JSON: {\"titulo\":\"máximo 6 palabras\",\"sinopsis\":\"2 o 3 frases que plantean el conflicto e incluyen a los protagonistas por su nombre\",\"generos\":[\"uno o más de: " + GENRES.join(", ") + "\"]}";
+}
+function lorePrompt(g) {
+  return "A partir de esta sinopsis, crea entre 5 y 8 cartas de lore para una novela interactiva: " + (P.length ? "aliados, antagonista, lugares, una facción y un objeto clave. Los protagonistas ya están definidos: no los incluyas." : "protagonista, aliados, antagonista, lugares, una facción y un objeto clave.") +
+    " Todos los personajes son adultos. Descripciones de 1 o 2 frases, concretas.\nTÍTULO: " + g.titulo + "\nSINOPSIS: " + g.sinopsis +
+    "\nResponde SOLO con JSON: {\"cartas\":[{\"tipo\":\"personaje|lugar|facción|objeto\",\"nombre\":\"...\",\"desc\":\"...\"}]}";
+}
+$("make").onclick = async function () {
+  if (!sample || busy) return;
+  var idea = $("idea").value.trim(); UT = $("ttl0").value.trim();
+  busy = true; $("merr").hidden = true; view("making"); drawSteps(0);
+  try {
+    var g = parse((await ask(genesisPrompt(idea))).text);
+    if (!g.titulo || !g.sinopsis) throw new Error("vacío");
+    drawSteps(1);
+    var l = parse((await ask(lorePrompt(g))).text);
+    drawSteps(2);
+    var genres = C.genres.length ? C.genres.slice() : (Array.isArray(g.generos) ? g.generos : [g.generos]).filter(function (x) { return GENRES.indexOf(x) >= 0; }).slice(0, 3);
+    if (!genres.length) genres = [GENRES[0]];
+    var s = {
+      id: String(Date.now()), title: UT ? UT.slice(0, 80) : String(g.titulo).slice(0, 60), syn: g.sinopsis, genre: genres[0], genres: genres, director: C.dir, aut: C.aut, review: C.rev, len: C.len, sty: C.sty,
+      intens: JSON.parse(JSON.stringify(C.lv)), lore: P.map(function (c) { return { tipo: "protagonista", nombre: c.name, desc: charTxt(c) }; }).concat((l.cartas || []).slice(0, 10)),
+      premise: g.sinopsis + (idea ? " Idea original: " + idea : ""), prot: P.slice(), ten: C.ten, at: Date.now(),
+      memory: "", last: "", turn: 0, state: {}, scenes: [], opts: [], fin: false, prev: null
+    };
+    LIB.push(s); save(); drawSteps(3); busy = false; showCreated(s);
+  } catch (e) {
+    busy = false;
+    var m = e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento." : e && e.code === "not_granted" ? "Necesito tu permiso para crear la historia." : "No pude crear la aventura.";
+    $("merr").textContent = m + " "; var rb = el("button", "small", "Volver al formulario");
+    rb.onclick = function () { view("create"); }; $("merr").appendChild(rb); $("merr").hidden = false;
+  }
+};
+
+function showCreated(s) {
+  cur = s; view("created");
+  $("ccover").style.background = coverBg(s); $("ccover").classList.toggle("hasimg", !!s.cover);
+  $("ctitle").textContent = s.title; $("csyn").textContent = s.syn;
+  $("clore").textContent = "Cartas de lore: " + s.lore.length; $("cedit").hidden = true; imgPanel($("cimg"));
+}
+$("cedbtn").onclick = function () { $("etitle").value = cur.title; $("esyn").value = cur.syn; $("cedit").hidden = false; };
+$("esave").onclick = function () {
+  cur.title = $("etitle").value.trim() || cur.title; cur.syn = $("esyn").value.trim() || cur.syn; save(); showCreated(cur);
+};
+$("cplay").onclick = function () { openStory(cur); };
+$("cback").onclick = function () { renderLib(); view("lib"); };
+
+/* ---------- Jugar ---------- */
+function openStory(s) {
+  cur = s; s.at = Date.now(); view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); render();
+  if (!s.scenes.length) turn("Empieza la historia: presenta al protagonista, el lugar y el conflicto inicial.", "");
+}
+function renderSet() {
+  var b = $("setbody"); b.innerHTML = "";
+  [["Longitud", LEN, "len"], ["Estilo", STY, "sty"], ["Tiempo verbal", TEN, "ten"]].forEach(function (x) {
+    b.appendChild(el("p", "hint", x[0])); var r = el("div", "row"); b.appendChild(r);
+    Object.keys(x[1]).forEach(function (k) {
+      var c = el("button", (cur[x[2]] || DEF[x[2]]) === k ? "on" : "", k);
+      c.onclick = function () { cur[x[2]] = k; save(); Array.prototype.forEach.call(r.children, function (z) { z.className = z.textContent === k ? "on" : ""; }); };
+      r.appendChild(c);
+    });
+  });
+  var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = !!cur.review;
+  i.onchange = function () { cur.review = i.checked; save(); };
+  l.appendChild(i); l.appendChild(document.createTextNode("Revisar la coherencia")); l.style.margin = ".8rem 0"; b.appendChild(l);
+}
+function renderLore() {
+  var b = $("lorebody"); b.innerHTML = "";
+  $("lorecount").textContent = "Cartas de lore (" + (cur.lore || []).length + ")";
+  (cur.lore || []).forEach(function (c) {
+    var d = el("div", "lore"); d.appendChild(el("b", null, c.nombre)); d.appendChild(document.createTextNode(" · " + c.tipo + ". " + c.desc)); b.appendChild(d);
+  });
+}
+function estadoTxt(v, a, b, c) { return v > 66 ? a : v > 33 ? b : c; }
+function render(keep) {
+  var s = cur, book = $("book"); book.innerHTML = "";
+  s.scenes.forEach(function (sc, i) {
+    if (i % 5 === 0) book.appendChild(el("div", "ch", "Capítulo " + (i / 5 + 1)));
+    if (sc.a) book.appendChild(el("p", "act", sc.a));
+    sc.t.split(/\n\s*\n/).forEach(function (p) { book.appendChild(el("p", null, p.trim())); });
+    book.appendChild(sceneImg(sc, i));
+  });
+  if (s.fin) book.appendChild(el("p", "fin", "Fin de la historia."));
+  $("status").hidden = !busy;
+  $("ctrl").hidden = busy || s.fin;
+  $("sug").hidden = !s.opts.length;
+  $("undo").hidden = !s.prev || s.scenes.length < 2; $("undo").disabled = busy;
+  $("exp").hidden = !s.scenes.length; $("emsg").hidden = true;
+  var o = $("opts"); o.innerHTML = "";
+  s.opts.forEach(function (t) { var b = el("button", null, t); b.onclick = function () { turn(t, t); }; o.appendChild(b); });
+  $("own").value = "";
+  if (!keep && !busy && s.scenes.length > 1) book.lastElementChild.scrollIntoView({ behavior: "smooth", block: "end" });
+}
+
+var RULES = [
+  "Eres un novelista que escribe ficción interactiva en español correcto, claro y accesible para cualquier lector.",
+  "Narra en tercera persona omnisciente, usando el nombre de los personajes y nunca «tú». El narrador conoce lo que sienten y piensan los demás personajes, las reacciones de los presentes y lo que el protagonista no percibe, y puede dejar atisbos de lo que vendrá, pero no revela secretos que la historia aún no haya destapado. Sigue el TIEMPO VERBAL, el ESTILO y la LONGITUD indicados.",
+  "Mantén coherencia estricta con la MEMORIA, el ESTADO OCULTO y las CARTAS DE LORE: nombres, lugares, objetos, heridas, promesas y reglas del mundo no pueden contradecirse ni olvidarse. Nadie sabe lo que no ha presenciado. Los muertos no actúan. Los objetos perdidos no se usan.",
+  "Respeta siempre lo que escribe el jugador y haz que tenga consecuencias reales.",
+  "No repitas frases ni estructuras de escenas anteriores. Introduce giros, personajes con deseos propios y conflictos que escalen. Las consecuencias de decisiones antiguas pueden volver mucho después: anótalas en eventos_pendientes y recupéralas cuando toque.",
+  "Acaba cada escena en un punto abierto en el que el jugador pueda intervenir.",
+  "Arco: planteamiento, complicación, clímax y desenlace. Hacia el turno 12 empieza a encaminar el clímax; hacia el turno 16 cierra con un final satisfactorio, bueno, malo o inesperado según lo ocurrido.",
+  "Ofrece 3 sugerencias breves (máximo 14 palabras), distintas en riesgo y enfoque.",
+  "El narrador es un director con iniciativa: no pregunta qué quiere el jugador que ocurra. El jugador controla a su personaje; el mundo no está bajo su control. Introduce traiciones, enamoramientos, batallas, desapariciones, secretos y momentos de tristeza cuando la historia lo pida.",
+  "IDEAS DEL JUGADOR: si el jugador marca una IDEA PARA LA HISTORIA, es una aportación creativa suya al mundo (algo que se ve, ocurre o se descubre). Intégrala y continúa a partir de ella, sin rechazarla ni pedir permiso. Si contradice hechos ya establecidos, adáptala para que encaje (algo visto desde lejos, un rumor, un error del personaje). Sus consecuencias son reales. Respeta la AUTORIDAD DEL JUGADOR: Jugador (solo se obedece a su personaje), Coautor (integra las ideas si encajan) o Libre (todo lo que escribe es canon y reajustas la historia). Anota cada idea aceptada en estado.aportes como «aportado por el jugador: ...».",
+  "REGLA FUNDAMENTAL (para las ACCIONES del personaje): nada ocurre porque el jugador lo desee, sino porque es posible dentro del mundo, y debe asumir las consecuencias. Antes de narrar, juzga la acción como posible, arriesgada o imposible según el ESTADO. Lo posible tiene un coste; lo arriesgado puede fallar; lo imposible se muestra como obstáculo. Las pérdidas importantes son irreversibles.",
+  "Anota en estado.deudas los favores, traiciones, perdones y promesas, para que vuelvan mucho después.",
+  "Intensidad y explicitud son cosas distintas. Adapta el tono a la INTENSIDAD indicada con prosa adulta, clara y sobria, sin vulgaridad gratuita. La violencia y el terror se escriben con peso emocional y consecuencias, sin recrearse en el detalle gráfico. El romance y la sensualidad se escriben con tensión, deseo y elipsis; no escribas escenas sexuales explícitas, sea cual sea el nivel.",
+  "Todo personaje implicado en una escena romántica o sensual es adulto. Nunca escribas contenido sexual con menores ni violencia sexual.",
+  "Si introduces un personaje, lugar, facción u objeto importante que no esté en las cartas de lore, añádelo en lore_nuevo."
+].join("\n");
+
+var FORMAT = "Responde SOLO con JSON válido, sin texto extra ni bloques de código, con esta forma:\n" +
+  "{\"escena\":\"párrafos separados por \\n\\n\",\"opciones\":[\"...\",\"...\",\"...\"],\"memoria\":\"memoria actualizada con hechos clave, máximo 220 palabras\"," +
+  "\"estado\":{\"salud\":100,\"peligro\":10,\"objetos\":[],\"relaciones\":{},\"hilos\":[],\"eventos_pendientes\":[],\"deudas\":[],\"aportes\":[]},\"lore_nuevo\":[{\"tipo\":\"\",\"nombre\":\"\",\"desc\":\"\"}],\"fin\":false}\n" +
+  "Salud y peligro de 0 a 100; relaciones de -10 a 10. Si es el desenlace, usa \"fin\":true y \"opciones\":[].";
+
+function intTxt(s) { var o = s.intens || {}; return AXES.map(function (a) { var v = a in o ? o[a] : 1; return a + " " + v + " (" + LV[v] + ")"; }).join(", "); }
+function loreTxt(s) { return (s.lore || []).slice(0, 30).map(function (c) { return "- " + c.tipo + " " + c.nombre + ": " + c.desc; }).join("\n") || "(ninguna)"; }
+
+function build(s, action, note, sp) {
+  var aviso = note ? "AVISO: " + note + "\n" : "";
+  if (s.state && s.state.salud <= 0) aviso += "AVISO: la salud del protagonista es 0. Escribe el desenlace con \"fin\":true.\n";
+  var dir = s.director || "Auto", len = s.len || DEF.len, sty = s.sty || DEF.sty, ten = s.ten || DEF.ten, aut = s.aut || "Coautor";
+  return RULES + "\n\nGÉNEROS (mézclalos con naturalidad, sin que uno anule al otro): " + gtxt(s) + "\nDIRECTOR NARRATIVO (" + dir + "): " + DIR[dir] +
+    "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nLONGITUD: 2 o 3 párrafos cortos, de " + LEN[len] + " palabras en total." +
+    "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
+    "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nTURNO: " + s.turn + "\nMEMORIA:\n" + (s.memory || "(historia nueva)") +
+    "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nÚLTIMA ESCENA:\n" + (s.last || "(ninguna)") +
+    "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso +
+    (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
+}
+function reviewPrompt(s, d) {
+  return "Eres un revisor de continuidad. Compara la ESCENA NUEVA con la MEMORIA, el ESTADO, las CARTAS DE LORE y la ÚLTIMA ESCENA y busca contradicciones: muertos que actúan, objetos que no se tienen, cambios de nombre o aspecto, saber lo que no se sabe, olvidar heridas o promesas.\n" +
+    "MEMORIA:\n" + s.memory + "\nESTADO:\n" + JSON.stringify(s.state || {}) + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nÚLTIMA ESCENA:\n" + s.last +
+    "\nESCENA NUEVA:\n" + d.escena + "\nResponde SOLO con JSON: {\"ok\":true,\"problema\":\"\"} o {\"ok\":false,\"problema\":\"descripción breve\"}";
+}
+
+async function turn(action, shown) {
+  if (busy || !sample || !cur) return;
+  var s = cur, note = "", cand = null, sp = s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
+  pending = [action, shown]; busy = true; $("err").hidden = true; render();
+  try {
+    for (var i = 0; i < 2; i++) {
+      var r = await ask(build(s, action, note, sp)), d;
+      try { d = parse(r.text); } catch (e) { note = "Tu respuesta anterior no era JSON válido."; continue; }
+      if (!d.escena) { note = "Falta la escena."; continue; }
+      cand = d;
+      if (s.review && i === 0) {
+        try { var rv = parse((await ask(reviewPrompt(s, d))).text); if (rv.ok === false) { note = "Corrige este problema de coherencia: " + rv.problema; continue; } } catch (e) {}
+      }
+      break;
+    }
+    if (!cand) throw new Error("vacío");
+    s.prev = { memory: s.memory, last: s.last, turn: s.turn, state: s.state, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
+    s.scenes.push({ a: shown || "", t: cand.escena });
+    s.last = cand.escena; s.memory = cand.memoria || s.memory;
+    var st = cand.estado;
+    if (st && typeof st === "object") {
+      ["salud", "peligro"].forEach(function (k) { if (k in st) st[k] = Math.max(0, Math.min(100, Number(st[k]) || 0)); });
+      s.state = st;
+    }
+    if (Array.isArray(cand.lore_nuevo)) {
+      s.lore = s.lore || [];
+      cand.lore_nuevo.forEach(function (c) {
+        if (c && c.nombre && !s.lore.some(function (x) { return x.nombre === c.nombre; }) && s.lore.length < 40) s.lore.push({ tipo: c.tipo || "otro", nombre: c.nombre, desc: c.desc || "" });
+      });
+    }
+    if (sp) s.ls = s.turn;
+    s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3);
+    save(); renderLore();
+  } catch (e) {
+    var m = e && e.code === "not_granted" ? "Necesito tu permiso para escribir la historia. Vuelve a pulsar y acéptalo." : e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento y reinténtalo." : "No pude escribir la escena. Reinténtalo.";
+    $("err").textContent = m + " ";
+    var rb = el("button", "small", "Reintentar"); rb.onclick = function () { $("err").hidden = true; turn(pending[0], pending[1]); };
+    $("err").appendChild(rb); $("err").hidden = false;
+  }
+  busy = false; render();
+}
+
+[["idea", "Idea para la historia"], ["accion", "Mi personaje hace"]].forEach(function (m) {
+  var b = el("button", m[0] === MODE ? "on" : "", m[1]);
+  b.onclick = function () { MODE = m[0]; Array.prototype.forEach.call($("modes").children, function (c) { c.className = c === b ? "on" : ""; }); };
+  $("modes").appendChild(b);
+});
+$("do").onclick = function () {
+  var v = $("own").value.trim(); if (!v) return;
+  turn((MODE === "idea" ? "[IDEA PARA LA HISTORIA, aportada por el jugador] " : "[ACCIÓN DE " + (ACTOR || "SU PERSONAJE").toUpperCase() + "] ") + v, v);
+};
+$("undo").onclick = function () {
+  var s = cur, p = s.prev; if (busy || !p) return;
+  s.scenes.length = p.len; s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = p.state; s.opts = p.opts; s.fin = p.fin; s.ls = p.ls;
+  if (s.lore && p.lore != null) s.lore.length = Math.min(s.lore.length, p.lore);
+  s.prev = null; save(); renderLore(); render();
+};
+$("new").onclick = function () { startCreate(""); };
+$("back1").onclick = function () { renderLib(); view("lib"); };
+$("back2").onclick = function () { renderLib(); view("lib"); };
+
+/* ---------- Personajes ---------- */
+var HEIGHTS = ["Baja", "Media", "Alta"], BUILDS = ["Delgada", "Atlética", "Robusta", "Corpulenta"];
+var TRAITS = ["Valiente", "Prudente", "Sarcástico", "Leal", "Ambicioso", "Compasivo", "Impulsivo", "Reservado", "Curioso", "Orgulloso", "Soñador", "Astuto"];
+var UT = "", CHARS = [], P = [], ED = null, edRet = "chars", ACTOR = "";
+var FIELDS = [["cn", "name"], ["ca", "age"], ["ch", "hair"], ["ce", "eyes"], ["cm", "marks"], ["cg", "goal"], ["cf", "fear"], ["cl", "flaw"], ["cp", "past"]];
+function loadChars() { try { CHARS = JSON.parse(localStorage.getItem("narrador:chars:v1") || "[]"); } catch (e) { CHARS = []; } }
+function saveChars() { try { localStorage.setItem("narrador:chars:v1", JSON.stringify(CHARS)); } catch (e) {} }
+function charTxt(c) {
+  var f = [];
+  if (c.age) f.push(c.age + " años");
+  var ph = [c.height && "altura " + c.height.toLowerCase(), c.build && "complexión " + c.build.toLowerCase(), c.hair && "pelo " + c.hair, c.eyes && "ojos " + c.eyes, c.marks].filter(Boolean);
+  if (ph.length) f.push("físico: " + ph.join(", "));
+  if ((c.traits || []).length) f.push("carácter: " + c.traits.join(", ").toLowerCase());
+  if (c.goal) f.push("quiere: " + c.goal);
+  if (c.fear) f.push("miedo: " + c.fear);
+  if (c.flaw) f.push("defecto: " + c.flaw);
+  if (c.past) f.push("pasado: " + c.past);
+  return f.join(". ") + ".";
+}
+function avBg(n) { var h = 0; for (var i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) % 360; return "linear-gradient(135deg,hsl(" + h + ",45%,32%),hsl(" + ((h + 40) % 360) + ",55%,48%))"; }
+function avatar(c) { var a = el("div", "av", (c.name || "?").charAt(0).toUpperCase()); a.style.background = avBg(c.name || "?"); return a; }
+
+function drawDesigner() {
+  [["cheight", HEIGHTS, "height"], ["cbuild", BUILDS, "build"]].forEach(function (x) {
+    var box = $(x[0]); box.innerHTML = "";
+    x[1].forEach(function (g) { var b = el("button", ED[x[2]] === g ? "on" : "", g); b.onclick = function () { ED[x[2]] = ED[x[2]] === g ? "" : g; drawDesigner(); }; box.appendChild(b); });
+  });
+  var tb = $("ctraits"); tb.innerHTML = "";
+  TRAITS.forEach(function (g) {
+    var b = el("button", ED.traits.indexOf(g) >= 0 ? "on" : "", g);
+    b.onclick = function () { var i = ED.traits.indexOf(g); if (i >= 0) ED.traits.splice(i, 1); else if (ED.traits.length < 4) ED.traits.push(g); drawDesigner(); };
+    tb.appendChild(b);
+  });
+}
+function openDesigner(ch, ret) {
+  ED = ch ? JSON.parse(JSON.stringify(ch)) : { id: String(Date.now()), name: "", age: "", height: "", build: "", hair: "", eyes: "", marks: "", traits: [], goal: "", fear: "", flaw: "", past: "" };
+  edRet = ret; $("cdtitle").textContent = ch ? "Editar protagonista" : "Diseña a tu protagonista";
+  FIELDS.forEach(function (x) { $(x[0]).value = ED[x[1]] || ""; });
+  $("cderr").hidden = true; drawDesigner(); view("chared");
+}
+function leaveDesigner() { if (edRet === "create") view("create"); else if (edRet === "chars") { renderChars(); view("chars"); } else { renderLib(); view("lib"); } }
+$("cdback").onclick = leaveDesigner;
+$("csave").onclick = function () {
+  FIELDS.forEach(function (x) { ED[x[1]] = $(x[0]).value.trim(); });
+  var err = "";
+  if (!ED.name) err = "Ponle un nombre al protagonista.";
+  else if (ED.age && Number(ED.age) < 18) err = "Los protagonistas deben ser adultos (18 años o más).";
+  if (err) { $("cderr").textContent = err; $("cderr").hidden = false; return; }
+  var i = CHARS.findIndex(function (c) { return c.id === ED.id; });
+  if (i >= 0) CHARS[i] = ED; else CHARS.push(ED);
+  saveChars();
+  if (edRet === "create") { var j = P.findIndex(function (c) { return c.id === ED.id; }); if (j >= 0) P[j] = ED; else P.push(ED); buildPlist(); }
+  leaveDesigner();
+};
+function renderChars() {
+  var b = $("clist"); b.innerHTML = "";
+  if (!CHARS.length) b.appendChild(el("p", "hint", "Aún no tienes personajes."));
+  CHARS.forEach(function (c) {
+    var r = el("div", "pcard"), t = el("div", "tx");
+    t.appendChild(el("b", null, c.name)); t.appendChild(el("small", null, (c.traits || []).join(" · ") || "Sin carácter definido"));
+    r.appendChild(avatar(c)); r.appendChild(t);
+    var e = el("button", "small", "Editar"); e.onclick = function () { openDesigner(c, "chars"); };
+    var d = el("button", "small", "Borrar");
+    d.onclick = function () { if (d.textContent === "Borrar") { d.textContent = "¿Seguro?"; return; } CHARS = CHARS.filter(function (x) { return x.id !== c.id; }); saveChars(); renderChars(); };
+    r.appendChild(e); r.appendChild(d); b.appendChild(r);
+  });
+}
+$("cnew").onclick = function () { openDesigner(null, "chars"); };
+
+function buildPlist() {
+  var b = $("plist"); b.innerHTML = "";
+  if (!P.length) b.appendChild(el("span", "hint", "AUTO · la IA inventa al protagonista"));
+  P.forEach(function (c, i) { var x = el("button", "on", c.name + " ✕"); x.onclick = function () { P.splice(i, 1); buildPlist(); }; b.appendChild(x); });
+}
+$("paddnew").onclick = function () { openDesigner(null, "create"); };
+$("paddpick").onclick = function () {
+  var b = $("ppick"); b.innerHTML = ""; b.hidden = !b.hidden; if (b.hidden) return;
+  if (!CHARS.length) { b.appendChild(el("span", "hint", "Aún no tienes personajes guardados.")); return; }
+  CHARS.forEach(function (c) {
+    var x = el("button", "small", c.name);
+    x.onclick = function () { if (!P.some(function (p) { return p.id === c.id; }) && P.length < 4) P.push(c); buildPlist(); b.hidden = true; };
+    b.appendChild(x);
+  });
+};
+function startCreate(idea) { C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; view("create"); }
+
+function renderActors() {
+  var b = $("actors"); b.innerHTML = ""; var pr = (cur && cur.prot) || [];
+  if (pr.length < 2) { b.hidden = true; ACTOR = pr[0] ? pr[0].name : ""; return; }
+  b.hidden = false;
+  if (!ACTOR || !pr.some(function (c) { return c.name === ACTOR; })) ACTOR = pr[0].name;
+  b.appendChild(el("span", "hint", "Actúa:"));
+  pr.forEach(function (c) { var x = el("button", ACTOR === c.name ? "small on" : "small", c.name); x.onclick = function () { ACTOR = c.name; renderActors(); }; b.appendChild(x); });
+}
+
+/* ---------- Imágenes ---------- */
+var PICK = null;
+function dataBytes(u) { try { var b = atob(String(u).split(",")[1]), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; } catch (e) { return null; } }
+function shrink(file, maxW, maxH, cb) {
+  var fr = new FileReader();
+  fr.onerror = function () { cb(null); };
+  fr.onload = function () {
+    var im = new Image();
+    im.onerror = function () { cb(null); };
+    im.onload = function () {
+      var k = Math.min(1, maxW / im.width, maxH / im.height), w = Math.max(1, Math.round(im.width * k)), h = Math.max(1, Math.round(im.height * k));
+      var c = document.createElement("canvas"); c.width = w; c.height = h;
+      var x = c.getContext("2d"); x.fillStyle = "#000"; x.fillRect(0, 0, w, h); x.drawImage(im, 0, 0, w, h);
+      try { cb(c.toDataURL("image/jpeg", 0.82)); } catch (e) { cb(null); }
+    };
+    im.src = fr.result;
+  };
+  fr.readAsDataURL(file);
+}
+function imgMsg(t) {
+  var m = !$("play").hidden ? $("emsg") : $("cmsg"); m.textContent = t; m.hidden = false;
+}
+function takeImage(f, kind, idx) {
+  shrink(f, kind === "cover" ? 800 : 900, kind === "cover" ? 1200 : 900, function (u) {
+    if (!u) { imgMsg("No pude leer esa imagen. Prueba con un JPG o PNG."); return; }
+    var s = cur, old;
+    if (kind === "cover") { old = s.cover; s.cover = u; } else { old = s.scenes[idx].img; s.scenes[idx].img = u; }
+    if (!save()) {
+      if (kind === "cover") s.cover = old; else s.scenes[idx].img = old;
+      imgMsg("No hay espacio para guardar la imagen en este navegador. Quita alguna imagen o usa una más pequeña."); return;
+    }
+    refreshImages(true);
+  });
+}
+function imgFromBlob(b, kind, idx) { if (b) takeImage(b, kind, idx); }
+function pasteBtn(kind, idx) {
+  var w = el("span"), b = el("button", "small", "📋 Pegar imagen"), box = el("div", "pastebox"), done = false;
+  box.contentEditable = "true"; box.hidden = true; box.textContent = "Mantén pulsado aquí y elige «Pegar»";
+  function fromItems(list) { for (var i = 0; list && i < list.length; i++) { var it = list[i]; if (it.type && it.type.indexOf("image") === 0) { var f = it.getAsFile ? it.getAsFile() : it; if (f) { done = true; imgFromBlob(f, kind, idx); return true; } } } return false; }
+  box.addEventListener("paste", function (e) { var cd = e.clipboardData; if (cd && (fromItems(cd.files) || fromItems(cd.items))) e.preventDefault(); });
+  box.addEventListener("input", function () { var im = box.querySelector("img"); if (im && im.src && im.src.indexOf("data:") === 0 && !done) { done = true; fetch(im.src).then(function (r) { return r.blob(); }).then(function (bl) { imgFromBlob(bl, kind, idx); }); } });
+  b.onclick = function () {
+    done = false;
+    if (navigator.clipboard && navigator.clipboard.read) {
+      navigator.clipboard.read().then(function (items) {
+        for (var i = 0; i < items.length; i++) for (var j = 0; j < items[i].types.length; j++) if (items[i].types[j].indexOf("image") === 0) { items[i].getType(items[i].types[j]).then(function (bl) { imgFromBlob(bl, kind, idx); }); return; }
+        box.hidden = false; box.focus();
+      }, function () { box.hidden = false; box.focus(); });
+    } else { box.hidden = false; box.focus(); }
+  };
+  w.appendChild(b); w.appendChild(box); return w;
+}
+function fileBtn(text, kind, idx) {
+  var l = el("label", "fb"); l.appendChild(document.createTextNode(text));
+  var i = el("input", "fpick"); i.type = "file"; i.accept = "image/*";
+  i.onchange = function () { var f = i.files && i.files[0]; if (f) takeImage(f, kind, idx); i.value = ""; };
+  l.appendChild(i); return l;
+}
+function refreshImages(keep) {
+  if (!cur) return;
+  var cc = $("ccover"); cc.style.background = coverBg(cur); cc.classList.toggle("hasimg", !!cur.cover);
+  imgPanel($("cimg"));
+  if (!$("play").hidden) { imgPanel($("imgbody"), true); render(keep); }
+}
+function imgPanel(box, withTitle) {
+  var s = cur; box.innerHTML = ""; if (!s) return;
+  if (withTitle) {
+    box.appendChild(el("p", "hint", "Título de la historia"));
+    var tr = el("div", "row"), ti = el("input"); ti.type = "text"; ti.value = s.title; ti.style.flex = "1";
+    var tb = el("button", "small", "Guardar título");
+    tb.onclick = function () {
+      var v = ti.value.trim(); if (!v) return;
+      s.title = v.slice(0, 80); save(); $("ptitle").textContent = s.title; $("ctitle").textContent = s.title; tb.textContent = "Guardado ✓";
+    };
+    tr.appendChild(ti); tr.appendChild(tb); box.appendChild(tr);
+  }
+  box.appendChild(el("p", "hint", "Sube tu propia portada, o genera un prompt para crearla con la IA de imágenes que uses fuera. Cada escena tiene su hueco «+ Imagen» debajo del texto."));
+  var r = el("div", "row");
+  r.appendChild(fileBtn(s.cover ? "Cambiar portada" : "Subir mi portada", "cover"));
+  if (s.cover) { var rm = el("button", "small", "Quitar portada"); rm.onclick = function () { delete s.cover; save(); refreshImages(true); }; r.appendChild(rm); }
+  r.appendChild(pasteBtn("cover"));
+  var pr = el("button", "small", "Prompt para la portada"); pr.onclick = function () { makePrompt("cover"); }; r.appendChild(pr);
+  box.appendChild(r);
+  box.appendChild(el("p", "hint", "Si «Subir» no abre la galería en tu móvil: copia la imagen y usa «Pegar imagen»."));
+  if (s.cover) { var im = el("img", "pv"); im.src = s.cover; im.alt = "Portada"; box.appendChild(im); }
+}
+function sceneImg(sc, i) {
+  var d = el("div", "simg");
+  if (sc.img) { var im = el("img"); im.src = sc.img; im.alt = "Ilustración de la escena"; d.appendChild(im); }
+  var r = el("div", "row");
+  r.appendChild(fileBtn(sc.img ? "Cambiar imagen" : "+ Imagen", "scene", i));
+  if (sc.img) { var q = el("button", "small", "Quitar"); q.onclick = function () { delete sc.img; save(); refreshImages(true); }; r.appendChild(q); }
+  r.appendChild(pasteBtn("scene", i));
+  var p = el("button", "small", "Prompt"); p.onclick = function () { makePrompt("scene", i); }; r.appendChild(p);
+  d.appendChild(r); return d;
+}
+function physTxt(c) {
+  var ph = [c.age && c.age + " años", c.height && "altura " + c.height.toLowerCase(), c.build && "complexión " + c.build.toLowerCase(), c.hair && "pelo " + c.hair, c.eyes && "ojos " + c.eyes, c.marks].filter(Boolean).join(", ");
+  var ca = (c.traits || []).length ? "carácter " + c.traits.join(", ").toLowerCase() : "";
+  return c.name + (ph || ca ? " (" + [ph, ca].filter(Boolean).join("; ") + ")" : "");
+}
+function protTxt(s) {
+  if ((s.prot || []).length) return s.prot.map(physTxt).join(". ");
+  var l = (s.lore || []).filter(function (c) { return c.tipo === "protagonista"; });
+  return l.length ? l.map(function (c) { return c.nombre + ": " + c.desc; }).join(". ") : "protagonista adulto, a tu elección";
+}
+function coverClose(s) { return " Genera la imagen como si fuera la portada de una novela, en formato vertical 2:3, e incluye el título «" + s.title + "» escrito de forma legible y elegante en la portada. Todos los personajes son adultos."; }
+function localPrompt(s, kind, idx) {
+  var base = "Historia: " + (s.syn || s.title) + " Género: " + gtxt(s) + ". Protagonista(s): " + protTxt(s) + ".";
+  if (kind === "cover") return "Ilustración de portada de novela. " + base + " Composición cinematográfica centrada en el protagonista, atmósfera y paleta propias del género, ilustración digital detallada." + coverClose(s);
+  var t = s.scenes[idx].t.replace(/\s+/g, " ").slice(0, 450);
+  return "Ilustración de una escena de novela, formato horizontal 3:2, sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
+}
+async function makePrompt(kind, idx) {
+  var s = cur; if (!s) return;
+  $("pmodal").hidden = false; $("ptit").textContent = kind === "cover" ? "Prompt para la portada" : "Prompt para esta escena"; $("pcopy").textContent = "Copiar prompt";
+  var local = localPrompt(s, kind, idx); $("ptxt").value = local; $("ptxt").readOnly = false;
+  if (!sample) { $("pstat").textContent = "Versión básica (sin IA)."; return; }
+  $("pstat").textContent = "Preparando un prompt más visual…"; $("pcopy").disabled = true;
+  try {
+    var q = "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). " + (kind === "cover" ? "Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final." : "Formato horizontal 3:2, sin texto ni letras en la imagen.") + " Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local;
+    var r = await ask(q), t = String(r.text || "").trim();
+    if (t) { $("ptxt").value = kind === "cover" ? t + coverClose(s) : t; $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; }
+  } catch (e) { $("pstat").textContent = "No pude mejorarlo con IA; te dejo la versión básica."; }
+  $("pcopy").disabled = false;
+}
+$("pclose").onclick = function () { $("pmodal").hidden = true; };
+$("pcopy").onclick = function () {
+  var ta = $("ptxt"); ta.select();
+  var ok = function () { $("pcopy").textContent = "Copiado ✓"; };
+  try { navigator.clipboard.writeText(ta.value).then(ok, function () { try { document.execCommand("copy"); ok(); } catch (e) {} }); } catch (e) { try { document.execCommand("copy"); ok(); } catch (e2) {} }
+};
+
+/* ---------- Lectura y voz ---------- */
+var RD = { size: 18, tone: "noche", font: "serif", tex: false, rate: 1 };
+try { var _r = JSON.parse(localStorage.getItem("narrador:read:v1") || "null"); if (_r) RD = Object.assign(RD, _r); } catch (e) {}
+function saveRead() { try { localStorage.setItem("narrador:read:v1", JSON.stringify(RD)); } catch (e) {} }
+function applyRead() {
+  var b = $("book"); b.className = "scene rd t-" + RD.tone + (RD.font === "sans" ? " f-sans" : "") + (RD.tex ? " tex" : "");
+  b.style.fontSize = RD.size + "px";
+}
+function optRow(b, items, get, set) {
+  var r = el("div", "row"); b.appendChild(r);
+  items.forEach(function (t) {
+    var x = el("button", get() === t[0] ? "small on" : "small", t[1]);
+    x.onclick = function () { set(t[0]); saveRead(); applyRead(); Array.prototype.forEach.call(r.children, function (c) { c.className = c === x ? "small on" : "small"; }); };
+    r.appendChild(x);
+  });
+}
+function renderRead() {
+  applyRead();
+  var b = $("rdbody"); b.innerHTML = "";
+  b.appendChild(el("p", "hint", "Tamaño del texto"));
+  var sz = el("div", "sz"), mi = el("button", "small", "A−"), va = el("span", null, RD.size + ""), ma = el("button", "small", "A+");
+  mi.onclick = function () { RD.size = Math.max(14, RD.size - 1); va.textContent = RD.size; saveRead(); applyRead(); };
+  ma.onclick = function () { RD.size = Math.min(28, RD.size + 1); va.textContent = RD.size; saveRead(); applyRead(); };
+  sz.appendChild(mi); sz.appendChild(va); sz.appendChild(ma); b.appendChild(sz);
+  b.appendChild(el("p", "hint", "Fondo de la página"));
+  optRow(b, [["noche", "Noche"], ["dia", "Día"], ["sepia", "Sepia"], ["perg", "Pergamino"]], function () { return RD.tone; }, function (v) { RD.tone = v; });
+  b.appendChild(el("p", "hint", "Letra"));
+  optRow(b, [["serif", "Con serifa"], ["sans", "Sin serifa"]], function () { return RD.font; }, function (v) { RD.font = v; });
+  var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = RD.tex;
+  i.onchange = function () { RD.tex = i.checked; saveRead(); applyRead(); };
+  l.appendChild(i); l.appendChild(document.createTextNode("Textura de papel")); l.style.margin = ".8rem 0"; b.appendChild(l);
+  if (window.speechSynthesis) {
+    b.appendChild(el("p", "hint", "Velocidad de la voz"));
+    optRow(b, [[0.8, "Lenta"], [1, "Normal"], [1.25, "Rápida"]], function () { return RD.rate; }, function (v) { RD.rate = v; });
+  }
+  }
+var talking = false;
+function stopTalk() { try { speechSynthesis.cancel(); } catch (e) {} talking = false; $("listen").textContent = "🔊 Escuchar la última escena"; }
+$("listen").onclick = function () {
+  if (!window.speechSynthesis) { emsg("Este navegador no permite leer en voz alta. Prueba abriendo la página en Chrome."); return; }
+  if (!cur || !cur.scenes.length) return;
+  if (talking) { stopTalk(); return; }
+  var txt = cur.scenes[cur.scenes.length - 1].t.split(/\n\s*\n/).filter(function (x) { return x.trim(); });
+  var vs = []; try { vs = speechSynthesis.getVoices().filter(function (v) { return /^es/i.test(v.lang); }); } catch (e) {}
+  speechSynthesis.cancel(); talking = true; $("listen").textContent = "⏹ Parar";
+  txt.forEach(function (t, k) {
+    var u = new SpeechSynthesisUtterance(t.trim()); u.lang = "es-ES"; u.rate = RD.rate; if (vs.length) u.voice = vs[0];
+    if (k === txt.length - 1) u.onend = u.onerror = function () { talking = false; $("listen").textContent = "🔊 Escuchar la última escena"; };
+    speechSynthesis.speak(u);
+  });
+};
+
+/* ---------- Exportar a EPUB ---------- */
+function xe(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function wrapTxt(t, n) { var out = [], line = ""; String(t).split(/\s+/).forEach(function (w) { if ((line + " " + w).trim().length > n && line) { out.push(line); line = w; } else line = (line + " " + w).trim(); }); if (line) out.push(line); return out.slice(0, 5); }
+function coverSvg(s) {
+  var c = COV[s.genre] || COV["Auto"], d = (s.genres || [])[1] && COV[(s.genres || [])[1]] ? COV[s.genres[1]] : c;
+  var tx = wrapTxt(s.title, 14).map(function (l, i) { return "<text x='200' y='" + (270 + i * 50) + "' text-anchor='middle' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='#ffffff'>" + xe(l) + "</text>"; }).join("");
+  return "<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600' width='400' height='600'><defs><linearGradient id='g' x1='0' y1='0' x2='0.4' y2='1'><stop offset='0' stop-color='" + c[0] + "'/><stop offset='1' stop-color='" + d[1] + "'/></linearGradient></defs><rect width='400' height='600' fill='url(#g)'/><rect x='18' y='18' width='364' height='564' fill='none' stroke='#ffd596' stroke-opacity='0.5' stroke-width='1.5'/><line x1='160' y1='200' x2='240' y2='200' stroke='#ffd596' stroke-width='2'/>" + tx +
+    "<text x='200' y='560' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='#ffd9a0'>" + xe(gtxt(s)) + "</text></svg>";
+}
+function xhtml(title, body) { return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="es" lang="es"><head><meta charset="utf-8"/><title>' + xe(title) + '</title><link rel="stylesheet" type="text/css" href="style.css"/></head><body>' + body + '</body></html>'; }
+function paras(t) { return String(t).split(/\n\s*\n/).map(function (p) { return "<p>" + xe(p.trim()) + "</p>"; }).join("\n"); }
+function buildEpubFiles(s) {
+  var f = {}, ch = [], i, ic = 0, imgItems = "";
+  s.scenes.forEach(function (sc, k) { var c = Math.floor(k / 5); (ch[c] = ch[c] || []).push(sc); });
+  var id = "urn:historiasvivas:" + s.id, lore = s.lore || [];
+  f["META-INF/container.xml"] = '<?xml version="1.0" encoding="UTF-8"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container"><rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles></container>';
+  f["OEBPS/style.css"] = "body{font-family:serif;line-height:1.55;margin:5%}\nh1,h2{text-align:center}\nh1.t{margin-top:12%;font-size:2em}\np{margin:0 0 .8em;text-indent:1.2em;text-align:justify}\np.c{text-indent:0;text-align:center}\nimg.cv{display:block;margin:0 auto;max-width:70%;height:auto}\nimg.si{display:block;margin:0 auto;max-width:100%;height:auto}\n.lore p{text-indent:0;text-align:left}";
+  var cimg = s.cover ? dataBytes(s.cover) : null, cname = cimg ? "cover.jpg" : "cover.svg";
+  if (cimg) f["OEBPS/cover.jpg"] = cimg; else f["OEBPS/cover.svg"] = coverSvg(s);
+  f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1><p class="c">' + xe(gtxt(s)) + '</p><p class="c"><em>' + xe(s.syn || "") + '</em></p><p class="c"><small>Historia creada con Historias vivas para lectura personal.</small></p>');
+  var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/><item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
+  var spine = '<itemref idref="title"/>', nav = '<li><a href="title.xhtml">Portada</a></li>';
+  for (i = 0; i < ch.length; i++) {
+    var n = i + 1, name = "c" + n + ".xhtml";
+    f["OEBPS/" + name] = xhtml("Capítulo " + n, "<h2>Capítulo " + n + "</h2>\n" + ch[i].map(function (sc) {
+      var h = paras(sc.t);
+      if (sc.img) { var ib = dataBytes(sc.img); if (ib) { var iid = "img" + (++ic); f["OEBPS/" + iid + ".jpg"] = ib; imgItems += '<item id="' + iid + '" href="' + iid + '.jpg" media-type="image/jpeg"/>'; h += '\n<p class="c"><img class="si" src="' + iid + '.jpg" alt="Ilustración"/></p>'; } }
+      return h;
+    }).join("\n"));
+    items += '<item id="c' + n + '" href="' + name + '" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="c' + n + '"/>'; nav += '<li><a href="' + name + '">Capítulo ' + n + '</a></li>';
+  }
+  items += imgItems;
+  if (lore.length) {
+    f["OEBPS/lore.xhtml"] = xhtml("Personajes y lugares", '<h2>Personajes y lugares</h2><div class="lore">' + lore.map(function (c) { return "<p><strong>" + xe(c.nombre) + "</strong> (" + xe(c.tipo) + "). " + xe(c.desc) + "</p>"; }).join("\n") + "</div>");
+    items += '<item id="lore" href="lore.xhtml" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="lore"/>'; nav += '<li><a href="lore.xhtml">Personajes y lugares</a></li>';
+  }
+  f["OEBPS/nav.xhtml"] = xhtml("Índice", '<nav epub:type="toc" id="toc"><h2>Índice</h2><ol>' + nav + '</ol></nav>');
+  f["OEBPS/content.opf"] = '<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bid" xml:lang="es"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bid">' + xe(id) + '</dc:identifier><dc:title>' + xe(s.title) + '</dc:title><dc:language>es</dc:language><dc:creator>Historias vivas</dc:creator><dc:description>' + xe(s.syn || "") + '</dc:description><meta name="cover" content="cover"/><meta property="dcterms:modified">' + new Date().toISOString().replace(/\.\d+Z$/, "Z") + '</meta></metadata><manifest>' + items + '</manifest><spine>' + spine + '</spine></package>';
+  return f;
+}
+function emsg(t) { var m = $("emsg"); m.textContent = t; m.hidden = false; }
+function fb2Doc(s) {
+  var chs = [], bin = "", ic = 0, b64 = function (u) { return String(u).split(",")[1] || ""; };
+  s.scenes.forEach(function (sc, k) { var c = Math.floor(k / 5); (chs[c] = chs[c] || []).push(sc); });
+  var cover = "";
+  if (s.cover) { bin += '<binary id="cover.jpg" content-type="image/jpeg">' + b64(s.cover) + '</binary>'; cover = '<coverpage><image l:href="#cover.jpg"/></coverpage>'; }
+  var body = '<title><p>' + xe(s.title) + '</p></title><epigraph><p>' + xe(s.syn || "") + '</p></epigraph>';
+  chs.forEach(function (ch, i) {
+    var sec = '<section><title><p>Capítulo ' + (i + 1) + '</p></title>';
+    ch.forEach(function (sc) {
+      String(sc.t).split(/\n\s*\n/).forEach(function (p) { if (p.trim()) sec += '<p>' + xe(p.trim()) + '</p>'; });
+      if (sc.img) { var id = "img" + (++ic) + ".jpg"; bin += '<binary id="' + id + '" content-type="image/jpeg">' + b64(sc.img) + '</binary>'; sec += '<image l:href="#' + id + '"/>'; }
+    });
+    body += sec + '</section>';
+  });
+  if ((s.lore || []).length) body += '<section><title><p>Personajes y lugares</p></title>' + s.lore.map(function (c) { return '<p>' + xe(c.nombre) + ' (' + xe(c.tipo) + '). ' + xe(c.desc) + '</p>'; }).join("") + '</section>';
+  var d = new Date().toISOString().slice(0, 10);
+  return '<?xml version="1.0" encoding="utf-8"?>\n<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink"><description><title-info><genre>prose_contemporary</genre><author><first-name>Historias</first-name><last-name>vivas</last-name></author><book-title>' + xe(s.title) + '</book-title><annotation><p>' + xe(s.syn || "") + '</p></annotation><lang>es</lang>' + cover + '</title-info><document-info><author><nickname>Historias vivas</nickname></author><date value="' + d + '">' + d + '</date><id>hv-' + xe(s.id) + '</id><version>1.0</version></document-info></description><body>' + body + '</body>' + bin + '</FictionBook>';
+}
+function pdfSafe(t) { return String(t).replace(/[^ -ÿ–—‘’“”•…\n]/g, " ").replace(/ {2,}/g, " "); }
+async function pdfDoc(s) {
+  var L = window.PDFLib, doc = await L.PDFDocument.create();
+  var fR = await doc.embedFont(L.StandardFonts.TimesRoman), fB = await doc.embedFont(L.StandardFonts.TimesRomanBold), fI = await doc.embedFont(L.StandardFonts.TimesRomanItalic);
+  var W = 420, H = 595, M = 46, TW = W - 2 * M, LH = 15.5, SZ = 11.5, page, y, hasCover = false;
+  function np() { page = doc.addPage([W, H]); y = H - M; }
+  function wrap(t, font, size, maxw) {
+    var out = [];
+    String(t).split("\n").forEach(function (par) {
+      var line = "";
+      par.split(/\s+/).filter(Boolean).forEach(function (w) { var tr = line ? line + " " + w : w; if (line && font.widthOfTextAtSize(tr, size) > maxw) { out.push(line); line = w; } else line = tr; });
+      out.push(line);
+    });
+    return out;
+  }
+  function center(t, font, size) { page.drawText(t, { x: (W - font.widthOfTextAtSize(t, size)) / 2, y: y, size: size, font: font }); }
+  async function img(u) { var b = dataBytes(u); if (!b) return null; try { return await doc.embedJpg(b); } catch (e) { return null; } }
+  if (s.cover) {
+    var ci = await img(s.cover);
+    if (ci) { var k = Math.min(W / ci.width, H / ci.height), w0 = ci.width * k, h0 = ci.height * k; page = doc.addPage([W, H]); page.drawImage(ci, { x: (W - w0) / 2, y: (H - h0) / 2, width: w0, height: h0 }); hasCover = true; }
+  }
+  np(); y = H - 170;
+  wrap(pdfSafe(s.title), fB, 26, TW).forEach(function (l) { center(l, fB, 26); y -= 32; });
+  y -= 6; center(pdfSafe(gtxt(s)), fI, 11); y -= 26;
+  wrap(pdfSafe(s.syn || ""), fI, 11, TW - 30).forEach(function (l) { center(l, fI, 11); y -= LH; });
+  var chs = []; s.scenes.forEach(function (sc, n) { var c = Math.floor(n / 5); (chs[c] = chs[c] || []).push(sc); });
+  for (var n = 0; n < chs.length; n++) {
+    np(); y -= 8; center("Capítulo " + (n + 1), fB, 17); y -= 36;
+    for (var a = 0; a < chs[n].length; a++) {
+      var sc = chs[n][a], ps = String(sc.t).split(/\n\s*\n/);
+      ps.forEach(function (p) {
+        if (!p.trim()) return;
+        wrap(pdfSafe(p.trim()), fR, SZ, TW).forEach(function (l) { if (y < M + 8) np(); page.drawText(l, { x: M, y: y, size: SZ, font: fR }); y -= LH; });
+        y -= 6;
+      });
+      if (sc.img) {
+        var im = await img(sc.img);
+        if (im) { var kk = Math.min(TW / im.width, 230 / im.height), w = im.width * kk, h = im.height * kk; if (y - h < M) np(); page.drawImage(im, { x: (W - w) / 2, y: y - h, width: w, height: h }); y -= h + 12; }
+      }
+    }
+  }
+  if ((s.lore || []).length) {
+    np(); y -= 8; center("Personajes y lugares", fB, 17); y -= 34;
+    s.lore.forEach(function (c) {
+      wrap(pdfSafe(c.nombre + " (" + c.tipo + "). " + c.desc), fR, SZ, TW).forEach(function (l) { if (y < M + 8) np(); page.drawText(l, { x: M, y: y, size: SZ, font: fR }); y -= LH; });
+      y -= 6;
+    });
+  }
+  var pgs = doc.getPages();
+  for (var i = hasCover ? 1 : 0; i < pgs.length; i++) { var t = String(i + 1 - (hasCover ? 1 : 0)); pgs[i].drawText(t, { x: (W - fR.widthOfTextAtSize(t, 9)) / 2, y: 24, size: 9, font: fR }); }
+  return await doc.save();
+}
+async function exportAs(fmt) {
+  var s = cur; if (!s || !s.scenes.length) return;
+  var dl = null;
+  try { dl = await claude.use("downloads"); } catch (e) {}
+  if (!dl) { emsg("Guardar archivos no está disponible en esta vista."); return; }
+  var slug = s.title.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "historia";
+  try {
+    var name, data;
+    if (fmt === "pdf") {
+      if (!window.PDFLib) { emsg("No se pudo cargar el generador de PDF. Comprueba tu conexión."); return; }
+      data = await pdfDoc(s); name = slug + ".pdf";
+    } else {
+      if (!window.JSZip) { emsg("No se pudo cargar el generador de archivos. Comprueba tu conexión."); return; }
+      var z = new JSZip();
+      if (fmt === "fb2") { z.file(slug + ".fb2", fb2Doc(s)); data = await z.generateAsync({ type: "uint8array", compression: "DEFLATE" }); name = slug + ".fb2.zip"; }
+      else {
+        var files = buildEpubFiles(s);
+        z.file("mimetype", "application/epub+zip", { compression: "STORE" });
+        Object.keys(files).forEach(function (kk) { z.file(kk, files[kk]); });
+        data = await z.generateAsync({ type: "uint8array", mimeType: "application/epub+zip", compression: "DEFLATE" }); name = slug + ".epub";
+      }
+    }
+    await dl.save({ filename: name, data: data });
+    emsg("Listo: " + name + (fmt === "fb2" ? " (los lectores FB2 abren el .fb2.zip directamente)." : "."));
+  } catch (e) {
+    emsg(e && e.code === "declined" ? "Descarga cancelada." : "No se pudo crear el archivo. Inténtalo de nuevo.");
+  }
+}
+$("exp").onclick = function () { $("exprow").hidden = !$("exprow").hidden; };
+Array.prototype.forEach.call($("exprow").querySelectorAll("button"), function (b) { b.onclick = function () { exportAs(b.getAttribute("data-f")); }; });
+
+/* ---------- Menú ---------- */
+function drawer(v) { $("drawer").hidden = !v; }
+function goHome() { drawer(false); renderLib(); view("lib"); }
+$("menu").onclick = function () { drawer(true); };
+$("dov").onclick = function () { drawer(false); };
+$("home").onclick = goHome; $("dhome").onclick = goHome;
+$("dchars").onclick = function () { drawer(false); renderChars(); view("chars"); };
+var THEMES = ["auto", "light", "dark"], ti = 0, TN = { auto: "automático", light: "claro", dark: "oscuro" };
+$("dtheme").onclick = function () {
+  ti = (ti + 1) % 3; var t = THEMES[ti];
+  if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
+  $("dtheme").textContent = "Tema: " + TN[t];
+};
+
+loadChars();
+load(); renderLib();
+</script>
+</body>
+</html>
