@@ -8,12 +8,22 @@
   var KEY = "hv:ai:v1";
   var PROV = {
     manual: { name: "Copiar y pegar (cualquier IA, gratis)" },
-    gemini: { name: "Gemini (clave de API)", model: "gemini-flash-latest", url: "https://aistudio.google.com/apikey" },
+    gemini: { name: "Gemini (clave de API)", model: "gemini-3.5-flash-lite", url: "https://aistudio.google.com/apikey" },
     openai: { name: "ChatGPT / OpenAI (clave de API)", model: "gpt-4o-mini", url: "https://platform.openai.com/api-keys" },
     anthropic: { name: "Claude / Anthropic (clave de API)", model: "claude-haiku-5-5", url: "https://console.anthropic.com/settings/keys" }
   };
   function cfg() {
-    try { var c = JSON.parse(localStorage.getItem(KEY) || "null"); if (c) return c; } catch (e) {}
+    try {
+      var c = JSON.parse(localStorage.getItem(KEY) || "null");
+      if (c) {
+        c.keys = c.keys || {}; c.models = c.models || {};
+        if (!c.models.gemini || c.models.gemini === "gemini-flash-latest") {
+          c.models.gemini = PROV.gemini.model;
+          saveCfg(c);
+        }
+        return c;
+      }
+    } catch (e) {}
     return { mode: "", keys: {}, models: {} };
   }
   function saveCfg(c) { try { localStorage.setItem(KEY, JSON.stringify(c)); } catch (e) {} }
