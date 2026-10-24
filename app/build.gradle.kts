@@ -11,11 +11,25 @@ android {
         applicationId = "com.mibiblioteca.narrador"
         minSdk = 29
         targetSdk = 34
-        versionCode = 5
-        versionName = "0.5"
+        versionCode = 6
+        versionName = "0.6"
+    }
+    signingConfigs {
+        create("release") {
+            val ks = System.getenv("HV_KEYSTORE")
+            if (ks != null && file(ks).exists()) {
+                storeFile = file(ks)
+                storePassword = System.getenv("HV_STORE_PASSWORD")
+                keyAlias = System.getenv("HV_KEY_ALIAS")
+                keyPassword = System.getenv("HV_KEY_PASSWORD")
+            }
+        }
     }
     buildTypes {
-        release { isMinifyEnabled = false }
+        release {
+            isMinifyEnabled = false
+            if (System.getenv("HV_KEYSTORE") != null) signingConfig = signingConfigs.getByName("release")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -2,14 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' data: blob:; base-uri 'none'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Historias vivas</title>
 <script src="shim.js"></script>
 <script src="jszip.min.js"></script>
 <script src="pdf-lib.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f6f1e8;--ink:#241a10;--mute:#7a6a58;--line:#d9ccb8;--card:#fffaf0;--acc:#b85c00;--accink:#fff;
+:root{--bg:#f6f1e8;--ink:#241a10;--mute:#66584a;--line:#d9ccb8;--card:#fffaf0;--acc:#b85c00;--accink:#fff;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1118;--ink:#f2ece1;--mute:#9a9183;--line:#2a2f3a;--card:#161b24;--acc:#ffa51f;--accink:#1a1000}}
 :root[data-theme="dark"]{--bg:#0d1118;--ink:#f2ece1;--mute:#9a9183;--line:#2a2f3a;--card:#161b24;--acc:#ffa51f;--accink:#1a1000}
@@ -100,7 +100,7 @@ h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormoran
 .simg{margin:.2rem 0 1rem}
 .simg img,.pv{display:block;max-width:100%;border-radius:12px;margin:.4rem 0}
 .pv{max-height:14rem;margin:.6rem 0}
-#pmodal{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;background:rgba(0,0,0,.55)}
+#pmodal,#gmodal{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;background:rgba(0,0,0,.55)}
 .psheet{width:100%;max-width:36rem;margin:0 auto;background:var(--card);border-radius:18px 18px 0 0;padding:1rem 1.1rem calc(1rem + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto}
 .psheet textarea{min-height:11rem}
 .cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2.2rem 1.3rem;min-height:12rem;outline:1px solid rgba(255,214,150,.38);outline-offset:-9px;position:relative}
@@ -133,12 +133,105 @@ h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormoran
 .cover.hasimg{padding-top:1rem}
 .cover.big{padding:1.8rem 1.2rem}
 .pastebox{min-height:46px;border:1.5px dashed var(--line);border-radius:10px;padding:.7rem;margin-top:.6rem;color:var(--mute);font-size:.88rem}
+@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+section:not([hidden]){animation:fadein .28s ease}
+@media (min-width:700px){main{max-width:44rem}.rd{font-size:20px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.rd.f-leg{font-family:system-ui,-apple-system,Roboto,sans-serif;line-height:1.95;letter-spacing:.04em;word-spacing:.12em}
+.sc{margin:0}
+.scm{margin:.4rem 0 .8rem}
+.bmk{display:inline-block;font-size:.8rem;border:1px solid currentColor;border-radius:999px;padding:.05rem .6rem;opacity:.8;margin:.2rem 0}
+.speaking{background:rgba(255,165,31,.18);border-radius:6px;box-shadow:0 0 0 4px rgba(255,165,31,.18)}
+#imx{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:15;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+body.imm header.top,body.imm #play>*:not(#book):not(#imx):not(#rdbar){display:none!important}
+body.imm #rdbar button:not(#listen):not(#stoplisten){display:none}
+.rres{border:1.5px solid var(--line);border-radius:12px;padding:.7rem .8rem;margin:.5rem 0;font-size:.95rem}
+.rres b{display:block}
+
+/* ===== Diseño cinematográfico ===== */
+:root:not([data-theme="light"]){--bg:#070b14;--ink:#f4efe6;--mute:#a79f90;--line:#202838;--card:#0f1522;--acc:#f6b93b;--accink:#1a1000}
+body{font-family:"Inter","Segoe UI",Roboto,system-ui,-apple-system,sans-serif;font-size:17px;line-height:1.55}
+h1,h2,.ttl,.brand{font-family:"Montserrat","Inter","Segoe UI",Roboto,system-ui,sans-serif;font-variant:normal;letter-spacing:0;font-weight:800}
+.rd:not(.f-sans):not(.f-leg){font-family:"Iowan Old Style",Georgia,"Times New Roman",serif}
+.ch{font-family:"Montserrat","Inter",system-ui,sans-serif;font-variant:normal;text-transform:uppercase;letter-spacing:.12em;font-size:.82rem;font-weight:700}
+button.go{background:linear-gradient(90deg,#f6b93b,#ffd45e 55%,#ffb347);color:#1a1000;border:0;text-transform:uppercase;letter-spacing:.06em;font-weight:800;border-radius:12px;box-shadow:0 6px 20px rgba(246,185,59,.28)}
+.top{background:linear-gradient(180deg,rgba(7,11,20,.96),rgba(7,11,20,.7));backdrop-filter:blur(8px);border-bottom:0;padding:.5rem 1.1rem}
+.brand{font-size:1.2rem;letter-spacing:.01em;display:flex;align-items:center;gap:.5rem}
+.brand .mk{width:30px;height:30px;padding:4px;border-radius:9px;background:rgba(246,185,59,.14)}
+.hr{display:flex;align-items:center;gap:.5rem}
+button.round{border-radius:50%;width:42px;height:42px;min-height:42px;padding:0;text-align:center;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.1);color:var(--ink);font-size:1.1rem}
+#lib{margin:0 -1.1rem}
+#lib>*:not(#hero){padding-left:1.1rem;padding-right:1.1rem}
+#lib .car{padding-left:1.1rem;padding-right:1.1rem;margin:0}
+.hero{position:relative;min-height:31rem;margin-top:-1.25rem;display:flex;flex-direction:column;justify-content:flex-end;padding:7rem 1.3rem 1.4rem;color:#fff;background-size:cover!important;background-position:center!important;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.55) 0%,rgba(7,11,20,0) 28%,rgba(7,11,20,.25) 55%,#070b14 100%);pointer-events:none}
+.hero>*{position:relative;z-index:1}
+.hero h1{font-size:2.5rem;line-height:1.02;margin:.3rem 0 .6rem;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+.hero p.syn{margin:0 0 1rem;font-size:1rem;line-height:1.45;opacity:.92;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;text-shadow:0 1px 8px rgba(0,0,0,.7)}
+.hero .tag{color:var(--acc);font-weight:800;letter-spacing:.16em;font-size:.72rem}
+.hero .prog{margin:0 0 1rem}
+.hero button.go{display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:1rem}
+.sh{display:flex;align-items:center;gap:.5rem;margin:1.6rem 0 .7rem}
+.sh svg{color:var(--acc);flex:none}
+.sh h2{margin:0;font-size:.95rem;letter-spacing:.04em;text-transform:uppercase;flex:1}
+.sh .more{border:0;background:none;color:var(--mute);min-height:34px;padding:.2rem .3rem;font-size:.85rem}
+.car.grid{flex-wrap:wrap;overflow:visible}
+.car.grid .cc{width:calc(50% - .5rem)!important;max-width:none!important}
+.cc{width:46%!important;max-width:12rem!important}
+.cc .card{border-radius:16px;box-shadow:0 8px 22px rgba(0,0,0,.45)}
+.cc .cover{min-height:0!important;aspect-ratio:3/4.3;padding:1rem .8rem;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start;text-align:left;outline:0;border-radius:16px;box-shadow:none;max-width:none;background-size:cover!important;background-position:center!important}
+.cc .cover .ttl::before{display:none}
+.cc .card{overflow:hidden}
+.cc .cover .ttl{font-size:1.05rem;line-height:1.15;text-shadow:0 2px 8px rgba(0,0,0,.7)}
+.cc .cover small{font-size:.75rem;line-height:1.3;opacity:.9;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.chip{background:rgba(7,11,20,.7);border:1px solid rgba(255,255,255,.15);font-weight:700}
+.cc>button.small{border:0;background:none;color:var(--mute);min-height:30px}
+.cc.pc button.pb{background:var(--card);border-color:var(--line);border-radius:16px}
+.fab{background:linear-gradient(90deg,#f6b93b,#ffd45e);border-radius:999px;padding:.9rem 1.5rem}
+.big,.rw,.pcard,.psheet,.dnav{background:var(--card)}
+.big{border-color:var(--line);border-radius:20px}
+button{border-radius:12px}
+
+/* ===== Fondos por género y panel acristalado ===== */
+html{background:#070b14}body{background:transparent!important}
+#bgart,#bgmist,#fx,#bgshade{position:fixed;inset:0;pointer-events:none}
+#bgart{z-index:-4;background-size:cover;background-position:center top;transform-origin:50% 30%;animation:drift 55s ease-in-out infinite alternate;transition:opacity .5s}
+#bgmist{z-index:-3;background:radial-gradient(ellipse 60% 16% at 20% 70%,rgba(255,255,255,.17),transparent 70%),radial-gradient(ellipse 55% 14% at 80% 80%,rgba(255,255,255,.13),transparent 70%),radial-gradient(ellipse 50% 12% at 50% 55%,rgba(255,255,255,.09),transparent 70%);animation:mist 40s ease-in-out infinite alternate}
+#fx{z-index:-2;width:100%;height:100%}
+#bgshade{z-index:-1}
+body[data-v="lib"] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.2) 0%,rgba(7,11,20,.05) 24%,rgba(7,11,20,.8) 56%,rgba(7,11,20,.96) 100%)}
+body:not([data-v="lib"]) #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.4) 0%,rgba(7,11,20,.78) 26%,rgba(7,11,20,.9) 100%)}
+@keyframes drift{from{transform:scale(1.06) translate3d(0,0,0)}to{transform:scale(1.18) translate3d(-2.5%,-2%,0)}}
+@keyframes mist{from{transform:translateX(-4%)}to{transform:translateX(5%)}}
+body.noanim #bgart,body.noanim #bgmist{animation:none}
+body.noanim #fx{display:none}
+:root[data-theme="light"] #bgart,:root[data-theme="light"] #bgmist,:root[data-theme="light"] #fx,:root[data-theme="light"] #bgshade{display:none}
+:root[data-theme="light"]{background:var(--bg)}
+:root:not([data-theme="light"]) button.go,:root:not([data-theme="light"]) .fab{background:linear-gradient(90deg,var(--acc),var(--acc2));color:var(--accink)}
+.hero{background:none!important}.hero::after{display:none}
+.hero .tag{color:var(--acc2)}
+.brand{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-style:italic;font-size:1.6rem;font-weight:700}
+.hero h1,.big h2{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif;font-style:italic;font-weight:700}
+.hero h1{font-size:3rem}
+.big,.rw,.psheet,.dnav{background:rgba(10,14,22,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,214,150,.3)}
+.big{box-shadow:0 0 0 3px rgba(255,214,150,.06),0 12px 30px rgba(0,0,0,.4)}
+.bar{background:linear-gradient(180deg,transparent,rgba(7,11,20,.92) 40%);bottom:calc(64px + env(safe-area-inset-bottom,0px))}
+.rd.t-noche{background:rgba(8,12,20,.86)}
+main{padding-bottom:9rem}
+.fab{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;gap:.2rem;padding:.35rem .4rem calc(.35rem + env(safe-area-inset-bottom,0px));background:rgba(8,12,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,214,150,.25)}
+#tabs button{flex:1;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-height:54px;padding:.3rem .1rem;border:0;background:none;color:var(--mute);font-size:.68rem;text-align:center;border-radius:12px;justify-content:center}
+#tabs button.act{background:linear-gradient(180deg,var(--acc),var(--acc2));color:var(--accink);font-weight:700}
+body.imm #tabs{display:none}
+:root[data-theme="light"] #tabs{background:rgba(255,250,240,.95)}
 [hidden]{display:none!important}
 </style>
 </head>
-<body>
-<header class="top"><button class="brand" id="home"><svg class="mk" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="16" width="18" height="4" rx="1"/><rect x="5" y="11" width="15" height="4" rx="1"/><rect x="4" y="6" width="16" height="4" rx="1"/><path d="M8 6V4.5h6V6"/></svg> Historias vivas</button><button class="small" id="menu" aria-label="Menú">☰ Menú</button></header>
-<div id="drawer" hidden><div class="dov" id="dov"></div><nav class="dnav"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · prototipo</p></nav></div>
+<body data-v="lib">
+<div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
+<header class="top"><button class="brand" id="home"><svg class="mk" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="16" width="18" height="4" rx="1"/><rect x="5" y="11" width="15" height="4" rx="1"/><rect x="4" y="6" width="16" height="4" rx="1"/><path d="M8 6V4.5h6V6"/></svg> Historias vivas</button><div class="hr"><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
+<div id="drawer" hidden><div class="dov" id="dov"></div><nav class="dnav"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · prototipo</p></nav></div>
+<div id="gmodal" hidden><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
 <p class="hint" id="pstat"></p>
 <textarea id="ptxt" readonly></textarea>
@@ -147,9 +240,9 @@ h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormoran
 <main>
 <section id="lib">
 <div id="hero"></div>
-<h2>Mis historias</h2><div class="car" id="list"></div>
-<h2>Mis personajes</h2><div class="car" id="pchars"></div>
-<h2>Ideas para empezar</h2><div class="car" id="ideasrow"></div>
+<div class="sh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg><h2>En progreso</h2><button class="more" id="more1" aria-label="Ver todas las historias">Ver todo ›</button></div><div class="car" id="list"></div>
+<div class="sh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><path d="M16 5.5a3 3 0 010 5.5M18 14.5c2 .7 3 2.6 3 5.5"/></svg><h2>Mis personajes</h2></div><div class="car" id="pchars"></div>
+<div class="sh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.9L17 19l-5-3-5 3 1.3-5.8L4 9.3l5.6-.7z"/></svg><h2>Ideas para empezar</h2></div><div class="car" id="ideasrow"></div>
 <button class="go fab" id="new">+ Crear nuevo</button>
 <p class="hint" id="nosample" hidden>Esta función necesita abrir la página dentro de claude.ai.</p>
 </section>
@@ -231,26 +324,33 @@ h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormoran
 <details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
 <details class="pl" id="imgbox"><summary>Título, portada e imágenes</summary><div id="imgbody"></div></details>
 <details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
-<div class="row" id="rdbar" style="margin:.8rem 0 0"><button id="listen" class="small on">🔊 Escuchar la última escena</button></div>
+<div class="row" id="rdbar" style="margin:.8rem 0 0"><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="immb" class="small">Lectura inmersiva</button><button id="bgb" class="small">Cambiar fondo</button></div>
+<button id="imx" class="go" hidden style="width:auto">Salir de la lectura</button>
 <div class="scene rd" id="book"></div>
-<p class="status" id="status" hidden>El narrador está escribiendo…</p>
-<div class="err" id="err" hidden></div>
+<p class="status" id="status" role="status" hidden>El narrador está escribiendo…</p>
+<div class="err" id="err" role="alert" hidden></div>
 <div id="ctrl" hidden>
 <p class="hint" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora?</p>
 <div class="row" id="actors" hidden style="margin-bottom:.6rem;align-items:center"></div>
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
+<button id="dict" class="small" hidden style="margin-bottom:.5rem">Dictar con la voz</button>
 <textarea id="own" style="min-height:5.5rem" placeholder="Por ejemplo: Erik se asoma al acantilado y ve una aldea ardiendo a lo lejos"></textarea>
 <button class="go" id="do" style="margin-top:.6rem">Continuar</button>
 <details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
 </div>
-<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="exp" class="small">Exportar para leer</button></div>
+<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Escribir otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="exp" class="small">Exportar para leer</button></div>
 <div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
+<nav id="tabs" aria-label="Navegación principal">
+<button id="tInicio"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Inicio</button>
+<button id="tHist"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 5c3-1 6-1 10 1 4-2 7-2 10-1v14c-3-1-6-1-10 1-4-2-7-2-10-1z"/><path d="M12 6v14"/></svg>Historias</button>
+<button id="tPers"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.5 3.6-7 8-7s8 2.5 8 7"/></svg>Personajes</button>
+<button id="tMundo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Mundo</button>
+<button id="tAjus"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Ajustes</button>
+</nav>
 <script>
-var GENRES = ["Fantasía", "Ciencia ficción", "Terror", "Misterio", "Novela negra", "Drama", "Romance", "Aventura", "Aventura histórica", "Comedia", "Realismo mágico", "Acción"];
-var COV = { "Fantasía": ["#3b2a63", "#9a5a2a"], "Misterio": ["#1b2a3a", "#4a4332"], "Ciencia ficción": ["#0d284a", "#1d7a82"], "Terror": ["#2a0d12", "#5a2030"], "Aventura histórica": ["#3b2c1a", "#8a6a34"], "Realismo mágico": ["#1c3b2f", "#7a6a2a"], "Novela negra": ["#16181f", "#5a4a38"], "Drama": ["#2a2236", "#6a3a3a"], "Romance": ["#3a1f35", "#a24a5a"], "Aventura": ["#173a3a", "#b07a2a"], "Comedia": ["#2a3a5a", "#c9892a"], "Acción": ["#2a1212", "#b04a1a"], "Auto": ["#22222e", "#5a4430"] };
 var DIR = { "Auto": "El narrador elige el estilo que mejor encaje con la historia.", "Clásico": "Aventura equilibrada, buen ritmo, tono accesible.", "Literario": "Prosa cuidada y pausada; atmósfera y psicología por encima de la acción.", "Misterio": "Pistas, giros y pocas respuestas gratuitas; el lector debe deducir.", "Duro": "El mundo es peligroso y cruel; los errores cuestan caro y las pérdidas son reales.", "Épico": "Conflictos a gran escala, destino, aliados y enemigos memorables.", "Romántico": "Relaciones y emociones en primer plano, con tensión afectiva.", "Imprevisible": "Más giros y sucesos inesperados; rompe las expectativas." };
 var AUT = { "Jugador": "Solo controla a su personaje; el mundo no está obligado a cumplir sus ideas.", "Coautor": "Puede proponer hechos del mundo; el narrador los integra si encajan.", "Libre": "Todo lo que escribe es canon; el narrador reajusta la historia para acomodarlo." };
 var AXES = ["Violencia", "Terror", "Romance", "Sensualidad", "Crudeza", "Tragedia", "Humor"];
@@ -274,15 +374,183 @@ var $ = function (id) { return document.getElementById(id); };
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(LIB)); return true; } catch (e) { return false; } }
-function view(n) { ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); window.scrollTo(0, 0); }
-function bg(g, seed, g2) {
-  var c = COV[g] || COV["Auto"], d = g2 && COV[g2] ? COV[g2] : c;
-  return "radial-gradient(circle at 50% 18%,rgba(255,214,150,.24),rgba(255,214,150,0) 58%),linear-gradient(165deg," + c[0] + "," + d[1] + ")";
+function view(n) { ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
+function setTab(n) { var m = { lib: "tInicio", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("act", id === m && n !== "play"); }); }
+/* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
+var GTH = {
+  "Fantasía Épica": { acc: "#a24a8a", acc2: "#d6709a", p: ["#1f1442", "#6a3a7a", "#f08a3c"], glow: "#ffb868", body: "sun", mot: "castle", fx: "motes" },
+  "Fantasía Oscura": { acc: "#b3243a", acc2: "#e0485a", p: ["#12060c", "#4a0f20", "#b8283c"], glow: "#ff5a6a", body: "redmoon", mot: "darkcastle", fx: "embers" },
+  "Terror / Horror": { acc: "#3f9c4a", acc2: "#6cc46a", p: ["#04141a", "#0b3a40", "#1d6b66"], glow: "#8fe0c8", body: "moon", mot: "haunted", fx: "mist" },
+  "Ciencia Ficción": { acc: "#2f7fd1", acc2: "#5ab0f0", p: ["#040a22", "#0c2d6b", "#2a7fc0"], glow: "#7ac8ff", body: "planet", mot: "scifi", fx: "stars" },
+  "Postapocalíptico": { acc: "#d9822b", acc2: "#f0b04a", p: ["#2a1608", "#7a4218", "#e8963a"], glow: "#ffb060", body: "sun", mot: "ruins", fx: "ash" },
+  "Distopía": { acc: "#c4322f", acc2: "#e65a50", p: ["#101216", "#3a3f4a", "#9a2e2e"], glow: "#ff7a6a", body: "none", mot: "dystopia", fx: "ash" },
+  "Medieval": { acc: "#d98a1f", acc2: "#f2b84a", p: ["#2a1a0c", "#8a5420", "#f0a840"], glow: "#ffcf80", body: "sun", mot: "knight", fx: "motes" },
+  "Medieval Fantástico": { acc: "#d98a1f", acc2: "#f2b84a", p: ["#1a0f20", "#7a3a30", "#f2a040"], glow: "#ffc070", body: "sun", mot: "dragon", fx: "embers" },
+  "Aventura": { acc: "#4fa33d", acc2: "#8ccc5a", p: ["#06201a", "#1f6a3a", "#e8c860"], glow: "#fff0a0", body: "sun", mot: "jungle", fx: "fireflies" },
+  "Exploración": { acc: "#c9871f", acc2: "#efbf5a", p: ["#3a2a14", "#8a6a34", "#e8c27a"], glow: "#fff0c0", body: "sun", mot: "compass", fx: "motes" },
+  "Misterio": { acc: "#3b7fa8", acc2: "#6ab0d4", p: ["#08121c", "#1d3a52", "#5a7a8a"], glow: "#b8d8ea", body: "moon", mot: "detective", fx: "mist" },
+  "Novela Negra": { acc: "#4a8ab0", acc2: "#78b8d8", p: ["#080a14", "#1a2848", "#3a6a9a"], glow: "#8ac0ff", body: "none", mot: "noir", fx: "rain" },
+  "Drama": { acc: "#9a3f55", acc2: "#c8627a", p: ["#2a1230", "#8a3a5a", "#f09a50"], glow: "#ffb070", body: "sun", mot: "lonetree", fx: "leaves" },
+  "Romance": { acc: "#d44a6e", acc2: "#f07a96", p: ["#3a1232", "#b04a7a", "#f2a0a0"], glow: "#ffc8d0", body: "sun", mot: "arches", fx: "petals" },
+  "Histórico": { acc: "#c4841c", acc2: "#eab850", p: ["#2a1c0c", "#9a6a2a", "#f0c070"], glow: "#ffe0a0", body: "sun", mot: "colosseum", fx: "motes" },
+  "Bélico / Guerra": { acc: "#c47a1d", acc2: "#e8a845", p: ["#1a1410", "#6a4a2a", "#e08a30"], glow: "#ffa860", body: "sun", mot: "battle", fx: "embers" },
+  "Espionaje": { acc: "#3a7fb0", acc2: "#68aad8", p: ["#060e18", "#16304a", "#3a6a8a"], glow: "#a0d0f0", body: "moon", mot: "spy", fx: "rain" },
+  "Intriga Política": { acc: "#d49a22", acc2: "#f0c850", p: ["#1a1006", "#5a3a12", "#d89a30"], glow: "#ffd070", body: "none", mot: "chess", fx: "motes" },
+  "Ciberpunk": { acc: "#b13fd1", acc2: "#e060e8", p: ["#0a0420", "#3a0f6a", "#e03a9a"], glow: "#ff60d0", body: "moon", mot: "cyber", fx: "neon" },
+  "Steampunk": { acc: "#c9871f", acc2: "#f0b850", p: ["#2a1a0a", "#8a5a20", "#e8b060"], glow: "#ffd090", body: "sun", mot: "airship", fx: "ash" },
+  "Urban Fantasy": { acc: "#2f78b4", acc2: "#5aa8e0", p: ["#040c18", "#0c2a50", "#2a6aa0"], glow: "#80c0ff", body: "moon", mot: "pylons", fx: "fireflies" },
+  "Sobrenatural": { acc: "#2f8f86", acc2: "#5ac4b8", p: ["#040e14", "#0e3a44", "#2a8a8a"], glow: "#a0f0e0", body: "moon", mot: "wolf", fx: "mist" },
+  "Vampírico": { acc: "#b3192c", acc2: "#e03a50", p: ["#16040a", "#5a0a1a", "#c0203a"], glow: "#ff4a5a", body: "redmoon", mot: "vampire", fx: "bats" },
+  "Licántropos": { acc: "#2f8f86", acc2: "#5ac4b8", p: ["#060c14", "#14344a", "#4a8a9a"], glow: "#c0f0ff", body: "moon", mot: "wolfhead", fx: "mist" },
+  "Mitología": { acc: "#1f9a78", acc2: "#4ccaa0", p: ["#081a2a", "#1a5a6a", "#6ad0a0"], glow: "#d0fff0", body: "sun", mot: "statue", fx: "stars" },
+  "Religioso / Místico": { acc: "#c9871f", acc2: "#f0bd50", p: ["#2a1808", "#7a5018", "#f0c050"], glow: "#fff0b0", body: "none", mot: "temple", fx: "motes" },
+  "Espiritual": { acc: "#5aa83f", acc2: "#98d060", p: ["#0a2210", "#3a7a30", "#e8d880"], glow: "#fff8c0", body: "sun", mot: "meditate", fx: "fireflies" },
+  "Comedia": { acc: "#d98a1f", acc2: "#f4b848", p: ["#2a1408", "#8a4a14", "#f0a838"], glow: "#ffd080", body: "none", mot: "tavern", fx: "motes" },
+  "Slice of Life": { acc: "#d9902a", acc2: "#f4bc58", p: ["#1a1a3a", "#a05a60", "#f4b060"], glow: "#ffd0a0", body: "sun", mot: "cottage", fx: "petals" },
+  "Híbrido / Multigénero": { acc: "#7656b8", acc2: "#a07ee0", p: ["#140a30", "#4a2a8a", "#e0804a"], glow: "#ffa070", body: "moon", mot: "hybrid", fx: "stars" }
+};
+var GENRES = Object.keys(GTH);
+var ALIAS = { "Fantasía": "Fantasía Épica", "Ciencia ficción": "Ciencia Ficción", "Terror": "Terror / Horror", "Novela negra": "Novela Negra", "Aventura histórica": "Histórico", "Realismo mágico": "Urban Fantasy", "Acción": "Bélico / Guerra", "Auto": "Híbrido / Multigénero" };
+function GT(g) { return GTH[g] || GTH[ALIAS[g]] || GTH["Híbrido / Multigénero"]; }
+var COV = {}; Object.keys(GTH).forEach(function (k) { COV[k] = [GTH[k].p[0], GTH[k].p[2]]; }); Object.keys(ALIAS).forEach(function (k) { COV[k] = COV[ALIAS[k]]; });
+function hvh(str) { var h = 2166136261; str = String(str); for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+function hvr(seed) { var a = hvh(seed); return function () { a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+function shade(hex, k) { var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255; function f(x) { return Math.max(0, Math.min(255, Math.round(x * k))); } return "rgb(" + f(r) + "," + f(g) + "," + f(b) + ")"; }
+function n0(v) { return Math.round(v); }
+function poly(pts, f, ex) { return '<polygon points="' + pts.map(function (p) { return n0(p[0]) + "," + n0(p[1]); }).join(" ") + '" fill="' + f + '"' + (ex || "") + "/>"; }
+function rect(x, y, w, h, f, ex) { return '<rect x="' + n0(x) + '" y="' + n0(y) + '" width="' + n0(w) + '" height="' + n0(h) + '" fill="' + f + '"' + (ex || "") + "/>"; }
+function circ(x, y, r, f, ex) { return '<circle cx="' + n0(x) + '" cy="' + n0(y) + '" r="' + n0(r) + '" fill="' + f + '"' + (ex || "") + "/>"; }
+function elp(x, y, rx, ry, f, ex) { return '<ellipse cx="' + n0(x) + '" cy="' + n0(y) + '" rx="' + n0(rx) + '" ry="' + n0(ry) + '" fill="' + f + '"' + (ex || "") + "/>"; }
+function ridge(r, y0, amp, col, W, H) { var d = "M0 " + H, x, y; for (var i = 0; i <= 12; i++) { x = i * W / 12; y = y0 + (r() - .5) * amp * 2; d += " L" + n0(x) + " " + n0(y); } return '<path d="' + d + " L" + W + " " + H + ' Z" fill="' + col + '"/>'; }
+function twr(x, y, w, h, roof, f) { return rect(x - w / 2, y - h, w, h, f) + poly([[x - w / 2 - 4, y - h], [x, y - h - roof], [x + w / 2 + 4, y - h]], f); }
+function castle(x, y, s, k, wl) { var o = rect(x - 135 * s, y - 55 * s, 270 * s, 55 * s, k) + twr(x, y, 58 * s, 200 * s, 95 * s, k) + twr(x - 72 * s, y, 40 * s, 135 * s, 62 * s, k) + twr(x + 70 * s, y, 44 * s, 155 * s, 72 * s, k) + twr(x - 122 * s, y, 30 * s, 95 * s, 46 * s, k) + twr(x + 120 * s, y, 30 * s, 105 * s, 48 * s, k); for (var i = 0; i < 6; i++) o += rect(x - 100 * s + i * 40 * s, y - 40 * s, 7 * s, 12 * s, wl, ' opacity=".85"'); return o + rect(x - 4 * s, y - 150 * s, 8 * s, 16 * s, wl, ' opacity=".9"'); }
+function pine(x, y, h, f) { return poly([[x, y - h], [x - h * .28, y - h * .35], [x - h * .12, y - h * .35], [x - h * .34, y], [x + h * .34, y], [x + h * .12, y - h * .35], [x + h * .28, y - h * .35]], f); }
+function bare(r, x, y, len, ang, dep, col, sw) { if (dep <= 0 || len < 6) return ""; var x2 = x + Math.cos(ang) * len, y2 = y - Math.sin(ang) * len; return '<line x1="' + n0(x) + '" y1="' + n0(y) + '" x2="' + n0(x2) + '" y2="' + n0(y2) + '" stroke="' + col + '" stroke-width="' + Math.max(1, sw).toFixed(1) + '" stroke-linecap="round"/>' + bare(r, x2, y2, len * (.68 + r() * .12), ang + .45 + r() * .3, dep - 1, col, sw * .65) + bare(r, x2, y2, len * (.68 + r() * .12), ang - .45 - r() * .3, dep - 1, col, sw * .65); }
+function city(r, k, y, W, col, ban, neon) { var o = "", x = -10; while (x < W) { var w = 36 + r() * 50, h = 90 + r() * 240; o += rect(x, y - h, w, h + 220, k); for (var j = 0; j < Math.floor(h / 22); j++) for (var i = 0; i < Math.floor(w / 14); i++) if (r() < .33) o += rect(x + 5 + i * 14, y - h + 8 + j * 22, 6, 9, col, ' opacity="' + (.35 + r() * .55).toFixed(2) + '"'); if (ban && r() < .3) o += rect(x + w / 2 - 6, y - h + 30, 12, 100, "#b01c24"); if (neon && r() < .22) o += rect(x + 3, y - h, 4, h * .6, col, ' opacity=".85"'); x += w + 2 + r() * 8; } return o; }
+function man(x, y, s, k) { return poly([[x - 26 * s, y], [x - 20 * s, y - 95 * s], [x - 12 * s, y - 120 * s], [x + 12 * s, y - 120 * s], [x + 20 * s, y - 95 * s], [x + 26 * s, y]], k) + circ(x, y - 135 * s, 13 * s, k) + elp(x, y - 146 * s, 30 * s, 5 * s, k) + rect(x - 14 * s, y - 166 * s, 28 * s, 22 * s, k); }
+function knight(x, y, s, k) { return poly([[x - 24 * s, y], [x - 18 * s, y - 90 * s], [x + 18 * s, y - 90 * s], [x + 24 * s, y]], k) + circ(x, y - 108 * s, 16 * s, k) + rect(x - 4 * s, y - 135 * s, 8 * s, 12 * s, k) + rect(x + 30 * s, y - 230 * s, 5 * s, 235 * s, k) + poly([[x + 35 * s, y - 230 * s], [x + 120 * s, y - 215 * s], [x + 95 * s, y - 190 * s], [x + 125 * s, y - 170 * s], [x + 35 * s, y - 182 * s]], "#b01c24"); }
+function dragon(x, y, s, k) { return poly([[x - 80 * s, y - 130 * s], [x - 40 * s, y - 110 * s], [x - 30 * s, y - 190 * s], [x - 110 * s, y - 250 * s], [x - 20 * s, y - 215 * s], [x + 20 * s, y - 290 * s], [x + 30 * s, y - 190 * s], [x + 90 * s, y - 250 * s], [x + 80 * s, y - 170 * s], [x + 110 * s, y - 100 * s], [x + 40 * s, y - 60 * s], [x + 30 * s, y], [x - 30 * s, y], [x - 40 * s, y - 60 * s]], k) + poly([[x - 80 * s, y - 130 * s], [x - 130 * s, y - 150 * s], [x - 100 * s, y - 120 * s]], k) + poly([[x + 110 * s, y - 100 * s], [x + 170 * s, y - 40 * s], [x + 120 * s, y - 70 * s]], k) + circ(x - 100 * s, y - 134 * s, 3 * s, "#ffb040"); }
+function wolf(x, y, s, k) { return poly([[x - 60 * s, y], [x - 50 * s, y - 70 * s], [x - 20 * s, y - 110 * s], [x - 10 * s, y - 150 * s], [x - 30 * s, y - 190 * s], [x - 8 * s, y - 200 * s], [x + 14 * s, y - 150 * s], [x + 30 * s, y - 110 * s], [x + 70 * s, y - 90 * s], [x + 120 * s, y - 60 * s], [x + 110 * s, y - 30 * s], [x + 70 * s, y - 40 * s], [x + 60 * s, y]], k); }
+function wolfhead(x, y, s, k) { return poly([[x - 120 * s, y], [x - 110 * s, y - 160 * s], [x - 90 * s, y - 250 * s], [x - 60 * s, y - 190 * s], [x, y - 205 * s], [x + 60 * s, y - 190 * s], [x + 90 * s, y - 250 * s], [x + 110 * s, y - 160 * s], [x + 120 * s, y], [x + 40 * s, y - 30 * s], [x, y - 10 * s], [x - 40 * s, y - 30 * s]], k) + circ(x - 40 * s, y - 130 * s, 7 * s, "#ffb23a") + circ(x + 40 * s, y - 130 * s, 7 * s, "#ffb23a"); }
+function bust(x, y, s, k) { return poly([[x - 110 * s, y], [x - 90 * s, y - 80 * s], [x - 40 * s, y - 110 * s], [x + 40 * s, y - 110 * s], [x + 90 * s, y - 80 * s], [x + 110 * s, y]], k) + circ(x, y - 160 * s, 45 * s, k) + poly([[x - 40 * s, y - 140 * s], [x + 40 * s, y - 140 * s], [x + 28 * s, y - 85 * s], [x, y - 70 * s], [x - 28 * s, y - 85 * s]], k) + rect(x - 10 * s, y - 110 * s, 20 * s, 16 * s, k); }
+function cols(x0, x1, y, h, k) { var o = ""; for (var x = x0; x <= x1; x += 60) o += rect(x, y - h, 22, h, k) + rect(x - 6, y - h - 10, 34, 12, k); return o; }
+function colos(x, y, s, k, h0) { var o = rect(x - 230 * s, y - 120 * s, 460 * s, 120 * s, k) + rect(x - 210 * s, y - 170 * s, 420 * s, 52 * s, k); for (var i = 0; i < 9; i++) { var cx = x - 200 * s + i * 50 * s; o += rect(cx, y - 100 * s, 26 * s, 64 * s, h0) + circ(cx + 13 * s, y - 100 * s, 13 * s, h0); if (i < 8) o += rect(cx + 12 * s, y - 155 * s, 22 * s, 36 * s, h0) + circ(cx + 23 * s, y - 155 * s, 11 * s, h0); } return o; }
+function arch(x, y, w, h, k, hole) { return rect(x - w / 2 - 14, y - h - 14, w + 28, h + 14, k) + rect(x - w / 2, y - h * .7, w, h * .7, hole) + circ(x, y - h * .7, w / 2, hole); }
+function airship(x, y, s, k) { return elp(x, y, 120 * s, 42 * s, k) + rect(x - 34 * s, y + 48 * s, 68 * s, 24 * s, k) + rect(x - 4 * s, y + 36 * s, 2 * s, 14 * s, k) + poly([[x + 110 * s, y], [x + 150 * s, y - 30 * s], [x + 150 * s, y + 30 * s]], k) + elp(x - 6 * s, y - 4 * s, 100 * s, 8 * s, "#e8b060", ' opacity=".25"'); }
+function ship(x, y, s, k, gl) { return elp(x, y, 130 * s, 16 * s, k) + poly([[x - 70 * s, y - 6 * s], [x - 20 * s, y - 34 * s], [x + 50 * s, y - 30 * s], [x + 90 * s, y - 8 * s]], k) + elp(x, y + 8 * s, 90 * s, 4 * s, gl, ' opacity=".9"') + poly([[x - 130 * s, y], [x - 200 * s, y - 10 * s], [x - 200 * s, y + 10 * s]], gl, ' opacity=".35"'); }
+function barrel(x, y, s, k) { return elp(x, y - 40 * s, 36 * s, 46 * s, k) + rect(x - 34 * s, y - 86 * s, 68 * s, 5 * s, "#e8a040", ' opacity=".25"') + rect(x - 34 * s, y - 10 * s, 68 * s, 5 * s, "#e8a040", ' opacity=".25"'); }
+function candle(x, y, s) { return circ(x, y - 72 * s, 90 * s, "url(#gl)") + rect(x - 6 * s, y - 60 * s, 12 * s, 60 * s, "#f4e4c0") + elp(x, y - 72 * s, 6 * s, 12 * s, "#ffc861"); }
+function house(x, y, s, k, wl) { return rect(x - 70 * s, y - 90 * s, 140 * s, 90 * s, k) + poly([[x - 85 * s, y - 90 * s], [x, y - 170 * s], [x + 85 * s, y - 90 * s]], k) + rect(x + 40 * s, y - 170 * s, 22 * s, 60 * s, k) + rect(x - 40 * s, y - 60 * s, 20 * s, 26 * s, wl) + rect(x + 16 * s, y - 60 * s, 20 * s, 26 * s, wl, ' opacity=".6"'); }
+function sit(x, y, s, k) { return circ(x, y - 92 * s, 14 * s, k) + poly([[x - 48 * s, y], [x - 14 * s, y - 78 * s], [x + 14 * s, y - 78 * s], [x + 48 * s, y]], k); }
+function king(x, y, s, k) { return elp(x, y, 60 * s, 12 * s, k) + poly([[x - 40 * s, y], [x - 18 * s, y - 150 * s], [x + 18 * s, y - 150 * s], [x + 40 * s, y]], k) + rect(x - 34 * s, y - 166 * s, 68 * s, 16 * s, k) + circ(x, y - 188 * s, 22 * s, k) + rect(x - 4 * s, y - 236 * s, 8 * s, 26 * s, k) + rect(x - 14 * s, y - 226 * s, 28 * s, 8 * s, k); }
+function palm(x, y, dx, k) { var o = ""; for (var i = -2; i <= 2; i++) o += '<path d="M' + n0(x) + " " + n0(y) + " Q" + n0(x + dx * .5 + i * 30) + " " + n0(y - 70 - Math.abs(i) * 10) + " " + n0(x + dx + i * 55) + " " + n0(y + 40 + Math.abs(i) * 24) + '" stroke="' + k + '" stroke-width="9" fill="none" stroke-linecap="round"/>'; return o; }
+function bats(r, k, n) { var o = ""; for (var i = 0; i < n; i++) { var x = 40 + r() * 520, y = 120 + r() * 300, s = .6 + r() * .8; o += '<path d="M' + n0(x - 18 * s) + " " + n0(y) + " Q" + n0(x - 9 * s) + " " + n0(y - 12 * s) + " " + n0(x) + " " + n0(y) + " Q" + n0(x + 9 * s) + " " + n0(y - 12 * s) + " " + n0(x + 18 * s) + " " + n0(y) + " Q" + n0(x + 9 * s) + " " + n0(y + 4 * s) + " " + n0(x) + " " + n0(y + 8 * s) + " Q" + n0(x - 9 * s) + " " + n0(y + 4 * s) + " " + n0(x - 18 * s) + " " + n0(y) + 'Z" fill="' + k + '"/>'; } return o; }
+function blossom(r, x, y, n, col) { var o = ""; for (var i = 0; i < n; i++) o += circ(x + (r() - .5) * 220, y + (r() - .5) * 120, 5 + r() * 9, col, ' opacity="' + (.5 + r() * .5).toFixed(2) + '"'); return o; }
+function motif(th, r, k, W, H, v) {
+  var p = th.p, wl = "#ffc861", o = "", x = 150 + r() * 300, m = th.mot;
+  switch (m) {
+    case "castle": o = castle(x, 690, 1.15, k, wl) + pine(70, 720, 140, k) + pine(540, 720, 170, k); break;
+    case "darkcastle": o = castle(x, 700, 1.2, k, "#ff5a5a") + bare(r, 70, 740, 90, 1.57, 5, k, 8) + bare(r, 540, 740, 110, 1.57, 5, k, 9); break;
+    case "haunted": o = house(x, 710, 1.5, k, "#ffd060") + twr(x - 140, 710, 46, 190, 80, k) + bare(r, 70, 760, 100, 1.57, 5, k, 9) + bare(r, 540, 760, 90, 1.57, 5, k, 8) + elp(300, 700, 380, 40, "#fff", ' opacity=".13" filter="url(#b)"'); break;
+    case "scifi": o = ship(x, 330, 1, k, "#7ad0ff") + city(r, k, 760, W, "#7ad0ff", false, true); break;
+    case "ruins": { var xx = -10; while (xx < W) { var w = 40 + r() * 60, h = 80 + r() * 230; o += poly([[xx, 780], [xx, 780 - h], [xx + w * .4, 780 - h * (.7 + r() * .3)], [xx + w * .7, 780 - h * (.5 + r() * .4)], [xx + w, 780 - h * .8], [xx + w, 780]], k); xx += w + 4 + r() * 20; } o += bare(r, 480, 780, 80, 1.57, 4, k, 7); } break;
+    case "dystopia": o = city(r, k, 780, W, "#e0583c", true, false); break;
+    case "knight": o = castle(430, 680, .8, k, wl) + knight(170, 740, 1.5, k); break;
+    case "dragon": o = castle(120, 640, .9, k, wl) + dragon(430, 700, 1.1, k); break;
+    case "jungle": o = rect(x - 36, 430, 72, 260, "#e0f6ff", ' opacity=".55"') + elp(x, 690, 100, 26, "#fff", ' opacity=".35" filter="url(#b)"') + poly([[0, 760], [0, 520], [x - 50, 440], [x - 36, 760]], k) + poly([[W, 760], [W, 500], [x + 50, 430], [x + 36, 760]], k) + palm(30, 330, 130, k) + palm(570, 300, -140, k); break;
+    case "compass": o = circ(300, 360, 140, "none", ' stroke="#ffe8b0" stroke-width="4" opacity=".55"') + poly([[300, 200], [318, 342], [300, 520], [282, 342]], "#ffe8b0", ' opacity=".5"') + poly([[160, 360], [282, 342], [440, 360], [282, 378]], "#ffe8b0", ' opacity=".5"') + '<path d="M60 760 Q200 690 300 730 T560 700" stroke="#ffe8b0" stroke-width="4" fill="none" stroke-dasharray="3 14" stroke-linecap="round" opacity=".7"/>'; break;
+    case "detective": o = man(x, 760, 1.5, k) + circ(520, 500, 5, "#ffd060") + rect(517, 505, 6, 230, k) + circ(520, 500, 60, "url(#gl)") + elp(300, 740, 380, 36, "#fff", ' opacity=".12" filter="url(#b)"'); break;
+    case "noir": o = city(r, k, 800, W, "#9ac8ff", false, true) + man(x, 860, 1.6, k); break;
+    case "lonetree": o = bare(r, x, 740, 150, 1.57, 7, k, 14) + blossom(r, x, 480, 0, "#000"); break;
+    case "arches": o = arch(120, 760, 120, 340, k, p[2]) + arch(300, 760, 150, 420, k, p[2]) + arch(490, 760, 120, 340, k, p[2]) + blossom(r, 70, 330, 28, "#ffb0c8") + blossom(r, 540, 330, 28, "#ffb0c8"); break;
+    case "colosseum": o = colos(x, 720, 1.1, k, shade(p[2], .7)) + pine(40, 740, 120, k); break;
+    case "battle": o = rect(160, 520, 7, 240, k) + poly([[167, 520], [260, 540], [235, 565], [262, 590], [167, 575]], "#b01c24") + elp(380, 660, 170, 50, "#555", ' opacity=".5" filter="url(#b)"') + elp(150, 700, 160, 40, "#333", ' opacity=".5" filter="url(#b)"') + poly([[0, 780], [60, 700], [100, 780]], k) + poly([[300, 780], [380, 690], [420, 780]], k) + poly([[480, 780], [540, 710], [600, 780]], k); break;
+    case "spy": o = man(x, 780, 1.4, k) + rect(60, 560, 90, 120, "#f4f0e0", ' opacity=".55" transform="rotate(-10 105 620)"') + city(r, k, 800, W, "#9ac8ff", false, false); break;
+    case "chess": o = king(150, 780, 1.4, k) + king(470, 800, .9, k) + candle(330, 800, 1.4); break;
+    case "cyber": o = city(r, k, 800, W, "#ff4fd0", false, true) + city(r, shade(p[0], .1), 880, W, "#4fe0ff", false, true); break;
+    case "airship": o = airship(x, 330, 1, k) + airship(470, 520, .45, k) + castle(130, 760, .7, k, wl) + elp(300, 700, 380, 40, "#fff", ' opacity=".18" filter="url(#b)"'); break;
+    case "pylons": for (var q = 0; q < 14; q++) o += pine(q * 46 + r() * 20, 780 + r() * 40, 140 + r() * 160, k); for (var f = 0; f < 10; f++) o += circ(30 + r() * 540, 640 + r() * 120, 3, "#9ad8ff", ' opacity=".9"'); break;
+    case "wolf": o = poly([[0, 800], [0, 680], [120, 640], [260, 700], [300, 800]], k) + wolf(160, 650, 1.3, k) + elp(300, 760, 380, 36, "#fff", ' opacity=".12" filter="url(#b)"'); break;
+    case "vampire": o = castle(x, 700, 1.25, k, "#ff4a4a") + bats(r, k, 7); break;
+    case "wolfhead": o = wolfhead(190, 900, 2.0, k) + pine(520, 780, 180, k) + pine(430, 800, 130, k); break;
+    case "statue": o = bust(300, 800, 1.7, k) + cols(20, 100, 780, 300, k) + cols(480, 560, 780, 260, k); break;
+    case "temple": for (var t = 0; t < 4; t++) o += poly([[110 + t * 130 - 18, 0], [110 + t * 130 + 18, 0], [110 + t * 130 + 100, 760], [110 + t * 130 - 90, 760]], "#ffe8a0", ' opacity=".10"'); o += arch(110, 780, 90, 320, k, p[2]) + arch(300, 780, 120, 400, k, p[2]) + arch(490, 780, 90, 320, k, p[2]); break;
+    case "meditate": o = bare(r, 470, 770, 130, 1.57, 6, k, 12) + sit(210, 800, 1.5, k) + rect(0, 790, 600, 110, shade(p[2], .55), ' opacity=".8"'); break;
+    case "tavern": o = barrel(90, 800, 1.5, k) + barrel(210, 820, 1.2, k) + barrel(520, 810, 1.5, k) + rect(0, 800, 600, 100, k) + candle(330, 800, 1.5); break;
+    case "cottage": o = house(210, 740, 1.3, k, "#ffd060") + rect(0, 740, 600, 160, shade(p[2], .6), ' opacity=".85"') + pine(520, 740, 160, k) + pine(80, 750, 120, k); break;
+    case "hybrid": o = castle(x, 700, 1.1, k, wl) + dragon(500, 380, .45, k) + airship(130, 300, .5, k); break;
+  }
+  return o;
 }
+function artSvg(g, g2, seed, v) {
+  v = v || 0; var th = GT(g), p = th.p, r = hvr(seed + "|" + g + "|" + v), W = 600, H = 900, o = "", k = shade(p[0], .16), hue = [0, 24, -30][v % 3];
+  var body = th.body; if (v === 1 && body === "moon") body = "sun"; else if (v === 1 && body === "sun") body = "moon";
+  o += '<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + shade(p[0], 1) + '"/><stop offset=".5" stop-color="' + p[1] + '"/><stop offset="1" stop-color="' + p[2] + '"/></linearGradient><radialGradient id="gl"><stop offset="0" stop-color="' + th.glow + '" stop-opacity=".95"/><stop offset=".4" stop-color="' + th.glow + '" stop-opacity=".3"/><stop offset="1" stop-color="' + th.glow + '" stop-opacity="0"/></radialGradient><filter id="b"><feGaussianBlur stdDeviation="14"/></filter><filter id="hu"><feColorMatrix type="hueRotate" values="' + hue + '"/></filter></defs><g filter="url(#hu)"><rect width="600" height="900" fill="url(#s)"/>';
+  for (var i = 0; i < 80; i++) o += circ(r() * W, r() * H * .6, r() * 1.6 + .3, "#fff", ' opacity="' + (r() * .7 + .15).toFixed(2) + '"');
+  var gx = 120 + r() * 360, gy = 190 + r() * 110;
+  o += circ(gx, gy, 300, "url(#gl)");
+  if (body === "planet") o += circ(gx, gy, 96, shade(p[2], 1.05)) + circ(gx - 24, gy - 20, 70, "#fff", ' opacity=".08"') + '<ellipse cx="' + n0(gx) + '" cy="' + n0(gy) + '" rx="180" ry="28" fill="none" stroke="#cfeaff" stroke-opacity=".55" stroke-width="7" transform="rotate(-18 ' + n0(gx) + " " + n0(gy) + ')"/>';
+  else if (body === "sun") o += circ(gx, gy + 20, 80, "#ffe2b0");
+  else if (body === "redmoon") o += circ(gx, gy, 66, "#e0303e") + circ(gx - 14, gy - 10, 50, "#fff", ' opacity=".08"');
+  else if (body === "moon") o += circ(gx, gy, 62, "#fff3d6", ' opacity=".95"') + circ(gx + 16, gy - 10, 14, "#d8c9a8", ' opacity=".5"') + circ(gx - 18, gy + 14, 9, "#d8c9a8", ' opacity=".5"');
+  var city = /dystopia|cyber|noir|scifi|spy/.test(th.mot);
+  if (!city) o += ridge(r, 540, 55, shade(p[1], .55), W, H) + ridge(r, 620, 45, shade(p[0], .45), W, H);
+  else o += ridge(r, 600, 30, shade(p[1], .4), W, H);
+  o += motif(th, r, k, W, H, v);
+  o += ridge(r, 790, 28, shade(p[0], .1), W, H) + "</g>";
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" preserveAspectRatio="xMidYMid slice">' + o + "</svg>";
+}
+var ARTC = {};
+function artUrl(g, g2, seed, v) { var k = g + "|" + seed + "|" + (v || 0); return ARTC[k] || (ARTC[k] = 'url("data:image/svg+xml;utf8,' + encodeURIComponent(artSvg(g, g2, seed, v)) + '")'); }
+function storyVar(s) { return s.bgv != null ? s.bgv : hvh(s.id) % 3; }
+function bg(g, seed, g2, v) { return "linear-gradient(180deg,rgba(7,11,20,0) 35%,rgba(7,11,20,.88))," + artUrl(g, g2, seed, v); }
 function coverBg(s) {
-  if (s.cover) return "linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(0,0,0,.7)),url(\"" + s.cover + "\") center/cover";
-  return bg(s.genre, s.id, (s.genres || [])[1]);
+  if (s.cover) return "linear-gradient(180deg,rgba(7,11,20,0) 40%,rgba(7,11,20,.88)),url(\"" + s.cover + "\") center/cover";
+  return bg(s.genre, s.id, (s.genres || [])[1], storyVar(s));
 }
+/* ---------- Fondo dinámico (partículas) y aplicación del tema ---------- */
+var CUR_TH = { g: "Auto", v: 0, seed: "home" };
+var FX = { t: "", ps: [], raf: 0, c: null, x: null, W: 0, H: 0, last: 0 };
+function reduced() { try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } }
+function lum(h) { var n = parseInt(h.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; }
+function fxSize() { FX.W = FX.c.width = window.innerWidth; FX.H = FX.c.height = window.innerHeight; }
+function fxInit(t) {
+  var n = { stars: 60, fireflies: 26, embers: 40, ash: 44, rain: 80, neon: 80, petals: 30, bats: 5, motes: 40, mist: 0, leaves: 26 }[t] || 0;
+  FX.ps = []; for (var i = 0; i < n; i++) FX.ps.push({ x: Math.random() * FX.W, y: Math.random() * FX.H, v: .4 + Math.random() * 1.2, s: 1 + Math.random() * 2.4, a: Math.random() * 6.28 });
+}
+function fxOn() { return RD.anim !== false && document.documentElement.getAttribute("data-theme") !== "light" && !document.hidden && !reduced(); }
+function fxLoop(ts) {
+  FX.raf = requestAnimationFrame(fxLoop); if (ts - FX.last < 34) return; FX.last = ts;
+  var x = FX.x, W = FX.W, H = FX.H, t = ts / 1000, k = FX.t; x.clearRect(0, 0, W, H);
+  FX.ps.forEach(function (p) {
+    if (k === "stars") { x.fillStyle = "rgba(255,255,255," + (.25 + .5 * Math.abs(Math.sin(t * p.v + p.a))).toFixed(2) + ")"; x.fillRect(p.x, p.y * .6, p.s * .8, p.s * .8); }
+    else if (k === "fireflies") { p.x += Math.sin(t * .6 + p.a) * .35; p.y += Math.cos(t * .5 + p.a) * .3; var al = .25 + .6 * Math.abs(Math.sin(t * .9 + p.a)); x.fillStyle = "rgba(220,255,120," + (al * .25).toFixed(2) + ")"; x.beginPath(); x.arc(p.x, p.y, p.s * 4, 0, 6.3); x.fill(); x.fillStyle = "rgba(240,255,170," + al.toFixed(2) + ")"; x.beginPath(); x.arc(p.x, p.y, p.s * .9, 0, 6.3); x.fill(); }
+    else if (k === "embers") { p.y -= p.v * .9; p.x += Math.sin(t + p.a) * .5; if (p.y < -5) { p.y = H + 5; p.x = Math.random() * W; } x.fillStyle = "rgba(255," + (120 + p.s * 30 | 0) + ",40," + (.35 + .4 * Math.abs(Math.sin(t * 2 + p.a))).toFixed(2) + ")"; x.beginPath(); x.arc(p.x, p.y, p.s * .8, 0, 6.3); x.fill(); }
+    else if (k === "ash") { p.y += p.v * .5; p.x += Math.sin(t * .5 + p.a) * .4; if (p.y > H + 5) { p.y = -5; p.x = Math.random() * W; } x.fillStyle = "rgba(210,205,200,.35)"; x.fillRect(p.x, p.y, p.s, p.s); }
+    else if (k === "rain" || k === "neon") { p.y += 9 + p.v * 4; p.x -= 2; if (p.y > H) { p.y = -20; p.x = Math.random() * (W + 40); } x.strokeStyle = k === "neon" ? (p.a > 3.1 ? "rgba(255,80,210,.5)" : "rgba(80,230,255,.5)") : "rgba(170,200,230,.35)"; x.lineWidth = 1; x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(p.x - 3, p.y + 15); x.stroke(); }
+    else if (k === "petals" || k === "leaves") { p.y += p.v * .6; p.x += Math.sin(t * .7 + p.a) * .8; if (p.y > H + 8) { p.y = -8; p.x = Math.random() * W; } x.fillStyle = k === "petals" ? "rgba(255,170,200,.75)" : (p.a > 3 ? "rgba(230,150,60,.7)" : "rgba(150,190,80,.7)"); x.beginPath(); x.ellipse(p.x, p.y, p.s * 2, p.s, p.a + t * .5, 0, 6.3); x.fill(); }
+    else if (k === "bats") { p.x += p.v * 1.4; p.y += Math.sin(t * 2 + p.a) * .6; if (p.x > W + 30) { p.x = -30; p.y = 60 + Math.random() * H * .4; } var fl = Math.sin(t * 9 + p.a) * 5; x.strokeStyle = "rgba(10,5,10,.85)"; x.lineWidth = 2; x.beginPath(); x.moveTo(p.x - 12, p.y + fl); x.quadraticCurveTo(p.x - 5, p.y - 6, p.x, p.y); x.quadraticCurveTo(p.x + 5, p.y - 6, p.x + 12, p.y + fl); x.stroke(); }
+    else if (k === "motes") { p.y -= p.v * .15; p.x += Math.sin(t * .4 + p.a) * .25; if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; } x.fillStyle = "rgba(255,225,150," + (.15 + .45 * Math.abs(Math.sin(t + p.a))).toFixed(2) + ")"; x.beginPath(); x.arc(p.x, p.y, p.s * .7, 0, 6.3); x.fill(); }
+  });
+}
+function fxApply() {
+  if (!FX.x) { FX.c = $("fx"); FX.x = FX.c.getContext("2d"); fxSize(); window.addEventListener("resize", function () { fxSize(); fxInit(FX.t); }); document.addEventListener("visibilitychange", fxApply); }
+  if (FX.raf) { cancelAnimationFrame(FX.raf); FX.raf = 0; }
+  FX.x.clearRect(0, 0, FX.W, FX.H);
+  var on = fxOn(); document.body.classList.toggle("noanim", !on);
+  if (on && FX.ps.length) FX.raf = requestAnimationFrame(fxLoop);
+}
+function applyTheme(g, v, seed) {
+  CUR_TH = { g: g, v: v || 0, seed: seed || "home" };
+  var t = GT(g), rt = document.documentElement, light = rt.getAttribute("data-theme") === "light";
+  $("bgart").style.backgroundImage = artUrl(g, null, CUR_TH.seed, CUR_TH.v);
+  if (light) { ["--acc", "--acc2", "--accink"].forEach(function (n) { rt.style.removeProperty(n); }); }
+  else { rt.style.setProperty("--acc", t.acc); rt.style.setProperty("--acc2", t.acc2); rt.style.setProperty("--accink", lum(t.acc) > .55 ? "#1a1000" : "#ffffff"); }
+  FX.t = t.fx; if (!FX.W) { FX.W = window.innerWidth; FX.H = window.innerHeight; } fxInit(t.fx); fxApply();
+}
+window.reTheme = function () { applyTheme(CUR_TH.g, CUR_TH.v, CUR_TH.seed); };
+function themeSel() { applyTheme(C.genres[0] || "Auto", 0, "nuevo"); }
+
 function ask(p) { return sample(p, { cache: false, modelTier: "complex" }); }
 function parse(t) { var a = t.indexOf("{"), b = t.lastIndexOf("}"); return JSON.parse(t.slice(a, b + 1)); }
 
@@ -294,23 +562,21 @@ claude.use("sample").then(function (s) {
 /* ---------- Inicio ---------- */
 function lastStory() { return LIB.length ? LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); })[0] : null; }
 function renderLib() {
-  var h = $("hero"); h.innerHTML = "";
-  var s0 = lastStory(), card = el("div", "card"), b = el("button", "cover big");
+  var h = $("hero"); h.innerHTML = ""; h.className = "hero";
+  var s0 = lastStory(); if (!$("lib").hidden) applyTheme(s0 ? s0.genre : "Auto", s0 ? storyVar(s0) : 0, s0 ? s0.id : "home");
   if (s0) {
-    b.style.background = coverBg(s0); if (s0.cover) b.classList.add("hasimg");
-    b.appendChild(el("span", "tag", "CONTINÚA TU PRÓXIMA AVENTURA"));
-    b.appendChild(el("span", "ttl", s0.title));
-    b.appendChild(el("small", null, "Capítulo " + (Math.floor(s0.turn / 5) + 1) + " · turno " + s0.turn + (s0.fin ? " · finalizada" : "")));
-    var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 120 * 100)) + "%"; pr.appendChild(bar); b.appendChild(pr);
-    b.onclick = function () { openStory(s0); };
+    h.appendChild(el("span", "tag", "CONTINÚA TU AVENTURA"));
+    h.appendChild(el("h1", null, s0.title));
+    h.appendChild(el("p", "syn", s0.syn || (gtxt(s0) + " · capítulo " + (Math.floor(s0.turn / 5) + 1))));
+    var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 120 * 100)) + "%"; pr.appendChild(bar); h.appendChild(pr);
+    var gb = el("button", "go", ""); gb.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg>'; gb.appendChild(document.createTextNode(s0.fin ? "Releer" : "Continuar"));
+    gb.onclick = function () { openStory(s0); }; h.appendChild(gb);
   } else {
-    b.style.background = bg("Auto", "inicio");
-    b.appendChild(el("span", "tag", "BIENVENIDO"));
-    b.appendChild(el("span", "ttl", "Empieza tu primera aventura"));
-    b.appendChild(el("small", null, "Una historia que recuerda lo que haces."));
-    b.onclick = function () { startCreate(""); };
+    h.appendChild(el("span", "tag", "BIENVENIDO"));
+    h.appendChild(el("h1", null, "Cada decisión deja huella"));
+    h.appendChild(el("p", "syn", "Una historia que recuerda lo que haces. Tú imaginas, la IA narra y el mundo evoluciona."));
+    var nb0 = el("button", "go", "Empezar mi primera historia"); nb0.onclick = function () { startCreate(""); }; h.appendChild(nb0);
   }
-  card.appendChild(b); h.appendChild(card);
 
   var box = $("list"); box.innerHTML = "";
   if (!LIB.length) box.appendChild(el("p", "hint", "Aún no tienes historias. Pulsa «Crear nuevo»."));
@@ -318,7 +584,7 @@ function renderLib() {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = coverBg(s); if (s.cover) cv.classList.add("hasimg");
     cd.appendChild(el("span", "chip", s.fin ? "FINAL" : "EN CURSO"));
-    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, gtxt(s) + " · turno " + s.turn));
+    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn)));
     cv.onclick = function () { openStory(s); };
     cd.appendChild(cv); it.appendChild(cd);
     var d = el("button", "small", "Borrar");
@@ -329,6 +595,8 @@ function renderLib() {
     it.appendChild(d); box.appendChild(it);
   });
 
+  $("more1").onclick = function () { var g = box.classList.toggle("grid"); $("more1").textContent = g ? "Ver menos" : "Ver todo ›"; };
+  $("more1").hidden = LIB.length < 3;
   var pc = $("pchars"); pc.innerHTML = "";
   var nw = el("div", "cc pc"), nb = el("button", "pb new"); nb.appendChild(el("span", null, "+")); nb.appendChild(el("small", null, "Nuevo personaje"));
   nb.onclick = function () { openDesigner(null, "lib"); }; nw.appendChild(nb); pc.appendChild(nw);
@@ -379,10 +647,10 @@ addRow("Géneros", "Hasta 4, y se pueden mezclar", function () { return C.genres
   var r = el("div", "row"); b.appendChild(r);
   function draw() {
     r.innerHTML = "";
-    var a = el("button", C.genres.length === 0 ? "on" : "", "Auto"); a.onclick = function () { C.genres = []; draw(); upd(); }; r.appendChild(a);
+    var a = el("button", C.genres.length === 0 ? "on" : "", "Auto"); a.onclick = function () { C.genres = []; themeSel(); draw(); upd(); }; r.appendChild(a);
     GENRES.forEach(function (g) {
       var x = el("button", C.genres.indexOf(g) >= 0 ? "on" : "", g);
-      x.onclick = function () { var i = C.genres.indexOf(g); if (i >= 0) C.genres.splice(i, 1); else if (C.genres.length < 4) C.genres.push(g); draw(); upd(); };
+      x.onclick = function () { var i = C.genres.indexOf(g); if (i >= 0) C.genres.splice(i, 1); else if (C.genres.length < 4) C.genres.push(g); themeSel(); draw(); upd(); };
       r.appendChild(x);
     });
   }
@@ -460,13 +728,9 @@ $("make").onclick = async function () {
     LIB.push(s); save(); drawSteps(3); busy = false; showCreated(s);
   } catch (e) {
     busy = false;
-    var m = e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento." : e && e.code === "not_granted" ? "No se ha configurado ninguna IA." : e && e.message ? e.message : "No pude crear la aventura.";
-    $("merr").textContent = m + " ";
-    var rb = el("button", "small", "Volver al formulario");
-    rb.onclick = function () { view("create"); };
-    var ai = el("button", "small", "Configurar IA");
-    ai.onclick = function () { if (window.openAISettings) window.openAISettings(); };
-    $("merr").appendChild(rb); $("merr").appendChild(document.createTextNode(" ")); $("merr").appendChild(ai); $("merr").hidden = false;
+    var m = e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento." : e && e.code === "not_granted" ? "Necesito tu permiso para crear la historia." : "No pude crear la aventura.";
+    $("merr").textContent = m + " "; var rb = el("button", "small", "Volver al formulario");
+    rb.onclick = function () { view("create"); }; $("merr").appendChild(rb); $("merr").hidden = false;
   }
 };
 
@@ -485,7 +749,7 @@ $("cback").onclick = function () { renderLib(); view("lib"); };
 
 /* ---------- Jugar ---------- */
 function openStory(s) {
-  cur = s; s.at = Date.now(); view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); render(); if ($("atlbox").open) renderAtlas();
+  cur = s; s.at = Date.now(); view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); applyTheme(s.genre, storyVar(s), s.id); render(); if ($("atlbox").open) renderAtlas();
   if (!s.scenes.length) turn("Empieza la historia: presenta al protagonista, el lugar y el conflicto inicial.", "");
 }
 function renderSet() {
@@ -510,24 +774,49 @@ function renderLore() {
   });
 }
 function estadoTxt(v, a, b, c) { return v > 66 ? a : v > 33 ? b : c; }
+var FRESH = -1, TYPER = null, TOK = null;
+function stopTyper(fill) {
+  if (TYPER) { clearInterval(TYPER); TYPER = null; }
+  if (fill) Array.prototype.forEach.call($("book").querySelectorAll("p[data-full]"), function (p) { p.textContent = p.dataset.full; delete p.dataset.full; });
+}
+function startTyper() {
+  var ps = Array.prototype.slice.call($("book").querySelectorAll("p[data-full]")); if (!ps.length) return;
+  TOK = []; ps.forEach(function (p, pi) { (p.dataset.full.match(/\S+\s*/g) || []).forEach(function (w) { TOK.push([pi, w]); }); });
+  var n = 0;
+  TYPER = setInterval(function () {
+    for (var k = 0; k < 2 && n < TOK.length; k++, n++) ps[TOK[n][0]].textContent += TOK[n][1];
+    if (n >= TOK.length) stopTyper(true);
+  }, 30);
+}
 function render(keep) {
+  var fi = FRESH; FRESH = -1; stopTyper(true);
   var s = cur, book = $("book"); book.innerHTML = "";
+  var reduce = false; try { reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
   s.scenes.forEach(function (sc, i) {
-    if (i % 5 === 0) book.appendChild(el("div", "ch", "Capítulo " + (i / 5 + 1)));
-    if (sc.a) book.appendChild(el("p", "act", sc.a));
-    sc.t.split(/\n\s*\n/).forEach(function (p) { book.appendChild(el("p", null, p.trim())); });
-    book.appendChild(sceneImg(sc, i));
+    var w = el("div", "sc"); w.id = "sc-" + i;
+    if (i % 5 === 0) w.appendChild(el("div", "ch", "Capítulo " + (i / 5 + 1)));
+    if (sc.a) w.appendChild(el("p", "act", sc.a));
+    var fresh = fi === i && RD.type && !reduce;
+    sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); w.appendChild(pe); });
+    if (sc.bm) w.appendChild(el("span", "bmk", "Escena marcada"));
+    w.appendChild(sceneImg(sc, i));
+    book.appendChild(w);
   });
   if (s.fin) book.appendChild(el("p", "fin", "Fin de la historia."));
   $("status").hidden = !busy;
   $("ctrl").hidden = busy || s.fin;
   $("sug").hidden = !s.opts.length;
   $("undo").hidden = !s.prev || s.scenes.length < 2; $("undo").disabled = busy;
+  $("regen").hidden = !s.prev || !s.lastAct || s.scenes.length < 2 || busy;
+  $("rvw").hidden = s.scenes.length < 5;
   $("exp").hidden = !s.scenes.length; $("emsg").hidden = true;
   var o = $("opts"); o.innerHTML = "";
   s.opts.forEach(function (t) { var b = el("button", null, t); b.onclick = function () { turn(t, t); }; o.appendChild(b); });
-  $("own").value = "";
-  if (!keep && !busy && s.scenes.length > 1) book.lastElementChild.scrollIntoView({ behavior: "smooth", block: "end" });
+  if (!keep) $("own").value = "";
+  if (fi >= 0 && fi < s.scenes.length && !busy) {
+    var fe = $("sc-" + fi); if (fe && fe.scrollIntoView) fe.scrollIntoView({ behavior: "smooth", block: "start" });
+    startTyper();
+  } else if (!keep && !busy && s.scenes.length > 1) book.lastElementChild.scrollIntoView({ behavior: "smooth", block: "end" });
 }
 
 var RULES = [
@@ -776,10 +1065,17 @@ function reviewPrompt(s, d) {
     "\nESCENA NUEVA:\n" + d.escena + "\nResponde SOLO con JSON: {\"ok\":true,\"problema\":\"\"} o {\"ok\":false,\"problema\":\"descripción breve\"}";
 }
 
-async function turn(action, shown) {
+function errMsg(e) {
+  var c = e && e.code;
+  if (c === "not_granted") return "Necesito tu permiso para escribir la historia. Vuelve a pulsar y acéptalo.";
+  if (c === "cancelled") return "Has cancelado el envío a tu IA. Pulsa «Reintentar» cuando quieras seguir.";
+  if (c && e.message && ["rate_limited", "bad_key", "bad_model", "busy", "blocked", "network"].indexOf(c) >= 0) return e.message;
+  return "No pude escribir la escena. Reinténtalo; si se repite, prueba otra IA en «Conectar mi IA».";
+}
+async function turn(action, shown, extra) {
   if (busy || !sample || !cur) return;
-  var s = cur, note = "", cand = null, sp = s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
-  pending = [action, shown]; busy = true; $("err").hidden = true; render();
+  var s = cur, note = extra || "", cand = null, sp = s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
+  pending = [action, shown]; busy = true; $("err").hidden = true; stopTalk(); render(true);
   try {
     for (var i = 0; i < 2; i++) {
       var r = await ask(build(s, action, note, sp)), d;
@@ -812,10 +1108,10 @@ async function turn(action, shown) {
       });
     }
     if (sp) s.ls = s.turn;
-    s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3);
-    save(); renderLore();
+    s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3); s.lastAct = [action, shown];
+    save(); renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
   } catch (e) {
-    var m = e && e.code === "not_granted" ? "Necesito tu permiso para escribir la historia. Vuelve a pulsar y acéptalo." : e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un momento y reinténtalo." : "No pude escribir la escena. Reinténtalo.";
+    var m = errMsg(e);
     $("err").textContent = m + " ";
     var rb = el("button", "small", "Reintentar"); rb.onclick = function () { $("err").hidden = true; turn(pending[0], pending[1]); };
     $("err").appendChild(rb); $("err").hidden = false;
@@ -832,12 +1128,18 @@ $("do").onclick = function () {
   var v = $("own").value.trim(); if (!v) return;
   turn((MODE === "idea" ? "[IDEA PARA LA HISTORIA, aportada por el jugador] " : "[ACCIÓN DE " + (ACTOR || "SU PERSONAJE").toUpperCase() + "] ") + v, v);
 };
-$("undo").onclick = function () {
+$("undo").onclick = function () { undoTurn(); };
+$("regen").onclick = function () {
+  var s = cur; if (busy || !s || !s.prev || !s.lastAct) return;
+  var a = s.lastAct; undoTurn();
+  turn(a[0], a[1], "Escribe una versión claramente distinta de la escena anterior (otros detalles, otro enfoque y otras palabras), respetando exactamente la misma acción del jugador y todos los hechos de la memoria.");
+};
+function undoTurn() {
   var s = cur, p = s.prev; if (busy || !p) return;
   s.scenes.length = p.len; s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = p.state; s.opts = p.opts; s.fin = p.fin; s.ls = p.ls; if (p.mem) restoreMem(s, p.mem);
   if (s.lore && p.lore != null) s.lore.length = Math.min(s.lore.length, p.lore);
   s.prev = null; save(); renderLore(); render();
-};
+}
 $("new").onclick = function () { startCreate(""); };
 $("back1").onclick = function () { renderLib(); view("lib"); };
 $("back2").onclick = function () { renderLib(); view("lib"); };
@@ -926,7 +1228,7 @@ $("paddpick").onclick = function () {
     b.appendChild(x);
   });
 };
-function startCreate(idea) { C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; view("create"); }
+function startCreate(idea) { C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; themeSel(); view("create"); }
 
 function renderActors() {
   var b = $("actors"); b.innerHTML = ""; var pr = (cur && cur.prot) || [];
@@ -973,7 +1275,7 @@ function takeImage(f, kind, idx) {
 }
 function imgFromBlob(b, kind, idx) { if (b) takeImage(b, kind, idx); }
 function pasteBtn(kind, idx) {
-  var w = el("span"), b = el("button", "small", "📋 Pegar imagen"), box = el("div", "pastebox"), done = false;
+  var w = el("span"), b = el("button", "small", "Pegar imagen"), box = el("div", "pastebox"), done = false;
   box.contentEditable = "true"; box.hidden = true; box.textContent = "Mantén pulsado aquí y elige «Pegar»";
   function fromItems(list) { for (var i = 0; list && i < list.length; i++) { var it = list[i]; if (it.type && it.type.indexOf("image") === 0) { var f = it.getAsFile ? it.getAsFile() : it; if (f) { done = true; imgFromBlob(f, kind, idx); return true; } } } return false; }
   box.addEventListener("paste", function (e) { var cd = e.clipboardData; if (cd && (fromItems(cd.files) || fromItems(cd.items))) e.preventDefault(); });
@@ -1017,20 +1319,29 @@ function imgPanel(box, withTitle) {
   var r = el("div", "row");
   r.appendChild(fileBtn(s.cover ? "Cambiar portada" : "Subir mi portada", "cover"));
   if (s.cover) { var rm = el("button", "small", "Quitar portada"); rm.onclick = function () { delete s.cover; save(); refreshImages(true); }; r.appendChild(rm); }
-  r.appendChild(pasteBtn("cover"));
+  if (!window.Native) r.appendChild(pasteBtn("cover"));
   var pr = el("button", "small", "Prompt para la portada"); pr.onclick = function () { makePrompt("cover"); }; r.appendChild(pr);
   box.appendChild(r);
-  box.appendChild(el("p", "hint", "Si «Subir» no abre la galería en tu móvil: copia la imagen y usa «Pegar imagen»."));
+  box.appendChild(el("p", "hint", window.Native ? "Se abrirá la galería de tu móvil." : "Si «Subir» no abre la galería en tu móvil: copia la imagen y usa «Pegar imagen»."));
   if (s.cover) { var im = el("img", "pv"); im.src = s.cover; im.alt = "Portada"; box.appendChild(im); }
 }
+var OPEN_SC = -1;
 function sceneImg(sc, i) {
   var d = el("div", "simg");
   if (sc.img) { var im = el("img"); im.src = sc.img; im.alt = "Ilustración de la escena"; d.appendChild(im); }
-  var r = el("div", "row");
-  r.appendChild(fileBtn(sc.img ? "Cambiar imagen" : "+ Imagen", "scene", i));
-  if (sc.img) { var q = el("button", "small", "Quitar"); q.onclick = function () { delete sc.img; save(); refreshImages(true); }; r.appendChild(q); }
-  r.appendChild(pasteBtn("scene", i));
-  var p = el("button", "small", "Prompt"); p.onclick = function () { makePrompt("scene", i); }; r.appendChild(p);
+  var r0 = el("div", "row"), tg = el("button", "small", "Opciones de la escena");
+  tg.setAttribute("aria-expanded", OPEN_SC === i ? "true" : "false");
+  r0.appendChild(tg); d.appendChild(r0);
+  var r = el("div", "row scm"); r.hidden = OPEN_SC !== i;
+  tg.onclick = function () { OPEN_SC = OPEN_SC === i ? -1 : i; r.hidden = OPEN_SC !== i; tg.setAttribute("aria-expanded", OPEN_SC === i ? "true" : "false"); };
+  r.appendChild(fileBtn(sc.img ? "Cambiar imagen" : "Añadir imagen", "scene", i));
+  if (sc.img) { var q = el("button", "small", "Quitar imagen"); q.onclick = function () { delete sc.img; save(); refreshImages(true); }; r.appendChild(q); }
+  if (!window.Native) r.appendChild(pasteBtn("scene", i));
+  var p = el("button", "small", "Prompt de imagen"); p.onclick = function () { makePrompt("scene", i); }; r.appendChild(p);
+  var ed = el("button", "small", "Editar texto"); ed.onclick = function () { editScene(i); }; r.appendChild(ed);
+  var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
+  var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
+  var rp = el("button", "small", "Denunciar contenido"); rp.onclick = function () { reportScene(i); }; r.appendChild(rp);
   d.appendChild(r); return d;
 }
 function physTxt(c) {
@@ -1071,10 +1382,11 @@ $("pcopy").onclick = function () {
 };
 
 /* ---------- Atlas ---------- */
-var ATL = { tab: "chars", sec: false };
+var ATL = { tab: "chars", sec: false, q: "" };
+function gotoScene(i) { var e = $("sc-" + i); if (e) e.scrollIntoView({ behavior: "smooth", block: "start" }); }
 function renderAtlas() {
   var b = $("atlbody"), s = cur; if (!b) return; b.innerHTML = ""; if (!s) return;
-  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["pend", "Pendientes"], ["ev", "Cronología"]];
+  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["places", "Lugares"], ["pend", "Pendientes"], ["ev", "Cronología"], ["marks", "Marcas"], ["search", "Buscar"]];
   var r = el("div", "row"); b.appendChild(r);
   tabs.forEach(function (t) { var x = el("button", ATL.tab === t[0] ? "small on" : "small", t[1]); x.onclick = function () { ATL.tab = t[0]; renderAtlas(); }; r.appendChild(x); });
   var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = ATL.sec;
@@ -1112,6 +1424,33 @@ function renderAtlas() {
     if (m.time) box.appendChild(el("p", "hint", "Momento actual: " + m.time));
     if (!ws.length) empty("Todavía no hay datos del mundo.");
     ws.forEach(function (w) { var d = el("div", "lore"); d.appendChild(el("b", null, w.key)); d.appendChild(document.createTextNode(" · " + w.val + " (" + sc(w.sc) + ")")); if (w.hist.length) d.appendChild(el("p", "hint", "Antes: " + w.hist.slice(-3).map(function (h) { return h.val; }).join(" → "))); box.appendChild(d); });
+  } else if (ATL.tab === "places") {
+    var pl = {};
+    function plc(n) { var k = nk(n); if (!k) return null; return pl[k] || (pl[k] = { name: n, who: [], items: [], ev: 0 }); }
+    Object.keys(m.chars).forEach(function (k) { var c = m.chars[k], o = plc(c.loc); if (o) o.who.push(c.name); });
+    Object.keys(m.items).forEach(function (k) { var c = m.items[k], o = plc(c.loc); if (o && !c.owner) o.items.push(c.name); });
+    m.ev.forEach(function (e) { var o = plc(e.where); if (o) o.ev++; });
+    var pk = Object.keys(pl).map(function (k) { return pl[k]; }).sort(function (a, b) { return b.ev - a.ev; });
+    if (!pk.length) empty("Todavía no hay lugares registrados.");
+    pk.forEach(function (o) { var d = el("div", "lore"); d.appendChild(el("b", null, o.name)); d.appendChild(document.createTextNode(" · " + (o.who.length ? "aquí: " + o.who.join(", ") : "nadie ahora") + (o.items.length ? " · objetos: " + o.items.join(", ") : "") + " · " + o.ev + " suceso" + (o.ev === 1 ? "" : "s"))); box.appendChild(d); });
+  } else if (ATL.tab === "marks") {
+    var mk = []; s.scenes.forEach(function (sc, i) { if (sc.bm) mk.push(i); });
+    if (!mk.length) empty("No has marcado ninguna escena. Usa «Opciones de la escena» → «Marcar escena».");
+    mk.forEach(function (i) { var b = el("button", "small", "Escena " + (i + 1) + " (capítulo " + (Math.floor(i / 5) + 1) + "): " + s.scenes[i].t.slice(0, 70) + "…"); b.style.display = "block"; b.style.width = "100%"; b.style.textAlign = "left"; b.style.margin = ".3rem 0"; b.onclick = function () { gotoScene(i); }; box.appendChild(b); });
+  } else if (ATL.tab === "search") {
+    var qi = el("input"); qi.type = "text"; qi.placeholder = "Buscar una palabra o frase en la novela"; qi.value = ATL.q || ""; qi.setAttribute("aria-label", "Buscar en la novela"); box.appendChild(qi);
+    var out = el("div"); box.appendChild(out);
+    function go() {
+      ATL.q = qi.value; out.innerHTML = ""; var q = nk(qi.value); if (q.length < 2) return;
+      var n = 0;
+      s.scenes.forEach(function (sc, i) {
+        if (n >= 30) return; var t = sc.t, at = nk(t).indexOf(q);
+        if (at < 0) return; n++;
+        var b = el("button", "small", "Escena " + (i + 1) + ": …" + t.slice(Math.max(0, at - 30), at + 60).replace(/\s+/g, " ") + "…"); b.style.display = "block"; b.style.width = "100%"; b.style.textAlign = "left"; b.style.margin = ".3rem 0"; b.onclick = function () { gotoScene(i); }; out.appendChild(b);
+      });
+      if (!n) out.appendChild(el("p", "hint", "No hay coincidencias."));
+    }
+    qi.oninput = go; go();
   } else if (ATL.tab === "pend") {
     var ps = m.pend.slice().reverse();
     if (!ps.length) empty("No hay asuntos pendientes.");
@@ -1123,11 +1462,11 @@ function renderAtlas() {
 }
 $("atlbox").addEventListener("toggle", function () { if ($("atlbox").open) renderAtlas(); });
 /* ---------- Lectura y voz ---------- */
-var RD = { size: 18, tone: "noche", font: "serif", tex: false, rate: 1 };
+var RD = { size: 18, tone: "noche", font: "serif", tex: false, rate: 1, type: true, anim: true };
 try { var _r = JSON.parse(localStorage.getItem("narrador:read:v1") || "null"); if (_r) RD = Object.assign(RD, _r); } catch (e) {}
 function saveRead() { try { localStorage.setItem("narrador:read:v1", JSON.stringify(RD)); } catch (e) {} }
 function applyRead() {
-  var b = $("book"); b.className = "scene rd t-" + RD.tone + (RD.font === "sans" ? " f-sans" : "") + (RD.tex ? " tex" : "");
+  var b = $("book"); b.className = "scene rd t-" + RD.tone + (RD.font === "sans" ? " f-sans" : RD.font === "legible" ? " f-leg" : "") + (RD.tex ? " tex" : "");
   b.style.fontSize = RD.size + "px";
 }
 function optRow(b, items, get, set) {
@@ -1149,30 +1488,79 @@ function renderRead() {
   b.appendChild(el("p", "hint", "Fondo de la página"));
   optRow(b, [["noche", "Noche"], ["dia", "Día"], ["sepia", "Sepia"], ["perg", "Pergamino"]], function () { return RD.tone; }, function (v) { RD.tone = v; });
   b.appendChild(el("p", "hint", "Letra"));
-  optRow(b, [["serif", "Con serifa"], ["sans", "Sin serifa"]], function () { return RD.font; }, function (v) { RD.font = v; });
+  optRow(b, [["serif", "Con serifa"], ["sans", "Sin serifa"], ["legible", "Legible (más espaciada)"]], function () { return RD.font; }, function (v) { RD.font = v; });
   var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = RD.tex;
   i.onchange = function () { RD.tex = i.checked; saveRead(); applyRead(); };
   l.appendChild(i); l.appendChild(document.createTextNode("Textura de papel")); l.style.margin = ".8rem 0"; b.appendChild(l);
+  var l2 = el("label", "chk"), i2 = el("input"); i2.type = "checkbox"; i2.checked = RD.type;
+  i2.onchange = function () { RD.type = i2.checked; saveRead(); };
+  l2.appendChild(i2); l2.appendChild(document.createTextNode("Escritura progresiva (el texto aparece poco a poco)")); l2.style.margin = ".4rem 0 .8rem"; b.appendChild(l2);
+  var l3 = el("label", "chk"), i3 = el("input"); i3.type = "checkbox"; i3.checked = RD.anim !== false;
+  i3.onchange = function () { RD.anim = i3.checked; saveRead(); fxApply(); };
+  l3.appendChild(i3); l3.appendChild(document.createTextNode("Fondo animado (partículas y movimiento suave)")); l3.style.margin = ".4rem 0 .8rem"; b.appendChild(l3);
   if (window.speechSynthesis) {
     b.appendChild(el("p", "hint", "Velocidad de la voz"));
     optRow(b, [[0.8, "Lenta"], [1, "Normal"], [1.25, "Rápida"]], function () { return RD.rate; }, function (v) { RD.rate = v; });
   }
   }
-var talking = false;
-function stopTalk() { try { speechSynthesis.cancel(); } catch (e) {} talking = false; $("listen").textContent = "🔊 Escuchar la última escena"; }
-$("listen").onclick = function () {
-  if (!window.speechSynthesis) { emsg("Este navegador no permite leer en voz alta. Prueba abriendo la página en Chrome."); return; }
+var TS = { ch: [], i: 0, on: false, paused: false, ps: [], scene: -1 };
+function setListen() {
+  var b = $("listen");
+  b.textContent = !TS.on ? "Escuchar la última escena" : TS.paused ? "Seguir escuchando" : "Pausa";
+  $("stoplisten").hidden = !TS.on;
+}
+function hilite(k) {
+  Array.prototype.forEach.call($("book").querySelectorAll(".speaking"), function (x) { x.classList.remove("speaking"); });
+  var e = TS.ps[k]; if (e) { e.classList.add("speaking"); if (e.scrollIntoView) e.scrollIntoView({ behavior: "smooth", block: "center" }); }
+}
+function stopTalk() { try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} TS.on = false; TS.paused = false; hilite(-1); setListen(); }
+function sentences(t) {
+  var a = String(t).match(/[^.!?…]+[.!?…]*["»”)]*\s*/g) || [t], out = [], cur = "";
+  a.forEach(function (x) { if ((cur + x).length > 220 && cur) { out.push(cur); cur = x; } else cur += x; });
+  if (cur.trim()) out.push(cur);
+  return out;
+}
+function speakNext() {
+  if (!TS.on || TS.paused) return;
+  if (TS.i >= TS.ch.length) { stopTalk(); return; }
+  var c = TS.ch[TS.i], idx = TS.i, u = new SpeechSynthesisUtterance(c.t);
+  u.lang = "es-ES"; u.rate = RD.rate;
+  u.onend = u.onerror = function () { if (!TS.on || TS.paused || TS.i !== idx) return; TS.i++; speakNext(); };
+  hilite(c.p); speechSynthesis.speak(u);
+}
+function startTalk(i) {
+  if (!window.speechSynthesis) { emsg("Este navegador no permite leer en voz alta."); return; }
   if (!cur || !cur.scenes.length) return;
-  if (talking) { stopTalk(); return; }
-  var txt = cur.scenes[cur.scenes.length - 1].t.split(/\n\s*\n/).filter(function (x) { return x.trim(); });
-  var vs = []; try { vs = speechSynthesis.getVoices().filter(function (v) { return /^es/i.test(v.lang); }); } catch (e) {}
-  speechSynthesis.cancel(); talking = true; $("listen").textContent = "⏹ Parar";
-  txt.forEach(function (t, k) {
-    var u = new SpeechSynthesisUtterance(t.trim()); u.lang = "es-ES"; u.rate = RD.rate; if (vs.length) u.voice = vs[0];
-    if (k === txt.length - 1) u.onend = u.onerror = function () { talking = false; $("listen").textContent = "🔊 Escuchar la última escena"; };
-    speechSynthesis.speak(u);
-  });
+  if (i == null) i = cur.scenes.length - 1;
+  try { speechSynthesis.cancel(); } catch (e) {}
+  var w = $("sc-" + i); if (!w) return;
+  TS.ps = Array.prototype.filter.call(w.querySelectorAll("p"), function (p) { return !p.classList.contains("act"); });
+  TS.ch = []; TS.ps.forEach(function (p, k) { sentences(p.textContent).forEach(function (t) { TS.ch.push({ t: t.trim(), p: k }); }); });
+  TS.i = 0; TS.on = true; TS.paused = false; TS.scene = i; setListen(); speakNext();
+}
+$("listen").onclick = function () {
+  if (!TS.on) { startTalk(); return; }
+  if (TS.paused) { TS.paused = false; setListen(); speakNext(); }
+  else { TS.paused = true; try { speechSynthesis.cancel(); } catch (e) {} setListen(); }
 };
+$("stoplisten").onclick = stopTalk;
+
+/* ---------- Lectura inmersiva, dictado ---------- */
+function setImm(v) { document.body.classList.toggle("imm", v); $("imx").hidden = !v; window.scrollTo(0, 0); }
+$("immb").onclick = function () { setImm(true); };
+$("bgb").onclick = function () { if (!cur) return; cur.bgv = (storyVar(cur) + 1) % 3; save(); applyTheme(cur.genre, cur.bgv, cur.id); };
+$("tInicio").onclick = function () { goHome(); };
+$("tHist").onclick = function () { goHome(); setTimeout(function () { $("list").scrollIntoView({ behavior: "smooth", block: "center" }); }, 60); };
+$("tPers").onclick = function () { $("dchars").click(); };
+$("tAjus").onclick = function () { $("menu").click(); };
+$("tMundo").onclick = function () {
+  if (!cur || $("play").hidden) { var l = lastStory(); if (!l) { goHome(); return; } openStory(l); }
+  $("atlbox").open = true; renderAtlas(); setTimeout(function () { $("atlbox").scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
+};
+$("imx").onclick = function () { setImm(false); };
+window.hvBack = function () { if (document.body.classList.contains("imm")) { setImm(false); return true; } if (!$("gmodal").hidden) { closeSheet(); return true; } return false; };
+$("dict").hidden = !window.hvDictate;
+$("dict").onclick = function () { window.hvDictate(function (t) { if (t) { var o = $("own"); o.value = (o.value ? o.value + " " : "") + t; o.focus(); } }); };
 
 /* ---------- Exportar a EPUB ---------- */
 function xe(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
@@ -1316,6 +1704,170 @@ async function exportAs(fmt) {
 $("exp").onclick = function () { $("exprow").hidden = !$("exprow").hidden; };
 Array.prototype.forEach.call($("exprow").querySelectorAll("button"), function (b) { b.onclick = function () { exportAs(b.getAttribute("data-f")); }; });
 
+/* ---------- Hojas modales ---------- */
+function closeSheet() { $("gmodal").hidden = true; $("gsheet").innerHTML = ""; }
+function sheet(title, build) {
+  var sh = $("gsheet"); sh.innerHTML = "";
+  var h = el("h2", null, title); h.style.marginTop = "0"; sh.appendChild(h);
+  build(sh);
+  $("gmodal").setAttribute("aria-label", title); $("gmodal").hidden = false; sh.focus();
+}
+$("gmodal").addEventListener("click", function (e) { if (e.target === $("gmodal")) closeSheet(); });
+["pmodal", "gmodal", "drawer"].forEach(function (id) { var e = $(id); e.setAttribute("role", "dialog"); e.setAttribute("aria-modal", "true"); });
+function para(sh, t, c) { var p = el("p", c || "hint", t); sh.appendChild(p); return p; }
+function closeBtn(sh, t) { var b = el("button", null, t || "Cerrar"); b.style.marginTop = ".8rem"; b.onclick = closeSheet; sh.appendChild(b); return b; }
+
+/* Copia de seguridad */
+var BKEYS = ["narrador:v1", "narrador:chars:v1", "narrador:read:v1"];
+function today() { return new Date().toISOString().slice(0, 10); }
+async function exportBackup(msg) {
+  var o = { app: "historias-vivas", v: 1, date: new Date().toISOString(), data: {} };
+  BKEYS.forEach(function (k) { var v = localStorage.getItem(k); if (v != null) o.data[k] = v; });
+  var dl = null; try { dl = await claude.use("downloads"); } catch (e) {}
+  if (!dl) { msg.textContent = "Guardar archivos no está disponible en esta vista."; return; }
+  try { await dl.save({ filename: "historias-vivas-copia-" + today() + ".json", data: new TextEncoder().encode(JSON.stringify(o)) }); msg.textContent = "Copia guardada: historias-vivas-copia-" + today() + ".json"; }
+  catch (e) { msg.textContent = e && e.code === "declined" ? "Descarga cancelada." : "No se pudo guardar la copia."; }
+}
+function importBackup(file, msg) {
+  var fr = new FileReader();
+  fr.onerror = function () { msg.textContent = "No se pudo leer el archivo."; };
+  fr.onload = function () {
+    try {
+      var o = JSON.parse(fr.result);
+      if (!o || o.app !== "historias-vivas" || !o.data) { msg.textContent = "Ese archivo no es una copia de Historias vivas."; return; }
+      var added = 0, updated = 0, st = [];
+      try { st = JSON.parse(o.data["narrador:v1"] || "[]"); } catch (e) { st = []; }
+      if (!Array.isArray(st)) st = [];
+      st.forEach(function (n) {
+        if (!n || !n.id || !Array.isArray(n.scenes)) return;
+        var ex = LIB.filter(function (x) { return x.id === n.id; })[0];
+        if (!ex) { LIB.push(n); added++; }
+        else if ((n.at || 0) > (ex.at || 0)) { LIB[LIB.indexOf(ex)] = n; updated++; }
+      });
+      var ch = []; try { ch = JSON.parse(o.data["narrador:chars:v1"] || "[]"); } catch (e) {}
+      if (Array.isArray(ch)) ch.forEach(function (c) { if (c && c.name && !CHARS.some(function (x) { return (c.id && x.id === c.id) || x.name === c.name; })) CHARS.push(c); });
+      save(); saveChars(); renderLib();
+      msg.textContent = "Importado: " + added + " historia" + (added === 1 ? "" : "s") + " nueva" + (added === 1 ? "" : "s") + " y " + updated + " actualizada" + (updated === 1 ? "" : "s") + ". Tus historias actuales no se han borrado.";
+    } catch (e) { msg.textContent = "El archivo está dañado o no es válido."; }
+  };
+  fr.readAsText(file);
+}
+function backupSheet() {
+  sheet("Copia de seguridad", function (sh) {
+    para(sh, "Guarda todas tus historias, personajes y ajustes de lectura en un archivo, y recupéralos cuando quieras (por ejemplo en otro móvil). No incluye tus claves de API. Haz una copia de vez en cuando.");
+    var r = el("div", "row"), msg = el("p", "hint");
+    var ex = el("button", "go", "Guardar copia ahora"); ex.style.flex = "1"; ex.onclick = function () { exportBackup(msg); }; r.appendChild(ex);
+    var l = el("label", "fb", "Recuperar desde un archivo"), inp = el("input", "fpick"); inp.type = "file"; inp.accept = ".json,application/json";
+    inp.onchange = function () { if (inp.files && inp.files[0]) importBackup(inp.files[0], msg); inp.value = ""; };
+    l.appendChild(inp); r.appendChild(l); sh.appendChild(r);
+    msg.setAttribute("role", "status"); msg.style.marginTop = ".8rem"; sh.appendChild(msg);
+    closeBtn(sh);
+  });
+}
+$("dbackup").onclick = function () { drawer(false); backupSheet(); };
+
+/* Privacidad y ayuda */
+var PRIV = [
+  ["Qué es", "Historias vivas es una herramienta para escribir y jugar historias de ficción con ayuda de una inteligencia artificial. Todos los personajes y hechos son inventados. Puede generar temas adultos (violencia, terror, romance) con tratamiento literario; no genera escenas sexuales explícitas."],
+  ["Dónde están tus historias", "Tus historias, personajes y ajustes se guardan solo en tu móvil. No hay cuentas, ni servidor de la app, ni analítica, ni publicidad. Si desinstalas la app o borras sus datos, se pierden: usa «Copia de seguridad»."],
+  ["Qué se envía a la IA", "Para escribir cada escena, la app envía a la IA que tú elijas (Gemini, ChatGPT/OpenAI, Claude/Anthropic, o la que uses en el modo copiar y pegar) el texto de tu historia y de tu acción. Ese proveedor lo trata según sus propias condiciones y su política de privacidad. No escribas datos personales reales en la historia."],
+  ["Tu clave de API", "Si usas una clave de API, se guarda cifrada en el almacén seguro de Android, solo en tu móvil, y solo se envía al proveedor al que pertenece. Puedes borrarla en «Conectar mi IA». Usa claves con límites de gasto o de un plan gratuito."],
+  ["Contenido de la IA", "La IA puede equivocarse o producir algo que no te guste. Cada escena tiene «Denunciar contenido» para avisarnos de un resultado inapropiado, y puedes borrarla, editarla o pedir otra versión."],
+  ["Derechos", "Eres responsable de lo que escribes y de cómo usas los textos que se generan. Los textos creados con IA pueden tener un régimen de derechos distinto según el país y el proveedor: consulta sus condiciones antes de publicarlos o venderlos."]
+];
+function helpSheet() {
+  sheet("Privacidad y ayuda", function (sh) {
+    PRIV.forEach(function (x) { var h = el("h3", null, x[0]); h.style.margin = ".9rem 0 .2rem"; sh.appendChild(h); para(sh, x[1]); });
+    closeBtn(sh);
+  });
+}
+$("dhelp").onclick = function () { drawer(false); helpSheet(); };
+
+/* Bienvenida */
+function welcomeSheet() {
+  sheet("Bienvenido a Historias vivas", function (sh) {
+    para(sh, "Una historia que recuerda lo que haces: tú imaginas y decides, la IA escribe, recuerda y hace evolucionar el mundo, y nadie sabe cómo acabará.");
+    var ol = el("ol"); ol.style.paddingLeft = "1.2rem";
+    ["Conecta tu IA (si usas una clave de Gemini es gratis y lo más cómodo; también puedes copiar y pegar con cualquier IA).", "Cuenta tu idea y elige géneros, estilo y protagonista.", "Lee y decide qué hace tu personaje. La memoria de la historia se guarda sola."].forEach(function (t) { ol.appendChild(el("li", null, t)); });
+    sh.appendChild(ol);
+    para(sh, "Es ficción con temas adultos. Todos los personajes son adultos y no hay contenido sexual explícito.");
+    var r = el("div", "row");
+    if (window.openAISettings) { var c = el("button", "go", "Conectar mi IA"); c.style.flex = "1"; c.onclick = function () { try { localStorage.setItem("hv:welcome", "1"); } catch (e) {} closeSheet(); window.openAISettings(); }; r.appendChild(c); }
+    var ok = el("button", null, "Entendido"); ok.onclick = function () { try { localStorage.setItem("hv:welcome", "1"); } catch (e) {} closeSheet(); };
+    r.appendChild(ok); sh.appendChild(r);
+  });
+}
+
+/* Editar escena */
+function editScene(i) {
+  var s = cur, sc = s.scenes[i]; if (!sc) return;
+  sheet("Editar la escena " + (i + 1), function (sh) {
+    para(sh, "Cambia el texto como quieras. La memoria de la historia no se recalcula: si cambias un hecho importante, menciónalo en tu siguiente acción.");
+    var ta = el("textarea"); ta.value = sc.t; ta.style.minHeight = "14rem"; ta.setAttribute("aria-label", "Texto de la escena"); sh.appendChild(ta);
+    var r = el("div", "row"); r.style.marginTop = ".6rem";
+    var ok = el("button", "go", "Guardar cambios"); ok.style.flex = "1";
+    ok.onclick = function () { var t = ta.value.trim(); if (!t) return; sc.t = t; if (i === s.scenes.length - 1) s.last = t; save(); closeSheet(); render(true); };
+    var no = el("button", null, "Cancelar"); no.onclick = closeSheet;
+    r.appendChild(ok); r.appendChild(no); sh.appendChild(r);
+  });
+}
+
+/* Denunciar contenido */
+function reportScene(i) {
+  var s = cur, sc = s.scenes[i]; if (!sc) return;
+  sheet("Denunciar contenido", function (sh) {
+    para(sh, "Si esta escena contiene algo inapropiado (contenido sexual explícito, violencia gratuita, odio, menores en situaciones sexuales u otro problema), indícalo. El informe incluye un fragmento de la escena y se guarda en tu móvil; puedes enviarlo por correo o copiarlo.");
+    var sel = el("select"); ["Contenido sexual explícito", "Violencia gratuita o muy gráfica", "Odio o acoso", "Menores en situaciones inapropiadas", "Información falsa o peligrosa", "Otro problema"].forEach(function (t) { var o = el("option", null, t); o.value = t; sel.appendChild(o); });
+    sel.setAttribute("aria-label", "Motivo"); sel.style.width = "100%"; sel.style.padding = ".6rem"; sh.appendChild(sel);
+    var note = el("textarea"); note.placeholder = "Comentario (opcional)"; note.setAttribute("aria-label", "Comentario"); note.style.marginTop = ".6rem"; sh.appendChild(note);
+    var msg = el("p", "hint"); msg.setAttribute("role", "status");
+    function build() { return "INFORME — Historias vivas\nMotivo: " + sel.value + "\nComentario: " + note.value.trim() + "\nEscena " + (i + 1) + ": " + sc.t.replace(/\s+/g, " ").slice(0, 400) + "\nFecha: " + new Date().toISOString(); }
+    function log() { try { var L = JSON.parse(localStorage.getItem("narrador:reports:v1") || "[]"); L.push({ at: Date.now(), scene: i + 1, reason: sel.value, note: note.value.trim() }); localStorage.setItem("narrador:reports:v1", JSON.stringify(L.slice(-50))); } catch (e) {} }
+    var r = el("div", "row"); r.style.marginTop = ".6rem";
+    if (window.hvSupport && window.hvSupport.email) { var m = el("button", "go", "Enviar por correo"); m.style.flex = "1"; m.onclick = function () { log(); window.hvSupport.send("Informe de contenido", build()); msg.textContent = "Informe preparado en tu app de correo."; }; r.appendChild(m); }
+    var cp = el("button", "go", "Copiar informe"); cp.style.flex = "1";
+    cp.onclick = function () { log(); var t = build(); if (window.Native) window.Native.copy(t); else { try { navigator.clipboard.writeText(t); } catch (e) {} } msg.textContent = "Informe copiado y guardado."; };
+    r.appendChild(cp); sh.appendChild(r);
+    var r2 = el("div", "row"); r2.style.marginTop = ".6rem";
+    if (i === s.scenes.length - 1 && s.prev && s.lastAct) { var rw = el("button", null, "Quitar esta escena y escribir otra"); rw.onclick = function () { log(); closeSheet(); $("regen").click(); }; r2.appendChild(rw); }
+    var no = el("button", null, "Cerrar"); no.onclick = closeSheet; r2.appendChild(no);
+    sh.appendChild(r2); sh.appendChild(msg);
+  });
+}
+
+/* Revisión final del libro (informe de problemas, sin cambiar el texto) */
+function reviewBook() {
+  var s = cur; if (!s || busy) return;
+  var chN = Math.ceil(s.scenes.length / 5), batches = Math.ceil(chN / 2);
+  sheet("Revisar el libro", function (sh) {
+    para(sh, "Una IA lee la novela por tandas de dos capítulos y te dice dónde hay repeticiones, contradicciones o personajes que saben lo que no deberían. No cambia ningún texto: tú decides qué corregir. Se harán " + batches + " consulta" + (batches === 1 ? "" : "s") + " a tu IA.");
+    var res = el("div"), st = el("p", "hint"); st.setAttribute("role", "status");
+    var go = el("button", "go", "Empezar la revisión"); go.style.marginTop = ".6rem";
+    go.onclick = async function () {
+      go.disabled = true; var found = 0;
+      try {
+        for (var b = 0; b < batches; b++) {
+          st.textContent = "Revisando… tanda " + (b + 1) + " de " + batches;
+          var a = b * 10, sc = s.scenes.slice(a, a + 10), tx = sc.map(function (x, k) { return "[Escena " + (a + k + 1) + "] " + x.t; }).join("\n\n");
+          var q = "Eres un editor de continuidad. Lee estas escenas de una novela y detecta SOLO problemas reales: repeticiones de frases o descripciones, contradicciones con la MEMORIA, personajes que saben lo que no se les ha contado, objetos que aparecen donde no deben, incoherencias de tiempo o lugar, y diálogos repetidos. Sé concreto y no inventes problemas.\nMEMORIA:\n" + memCtx(s, tx.slice(0, 1500)) + "\nESCENAS:\n" + tx + "\nResponde SOLO con JSON: {\"problemas\":[{\"escena\":1,\"tipo\":\"repetición|contradicción|conocimiento|objeto|tiempo|otro\",\"detalle\":\"explicación breve\"}]} (lista vacía si no hay problemas).";
+          var d = parse((await ask(q)).text);
+          arr(d.problemas).forEach(function (p) {
+            if (!p || !p.detalle) return; found++;
+            var n = Number(p.escena), c = el("div", "rres"); c.appendChild(el("b", null, (isFinite(n) ? "Escena " + n : "General") + " · " + str(p.tipo, 30)));
+            c.appendChild(document.createTextNode(str(p.detalle, 300)));
+            if (isFinite(n) && s.scenes[n - 1]) { var rr = el("div", "row"); rr.style.marginTop = ".4rem"; var g = el("button", "small", "Ir a la escena"); g.onclick = function () { closeSheet(); gotoScene(n - 1); }; var e2 = el("button", "small", "Editar"); e2.onclick = function () { editScene(n - 1); }; rr.appendChild(g); rr.appendChild(e2); c.appendChild(rr); }
+            res.appendChild(c);
+          });
+        }
+        st.textContent = found ? "Revisión terminada: " + found + " aviso" + (found === 1 ? "" : "s") + "." : "Revisión terminada: no he encontrado problemas claros.";
+      } catch (e) { st.textContent = e && e.code === "cancelled" ? "Revisión cancelada." : (e && e.message && e.code ? e.message : "No se pudo completar la revisión. Reinténtalo."); }
+      go.disabled = false;
+    };
+    sh.appendChild(go); sh.appendChild(st); sh.appendChild(res); closeBtn(sh);
+  });
+}
+$("rvw").onclick = reviewBook;
+
 /* ---------- Menú ---------- */
 function drawer(v) { $("drawer").hidden = !v; }
 function goHome() { drawer(false); renderLib(); view("lib"); }
@@ -1328,10 +1880,13 @@ $("dtheme").onclick = function () {
   ti = (ti + 1) % 3; var t = THEMES[ti];
   if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
   $("dtheme").textContent = "Tema: " + TN[t];
+  try { localStorage.setItem("hv:theme", t); } catch (e) {} if (window.reTheme) reTheme(); if (window.fxApply) fxApply();
 };
+try { var _t = localStorage.getItem("hv:theme"); if (_t && THEMES.indexOf(_t) > 0) { ti = THEMES.indexOf(_t); document.documentElement.setAttribute("data-theme", _t); $("dtheme").textContent = "Tema: " + TN[_t]; } } catch (e) {}
 
 loadChars();
-load(); renderLib();
+load(); renderLib(); setListen(); setTab("lib");
+try { if (!LIB.length && !localStorage.getItem("hv:welcome")) welcomeSheet(); } catch (e) {}
 </script>
 </body>
 </html>

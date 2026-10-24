@@ -9,6 +9,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+import android.speech.RecognizerIntent
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Base64
@@ -26,10 +29,19 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.webkit.WebViewAssetLoader
 import org.json.JSONObject
+import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.security.KeyStore
 import java.util.Locale
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
 
 class MainActivity : ComponentActivity() {
 
@@ -38,10 +50,28 @@ class MainActivity : ComponentActivity() {
     private var ttsReady = false
     private val ttsPending = ArrayList<Triple<String, Float, String>>()
     private var chooserCb: ValueCallback<Array<Uri>>? = null
+    private val writer = Executors.newSingleThreadExecutor()
+
+    // Solo estas webs pueden recibir peticiones de IA o abrirse desde la app
+    private val apiHosts = setOf(
+        "generativelanguage.googleapis.com",
+        "api.openai.com",
+        "api.anthropic.com"
+    )
+    private val openHosts = setOf(
+        "aistudio.google.com",
+        "platform.openai.com",
+        "console.anthropic.com"
+    )
 
     private val chooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
         chooserCb?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(r.resultCode, r.data))
         chooserCb = null
+    }
+
+    private val dictation = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
+        val t = r.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull() ?: ""
+        js("window.__dictDone&&window.__dictDone(${JSONObject.quote(t)})")
     }
 
     @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
@@ -83,6 +113,7 @@ class MainActivity : ComponentActivity() {
             domStorageEnabled = true
             allowFileAccess = false
             allowContentAccess = true
+            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
             mediaPlaybackRequiresUserGesture = false
             cacheMode = WebSettings.LOAD_DEFAULT
         }
@@ -92,8 +123,11 @@ class MainActivity : ComponentActivity() {
                 loader.shouldInterceptRequest(request.url)
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                if (request.url.host == "appassets.androidplatform.net") return false
-                try { startActivity(Intent(Intent.ACTION_VIEW, request.url)) } catch (e: Exception) {}
+                val u = request.url
+                if (u.host == "appassets.androidplatform.net") return false
+                if (u.scheme == "https" && u.host in openHosts) {
+                    try { startActivity(Intent(Intent.ACTION_VIEW, u)) } catch (e: Exception) {}
+                }
                 return true
             }
         }
@@ -123,7 +157,7 @@ class MainActivity : ComponentActivity() {
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 web.evaluateJavascript(
-                    "(function(){var l=document.getElementById('lib');if(l&&l.hidden&&window.goHome){goHome();return 'back'}return 'exit'})()"
+                    "(function(){if(window.hvBack&&hvBack())return 'back';var l=document.getElementById('lib');if(l&&l.hidden&&window.goHome){goHome();return 'back'}return 'exit'})()"
                 ) { res ->
                     if (res == null || !res.contains("back")) finish()
                 }
@@ -150,8 +184,44 @@ class MainActivity : ComponentActivity() {
         tts?.speak(text, TextToSpeech.QUEUE_ADD, null, id)
     }
 
+    // ---------- Almacenamiento en ficheros ----------
+    private fun storeDir(): File = File(filesDir, "store").also { it.mkdirs() }
+    private fun storeFile(key: String) = File(storeDir(), URLEncoder.encode(key, "UTF-8") + ".json")
+
+    // ---------- Claves cifradas con el Keystore de Android ----------
+    private fun secretKey(): SecretKey {
+        val ks = KeyStore.getInstance("AndroidKeyStore")
+        ks.load(null)
+        (ks.getKey("hv_secrets", null) as? SecretKey)?.let { return it }
+        val g = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
+        g.init(
+            KeyGenParameterSpec.Builder("hv_secrets", KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setKeySize(256)
+                .build()
+        )
+        return g.generateKey()
+    }
+
+    private fun encrypt(plain: String): String {
+        val c = Cipher.getInstance("AES/GCM/NoPadding")
+        c.init(Cipher.ENCRYPT_MODE, secretKey())
+        val iv = c.iv
+        val ct = c.doFinal(plain.toByteArray(Charsets.UTF_8))
+        return Base64.encodeToString(iv + ct, Base64.NO_WRAP)
+    }
+
+    private fun decrypt(data: String): String {
+        val b = Base64.decode(data, Base64.NO_WRAP)
+        val c = Cipher.getInstance("AES/GCM/NoPadding")
+        c.init(Cipher.DECRYPT_MODE, secretKey(), GCMParameterSpec(128, b, 0, 12))
+        return String(c.doFinal(b, 12, b.size - 12), Charsets.UTF_8)
+    }
+
     inner class Bridge {
 
+        // ----- voz -----
         @JavascriptInterface
         fun speak(text: String, rate: Double, id: String) {
             runOnUiThread {
@@ -168,6 +238,23 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // ----- dictado -----
+        @JavascriptInterface
+        fun dictate() {
+            runOnUiThread {
+                try {
+                    val i = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                        .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                        .putExtra(RecognizerIntent.EXTRA_LANGUAGE, "es-ES")
+                        .putExtra(RecognizerIntent.EXTRA_PROMPT, "Habla ahora")
+                    dictation.launch(i)
+                } catch (e: Exception) {
+                    toast("Este móvil no tiene dictado por voz.")
+                }
+            }
+        }
+
+        // ----- portapapeles -----
         @JavascriptInterface
         fun copy(text: String) {
             runOnUiThread {
@@ -194,16 +281,34 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface
+        fun toast(t: String) = this@MainActivity.toast(t)
+
+        // ----- enlaces y correo -----
+        @JavascriptInterface
         fun openUrl(u: String) {
-            if (!u.startsWith("https://")) return
+            val uri = try { Uri.parse(u) } catch (e: Exception) { return }
+            if (uri.scheme != "https" || uri.host !in openHosts) return
             runOnUiThread {
-                try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(u))) } catch (e: Exception) {}
+                try { startActivity(Intent(Intent.ACTION_VIEW, uri)) } catch (e: Exception) {}
             }
         }
 
         @JavascriptInterface
-        fun toast(t: String) = this@MainActivity.toast(t)
+        fun sendMail(to: String, subject: String, body: String) {
+            runOnUiThread {
+                try {
+                    val i = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"))
+                        .putExtra(Intent.EXTRA_SUBJECT, subject)
+                        .putExtra(Intent.EXTRA_TEXT, body)
+                    if (to.isNotBlank()) i.putExtra(Intent.EXTRA_EMAIL, arrayOf(to))
+                    startActivity(i)
+                } catch (e: Exception) {
+                    toast("No hay ninguna app de correo.")
+                }
+            }
+        }
 
+        // ----- guardado en Descargas -----
         @JavascriptInterface
         fun saveFile(name: String, b64: String, mime: String): Boolean {
             return try {
@@ -223,16 +328,75 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        // ----- almacenamiento persistente (sin límite de 5 MB) -----
+        @JavascriptInterface
+        fun storeLoadAll(): String {
+            val o = JSONObject()
+            storeDir().listFiles()?.forEach { f ->
+                if (f.name.endsWith(".json")) {
+                    try {
+                        val key = URLDecoder.decode(f.name.removeSuffix(".json"), "UTF-8")
+                        o.put(key, f.readText(Charsets.UTF_8))
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+            return o.toString()
+        }
+
+        @JavascriptInterface
+        fun storeSet(key: String, value: String) {
+            writer.execute {
+                try {
+                    val f = storeFile(key)
+                    val tmp = File(f.parentFile, f.name + ".tmp")
+                    tmp.writeText(value, Charsets.UTF_8)
+                    if (!tmp.renameTo(f)) {
+                        f.delete()
+                        tmp.renameTo(f)
+                    }
+                } catch (e: Exception) {
+                }
+            }
+        }
+
+        @JavascriptInterface
+        fun storeRemove(key: String) {
+            writer.execute { try { storeFile(key).delete() } catch (e: Exception) {} }
+        }
+
+        // ----- claves de API cifradas -----
+        @JavascriptInterface
+        fun secretSet(name: String, value: String) {
+            val prefs = getSharedPreferences("secrets", Context.MODE_PRIVATE)
+            try {
+                if (value.isEmpty()) prefs.edit().remove(name).apply()
+                else prefs.edit().putString(name, encrypt(value)).apply()
+            } catch (e: Exception) {
+                toast("No se pudo guardar la clave de forma segura.")
+            }
+        }
+
+        @JavascriptInterface
+        fun secretGet(name: String): String {
+            val prefs = getSharedPreferences("secrets", Context.MODE_PRIVATE)
+            val v = prefs.getString(name, null) ?: return ""
+            return try { decrypt(v) } catch (e: Exception) { "" }
+        }
+
+        // ----- red: solo hacia los proveedores de IA permitidos -----
         @JavascriptInterface
         fun http(id: String, url: String, headersJson: String, body: String) {
             Thread {
                 var status = 0
                 var text = ""
                 try {
-                    val c = URL(url).openConnection() as HttpURLConnection
+                    val u = URL(url)
+                    if (u.protocol != "https" || u.host !in apiHosts) throw SecurityException("Dirección no permitida")
+                    val c = u.openConnection() as HttpURLConnection
                     c.requestMethod = "POST"
-                    c.connectTimeout = 20000
-                    c.readTimeout = 60000
+                    c.connectTimeout = 30000
+                    c.readTimeout = 180000
                     c.doOutput = true
                     val h = JSONObject(headersJson)
                     for (k in h.keys()) c.setRequestProperty(k, h.getString(k))
