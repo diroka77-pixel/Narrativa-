@@ -56,8 +56,32 @@
         } else {
           var ki = document.createElement("input"); ki.type = "password"; ki.placeholder = "Pega aquí tu clave de API"; ki.value = (c.keys || {})[k] || ""; ki.id = "hvk_" + k;
           var mi = document.createElement("input"); mi.type = "text"; mi.placeholder = "Modelo"; mi.value = (c.models || {})[k] || PROV[k].model; mi.id = "hvmo_" + k;
-          d.appendChild(mk("p", "hint", "La clave se guarda solo en este móvil. Consíguela en " + PROV[k].url + ". La clave de API es distinta de la suscripción de chat y puede tener coste o límites propios según el proveedor."));
-          d.appendChild(ki); d.appendChild(mi);
+          if (k === "gemini") {
+            d.appendChild(mk("p", "hint", "Cómo conseguir tu clave de Gemini: 1) Pulsa «Abrir Google AI Studio» e inicia sesión con tu cuenta de Google. 2) Pulsa «Create API key» (crear clave). 3) Copia la clave. 4) Vuelve aquí y pulsa «Pegar clave». Google suele ofrecer un uso gratuito con límites; las condiciones las fija Google y pueden cambiar."));
+          } else {
+            d.appendChild(mk("p", "hint", "Crea tu clave en " + PROV[k].url + ", cópiala y pulsa «Pegar clave». La clave de API es distinta de la suscripción de chat y puede tener coste o límites propios."));
+          }
+          var ob = mk("button", null, "Abrir " + (k === "gemini" ? "Google AI Studio" : "la página de claves"));
+          ob.onclick = function (e) { e.preventDefault(); N.openUrl(PROV[k].url); };
+          var pb = mk("button", null, "Pegar clave");
+          pb.onclick = function (e) { e.preventDefault(); var t = N.paste().trim(); if (t) ki.value = t; else N.toast("No hay nada copiado."); };
+          var tb = mk("button", null, "Probar conexión");
+          tb.onclick = async function (e) {
+            e.preventDefault();
+            var tc = { mode: k, keys: {}, models: {} }; tc.keys[k] = ki.value.trim(); tc.models[k] = mi.value.trim();
+            if (!tc.keys[k]) { N.toast("Falta la clave."); return; }
+            tb.textContent = "Probando…";
+            try {
+              var f = k === "gemini" ? viaGemini : k === "openai" ? viaOpenAI : viaAnthropic;
+              await f("Responde solo con la palabra: listo", tc);
+              N.toast("Conexión correcta.");
+            } catch (er) { N.toast((er && er.message) || "No se pudo conectar."); }
+            tb.textContent = "Probar conexión";
+          };
+          d.appendChild(ki);
+          var br = mk("div", "r"); br.appendChild(ob); br.appendChild(pb); br.appendChild(tb);
+          d.appendChild(br);
+          d.appendChild(mi);
         }
         l.appendChild(d); sh.appendChild(l);
         r.onchange = function () {
@@ -74,13 +98,45 @@
           if (mi) n.models[k] = mi.value.trim();
         });
         if (n.mode !== "manual" && !n.keys[n.mode]) { N.toast("Falta la clave de API."); return; }
-        saveCfg(n); v.o.remove(); resolve(true);
+        saveCfg(n); v.o.remove(); paintStatus(); resolve(true);
+        checkNow().then(function (okc) { N.toast(n.mode === "manual" ? "Modo copiar y pegar activado." : okc ? "Conectada correctamente." : "No se pudo conectar. Revisa la clave."); });
       };
       no.onclick = function () { v.o.remove(); resolve(false); };
       row.appendChild(ok); row.appendChild(no); sh.appendChild(row);
     });
   }
   window.openAISettings = openSettings;
+
+  /* ---------- Indicador de conexión ---------- */
+  var ST = { s: "none", msg: "" };   // none | manual | checking | ok | fail
+  function label() {
+    var c = cfg();
+    if (!c.mode) return { s: "none", t: "Sin conectar. Toca para conectar tu IA" };
+    if (c.mode === "manual") return { s: "manual", t: "Modo copiar y pegar (no necesita conexión)" };
+    var n = PROV[c.mode].name.split(" (")[0];
+    if (ST.s === "checking") return { s: "checking", t: "Comprobando conexión con " + n + "…" };
+    if (ST.s === "ok") return { s: "ok", t: "Conectada: " + n };
+    if (ST.s === "fail") return { s: "fail", t: "Sin conexión con " + n + (ST.msg ? ": " + ST.msg : "") };
+    return { s: "checking", t: "Comprobando conexión con " + n + "…" };
+  }
+  var COL = { none: "#9a9a9a", manual: "#4a90d9", checking: "#e0a030", ok: "#2e9e5b", fail: "#d04040" };
+  function paintStatus() {
+    var l = label(), b = document.getElementById("hvstat");
+    if (b) { b.textContent = ""; var d = mk("span"); d.style.cssText = "display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.5rem;background:" + COL[l.s]; b.appendChild(d); b.appendChild(document.createTextNode(l.t)); }
+    var m = document.getElementById("hvmenu");
+    if (m) m.textContent = "Conectar mi IA · " + (l.s === "ok" ? "conectada" : l.s === "fail" ? "sin conexión" : l.s === "manual" ? "copiar y pegar" : l.s === "checking" ? "comprobando…" : "sin conectar");
+  }
+  function setStatus(s, msg) { ST = { s: s, msg: msg || "" }; paintStatus(); }
+  async function checkNow() {
+    var c = cfg();
+    if (!c.mode || c.mode === "manual") { setStatus(c.mode ? "manual" : "none"); return true; }
+    setStatus("checking");
+    try {
+      var f = c.mode === "gemini" ? viaGemini : c.mode === "openai" ? viaOpenAI : viaAnthropic;
+      await f("Responde solo con la palabra: listo", c);
+      setStatus("ok"); return true;
+    } catch (e) { setStatus("fail", (e && e.message ? e.message : "no se pudo conectar").slice(0, 90)); return false; }
+  }
 
   /* ---------- HTTP nativo ---------- */
   var waits = {}, hid = 0, HTTP_TIMEOUT = 65000;
@@ -173,19 +229,19 @@
     var c = cfg();
     if (!c.mode) { var ok = await openSettings(); if (!ok) throw { code: "not_granted", message: "No has conectado ninguna IA." }; c = cfg(); }
     var t;
-    if (c.mode === "manual") t = await viaManual(prompt);
-    else {
-      try {
-        if (c.mode === "gemini") t = await viaGemini(prompt, c);
-        else if (c.mode === "openai") t = await viaOpenAI(prompt, c);
-        else if (c.mode === "anthropic") t = await viaAnthropic(prompt, c);
-        else t = await viaManual(prompt);
-      } catch (e) {
-        var reason = e && e.message ? e.message : "El proveedor no respondió.";
-        N.toast(reason + " Puedes continuar con copiar y pegar.");
+    try {
+      if (c.mode === "gemini") t = await viaGemini(prompt, c);
+      else if (c.mode === "openai") t = await viaOpenAI(prompt, c);
+      else if (c.mode === "anthropic") t = await viaAnthropic(prompt, c);
+      else t = await viaManual(prompt);
+    } catch (e) {
+      if (e && (e.code === "bad_key" || e.code === "network" || e.code === "rate_limited" || e.code === "error")) {
+        setStatus("fail", e.message ? e.message.slice(0, 90) : "");
+        N.toast(((e && e.message) || "El proveedor no respondió.") + " Puedes continuar con copiar y pegar.");
         t = await viaManual(prompt);
-      }
+      } else throw e;
     }
+    if (c.mode !== "manual") setStatus("ok");
     return { text: String(t), truncated: false };
   }
 
@@ -233,9 +289,17 @@
   document.addEventListener("DOMContentLoaded", function () {
     var nav = document.querySelector(".dnav"), th = document.getElementById("dtheme");
     if (nav && th) {
-      var b = mk("button", null, "Conectar mi IA");
+      var b = mk("button", null, "Conectar mi IA"); b.id = "hvmenu";
       b.onclick = function () { var d = document.getElementById("drawer"); if (d) d.hidden = true; openSettings(); };
       nav.insertBefore(b, th);
     }
+    var lib = document.getElementById("lib"), hero = document.getElementById("hero");
+    if (lib && hero) {
+      var st = mk("button", "small"); st.id = "hvstat"; st.style.cssText = "width:100%;text-align:left;margin:.2rem 0 .8rem";
+      st.onclick = function () { openSettings(); };
+      lib.insertBefore(st, hero);
+    }
+    paintStatus();
+    checkNow();
   });
 })();

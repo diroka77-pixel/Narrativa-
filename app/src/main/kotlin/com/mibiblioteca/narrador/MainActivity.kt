@@ -194,6 +194,14 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface
+        fun openUrl(u: String) {
+            if (!u.startsWith("https://")) return
+            runOnUiThread {
+                try { startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(u))) } catch (e: Exception) {}
+            }
+        }
+
+        @JavascriptInterface
         fun toast(t: String) = this@MainActivity.toast(t)
 
         @JavascriptInterface

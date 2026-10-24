@@ -227,6 +227,7 @@ h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormoran
 <div class="row" style="align-items:center;margin-bottom:.4rem"><button class="small" id="back2">← Mis historias</button></div>
 <h2 id="ptitle" style="margin-top:.4rem"></h2>
 <details class="pl" id="set"><summary>Ajustes de la partida</summary><div id="setbody"></div></details>
+<details class="pl" id="atlbox"><summary>Atlas de la historia</summary><div id="atlbody"></div></details>
 <details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
 <details class="pl" id="imgbox"><summary>Título, portada e imágenes</summary><div id="imgbody"></div></details>
 <details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
@@ -300,7 +301,7 @@ function renderLib() {
     b.appendChild(el("span", "tag", "CONTINÚA TU PRÓXIMA AVENTURA"));
     b.appendChild(el("span", "ttl", s0.title));
     b.appendChild(el("small", null, "Capítulo " + (Math.floor(s0.turn / 5) + 1) + " · turno " + s0.turn + (s0.fin ? " · finalizada" : "")));
-    var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 16 * 100)) + "%"; pr.appendChild(bar); b.appendChild(pr);
+    var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 120 * 100)) + "%"; pr.appendChild(bar); b.appendChild(pr);
     b.onclick = function () { openStory(s0); };
   } else {
     b.style.background = bg("Auto", "inicio");
@@ -484,7 +485,7 @@ $("cback").onclick = function () { renderLib(); view("lib"); };
 
 /* ---------- Jugar ---------- */
 function openStory(s) {
-  cur = s; s.at = Date.now(); view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); render();
+  cur = s; s.at = Date.now(); view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); render(); if ($("atlbox").open) renderAtlas();
   if (!s.scenes.length) turn("Empieza la historia: presenta al protagonista, el lugar y el conflicto inicial.", "");
 }
 function renderSet() {
@@ -530,13 +531,19 @@ function render(keep) {
 }
 
 var RULES = [
-  "Eres un novelista que escribe ficción interactiva en español correcto, claro y accesible para cualquier lector.",
-  "Narra en tercera persona omnisciente, usando el nombre de los personajes y nunca «tú». El narrador conoce lo que sienten y piensan los demás personajes, las reacciones de los presentes y lo que el protagonista no percibe, y puede dejar atisbos de lo que vendrá, pero no revela secretos que la historia aún no haya destapado. Sigue el TIEMPO VERBAL, el ESTILO y la LONGITUD indicados.",
-  "Mantén coherencia estricta con la MEMORIA, el ESTADO OCULTO y las CARTAS DE LORE: nombres, lugares, objetos, heridas, promesas y reglas del mundo no pueden contradecirse ni olvidarse. Nadie sabe lo que no ha presenciado. Los muertos no actúan. Los objetos perdidos no se usan.",
+  "Eres un novelista que escribe ficción interactiva en español actual, correcto y natural.",
+  "PROSA: escribe como una novela contemporánea bien editada. Frases claras y de longitud variada, vocabulario cotidiano, verbos concretos y pocos adjetivos. Nada de pedantería, arcaísmos ni florituras: máximo una comparación o metáfora por escena y solo si aporta algo. Prohibidos los tópicos («un escalofrío le recorrió la espalda», «el silencio era ensordecedor», «el aire se podía cortar», «el corazón le latía con fuerza», «sus ojos brillaron»). Muestra con hechos, gestos y diálogo; no expliques lo que se siente cuando ya se ve. La narración avanza con acontecimientos, descubrimientos y decisiones, no con descripciones.",
+  "Narra en tercera persona omnisciente, usando el nombre de los personajes y nunca «tú». El narrador conoce lo que sienten y piensan los demás personajes y puede dejar atisbos de lo que vendrá, pero no revela secretos que la historia aún no haya destapado. Sigue el TIEMPO VERBAL, el ESTILO y la LONGITUD indicados.",
+  "DIÁLOGOS: se escriben con raya (—Hola —dijo Marta—.). Integra en la prosa lo que dice y hace el jugador, conservando sus palabras y el orden de sus acciones; no lo repitas como anotación ni lo vuelvas a decir después. Cada réplica responde a la anterior: nadie vuelve a preguntar lo ya contestado ni repite lo que ya sabe.",
+  "MEMORIA ESTRUCTURADA: la MEMORIA ESTRUCTURADA (mundo vigente, personajes, objetos, pendientes, cronología y capítulos anteriores) es la verdad de la historia y manda sobre tu imaginación. Nombres, lugares, objetos, heridas, promesas, deudas y reglas del mundo no pueden contradecirse ni olvidarse, ni siquiera cuando ocurrieron hace muchos capítulos. Un objeto solo está donde indica su ficha; los muertos no actúan; las heridas duran hasta que haya una recuperación justificada.",
+  "CONOCIMIENTO: cada personaje solo sabe lo que figura en su ficha (sabe, cree, sospecha, rumor, mintió, secreto). Nadie conoce lo que no ha presenciado o no le han contado. Una creencia falsa se corrige cuando el personaje descubre la verdad, pero recuerda que antes creía otra cosa. Los recuerdos cambian lo que cada personaje hace: quien fue traicionado no confía como antes, quien recibió un favor lo recuerda, quien hizo una promesa la cumple o la rompe con consecuencias.",
+  "CAUSA Y EFECTO: narra primero la acción y después su consecuencia. No adelantes resultados, no dupliques acciones del jugador ni cambies a un personaje de sitio sin transición. Los asuntos abiertos (pendientes) siguen vivos y deben retomarse cuando toque.",
+  "MUNDO VIVO: los personajes secundarios y las facciones tienen objetivos propios y actúan aunque el protagonista no esté. Lo que ocurre fuera de escena responde a causas, tiempo transcurrido y condiciones ya establecidas en la memoria; no inventes grandes sucesos de la nada.",
+  "VARIEDAD: no repitas descripciones, olores, ruidos, gestos, comparaciones ni fórmulas de tensión. Revisa los RECURSOS YA USADOS y las ESCENAS RECIENTES y busca algo distinto. Una descripción de ambiente solo se repite si cambia o aporta algo nuevo.",
   "Respeta siempre lo que escribe el jugador y haz que tenga consecuencias reales.",
-  "No repitas frases ni estructuras de escenas anteriores. Introduce giros, personajes con deseos propios y conflictos que escalen. Las consecuencias de decisiones antiguas pueden volver mucho después: anótalas en eventos_pendientes y recupéralas cuando toque.",
+  "Introduce giros, personajes con deseos propios y conflictos que escalen. Las consecuencias de decisiones antiguas pueden volver mucho después: anótalas en pendientes y recupéralas cuando toque.",
   "Acaba cada escena en un punto abierto en el que el jugador pueda intervenir.",
-  "Arco: planteamiento, complicación, clímax y desenlace. Hacia el turno 12 empieza a encaminar el clímax; hacia el turno 16 cierra con un final satisfactorio, bueno, malo o inesperado según lo ocurrido.",
+  "ARCO: la historia puede ser larga (decenas de capítulos). No la cierres por tu cuenta ni la apresures: cierra un arco cada varios capítulos y abre otro, deja misterios y conflictos pendientes. Solo escribe el desenlace con \"fin\":true cuando el jugador lo pida, la salud llegue a 0 o la trama esté claramente agotada.",
   "Ofrece 3 sugerencias breves (máximo 14 palabras), distintas en riesgo y enfoque.",
   "El narrador es un director con iniciativa: no pregunta qué quiere el jugador que ocurra. El jugador controla a su personaje; el mundo no está bajo su control. Introduce traiciones, enamoramientos, batallas, desapariciones, secretos y momentos de tristeza cuando la historia lo pida.",
   "IDEAS DEL JUGADOR: si el jugador marca una IDEA PARA LA HISTORIA, es una aportación creativa suya al mundo (algo que se ve, ocurre o se descubre). Intégrala y continúa a partir de ella, sin rechazarla ni pedir permiso. Si contradice hechos ya establecidos, adáptala para que encaje (algo visto desde lejos, un rumor, un error del personaje). Sus consecuencias son reales. Respeta la AUTORIDAD DEL JUGADOR: Jugador (solo se obedece a su personaje), Coautor (integra las ideas si encajan) o Libre (todo lo que escribe es canon y reajustas la historia). Anota cada idea aceptada en estado.aportes como «aportado por el jugador: ...».",
@@ -548,9 +555,194 @@ var RULES = [
 ].join("\n");
 
 var FORMAT = "Responde SOLO con JSON válido, sin texto extra ni bloques de código, con esta forma:\n" +
-  "{\"escena\":\"párrafos separados por \\n\\n\",\"opciones\":[\"...\",\"...\",\"...\"],\"memoria\":\"memoria actualizada con hechos clave, máximo 220 palabras\"," +
-  "\"estado\":{\"salud\":100,\"peligro\":10,\"objetos\":[],\"relaciones\":{},\"hilos\":[],\"eventos_pendientes\":[],\"deudas\":[],\"aportes\":[]},\"lore_nuevo\":[{\"tipo\":\"\",\"nombre\":\"\",\"desc\":\"\"}],\"fin\":false}\n" +
-  "Salud y peligro de 0 a 100; relaciones de -10 a 10. Si es el desenlace, usa \"fin\":true y \"opciones\":[].";
+  "{\"escena\":\"párrafos separados por \\n\\n\",\"opciones\":[\"...\",\"...\",\"...\"],\"memoria\":\"resumen del arco en curso, máximo 100 palabras\"," +
+  "\"estado\":{\"salud\":100,\"peligro\":10,\"objetos\":[],\"relaciones\":{},\"hilos\":[],\"eventos_pendientes\":[],\"deudas\":[],\"aportes\":[]},\"lore_nuevo\":[{\"tipo\":\"\",\"nombre\":\"\",\"desc\":\"\"}]," +
+  "\"mem\":{\"eventos\":[{\"que\":\"\",\"donde\":\"\",\"quien\":[\"\"],\"consecuencia\":\"\"}],\"personajes\":[{\"nombre\":\"\",\"ubicacion\":\"\",\"estado_fisico\":\"\",\"emocion\":\"\",\"objetivo\":\"\",\"gana\":[\"\"],\"pierde\":[\"\"],\"relaciones\":[{\"con\":\"\",\"confianza\":0,\"nota\":\"\"}],\"sabe\":[{\"dato\":\"\",\"tipo\":\"hecho|creencia|sospecha|rumor|mentira|secreto\",\"origen\":\"\"}],\"promesas\":[\"\"]}],\"objetos\":[{\"nombre\":\"\",\"dueno\":\"\",\"lugar\":\"\",\"estado\":\"\"}],\"mundo\":[{\"clave\":\"\",\"valor\":\"\"}],\"pendientes\":[{\"id\":\"\",\"texto\":\"\",\"accion\":\"abre|cierra\"}],\"tiempo\":\"\",\"recursos\":[\"\"],\"resumen_capitulo\":\"\"},\"fin\":false}\n" +
+  "Salud y peligro de 0 a 100; relaciones del estado de -10 a 10. Si es el desenlace, usa \"fin\":true y \"opciones\":[].\n" +
+  "REGLAS DE mem (es la memoria de la historia; anota SOLO los cambios de ESTA escena, sin repetir lo ya guardado, y deja vacío lo que no cambie):\n" +
+  "- eventos: 1 a 3 sucesos importantes (qué, dónde, quién, consecuencia).\n" +
+  "- personajes: solo los que cambian o aprenden algo, incluido el protagonista. En sabe anota lo que descubren, oyen, creen, sospechan, mienten o guardan en secreto, con su tipo y de dónde lo sacan. gana/pierde: objetos que consiguen o pierden. confianza de -10 a 10 hacia la otra persona.\n" +
+  "- objetos: cuando cambian de dueño, lugar o estado. mundo: situaciones vigentes que cambian (política, clima, facciones, lugares, rebeliones...) con una clave estable y corta.\n" +
+  "- pendientes: abre promesas, amenazas, deudas y consecuencias futuras; ciérralos con accion \"cierra\" y su id.\n" +
+  "- tiempo: momento actual (día, hora, clima). recursos: 2 a 4 imágenes, olores, ruidos o gestos descriptivos que has usado en esta escena, para no repetirlos.\n" +
+  "- resumen_capitulo: SOLO cuando se te indique que la escena cierra un capítulo.";
+
+/* ---------- Memoria estructurada ---------- */
+function nk(t) { return String(t == null ? "" : t).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); }
+function arr(x) { return Array.isArray(x) ? x : (x == null || x === "" ? [] : [x]); }
+function str(x, n) { return String(x == null ? "" : x).trim().slice(0, n || 200); }
+function newMem() { return { v: 2, chars: {}, items: {}, world: {}, pend: [], ev: [], chap: {}, time: "", motifs: [], np: 0 }; }
+function protName(s) {
+  if ((s.prot || []).length && s.prot[0].name) return s.prot[0].name;
+  var l = (s.lore || []).filter(function (c) { return c.tipo === "protagonista"; })[0];
+  return l ? l.nombre : "Protagonista";
+}
+function getChar(m, name, sc) {
+  var k = nk(name); if (!k) return null;
+  if (!m.chars[k]) m.chars[k] = { name: str(name, 60), desc: "", loc: "", body: "", mood: "", goal: "", objs: [], rel: {}, know: [], prom: [], first: sc || 0, last: sc || 0, hist: [] };
+  return m.chars[k];
+}
+function getItem(m, name) {
+  var k = nk(name); if (!k) return null;
+  if (!m.items[k]) m.items[k] = { name: str(name, 60), owner: "", loc: "", state: "", hist: [] };
+  return m.items[k];
+}
+function ensureMem(s) {
+  if (s.mem && s.mem.v === 2) return s.mem;
+  var m = newMem(), pn = protName(s);
+  (s.lore || []).forEach(function (c) {
+    if (c.tipo === "personaje" || c.tipo === "protagonista") { var ch = getChar(m, c.nombre, 0); if (ch) ch.desc = str(c.desc, 200); }
+  });
+  (s.prot || []).forEach(function (c) { var ch = getChar(m, c.name, 0); if (ch && !ch.desc) ch.desc = str(physTxt(c), 200); });
+  var st = s.state || {};
+  arr(st.objetos).forEach(function (o) { var it = getItem(m, typeof o === "string" ? o : (o && o.nombre)); if (it) { it.owner = pn; var ch = getChar(m, pn, 0); if (ch && ch.objs.indexOf(it.name) < 0) ch.objs.push(it.name); } });
+  if (st.relaciones && typeof st.relaciones === "object" && !Array.isArray(st.relaciones)) Object.keys(st.relaciones).forEach(function (n) {
+    var ch = getChar(m, pn, 0), v = Number(st.relaciones[n]);
+    if (ch && isFinite(v)) ch.rel[nk(n)] = { name: str(n, 60), conf: Math.max(-10, Math.min(10, v)), note: "", sc: 0 };
+  });
+  arr(st.hilos).concat(arr(st.eventos_pendientes), arr(st.deudas)).forEach(function (t) { t = str(typeof t === "string" ? t : JSON.stringify(t), 220); if (t) m.pend.push({ id: "p" + (++m.np), text: t, sc: 0, open: true }); });
+  arr(s.facts).forEach(function (f) { f = str(f, 220); if (f) m.ev.push({ id: "e" + m.ev.length, sc: 0, what: f, where: "", who: [], cons: "" }); });
+  s.mem = m; return m;
+}
+function snapMem(s) { try { return JSON.stringify(s.mem || null); } catch (e) { return null; } }
+function restoreMem(s, snap) { if (snap) { try { s.mem = JSON.parse(snap); } catch (e) {} } }
+var KINDS = { hecho: 1, creencia: 1, sospecha: 1, rumor: 1, mentira: 1, secreto: 1 };
+function applyMem(s, d, sc) {
+  var m = ensureMem(s); if (!d || typeof d !== "object") return;
+  var T = m.time;
+  if (d.tiempo) { m.time = str(d.tiempo, 80); T = m.time; }
+  arr(d.eventos).forEach(function (e) {
+    if (!e || !e.que) return;
+    m.ev.push({ id: "e" + m.ev.length, sc: sc, what: str(e.que, 220), where: str(e.donde, 60), who: arr(e.quien).map(function (x) { return str(x, 40); }).filter(Boolean).slice(0, 6), cons: str(e.consecuencia, 200), t: T });
+  });
+  if (m.ev.length > 600) m.ev = m.ev.slice(-600);
+  arr(d.personajes).forEach(function (p) {
+    if (!p || !p.nombre) return;
+    var c = getChar(m, p.nombre, sc); if (!c) return; c.last = sc;
+    [["ubicacion", "loc"], ["estado_fisico", "body"], ["emocion", "mood"], ["objetivo", "goal"]].forEach(function (f) {
+      var v = str(p[f[0]], 120);
+      if (v && v !== c[f[1]]) { if (c[f[1]]) c.hist.push({ sc: sc, k: f[1], from: c[f[1]], to: v }); c[f[1]] = v; }
+    });
+    if (c.hist.length > 40) c.hist = c.hist.slice(-40);
+    arr(p.gana).forEach(function (o) { var it = getItem(m, o); if (!it) return; setOwner(m, it, c.name, sc); });
+    arr(p.pierde).forEach(function (o) {
+      var it = getItem(m, o); if (!it) return;
+      c.objs = c.objs.filter(function (x) { return nk(x) !== nk(it.name); });
+      if (nk(it.owner) === nk(c.name)) { it.hist.push({ sc: sc, from: it.owner, to: "" }); it.owner = ""; }
+    });
+    arr(p.relaciones).forEach(function (r) {
+      if (!r || !r.con) return; var v = Number(r.confianza);
+      var old = c.rel[nk(r.con)];
+      c.rel[nk(r.con)] = { name: str(r.con, 60), conf: isFinite(v) ? Math.max(-10, Math.min(10, v)) : (old ? old.conf : 0), note: str(r.nota, 140) || (old ? old.note : ""), sc: sc };
+    });
+    arr(p.sabe).forEach(function (k) {
+      if (!k) return; var t = str(typeof k === "string" ? k : k.dato, 200); if (!t) return;
+      var kind = nk(k.tipo); if (!KINDS[kind]) kind = "hecho";
+      if (!c.know.some(function (x) { return nk(x.t) === nk(t) && x.k === kind; })) c.know.push({ t: t, k: kind, src: str(k.origen, 60), sc: sc });
+    });
+    if (c.know.length > 80) { var keep = c.know.filter(function (x) { return x.k === "secreto" || x.k === "mentira"; }).slice(-20), rest = c.know.filter(function (x) { return !(x.k === "secreto" || x.k === "mentira"); }).slice(-60); c.know = keep.concat(rest).sort(function (a, b) { return a.sc - b.sc; }); }
+    arr(p.promesas).forEach(function (t) { t = str(t, 160); if (t && c.prom.indexOf(t) < 0) c.prom.push(t); });
+    if (c.prom.length > 20) c.prom = c.prom.slice(-20);
+  });
+  arr(d.objetos).forEach(function (o) {
+    if (!o || !o.nombre) return; var it = getItem(m, o.nombre); if (!it) return;
+    if (o.dueno != null && str(o.dueno, 60) !== it.owner) setOwner(m, it, str(o.dueno, 60), sc);
+    if (o.lugar != null && str(o.lugar, 80) && str(o.lugar, 80) !== it.loc) { it.hist.push({ sc: sc, loc: str(o.lugar, 80) }); it.loc = str(o.lugar, 80); }
+    if (o.estado != null && str(o.estado, 80) && str(o.estado, 80) !== it.state) it.state = str(o.estado, 80);
+    if (it.hist.length > 30) it.hist = it.hist.slice(-30);
+  });
+  arr(d.mundo).forEach(function (w) {
+    if (!w || !w.clave || w.valor == null) return; var k = nk(w.clave), v = str(w.valor, 200); if (!k || !v) return;
+    var o = m.world[k];
+    if (!o) { if (Object.keys(m.world).length >= 80) return; m.world[k] = { key: str(w.clave, 60), val: v, sc: sc, hist: [] }; }
+    else if (o.val !== v) { o.hist.push({ sc: o.sc, val: o.val }); if (o.hist.length > 12) o.hist = o.hist.slice(-12); o.val = v; o.sc = sc; }
+  });
+  arr(d.pendientes).forEach(function (q) {
+    if (!q) return; var t = str(q.texto, 220), act = nk(q.accion);
+    if (act === "cierra") {
+      var f = m.pend.filter(function (x) { return x.open && ((q.id && x.id === String(q.id)) || (t && overlap(x.text, t) >= 0.5)); })[0];
+      if (f) { f.open = false; f.closed = sc; }
+    } else if (t && !m.pend.some(function (x) { return x.open && overlap(x.text, t) >= 0.8; })) {
+      m.pend.push({ id: "p" + (++m.np), text: t, sc: sc, open: true });
+    }
+  });
+  if (m.pend.filter(function (x) { return x.open; }).length > 40) { var firstOpen = m.pend.filter(function (x) { return x.open; })[0]; firstOpen.open = false; firstOpen.closed = sc; }
+  if (m.pend.length > 200) m.pend = m.pend.filter(function (x) { return x.open; }).concat(m.pend.filter(function (x) { return !x.open; }).slice(-60));
+  arr(d.recursos).forEach(function (r) { r = str(r, 80); if (r && m.motifs.indexOf(r) < 0) m.motifs.push(r); });
+  if (m.motifs.length > 60) m.motifs = m.motifs.slice(-60);
+  if (d.resumen_capitulo) m.chap[String(Math.floor((sc - 1) / 5) + 1)] = str(d.resumen_capitulo, 500);
+}
+function setOwner(m, it, owner, sc) {
+  var prev = it.owner;
+  if (nk(prev) === nk(owner)) return;
+  if (prev) { var pc = m.chars[nk(prev)]; if (pc) pc.objs = pc.objs.filter(function (x) { return nk(x) !== nk(it.name); }); }
+  it.hist.push({ sc: sc, from: prev, to: owner }); it.owner = owner;
+  if (owner) { var nc = getChar(m, owner, sc); if (nc && nc.objs.indexOf(it.name) < 0) nc.objs.push(it.name); }
+}
+function words(t) { return nk(t).replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(function (w) { return w.length >= 4; }); }
+function overlap(a, b) {
+  var A = words(a), B = words(b); if (!A.length || !B.length) return 0;
+  var n = 0; A.forEach(function (w) { if (B.indexOf(w) >= 0) n++; });
+  return n / Math.min(A.length, B.length);
+}
+function mentions(ftxt, name) {
+  var h = " " + nk(ftxt).replace(/[^a-z0-9 ]/g, " ") + " ", full = nk(name).replace(/[^a-z0-9 ]/g, " ").trim(); if (!full) return false;
+  if (h.indexOf(" " + full + " ") >= 0) return true;
+  var f = full.split(/\s+/)[0]; return f.length >= 3 && h.indexOf(" " + f + " ") >= 0;
+}
+function memCtx(s, focus) {
+  var m = ensureMem(s), out = [], pn = protName(s), keys = Object.keys(m.chars), sc = (s.scenes || []).length;
+  var f = focus || "", inFocus = {}, recentN = {};
+  keys.forEach(function (k) {
+    var c = m.chars[k];
+    if (nk(c.name) === nk(pn) || mentions(f, c.name) || (c.last && sc - c.last <= 2 && c.last > 0)) inFocus[k] = 1;
+    (s.prot || []).forEach(function (pp) { if (nk(pp.name) === k) inFocus[k] = 1; });
+  });
+  var focusKeys = keys.filter(function (k) { return inFocus[k]; }).sort(function (a, b) { return m.chars[b].last - m.chars[a].last; }).slice(0, 8);
+  out.push("TIEMPO: " + (m.time || "(sin concretar)"));
+  var wk = Object.keys(m.world).map(function (k) { return m.world[k]; }).sort(function (a, b) { return b.sc - a.sc; }).slice(0, 40);
+  out.push("MUNDO VIGENTE:\n" + (wk.length ? wk.map(function (w) { return "- " + w.key + ": " + w.val; }).join("\n") : "(sin datos)"));
+  var op = m.pend.filter(function (x) { return x.open; }).slice(-25);
+  out.push("PENDIENTES ABIERTOS (promesas, amenazas, deudas, consecuencias):\n" + (op.length ? op.map(function (x) { return "- [" + x.id + "] " + x.text + (x.sc ? " (esc. " + x.sc + ")" : ""); }).join("\n") : "(ninguno)"));
+  out.push("PERSONAJES EN FOCO:\n" + (focusKeys.length ? focusKeys.map(function (k) {
+    var c = m.chars[k], l = ["### " + c.name + (c.desc ? " — " + c.desc : "")];
+    var st = [c.loc && "está en " + c.loc, c.body && "físico: " + c.body, c.mood && "ánimo: " + c.mood, c.goal && "quiere: " + c.goal].filter(Boolean).join("; ");
+    if (st) l.push("  " + st);
+    if (c.objs.length) l.push("  Lleva: " + c.objs.join(", "));
+    var rl = Object.keys(c.rel).map(function (r) { return c.rel[r]; }).sort(function (a, b) { return b.sc - a.sc; }).slice(0, 8);
+    if (rl.length) l.push("  Relaciones: " + rl.map(function (r) { return r.name + " (confianza " + (r.conf > 0 ? "+" : "") + r.conf + (r.note ? ": " + r.note : "") + ")"; }).join("; "));
+    var kn = c.know.filter(function (x) { return x.k === "secreto" || x.k === "mentira"; }).slice(-6).concat(c.know.filter(function (x) { return x.k !== "secreto" && x.k !== "mentira"; }).slice(-10));
+    if (kn.length) l.push("  Sabe/cree: " + kn.map(function (x) { return "[" + x.k + "] " + x.t; }).join(" | "));
+    if (c.prom.length) l.push("  Promesas: " + c.prom.slice(-5).join(" | "));
+    return l.join("\n");
+  }).join("\n") : "(ninguno)"));
+  var others = keys.filter(function (k) { return !inFocus[k]; }).sort(function (a, b) { return m.chars[b].last - m.chars[a].last; }).slice(0, 30);
+  if (others.length) out.push("OTROS PERSONAJES (conservan su propia vida y memoria):\n" + others.map(function (k) { var c = m.chars[k]; return "- " + c.name + (c.loc ? " (en " + c.loc + ")" : "") + (c.goal ? ", quiere: " + c.goal : "") + (c.body ? ", " + c.body : ""); }).join("\n"));
+  var its = Object.keys(m.items).map(function (k) { return m.items[k]; }).slice(-40);
+  if (its.length) out.push("OBJETOS:\n" + its.map(function (i) { return "- " + i.name + ": " + (i.owner ? "lo tiene " + i.owner : i.loc ? "está en " + i.loc : "paradero desconocido") + (i.state ? " (" + i.state + ")" : ""); }).join("\n"));
+  var evs = m.ev.map(function (e, i) { return { e: e, i: i }; }), last = evs.slice(-10), pool = evs.slice(0, Math.max(0, evs.length - 10));
+  var fnames = focusKeys.map(function (k) { return m.chars[k].name; });
+  var scored = pool.map(function (x) {
+    var sco = 0, txt = x.e.what + " " + x.e.where + " " + (x.e.who || []).join(" ") + " " + x.e.cons;
+    fnames.forEach(function (n) { if (mentions(txt, n)) sco += 2; });
+    sco += overlap(txt, f) * 3; sco += x.e.sc / Math.max(1, sc);
+    return { x: x, sco: sco };
+  }).sort(function (a, b) { return b.sco - a.sco; }).slice(0, 12).map(function (z) { return z.x; });
+  var sel = scored.concat(last).sort(function (a, b) { return a.i - b.i; });
+  if (sel.length) out.push("CRONOLOGÍA RELEVANTE (sucesos pasados; los recientes y los que afectan a lo que ocurre ahora):\n" + sel.map(function (z) { var e = z.e; return "- [esc. " + e.sc + "] " + e.what + (e.where ? " (" + e.where + ")" : "") + (e.who && e.who.length ? " — " + e.who.join(", ") : "") + (e.cons ? " → " + e.cons : ""); }).join("\n"));
+  var cn = Object.keys(m.chap).map(Number).sort(function (a, b) { return a - b; });
+  if (cn.length) out.push("CAPÍTULOS ANTERIORES (resumen):\n" + cn.map(function (n, idx) { var t = m.chap[n]; if (idx < cn.length - 6) t = t.split(/\s+/).slice(0, 28).join(" ") + "…"; return "Cap. " + n + ": " + t; }).join("\n"));
+  if (m.motifs.length) out.push("RECURSOS YA USADOS (no los repitas): " + m.motifs.slice(-40).join("; "));
+  return out.join("\n");
+}
+function shingles(t) { var w = nk(t).replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(Boolean), o = {}; for (var i = 0; i + 3 < w.length; i++) o[w.slice(i, i + 4).join(" ")] = 1; return o; }
+function redund(s, text) {
+  var prev = (s.scenes || []).slice(-6).map(function (x) { return x.t; }).join(" "), a = shingles(prev), b = shingles(text), n = 0, ex = [];
+  for (var k in b) if (a[k]) { n++; if (ex.length < 3) ex.push(k); }
+  var m = s.mem, hits = [], T = " " + nk(text).replace(/[^a-z0-9 ]/g, " ") + " ";
+  if (m) (m.motifs || []).slice(-40).forEach(function (mo) { var w = words(mo); if (w.length >= 2 && w.every(function (x) { return T.indexOf(x) >= 0; })) hits.push(mo); });
+  return { n: n, ex: ex, motifs: hits.slice(0, 3) };
+}
 
 function intTxt(s) { var o = s.intens || {}; return AXES.map(function (a) { var v = a in o ? o[a] : 1; return a + " " + v + " (" + LV[v] + ")"; }).join(", "); }
 function loreTxt(s) { return (s.lore || []).slice(0, 30).map(function (c) { return "- " + c.tipo + " " + c.nombre + ": " + c.desc; }).join("\n") || "(ninguna)"; }
@@ -562,14 +754,25 @@ function build(s, action, note, sp) {
   return RULES + "\n\nGÉNEROS (mézclalos con naturalidad, sin que uno anule al otro): " + gtxt(s) + "\nDIRECTOR NARRATIVO (" + dir + "): " + DIR[dir] +
     "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nLONGITUD: 2 o 3 párrafos cortos, de " + LEN[len] + " palabras en total." +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
-    "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nTURNO: " + s.turn + "\nMEMORIA:\n" + (s.memory || "(historia nueva)") +
-    "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nÚLTIMA ESCENA:\n" + (s.last || "(ninguna)") +
-    "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso +
+    "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
+    "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtx(s, recentFocus(s, action)) + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s) +
+    "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
+function recentFocus(s, action) { return (action || "") + " " + (s.scenes || []).slice(-2).map(function (x) { return x.t; }).join(" "); }
+function chapNote(s) {
+  var n = (s.scenes || []).length + 1;
+  return n % 5 === 0 ? "CIERRE DE CAPÍTULO: esta escena cierra el capítulo " + (n / 5) + ". Rellena mem.resumen_capitulo con un resumen de 50 a 70 palabras de todo el capítulo (qué pasó, qué cambió y qué queda abierto).\n" : "";
+}
+function factsTxt(s) { var f = (s.facts || []).slice(-60); return f.length ? f.map(function (x) { return "- " + x; }).join("\n") : "(ninguno todavía)"; }
+function recentTxt(s) {
+  var r = (s.scenes || []).slice(-3);
+  if (!r.length) return s.last || "(ninguna)";
+  return r.map(function (sc) { return (sc.a ? "[El jugador: " + sc.a + "]\n" : "") + sc.t; }).join("\n---\n");
+}
 function reviewPrompt(s, d) {
-  return "Eres un revisor de continuidad. Compara la ESCENA NUEVA con la MEMORIA, el ESTADO, las CARTAS DE LORE y la ÚLTIMA ESCENA y busca contradicciones: muertos que actúan, objetos que no se tienen, cambios de nombre o aspecto, saber lo que no se sabe, olvidar heridas o promesas.\n" +
-    "MEMORIA:\n" + s.memory + "\nESTADO:\n" + JSON.stringify(s.state || {}) + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nÚLTIMA ESCENA:\n" + s.last +
+  return "Eres un revisor de continuidad. Compara la ESCENA NUEVA con la MEMORIA ESTRUCTURADA, el ESTADO, las CARTAS DE LORE y la ÚLTIMA ESCENA y busca contradicciones: muertos que actúan, objetos que no se tienen, cambios de nombre o aspecto, saber lo que no se sabe, olvidar heridas, promesas, pendientes o traiciones, personajes que saben lo que nunca se les contó, objetos que reaparecen en manos de quien ya no los tiene, personajes que repiten o preguntan algo que ya se dijo, y réplicas que no responden a lo último que se dijo.\n" +
+    "MEMORIA ESTRUCTURADA:\n" + memCtx(s, d.escena) + "\nRESUMEN DEL ARCO:\n" + s.memory + "\nESTADO:\n" + JSON.stringify(s.state || {}) + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nESCENAS RECIENTES:\n" + recentTxt(s) +
     "\nESCENA NUEVA:\n" + d.escena + "\nResponde SOLO con JSON: {\"ok\":true,\"problema\":\"\"} o {\"ok\":false,\"problema\":\"descripción breve\"}";
 }
 
@@ -583,15 +786,20 @@ async function turn(action, shown) {
       try { d = parse(r.text); } catch (e) { note = "Tu respuesta anterior no era JSON válido."; continue; }
       if (!d.escena) { note = "Falta la escena."; continue; }
       cand = d;
+      if (i === 0) {
+        var rd = redund(s, d.escena);
+        if (rd.n >= 6 || rd.motifs.length) { note = "Repites recursos ya usados" + (rd.ex.length ? " (por ejemplo «" + rd.ex[0] + "»)" : "") + (rd.motifs.length ? " y descripciones como «" + rd.motifs[0] + "»" : "") + ". Reescribe la escena con imágenes, gestos y palabras distintos y avanza la trama."; continue; }
+      }
       if (s.review && i === 0) {
         try { var rv = parse((await ask(reviewPrompt(s, d))).text); if (rv.ok === false) { note = "Corrige este problema de coherencia: " + rv.problema; continue; } } catch (e) {}
       }
       break;
     }
     if (!cand) throw new Error("vacío");
-    s.prev = { memory: s.memory, last: s.last, turn: s.turn, state: s.state, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
+    ensureMem(s); s.prev = { mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: s.state, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
     s.scenes.push({ a: shown || "", t: cand.escena });
     s.last = cand.escena; s.memory = cand.memoria || s.memory;
+    try { applyMem(s, cand.mem, s.scenes.length); if (Array.isArray(cand.hechos_nuevos)) applyMem(s, { eventos: cand.hechos_nuevos.map(function (h) { return { que: h }; }) }, s.scenes.length); } catch (e) {}
     var st = cand.estado;
     if (st && typeof st === "object") {
       ["salud", "peligro"].forEach(function (k) { if (k in st) st[k] = Math.max(0, Math.min(100, Number(st[k]) || 0)); });
@@ -626,7 +834,7 @@ $("do").onclick = function () {
 };
 $("undo").onclick = function () {
   var s = cur, p = s.prev; if (busy || !p) return;
-  s.scenes.length = p.len; s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = p.state; s.opts = p.opts; s.fin = p.fin; s.ls = p.ls;
+  s.scenes.length = p.len; s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = p.state; s.opts = p.opts; s.fin = p.fin; s.ls = p.ls; if (p.mem) restoreMem(s, p.mem);
   if (s.lore && p.lore != null) s.lore.length = Math.min(s.lore.length, p.lore);
   s.prev = null; save(); renderLore(); render();
 };
@@ -862,6 +1070,58 @@ $("pcopy").onclick = function () {
   try { navigator.clipboard.writeText(ta.value).then(ok, function () { try { document.execCommand("copy"); ok(); } catch (e) {} }); } catch (e) { try { document.execCommand("copy"); ok(); } catch (e2) {} }
 };
 
+/* ---------- Atlas ---------- */
+var ATL = { tab: "chars", sec: false };
+function renderAtlas() {
+  var b = $("atlbody"), s = cur; if (!b) return; b.innerHTML = ""; if (!s) return;
+  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["pend", "Pendientes"], ["ev", "Cronología"]];
+  var r = el("div", "row"); b.appendChild(r);
+  tabs.forEach(function (t) { var x = el("button", ATL.tab === t[0] ? "small on" : "small", t[1]); x.onclick = function () { ATL.tab = t[0]; renderAtlas(); }; r.appendChild(x); });
+  var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = ATL.sec;
+  i.onchange = function () { ATL.sec = i.checked; renderAtlas(); };
+  l.appendChild(i); l.appendChild(document.createTextNode("Mostrar secretos y mentiras")); l.style.margin = ".6rem 0"; b.appendChild(l);
+  var box = el("div"); b.appendChild(box);
+  function empty(t) { box.appendChild(el("p", "hint", t)); }
+  function sc(n) { return n ? "esc. " + n : "inicio"; }
+  if (ATL.tab === "chars") {
+    var cs = Object.keys(m.chars).map(function (k) { return m.chars[k]; }).sort(function (a, b) { return b.last - a.last; });
+    if (!cs.length) empty("Todavía no hay personajes registrados.");
+    cs.forEach(function (c) {
+      var d = el("details", "lore"), sm = el("summary", null, c.name + (c.loc ? " · " + c.loc : "")); d.appendChild(sm);
+      function ln(t) { if (t) d.appendChild(el("p", "hint", t)); }
+      ln(c.desc); ln([c.body && "Físico: " + c.body, c.mood && "Ánimo: " + c.mood, c.goal && "Quiere: " + c.goal].filter(Boolean).join(" · "));
+      if (c.objs.length) ln("Lleva: " + c.objs.join(", "));
+      var rl = Object.keys(c.rel).map(function (k) { return c.rel[k]; });
+      if (rl.length) ln("Relaciones: " + rl.map(function (x) { return x.name + " (" + (x.conf > 0 ? "+" : "") + x.conf + (x.note ? ", " + x.note : "") + ")"; }).join("; "));
+      var kn = c.know.filter(function (x) { return ATL.sec || (x.k !== "secreto" && x.k !== "mentira"); });
+      if (kn.length) { ln("Sabe y cree:"); kn.slice(-12).forEach(function (x) { ln("• [" + x.k + "] " + x.t + " (" + sc(x.sc) + ")"); }); }
+      if (c.prom.length) ln("Promesas: " + c.prom.join(" | "));
+      ln("Última aparición: " + sc(c.last));
+      box.appendChild(d);
+    });
+  } else if (ATL.tab === "items") {
+    var it = Object.keys(m.items).map(function (k) { return m.items[k]; });
+    if (!it.length) empty("Todavía no hay objetos registrados.");
+    it.forEach(function (o) {
+      var d = el("div", "lore"); d.appendChild(el("b", null, o.name)); d.appendChild(document.createTextNode(" · " + (o.owner ? "lo tiene " + o.owner : o.loc ? "en " + o.loc : "paradero desconocido") + (o.state ? " (" + o.state + ")" : "")));
+      if (o.hist.length) d.appendChild(el("p", "hint", "Historial: " + o.hist.slice(-6).map(function (h) { return sc(h.sc) + (h.to != null && "from" in h ? ": " + (h.from || "—") + " → " + (h.to || "perdido") : h.loc ? ": " + h.loc : ""); }).join("; ")));
+      box.appendChild(d);
+    });
+  } else if (ATL.tab === "world") {
+    var ws = Object.keys(m.world).map(function (k) { return m.world[k]; }).sort(function (a, b) { return b.sc - a.sc; });
+    if (m.time) box.appendChild(el("p", "hint", "Momento actual: " + m.time));
+    if (!ws.length) empty("Todavía no hay datos del mundo.");
+    ws.forEach(function (w) { var d = el("div", "lore"); d.appendChild(el("b", null, w.key)); d.appendChild(document.createTextNode(" · " + w.val + " (" + sc(w.sc) + ")")); if (w.hist.length) d.appendChild(el("p", "hint", "Antes: " + w.hist.slice(-3).map(function (h) { return h.val; }).join(" → "))); box.appendChild(d); });
+  } else if (ATL.tab === "pend") {
+    var ps = m.pend.slice().reverse();
+    if (!ps.length) empty("No hay asuntos pendientes.");
+    ps.forEach(function (p) { var d = el("div", "lore"); d.appendChild(document.createTextNode((p.open ? "● " : "✓ ") + p.text + " (" + sc(p.sc) + (p.closed ? ", cerrado en esc. " + p.closed : "") + ")")); if (!p.open) d.style.opacity = ".6"; box.appendChild(d); });
+  } else {
+    if (!m.ev.length) empty("Todavía no hay sucesos registrados.");
+    m.ev.slice(-80).reverse().forEach(function (e) { var d = el("div", "lore"); d.appendChild(el("b", null, sc(e.sc))); d.appendChild(document.createTextNode(" · " + e.what + (e.where ? " (" + e.where + ")" : "") + (e.cons ? " → " + e.cons : ""))); box.appendChild(d); });
+  }
+}
+$("atlbox").addEventListener("toggle", function () { if ($("atlbox").open) renderAtlas(); });
 /* ---------- Lectura y voz ---------- */
 var RD = { size: 18, tone: "noche", font: "serif", tex: false, rate: 1 };
 try { var _r = JSON.parse(localStorage.getItem("narrador:read:v1") || "null"); if (_r) RD = Object.assign(RD, _r); } catch (e) {}
