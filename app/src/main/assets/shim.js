@@ -31,10 +31,10 @@
     ["gemini-2.5-flash", "Gemini 2.5 Flash (si está disponible en tu cuenta)"]
   ];
   var PROV = {
-    manual: { name: "Copiar y pegar (cualquier IA, gratis)" },
-    gemini: { name: "Gemini (clave de API)", model: "gemini-3.5-flash-lite", url: "https://aistudio.google.com/apikey" },
-    openai: { name: "ChatGPT / OpenAI (clave de API)", model: "gpt-4o-mini", url: "https://platform.openai.com/api-keys" },
-    anthropic: { name: "Claude / Anthropic (clave de API)", model: "claude-haiku-5-5", url: "https://console.anthropic.com/settings/keys" }
+    manual: { name: "Copiar y pegar", sub: "Funciona con cualquier IA" },
+    gemini: { name: "Gemini", sub: "Recomendado · clave de API", model: "gemini-3.5-flash-lite", url: "https://aistudio.google.com/apikey" },
+    openai: { name: "ChatGPT / OpenAI", sub: "Clave de API", model: "gpt-4o-mini", url: "https://platform.openai.com/api-keys" },
+    anthropic: { name: "Claude / Anthropic", sub: "Clave de API", model: "claude-haiku-5-5", url: "https://console.anthropic.com/settings/keys" }
   };
   var KEYS = {};
   ["gemini", "openai", "anthropic"].forEach(function (k) { try { KEYS[k] = N.secretGet("key_" + k) || ""; } catch (e) { KEYS[k] = ""; } });
@@ -57,22 +57,32 @@
   }
 
   var css = document.createElement("style");
-  css.textContent = "#hvai{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.6);display:flex;align-items:flex-end}" +
-    "#hvai .sh{width:100%;max-width:36rem;margin:0 auto;background:var(--card,#fff);color:var(--ink,#111);border-radius:18px 18px 0 0;padding:1rem 1.1rem 1.2rem;max-height:90vh;overflow:auto}" +
-    "#hvai label.o{display:block;border:1.5px solid var(--line,#ccc);border-radius:12px;padding:.7rem .8rem;margin:.5rem 0}" +
-    "#hvai label.o.on{border-color:var(--acc,#b45f06)}" +
-    "#hvai input[type=radio]{width:auto!important;display:inline-block;vertical-align:middle;margin:0 .4rem 0 0}" +
-    "#hvai input[type=text],#hvai input[type=password],#hvai textarea,#hvai select{width:100%;margin-top:.4rem;font:inherit;padding:.6rem;border-radius:10px;border:1.5px solid var(--line,#ccc);background:var(--bg,#fff);color:var(--ink,#111)}" +
+  css.textContent = "#hvai{position:fixed;inset:0;z-index:60;background:rgba(2,5,12,.82);display:flex;align-items:flex-end;padding-top:env(safe-area-inset-top,0px)}" +
+    "#hvai .hv-sheet{display:block!important;width:100%;max-width:36rem;margin:0 auto;background:rgba(10,14,24,.98);color:var(--ink,#fff);border:1px solid rgba(255,255,255,.14);border-radius:24px 24px 0 0;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px));max-height:92vh;overflow-x:hidden;overflow-y:auto;box-shadow:0 -18px 50px rgba(0,0,0,.45)}" +
+    "#hvai .hv-head{display:flex;align-items:center;gap:.7rem;margin-bottom:.25rem}" +
+    "#hvai .hv-head h2{flex:1;margin:0;font-size:1.55rem}" +
+    "#hvai .hv-close{width:44px;min-width:44px;height:44px;min-height:44px;padding:0;text-align:center;border-radius:50%;font-size:1.5rem}" +
+    "#hvai .hv-intro{margin:.2rem 0 1rem;color:var(--mute,#aaa);font-size:.9rem;line-height:1.45}" +
+    "#hvai label.o{display:block!important;width:100%;min-width:0;border:1.5px solid rgba(255,255,255,.14);border-radius:16px;padding:.8rem .85rem;margin:.65rem 0;background:rgba(255,255,255,.035);overflow:hidden}" +
+    "#hvai label.o.on{border-color:var(--acc,#b45f06);box-shadow:inset 0 0 0 1px var(--acc,#b45f06);background:rgba(255,255,255,.065)}" +
+    "#hvai .hv-choice{display:flex;align-items:center;gap:.65rem;line-height:1.2;white-space:normal}" +
+    "#hvai .hv-choice strong{display:block;font-size:1rem;overflow-wrap:anywhere}" +
+    "#hvai .hv-choice small{display:block;color:var(--mute,#aaa);font-size:.8rem;margin-top:.2rem}" +
+    "#hvai input[type=radio]{width:20px!important;height:20px!important;min-width:20px;display:block;margin:0;accent-color:var(--acc,#b45f06)}" +
+    "#hvai .hv-detail{display:block;width:100%;min-width:0;padding-top:.7rem}" +
+    "#hvai input[type=text],#hvai input[type=password],#hvai textarea,#hvai select{display:block;width:100%!important;max-width:100%;margin-top:.55rem;font:inherit;font-size:.92rem;padding:.72rem .75rem;border-radius:11px;border:1.5px solid var(--line,#ccc);background:#080d18;color:var(--ink,#fff)}" +
     "#hvai textarea{min-height:9rem}" +
-    "#hvai .r{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.7rem}" +
-    "#hvai .r button{flex:1}";
+    "#hvai .r{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.7rem}" +
+    "#hvai .r button{width:100%;min-width:0;text-align:center;padding:.65rem .45rem;font-size:.88rem}" +
+    "#hvai .hv-save{position:sticky;bottom:-1rem;padding-top:.8rem;background:linear-gradient(180deg,transparent 0,rgba(10,14,24,.98) 25%)}" +
+    "@media(max-width:390px){#hvai .r{grid-template-columns:1fr}#hvai .hv-sheet{padding-left:.8rem;padding-right:.8rem}}";
   document.head.appendChild(css);
 
   function overlay(title) {
     var o = document.getElementById("hvai");
     if (o) o.remove();
     o = document.createElement("div"); o.id = "hvai"; o.setAttribute("role", "dialog"); o.setAttribute("aria-modal", "true"); if (title) o.setAttribute("aria-label", title);
-    var sh = document.createElement("div"); sh.className = "sh"; o.appendChild(sh);
+    var sh = document.createElement("div"); sh.className = "hv-sheet"; o.appendChild(sh);
     document.body.appendChild(o);
     return { o: o, sh: sh };
   }
@@ -81,14 +91,17 @@
   function openSettings() {
     return new Promise(function (resolve) {
       var c = cfg(), v = overlay("Conecta tu IA"), sh = v.sh;
-      sh.appendChild(mk("h2", null, "Conecta tu IA")).style.marginTop = "0";
-      sh.appendChild(mk("p", "hint", "Usa la IA que ya tienes. No hay coste para la app: cada uno usa su propia cuenta y sus propios límites."));
+      var head = mk("div", "hv-head"), title = mk("h2", null, "Conecta tu IA"), close = mk("button", "hv-close", "×");
+      close.setAttribute("aria-label", "Cerrar"); close.onclick = function () { v.o.remove(); resolve(false); };
+      head.appendChild(title); head.appendChild(close); sh.appendChild(head);
+      sh.appendChild(mk("p", "hv-intro", "Elige un servicio. Para Gemini solo necesitas pegar tu clave una vez; queda cifrada en este móvil."));
       var sel = c.mode || "manual", boxes = {};
-      Object.keys(PROV).forEach(function (k) {
+      ["gemini", "manual", "openai", "anthropic"].forEach(function (k) {
         var l = mk("label", "o" + (sel === k ? " on" : "")), r = document.createElement("input");
         r.type = "radio"; r.name = "hvm"; r.checked = sel === k;
-        l.appendChild(r); l.appendChild(document.createTextNode(" " + PROV[k].name));
-        var d = mk("div"); d.hidden = sel !== k; boxes[k] = d;
+        var choice = mk("div", "hv-choice"), tx = mk("span"); tx.appendChild(mk("strong", null, PROV[k].name)); tx.appendChild(mk("small", null, PROV[k].sub || ""));
+        choice.appendChild(r); choice.appendChild(tx); l.appendChild(choice);
+        var d = mk("div", "hv-detail"); d.hidden = sel !== k; boxes[k] = d;
         if (k === "manual") {
           d.appendChild(mk("p", "hint", "La app te da el texto, lo pegas en tu IA (ChatGPT, Gemini, Claude…, gratis o de pago) y pegas aquí su respuesta. Sirve con cualquier IA, pero en una novela larga son muchos pasos: con clave de Gemini es mucho más cómodo."));
         } else {
@@ -135,7 +148,7 @@
           Object.keys(boxes).forEach(function (z) { boxes[z].hidden = z !== k; boxes[z].parentNode.className = "o" + (z === k ? " on" : ""); });
         };
       });
-      var row = mk("div", "r"), ok = mk("button", "go", "Guardar"), no = mk("button", null, "Cancelar");
+      var row = mk("div", "r hv-save"), ok = mk("button", "go", "Guardar y conectar"), no = mk("button", null, "Cancelar");
       ok.onclick = function () {
         var n = { mode: sel, keys: {}, models: c.models || {} };
         ["gemini", "openai", "anthropic"].forEach(function (k) {

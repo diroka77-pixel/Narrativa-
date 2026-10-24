@@ -361,6 +361,7 @@ var STY = {
   "Literario": "Prosa cuidada, con atmósfera e imágenes, pero sin recargar: como máximo dos comparaciones por escena y sin acumular adjetivos. Mantén frases claras."
 };
 var IDEAS = ["Un faro encantado en una isla sin mapa", "Un detective que investiga sus propios recuerdos", "Una ciudad que flota sobre las nubes", "El último tren antes del fin del mundo", "Una bibliotecaria descubre que los libros cambian de noche", "Un reino donde la magia se paga con recuerdos", "Una nave dormida despierta con un pasajero de más", "Un pueblo costero que olvida a quien se marcha"];
+var IDEA_IMG = ["art/idea-faro.webp", "art/idea-detective.webp", "art/idea-ciudad-nubes.webp", "art/idea-tren-fin-mundo.webp", "art/idea-biblioteca.webp", "art/idea-reino-recuerdos.webp", "art/idea-nave-dormida.webp", "art/idea-pueblo-olvida.webp"];
 var TEN = {
   "Pasado": "Narra en pasado. Ejemplo de tono: «Elena vio un arma sobre la mesa y la cogió sin vacilar; nadie estaba preparado para esa reacción.»",
   "Presente": "Narra en presente. Ejemplo de tono: «Elena ve un arma sobre la mesa y la coge sin vacilar; nadie se espera esa reacción.»"
@@ -502,8 +503,30 @@ function artSvg(g, g2, seed, v) {
 }
 var ARTC = {};
 function artUrl(g, g2, seed, v) { var k = g + "|" + seed + "|" + (v || 0); return ARTC[k] || (ARTC[k] = 'url("data:image/svg+xml;utf8,' + encodeURIComponent(artSvg(g, g2, seed, v)) + '")'); }
+var REAL_ART = {
+  fantasy: ["art/idea-ciudad-nubes.webp", "art/idea-reino-recuerdos.webp", "art/home.webp"],
+  mystery: ["art/idea-detective.webp", "art/idea-faro.webp", "art/idea-pueblo-olvida.webp"],
+  scifi: ["art/idea-nave-dormida.webp", "art/idea-tren-fin-mundo.webp"],
+  magic: ["art/idea-biblioteca.webp", "art/idea-reino-recuerdos.webp", "art/home.webp"],
+  dark: ["art/idea-pueblo-olvida.webp", "art/idea-faro.webp", "art/idea-detective.webp"],
+  human: ["art/idea-detective.webp", "art/idea-pueblo-olvida.webp", "art/idea-biblioteca.webp"]
+};
+function realArtGroup(g) {
+  g = ALIAS[g] || g || "";
+  if (/Ciencia|Ciber|Distop|Postapocal|Steampunk|Bélico/.test(g)) return "scifi";
+  if (/Terror|Oscura|Vamp|Licánt|Sobrenatural|Novela Negra/.test(g)) return "dark";
+  if (/Misterio|Espionaje|Intriga|Exploración/.test(g)) return "mystery";
+  if (/Drama|Romance|Comedia|Slice|Histórico/.test(g)) return "human";
+  if (/Místico|Espiritual|Urban|Mitología/.test(g)) return "magic";
+  return "fantasy";
+}
+function realArtPath(g, seed, v) {
+  if (!g || g === "Auto") return "art/home.webp";
+  var a = REAL_ART[realArtGroup(g)], n = (hvh(String(seed || g)) + (v || 0)) % a.length;
+  return a[n];
+}
 function storyVar(s) { return s.bgv != null ? s.bgv : hvh(s.id) % 3; }
-function bg(g, seed, g2, v) { return "linear-gradient(180deg,rgba(7,11,20,0) 35%,rgba(7,11,20,.88))," + artUrl(g, g2, seed, v); }
+function bg(g, seed, g2, v) { return "linear-gradient(180deg,rgba(7,11,20,0) 32%,rgba(7,11,20,.9)),url(\"" + realArtPath(g, seed, v) + "\") center/cover"; }
 function coverBg(s) {
   if (s.cover) return "linear-gradient(180deg,rgba(7,11,20,0) 40%,rgba(7,11,20,.88)),url(\"" + s.cover + "\") center/cover";
   return bg(s.genre, s.id, (s.genres || [])[1], storyVar(s));
@@ -543,7 +566,7 @@ function fxApply() {
 function applyTheme(g, v, seed) {
   CUR_TH = { g: g, v: v || 0, seed: seed || "home" };
   var t = GT(g), rt = document.documentElement, light = rt.getAttribute("data-theme") === "light";
-  $("bgart").style.backgroundImage = artUrl(g, null, CUR_TH.seed, CUR_TH.v);
+  $("bgart").style.backgroundImage = "url(\"" + realArtPath(g, CUR_TH.seed, CUR_TH.v) + "\")";
   if (light) { ["--acc", "--acc2", "--accink"].forEach(function (n) { rt.style.removeProperty(n); }); }
   else { rt.style.setProperty("--acc", t.acc); rt.style.setProperty("--acc2", t.acc2); rt.style.setProperty("--accink", lum(t.acc) > .55 ? "#1a1000" : "#ffffff"); }
   FX.t = t.fx; if (!FX.W) { FX.W = window.innerWidth; FX.H = window.innerHeight; } fxInit(t.fx); fxApply();
@@ -609,7 +632,7 @@ function renderLib() {
   var ir = $("ideasrow"); ir.innerHTML = "";
   IDEAS.forEach(function (t, i) {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
-    cv.style.background = bg(IDEA_G[i], "idea" + i);
+    cv.style.background = "linear-gradient(180deg,rgba(7,11,20,.02) 35%,rgba(7,11,20,.94)),url(\"" + IDEA_IMG[i] + "\") center/cover";
     cd.appendChild(el("span", "chip", IDEA_G[i].toUpperCase()));
     cv.appendChild(el("span", "ttl", t)); cv.onclick = function () { startCreate(t); };
     cd.appendChild(cv); it.appendChild(cd); ir.appendChild(it);

@@ -7,4 +7,4 @@ Aplicación Android que envuelve la web de Historias vivas en un WebView con pue
 - Compilar para probar: pestaña Actions → «Compilar APK» → descarga `historias-vivas-apk`.
 - Publicar en Play: ver `PLAY_STORE.md` y `PRIVACIDAD.md`.
 
-Versión 0.6: Gemini 3.5 Flash-Lite, 90 fondos dinámicos (30 géneros × 3 variantes), sin sistema de créditos, copia de seguridad, escritura progresiva, voz, lectura inmersiva, edición y revisión del libro.
+Versión 0.7: fondos cinematográficos realistas, portadas propias para las ideas, selector de IA adaptado a móvil, Gemini 3.5 Flash-Lite y movimiento ambiental por género.
