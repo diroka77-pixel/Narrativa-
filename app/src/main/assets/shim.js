@@ -117,6 +117,7 @@
             var cur = (c.models.gemini || PROV.gemini.model), known = false;
             GEM_MODELS.forEach(function (m) { var o = document.createElement("option"); o.value = m[0]; o.textContent = m[1]; if (m[0] === cur) { o.selected = true; known = true; } mi.appendChild(o); });
             if (!known) { var o2 = document.createElement("option"); o2.value = cur; o2.textContent = cur + " (personalizado)"; o2.selected = true; mi.appendChild(o2); }
+            var mc = document.createElement("input"); mc.type = "text"; mc.id = "hvmoc_gemini"; mc.placeholder = "Otro modelo (opcional): escribe su nombre exacto"; mc.setAttribute("aria-label", "Otro modelo de Gemini"); mc.style.marginTop = ".4rem"; mc.value = known ? "" : cur; mi.__mc = mc; mi.addEventListener("change", function () { mc.value = ""; });
             d.appendChild(mk("p", "hint", "Cómo conseguir tu clave de Gemini: 1) Pulsa «Abrir Google AI Studio» e inicia sesión con tu cuenta de Google. 2) Pulsa «Create API key» (crear clave). 3) Copia la clave. 4) Vuelve aquí y pulsa «Pegar clave». Con el modelo Flash-Lite el uso es gratuito dentro de los límites de Google, que pueden cambiar. Usa una clave de un proyecto sin facturación para no tener cargos."));
           } else {
             mi = document.createElement("input"); mi.type = "text"; mi.placeholder = "Modelo"; mi.value = c.models[k] || PROV[k].model; mi.id = "hvmo_" + k; mi.setAttribute("aria-label", "Modelo");
@@ -129,7 +130,7 @@
           var tb = mk("button", null, "Probar conexión");
           tb.onclick = async function (e) {
             e.preventDefault();
-            var tc = { mode: k, keys: {}, models: {} }; tc.keys[k] = ki.value.trim(); tc.models[k] = mi.value.trim();
+            var tc = { mode: k, keys: {}, models: {} }; tc.keys[k] = ki.value.trim(); tc.models[k] = ((mi.__mc && mi.__mc.value.trim()) || mi.value.trim());
             if (!tc.keys[k]) { N.toast("Falta la clave."); return; }
             tb.textContent = "Probando…";
             try {
@@ -142,7 +143,7 @@
           d.appendChild(ki);
           var br = mk("div", "r"); br.appendChild(ob); br.appendChild(pb); br.appendChild(tb);
           d.appendChild(br);
-          d.appendChild(mi);
+          d.appendChild(mi); if (mi.__mc) d.appendChild(mi.__mc);
           var dc = mk("button", null, "Borrar la clave de este móvil"); dc.style.marginTop = ".6rem";
           dc.onclick = function (e) { e.preventDefault(); ki.value = ""; KEYS[k] = ""; N.secretSet("key_" + k, ""); N.toast("Clave borrada."); setStatus("none"); };
           d.appendChild(dc);
@@ -159,7 +160,7 @@
         ["gemini", "openai", "anthropic"].forEach(function (k) {
           var ki = document.getElementById("hvk_" + k), mi = document.getElementById("hvmo_" + k);
           n.keys[k] = ki ? ki.value.trim() : (KEYS[k] || "");
-          if (mi) n.models[k] = mi.value.trim();
+          if (mi) n.models[k] = ((mi.__mc && mi.__mc.value.trim()) || mi.value.trim());
         });
         if (n.mode !== "manual" && !n.keys[n.mode]) { N.toast("Falta la clave de API."); return; }
         saveCfg(n); v.o.remove(); paintStatus(); resolve(true);
@@ -171,6 +172,7 @@
   }
   window.openAISettings = openSettings;
   window.hvIsManual = function () { return cfg().mode === "manual"; };
+  window.hvStatusRefresh = function () { try { paintStatus(); } catch (e) {} };
   /* ---------- Asistente de conexión paso a paso ---------- */
   var AI_INFO = {
     checked: "24 de octubre de 2026",
@@ -323,13 +325,13 @@
             var det = document.createElement("details"); det.appendChild(mk("summary", null, "Elegir otro modelo (opcional)")); det.style.margin = ".6rem 0";
             mi = document.createElement("select"); mi.setAttribute("aria-label", "Modelo de Gemini"); var cur = (c0.models.gemini || PROV.gemini.model);
             GEM_MODELS.forEach(function (m) { var o = document.createElement("option"); o.value = m[0]; o.textContent = m[1]; if (m[0] === cur) o.selected = true; mi.appendChild(o); });
-            det.appendChild(mi); b.appendChild(det);
+            det.appendChild(mi); var mc2 = document.createElement("input"); mc2.type = "text"; mc2.placeholder = "Otro modelo (opcional): escribe su nombre exacto"; mc2.setAttribute("aria-label", "Otro modelo de Gemini"); mc2.style.marginTop = ".4rem"; mi.__mc = mc2; det.appendChild(mc2); b.appendChild(det);
           }
           var tb = btn("Conectar y probar", "go", async function () {
             var key = ki.value.trim();
             if (!key) { note("Falta la clave. Pégala arriba.", "wz-bad"); return; }
             tb.disabled = true; tb.textContent = "Probando la conexión…"; note("", "");
-            var mdl = mi ? mi.value : (c0.models[d.prov] || PROV[d.prov].model);
+            var mdl = mi ? ((mi.__mc && mi.__mc.value.trim()) || mi.value) : (c0.models[d.prov] || PROV[d.prov].model);
             var tc = { mode: d.prov, keys: {}, models: {} }; tc.keys[d.prov] = key; tc.models[d.prov] = mdl;
             try {
               var f = d.prov === "gemini" ? viaGemini : d.prov === "openai" ? viaOpenAI : viaAnthropic;
@@ -398,7 +400,7 @@
   function paintStatus() {
     window.hvCtxBudget = (cfg().mode === "manual") ? 10000 : 18000;
     var l = label(), b = document.getElementById("hvstat");
-    if (b) { b.textContent = ""; var d = mk("span"); d.setAttribute("aria-hidden", "true"); d.style.cssText = "display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.5rem;background:" + COL[l.s]; b.appendChild(d); b.appendChild(document.createTextNode(l.t)); }
+    if (b) { b.textContent = ""; var d = mk("span"); d.setAttribute("aria-hidden", "true"); d.style.cssText = "display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.5rem;background:" + COL[l.s]; b.appendChild(d); var u = null; try { u = window.useGet ? window.useGet() : null; } catch (e) {} var sfx = (u && u.n && cfg().mode !== "manual") ? " · " + u.n + " hoy" + (u.lim > 0 && u.n >= u.lim * 0.8 ? " ⚠" : "") : ""; b.appendChild(document.createTextNode(l.t + sfx)); }
     var m = document.getElementById("hvmenu");
     if (m) m.textContent = "Conectar mi IA · " + (l.s === "ok" ? "conectada" : l.s === "fail" ? "sin conexión" : l.s === "manual" ? "copiar y pegar" : l.s === "checking" ? "comprobando…" : "sin conectar");
   }
