@@ -11,10 +11,16 @@ android {
         applicationId = "com.mibiblioteca.narrador"
         minSdk = 29
         targetSdk = 34
-        versionCode = 12
+        versionCode = 13
         versionName = "0.9.4"
     }
     signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
         create("release") {
             val ks = System.getenv("HV_KEYSTORE")
             if (ks != null && file(ks).exists()) {
@@ -26,6 +32,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
             isMinifyEnabled = false
             if (System.getenv("HV_KEYSTORE") != null) signingConfig = signingConfigs.getByName("release")
