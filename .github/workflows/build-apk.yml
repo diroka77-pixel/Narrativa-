@@ -19,7 +19,7 @@ jobs:
       - name: Preparar pruebas web sin red
         run: |
           npm ci
-          npx playwright install --with-deps chromium
+          npx playwright install chromium
           sudo mkdir -p /home/claude/v08 /home/claude/v091 /home/claude/apk
           sudo ln -sfn "$GITHUB_WORKSPACE/app/src/main/assets" /home/claude/v08/assets
           sudo ln -sfn "$GITHUB_WORKSPACE/app/src/main/assets" /home/claude/v091/assets
