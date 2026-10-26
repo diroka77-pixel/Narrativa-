@@ -239,6 +239,9 @@ main{padding-bottom:9rem}
 #tabs{align-items:flex-start;position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;gap:.2rem;padding:.35rem .4rem calc(.35rem + env(safe-area-inset-bottom,0px));background:rgba(8,12,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,214,150,.25)}
 #tabs button{flex:1 1 0;height:54px;max-height:54px;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-height:54px;padding:.3rem .1rem;border:0;background:none;color:var(--mute);font-size:.68rem;text-align:center;border-radius:12px;justify-content:center}
 #tabs button.tabon{background:linear-gradient(180deg,var(--acc),var(--acc2));color:var(--accink);font-weight:700}
+.card.clean .cover.hasimg .ttl,.card.clean .cover.hasimg small{display:none}
+.cc .card.clean .cover{background-size:cover!important;aspect-ratio:2/3;padding:0}
+.capt{margin:.2rem .1rem .3rem;line-height:1.25}.capt b{display:block;font-size:.9rem}.capt small{opacity:.75;font-size:.75rem}
 .sronly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 body.imm #tabs{display:none}
 body.imm.paged{overflow:hidden}
@@ -508,7 +511,7 @@ function genreRules(sy) {
   });
   return out.length ? "\nREGLAS DEL GÉNERO (aplícalas con naturalidad, sin mencionarlas):\n" + out.join("\n") : "";
 }
-var CLICHES = "PROHIBIDO (tópicos de IA que ya cansan): «un escalofrío le recorrió la espalda», «el aire estaba cargado/denso», «contuvo el aliento», «algo cambió en su interior», «el tiempo pareció detenerse», «susurró con voz apenas audible», «una sonrisa asomó a sus labios», «el corazón le latía con fuerza», «sus ojos brillaron», «sintió que el mundo se detenía», «no sabía que aquello lo cambiaría todo», «una mezcla de X y Y» y empezar escenas describiendo el clima o la luz. Si necesitas decir algo parecido, busca un detalle concreto y propio de esa escena.";
+var CLICHES = "PROHIBIDO (tópicos de IA que ya cansan): «un escalofrío le recorrió la espalda», «el aire estaba cargado/denso», «contuvo el aliento», «algo cambió en su interior», «el tiempo pareció detenerse», «susurró con voz apenas audible», «una sonrisa asomó a sus labios», «el corazón le latía con fuerza», «sus ojos brillaron», «sintió que el mundo se detenía», «no sabía que aquello lo cambiaría todo», «una mezcla de X y Y» y empezar escenas describiendo el clima o la luz. Tampoco abuses de sonidos de relleno («un zumbido sordo», «un golpe seco», «un crujido», «pasos que se acercan», «el eco de…»): úsalos como mucho una vez cada muchas escenas y solo si importan. Si necesitas decir algo parecido, busca un detalle concreto y propio de esa escena.";
 var ALIAS = { "Fantasía": "Fantasía Épica", "Ciencia ficción": "Ciencia Ficción", "Terror": "Terror / Horror", "Novela negra": "Novela Negra", "Aventura histórica": "Histórico", "Realismo mágico": "Urban Fantasy", "Acción": "Bélico / Guerra", "Auto": "Híbrido / Multigénero" };
 function GT(g) { return GTH[g] || GTH[ALIAS[g]] || GTH["Híbrido / Multigénero"]; }
 var COV = {}; Object.keys(GTH).forEach(function (k) { COV[k] = [GTH[k].p[0], GTH[k].p[2]]; }); Object.keys(ALIAS).forEach(function (k) { COV[k] = COV[ALIAS[k]]; });
@@ -777,11 +780,12 @@ function renderLib() {
   if (!LIB.length) box.appendChild(el("p", "hint", "Aún no tienes historias. Pulsa «Crear nuevo»."));
   LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
-    cv.style.background = coverBg(s); if (s.cover) cv.classList.add("hasimg");
-    cd.appendChild(el("span", "chip", (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
+    cv.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s); if (s.cover) { cv.classList.add("hasimg"); cd.classList.add("clean"); cv.setAttribute("aria-label", s.title); }
+    if (!s.cover) cd.appendChild(el("span", "chip", (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
     cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
     cv.onclick = function () { openStory(s); };
     cd.appendChild(cv); it.appendChild(cd);
+    if (s.cover) { var cp = el("div", "capt"); cp.appendChild(el("b", null, s.title)); cp.appendChild(el("small", null, (s.fin ? "Final" : "En curso") + (s.fork ? " · rama" : "") + " · cap. " + chCur(s) + " · " + (s.scenes || []).length + " esc.")); it.appendChild(cp); }
     var d = el("button", "small", "Borrar");
     d.onclick = function () {
       if (d.textContent === "Borrar") { d.textContent = "¿Seguro?"; return; }
@@ -818,8 +822,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.9.8";
+var VERSION = "0.9.9";
 var NEWS = [
+  ["0.9.9", "Portadas despejadas en el inicio (el título y el estado van debajo, sin tapar la imagen). El Cronista evita repetir expresiones de las últimas escenas («zumbido sordo» y similares). Guía de Mistral corregida: hay que elegir el plan gratuito Experiment."],
   ["0.9.8", "Respaldos gratuitos: si tu IA principal se agota o se satura, El Cronista pasa solo a Mistral o Groq (opcionales, sin tarjeta). Las tareas cortas automáticas se reparten para gastar menos de tu cupo. Copia de seguridad automática con aviso para activarla y estado visible en el menú. Lectura en páginas, como un libro. Modo claro con fondos. Pantallas grandes y horizontal, y avisos para lectores de pantalla. Textos con la voz de El Cronista."],
   ["0.9.7", "Crear historia en modo simple o avanzado, con comienzo rápido. Que El Cronista pula el texto antes de exportar (por capítulos, con antes y después). Exportar solo con el texto de la novela. Diccionario al dejar pulsada una palabra. Contador de consultas de IA siempre visible y pantalla de recursos. Biblia de la historia, ejemplos de calidad por género y recursos narrativos. Hilo de la historia y logros en el Atlas. Modos de juego (libre, aventura dura, relajado). Sonido ambiente generado. Compartir una frase como imagen. Etiqueta de rama en la biblioteca. Icono nuevo."],
   ["0.9.5", "Estilos de autor, tono por escena, cerrar la historia con un final, motivaciones y evolución de personajes, modos de lectura (papel, interlineado, justificado, letra capital), efectos más sutiles, aviso de consultas diarias, modelo de Gemini personalizable e importar tu propio texto."],
@@ -1540,9 +1545,24 @@ function build(s, action, note, sp, compact) {
     (compact ? genreRules(s).slice(0, 700) : genreRules(s)) + "\n" + (compact ? "" : CLICHES) + "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nLONGITUD: 2 o 3 párrafos cortos, de " + LEN[len] + " palabras en total." +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s).slice(0, 1800) : loreTxt(s)) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
+}
+function repeatedBits(s) {
+  var sc = (s.scenes || []).slice(-8), cnt = {}, stop = /^(de|la|el|en|y|a|que|un|una|los|las|se|su|con|por|del|al|lo|le|no|más|como|para)$/;
+  sc.forEach(function (x, i) {
+    var w = String(x.t || "").toLowerCase().replace(/[^a-záéíóúüñ\s]/g, " ").split(/\s+/).filter(Boolean), seen = {};
+    for (var k = 0; k + 2 < w.length; k++) { var g = w[k] + " " + w[k + 1] + " " + w[k + 2]; if (stop.test(w[k]) && stop.test(w[k + 2])) continue; if (!seen[g]) { seen[g] = 1; cnt[g] = (cnt[g] || 0) + 1; } }
+  });
+  var kept = [];
+  Object.keys(cnt).filter(function (g) { return cnt[g] >= 2; }).sort(function (a, b) { return cnt[b] - cnt[a] || b.length - a.length; }).forEach(function (g) {
+    var w = g.split(" "), p1 = w[0] + " " + w[1], p2 = w[1] + " " + w[2];
+    if (!kept.some(function (k) { return k.indexOf(p1) >= 0 || k.indexOf(p2) >= 0; })) kept.push(g);
+  });
+  var bits = kept.slice(0, 6);
+  var cl = ["zumbido sordo", "golpe seco", "silencio denso", "aire cargado"].filter(function (c) { return sc.some(function (x) { return String(x.t || "").toLowerCase().indexOf(c) >= 0; }); });
+  return bits.concat(cl).filter(function (g, i, a) { return a.indexOf(g) === i; }).slice(0, 10);
 }
 function recentFocus(s, action) { return (action || "") + " " + (s.scenes || []).slice(-2).map(function (x) { return x.t; }).join(" "); }
 var TONES = { "Tensión": "sube la tensión: ritmo más rápido, frases cortas, amenaza cercana, información que se retiene.", "Calma": "baja el ritmo: respiro, detalles cotidianos, conversación tranquila, sin peligro inmediato.", "Humor": "toque de humor natural surgido de los personajes y la situación, sin romper la trama.", "Emoción": "carga emocional: lo que sienten, lo que callan, un momento que importe a los personajes.", "Misterio": "intriga: detalles que no encajan, preguntas sin respuesta, una pista nueva sin resolver nada." };
