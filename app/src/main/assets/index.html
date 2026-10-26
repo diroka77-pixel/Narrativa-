@@ -81,6 +81,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .cc{flex:none;width:68%;max-width:15rem;scroll-snap-align:start}
 .cc .cover{min-height:11rem;padding-top:6rem}
 .cc .card{margin:0 0 .3rem}
+#toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:rgba(12,16,26,.94);color:#fff;border:1px solid rgba(255,255,255,.25);padding:.6rem 1rem;border-radius:999px;font-size:.9rem;opacity:0;pointer-events:none;transition:.3s;z-index:60;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#create.simple .adv,#create.simple #rows>details:not(:first-child){display:none!important}
+#create:not(.simple) .simp{display:none}
+#cmode .on{background:var(--acc);color:var(--accink)}
+.qpill{display:inline-block;margin:0 0 .5rem;font-size:.82rem;padding:.3rem .7rem;border-radius:999px;border:1px solid rgba(255,255,255,.2)}
+.qpill.warn{border-color:#e0a030;color:#f4c870}
+.qpill.hit{border-color:#d05050;color:#f19090}
 .chip{position:absolute;top:.7rem;left:.7rem;font-size:.68rem;letter-spacing:.08em;background:rgba(0,0,0,.55);color:#fff;padding:.2rem .55rem;border-radius:999px;z-index:1}
 .cover.big{padding-top:8.5rem}
 .prog{height:4px;background:rgba(255,255,255,.25);border-radius:4px;margin-top:.6rem}.prog i{display:block;height:100%;background:var(--acc);border-radius:4px}
@@ -284,21 +292,26 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <p class="hint" id="nosample" hidden>Esta función necesita abrir la página dentro de claude.ai.</p>
 </section>
 
-<section id="create" hidden>
+<section id="create" class="simple" hidden>
 <div class="row" style="align-items:center;margin-bottom:.5rem"><button class="small" id="back1">← Volver</button></div>
+<div class="row" id="cmode" style="margin-bottom:.6rem"><button class="small" id="cm-s" data-m="simple">Creación simple</button><button class="small" id="cm-a" data-m="adv">Creación avanzada</button></div>
+<p class="hint" id="cmhint" style="margin-top:0"></p>
 <div class="big">
 <h2>¿Cuál es tu aventura?</h2>
 <textarea id="idea" placeholder="Por ejemplo: un alquimista caído en desgracia planea un golpe en una ciudad que flota sobre las nubes…"></textarea>
 <div class="row" style="margin-top:.6rem" id="ideas"></div>
-<p class="hint" style="margin:1rem 0 .4rem">Título (opcional)</p>
-<input id="ttl0" type="text" autocomplete="off" placeholder="Si lo dejas vacío, lo inventa la IA">
-<p class="hint" style="margin:1rem 0 .4rem">Protagonistas (opcional)</p>
-<div class="row" id="plist"></div>
-<div class="row" style="margin-top:.5rem"><button class="small" id="paddnew">+ Diseñar protagonista</button><button class="small" id="paddpick">+ Elegir de Mis personajes</button></div>
+<button class="go simp" id="quick" style="margin-top:.8rem">✨ Sorpréndeme y empezar ya</button>
+<p class="hint adv" style="margin:1rem 0 .4rem">Título (opcional)</p>
+<input id="ttl0" class="adv" type="text" autocomplete="off" placeholder="Si lo dejas vacío, lo inventa la IA">
+<p class="hint adv" style="margin:1rem 0 .4rem">Protagonistas (opcional)</p>
+<div class="row adv" id="plist"></div>
+<div class="row adv" style="margin-top:.5rem"><button class="small" id="paddnew">+ Diseñar protagonista</button><button class="small" id="paddpick">+ Elegir de Mis personajes</button></div>
 <div class="row" id="ppick" hidden style="margin-top:.5rem"></div>
+<p class="hint adv" style="margin:1rem 0 .4rem">Biblia de la historia (opcional): reglas del mundo, tono y lo que nunca debe pasar</p>
+<textarea id="bible0" class="adv" maxlength="1200" placeholder="Ej.: La magia siempre cobra un precio físico. El tono es sobrio. Nadie vuelve de entre los muertos."></textarea>
 </div>
-<h2>Hazla tuya</h2>
-<p class="hint">Opcional. Lo que dejes en Auto lo decide la IA.</p>
+<h2 class="adv">Hazla tuya</h2>
+<p class="hint adv">Opcional. Lo que dejes en Auto lo decide la IA.</p>
 <div id="rows"></div>
 <div class="bar"><button class="go" id="make">Crear aventura</button>
 <p class="hint" style="text-align:center;margin:.5rem 0 0">Si no escribes nada, la IA inventa la aventura.</p></div>
@@ -356,6 +369,8 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <section id="play" hidden>
 <div class="row" style="align-items:center;margin-bottom:.4rem"><button class="small" id="back2">← Mis historias</button></div>
 <h2 id="ptitle" style="margin-top:.4rem"></h2>
+<p class="hint" id="forkinfo" hidden style="margin:.1rem 0 .4rem"></p>
+<button class="small qpill" id="qpill" hidden aria-label="Ver mis consultas de IA de hoy"></button>
 <details class="pl" id="set"><summary>Ajustes de la partida</summary><div id="setbody"></div></details>
 <details class="pl" id="atlbox"><summary>Atlas de la historia</summary><div id="atlbody"></div></details>
 <details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
@@ -367,7 +382,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <p class="status" id="status" role="status" hidden>El narrador está escribiendo…</p>
 <div class="err" id="err" role="alert" hidden></div>
 <div id="ctrl" hidden>
-<p class="hint" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora?</p>
+<p class="hint" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora? <button class="small qpill" id="qpill2" hidden aria-label="Ver mis consultas de IA de hoy" style="margin:0 0 0 .4rem"></button></p>
 <div class="row" id="actors" hidden style="margin-bottom:.6rem;align-items:center"></div>
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
 <button id="dict" class="small" hidden style="margin-bottom:.5rem">Dictar con la voz</button>
@@ -375,8 +390,8 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <button class="go" id="do" style="margin-top:.6rem">Continuar</button>
 <details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
 </div>
-<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Escribir otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="exp" class="small">Exportar para leer</button></div>
-<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Escribir otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="recapb" class="small">Resumen hasta ahora</button><button id="exp" class="small">Exportar para leer</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
@@ -411,8 +426,8 @@ var KEY = "narrador:v1", LIB = [], cur = null, sample = null, busy = false, pend
 var $ = function (id) { return document.getElementById(id); };
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(LIB)); return true; } catch (e) { return false; } }
-function view(n) { ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(LIB)); try { achSoon(); } catch (e2) {} return true; } catch (e) { return false; } }
+function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
 function setTab(n) { var m = { lib: "tInicio", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
 /* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
 var GTH = {
@@ -635,14 +650,47 @@ window.reTheme = function () { applyTheme(CUR_TH.g, CUR_TH.v, CUR_TH.seed); };
 function themeSel() { applyTheme(C.genres[0] || "Auto", 0, "nuevo"); }
 
 function useDay() { try { return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date()); } catch (e) { return new Date().toISOString().slice(0, 10); } }
-function useGet() { var o = null; try { o = JSON.parse(localStorage.getItem("hv:use") || "null"); } catch (e) {} o = o || {}; if (o.d !== useDay()) o = { d: useDay(), n: 0, lim: o.lim || 0, warned: 0, hit: 0 }; return o; }
+function useGet() { var o = null; try { o = JSON.parse(localStorage.getItem("hv:use") || "null"); } catch (e) {} o = o || {}; if (o.d !== useDay()) o = { d: useDay(), n: 0, lim: o.lim || 0, lims: o.lims || {}, m: {}, warned: 0, hit: 0 }; if (!o.m) o.m = {}; if (!o.lims) o.lims = {}; return o; }
+function curModel() { try { return (window.hvCurModel && window.hvCurModel()) || "modelo"; } catch (e) { return "modelo"; } }
+function limFor(o, md) { return Number((o.lims && o.lims[md]) || o.lim || 0) || 0; }
+function msToReset() { try { var f = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date()), h = 0, m = 0; f.forEach(function (x) { if (x.type === "hour") h = +x.value; if (x.type === "minute") m = +x.value; }); return (1440 - (h * 60 + m)) * 60000; } catch (e) { return 0; } }
+function fmtLeft(ms) { var m = Math.max(0, Math.round(ms / 60000)); return Math.floor(m / 60) + " h " + (m % 60) + " min"; }
+function usePill() {
+  var bs = document.querySelectorAll(".qpill"); if (!bs.length) return; var o = useGet(), md = curModel(), e = (o.m && o.m[md]) || { t: 0, a: 0 }, n = e.t + e.a, lim = limFor(o, md);
+  Array.prototype.forEach.call(bs, function (b) {
+    if (window.hvIsManual && window.hvIsManual()) { b.hidden = true; return; }
+    b.hidden = false; b.textContent = lim > 0 ? "Consultas hoy: " + n + " / " + lim : "Consultas hoy: " + n;
+    b.classList.toggle("warn", lim > 0 && n >= Math.ceil(lim * 0.8)); b.classList.toggle("hit", !!o.hit || (lim > 0 && n >= lim)); b.onclick = quotaSheet;
+  });
+}
+function quotaSheet() {
+  sheet("Mis consultas de IA", function (sh) {
+    var o = useGet(), md = curModel(), e = (o.m && o.m[md]) || { t: 0, a: 0 }, n = e.t + e.a, lim = limFor(o, md);
+    para(sh, "Modelo en uso: " + md + ". Hoy llevas " + n + " consultas: " + e.t + " de tus acciones y " + e.a + " automáticas (memoria, resúmenes, revisiones).");
+    if (lim > 0) {
+      var bar = el("div", "prog"), i = el("i"); i.style.width = Math.min(100, Math.round(n / lim * 100)) + "%"; bar.appendChild(i); sh.appendChild(bar);
+      var rem = Math.max(0, lim - n), per = e.t > 0 ? n / e.t : 0;
+      para(sh, "Te quedan unas " + rem + " consultas" + (per >= 1 ? " (≈ " + Math.floor(rem / per) + " escenas con el ritmo de hoy)" : "") + ".");
+    } else para(sh, "Aún no has indicado tu límite diario. Míralo en Google AI Studio y escríbelo abajo para ver cuántas te quedan.");
+    if (o.hit) para(sh, "Hoy ya recibiste el aviso de límite alcanzado.", "hint");
+    para(sh, "Se reinicia dentro de unas " + fmtLeft(msToReset()) + " (a las 9:00 en España, aproximadamente).");
+    var r = el("div", "row"), inp = el("input"); inp.type = "number"; inp.min = 0; inp.max = 100000; inp.value = lim || 0; inp.style.maxWidth = "7rem"; inp.setAttribute("aria-label", "Mi límite diario para este modelo");
+    var sv = el("button", "small", "Guardar límite"); sv.onclick = function () { var u = useGet(); u.lims = u.lims || {}; u.lims[md] = Math.max(0, Math.floor(Number(inp.value) || 0)); u.warned = 0; useSave(u); usePill(); closeSheet(); quotaSheet(); };
+    r.appendChild(inp); r.appendChild(sv); sh.appendChild(r);
+    var others = Object.keys(o.m || {}).filter(function (k) { return k !== md; });
+    if (others.length) { para(sh, "Otros modelos hoy:", "hint"); others.forEach(function (k) { var x = o.m[k]; para(sh, k + ": " + (x.t + x.a) + (limFor(o, k) ? " / " + limFor(o, k) : ""), "hint"); }); }
+    para(sh, "Es una estimación: la cuenta la lleva esta app y Google no informa de lo que queda. El límite real puede cambiar; si Google avisa de que llegaste, manda ese aviso.");
+    closeBtn(sh);
+  });
+}
 function useSave(o) { try { localStorage.setItem("hv:use", JSON.stringify(o)); } catch (e) {} }
-async function ask(p) {
-  var r;
+async function ask(p, kind) {
+  var r, md = curModel();
   try { r = await sample(p, { cache: false, modelTier: "complex" }); }
   catch (e) { if (e && e.code === "rate_limited") { var h = useGet(); h.hit = 1; useSave(h); } throw e; }
-  var o = useGet(); o.n++; useSave(o); try { if (window.hvStatusRefresh) window.hvStatusRefresh(); } catch (e) {}
-  if (o.lim > 0 && !o.warned && o.n >= Math.ceil(o.lim * 0.8)) { o.warned = 1; useSave(o); try { emsg("Llevas " + o.n + " de tus " + o.lim + " consultas de hoy. Cuando se agoten, espera al reinicio (sobre las 9:00 en España) o cambia de modelo."); } catch (e) {} }
+  var o = useGet(); o.n++; var me = (o.m[md] = o.m[md] || { t: 0, a: 0 }); if (kind === "turn") me.t++; else me.a++; useSave(o); try { if (window.hvStatusRefresh) window.hvStatusRefresh(); } catch (e) {} usePill();
+  var lm = limFor(o, md), nn = me.t + me.a;
+  if (lm > 0 && !o.warned && nn >= Math.ceil(lm * 0.8)) { o.warned = 1; useSave(o); try { emsg("Llevas " + nn + " de tus " + lm + " consultas de hoy. Cuando se agoten, espera al reinicio (sobre las 9:00 en España) o cambia de modelo."); } catch (e) {} }
   return r;
 }
 function parse(t) {
@@ -706,8 +754,8 @@ function renderLib() {
   LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = coverBg(s); if (s.cover) cv.classList.add("hasimg");
-    cd.appendChild(el("span", "chip", s.fin ? "FINAL" : "EN CURSO"));
-    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn)));
+    cd.appendChild(el("span", "chip", (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
+    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
     cv.onclick = function () { openStory(s); };
     cd.appendChild(cv); it.appendChild(cd);
     var d = el("button", "small", "Borrar");
@@ -746,8 +794,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.9.6";
+var VERSION = "0.9.7";
 var NEWS = [
+  ["0.9.7", "Crear historia en modo simple o avanzado, con comienzo rápido. Pulir el texto con la IA antes de exportar (por capítulos, con antes y después). Exportar solo con el texto de la novela. Diccionario al dejar pulsada una palabra. Contador de consultas de IA siempre visible y pantalla de recursos. Biblia de la historia, ejemplos de calidad por género y recursos narrativos. Hilo de la historia y logros en el Atlas. Modos de juego (libre, aventura dura, relajado). Sonido ambiente generado. Compartir una frase como imagen. Etiqueta de rama en la biblioteca. Icono nuevo."],
   ["0.9.5", "Estilos de autor, tono por escena, cerrar la historia con un final, motivaciones y evolución de personajes, modos de lectura (papel, interlineado, justificado, letra capital), efectos más sutiles, aviso de consultas diarias, modelo de Gemini personalizable e importar tu propio texto."],
   ["0.9.4", "Los capítulos ya no miden 5 escenas: la IA los cierra en una pausa natural con intriga (nunca en medio de una pelea o una conversación) midiendo la longitud en páginas de libro de bolsillo, y tú puedes terminarlos cuando quieras. Lectura más tolerante de las respuestas de la IA (menos reintentos)."],
   ["0.9.3", "Modo simple (solo leer y elegir; se activa solo si es tu primera vez), 10 géneros destacados con reglas narrativas propias, lista de tópicos de IA prohibidos y capítulos con título y final con gancho (también en EPUB y PDF)."],
@@ -896,7 +945,7 @@ $("make").onclick = async function () {
     var s = {
       id: String(Date.now()), title: UT ? UT.slice(0, 80) : String(g.titulo).slice(0, 60), syn: g.sinopsis, genre: genres[0], genres: genres, director: C.dir, aut: C.aut, review: C.rev, len: C.len, sty: C.sty,
       intens: JSON.parse(JSON.stringify(C.lv)), lore: P.map(function (c) { return { tipo: "protagonista", nombre: c.name, desc: charTxt(c) }; }).concat((l.cartas || []).slice(0, 10)),
-      premise: g.sinopsis + (idea ? " Idea original: " + idea : ""), prot: P.slice(), ten: C.ten, at: Date.now(),
+      premise: g.sinopsis + (idea ? " Idea original: " + idea : ""), prot: P.slice(), ten: C.ten, at: Date.now(), bible: (CMODE !== "simple" ? $("bible0").value.trim().slice(0, 1200) : "") || undefined,
       memory: "", last: "", turn: 0, state: {}, scenes: [], opts: [], fin: false, prev: null
     };
     LIB.push(s); save(); drawSteps(3); busy = false; showCreated(s);
@@ -922,9 +971,10 @@ $("cplay").onclick = function () { openStory(cur); };
 $("cback").onclick = function () { renderLib(); view("lib"); };
 
 /* ---------- Jugar ---------- */
+function forkNote() { var f = $("forkinfo"); if (!f) return; if (cur && cur.fork) { f.hidden = false; f.textContent = "Rama de «" + cur.fork.from + "» desde la escena " + cur.fork.at + ". La historia original no ha cambiado."; } else f.hidden = true; }
 function openStory(s) {
   if (!s.ce) s.ce = chEnds(s).slice();
-  var _prevAt = s.at || 0; cur = s; s.at = Date.now(); WIN = (s.read != null && s.read < s.scenes.length - 1) ? Math.max(14, s.scenes.length - s.read + 4) : 14; view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); applyTheme(s.genre, storyVar(s), s.id); render(); if ($("atlbox").open) renderAtlas();
+  var _prevAt = s.at || 0; cur = s; s.at = Date.now(); try { forkNote(); usePill(); ambArm(); } catch (e) {} WIN = (s.read != null && s.read < s.scenes.length - 1) ? Math.max(14, s.scenes.length - s.read + 4) : 14; view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); applyTheme(s.genre, storyVar(s), s.id); render(); if ($("atlbox").open) renderAtlas();
   if (!s.scenes.length) turn("Empieza la historia: presenta al protagonista, el lugar y el conflicto inicial.", "");
   else if (s.scenes.length >= 6 && _prevAt && Date.now() - _prevAt > 6 * 3600 * 1000 && !s.sample) setTimeout(function () { recapSheet(s); }, 250);
   else if (s.read != null && s.read > 0 && s.read < s.scenes.length - 1) { setTimeout(function () { var e = $("sc-" + s.read); if (e) { e.scrollIntoView({ block: "start" }); showToEnd(); } }, 80); }
@@ -977,6 +1027,22 @@ function renderSet() {
     c.onclick = function () { if (k === "Ninguno") delete cur.author; else cur.author = k; save(); Array.prototype.forEach.call(ar.children, function (z) { z.className = z.textContent === k ? "on" : ""; }); };
     ar.appendChild(c);
   });
+  b.appendChild(el("p", "hint", "Modo de juego"));
+  optRow(b, [["libre", "Libre"], ["dura", "Aventura dura"], ["relajado", "Relajado"]], function () { return cur.pmode || "libre"; }, function (v) { cur.pmode = v; save(); });
+  b.appendChild(el("p", "hint", "Libre: lo que pida la historia. Aventura dura: consecuencias graves y permanentes. Relajado: sin muertes ni heridas graves."));
+  b.appendChild(el("p", "hint", "Biblia de la historia (opcional): las reglas del mundo, el tono, el destino de los personajes principales y lo que NUNCA debe pasar. La IA la tiene siempre presente."));
+  var bb = el("textarea"); bb.value = cur.bible || ""; bb.maxLength = 1200; bb.style.minHeight = "6rem"; bb.setAttribute("aria-label", "Biblia de la historia"); bb.placeholder = "Ej.: La magia siempre tiene un precio físico. Marta no traicionará a su hermano. El tono es sobrio, sin humor.";
+  bb.onchange = function () { var t = bb.value.trim().slice(0, 1200); if (t) cur.bible = t; else delete cur.bible; save(); }; b.appendChild(bb);
+  var bg = el("button", "small", "Redactarla con la IA"); bg.style.margin = ".3rem 0 .8rem";
+  bg.onclick = async function () {
+    bg.disabled = true; bg.textContent = "Pensando…";
+    try {
+      var q = "Eres un editor de novelas. Con esta premisa y lo que ya se sabe, redacta la BIBLIA de la historia en 6 a 10 líneas cortas: reglas del mundo (qué es posible y qué no), tono y voz del narrador, motivación y destino previsto de los personajes principales, y 2 cosas que nunca deben ocurrir. Responde SOLO con el texto, sin títulos ni comillas.\nPREMISA: " + cur.premise + "\nCARTAS:\n" + loreTxt(cur) + "\nRESUMEN:\n" + (cur.memory || "(inicio)");
+      var r = await ask(q); var t = String(r.text || "").trim().slice(0, 1200); if (t) { bb.value = t; cur.bible = t; save(); }
+    } catch (e) { emsg((e && e.message) || "No se pudo redactar la biblia."); }
+    bg.disabled = false; bg.textContent = "Redactarla con la IA";
+  };
+  b.appendChild(bg);
   b.appendChild(el("p", "hint", "Plan de la novela (opcional): una lista de hitos que la IA seguirá sin cerrar la historia antes de tiempo."));
   var pl = cur.plan = cur.plan || { on: false, pts: [], total: 120 };
   var l5 = el("label", "chk"), i5 = el("input"); i5.type = "checkbox"; i5.checked = !!pl.on; i5.onchange = function () { pl.on = i5.checked; save(); };
@@ -999,6 +1065,7 @@ function renderSet() {
   var ur = el("div", "row"), ui = el("input"); ui.type = "number"; ui.min = 0; ui.max = 100000; ui.value = uo.lim || 0; ui.style.maxWidth = "6rem"; ui.setAttribute("aria-label", "Mi límite diario");
   ui.onchange = function () { var o = useGet(); o.lim = Math.max(0, Number(ui.value) || 0); o.warned = 0; useSave(o); };
   ur.appendChild(el("span", "hint", "Avisarme al 80 % de este límite (0 = no avisar):")); ur.appendChild(ui); b.appendChild(ur);
+  var qb = el("button", "small", "Ver mis consultas de IA"); qb.onclick = quotaSheet; b.appendChild(qb);
   b.appendChild(el("p", "hint", "Mi estilo: pega un párrafo tuyo (de 300 a 600 caracteres) y la narración imitará tu ritmo y tu forma de escribir."));
   var ta = el("textarea"); ta.value = (cur.style && cur.style.sample) || ""; ta.placeholder = "Pega aquí un párrafo escrito por ti"; ta.maxLength = 700; ta.setAttribute("aria-label", "Párrafo de mi estilo");
   ta.onchange = function () { var t = ta.value.trim().slice(0, 700); if (t) cur.style = { sample: t }; else delete cur.style; save(); };
@@ -1185,6 +1252,7 @@ function forkStory(src, upto) {
   var ls = st.scenes[upto - 1];
   st.state = ls.st || {}; st.memory = ls.mt || ""; st.last = ls.t; st.opts = (ls.o || []).slice(); st.fin = false; st.turn = upto; st.ls = Math.min(src.ls || 0, upto); st.prev = null; st.lastAct = null; st.read = null; st.diag = null;
   st.id = String(Date.now()); st.at = Date.now(); st.sample = false; st.title = src.title.replace(/ · rama.*$/, "") + " · rama desde la escena " + upto;
+  delete st.endIn; st.fork = { from: src.title.replace(/ · rama.*$/, ""), at: upto };
   return st;
 }
 function endSheet() {
@@ -1441,7 +1509,7 @@ function loreTxt(s) { return (s.lore || []).slice(0, 30).map(function (c) { retu
 
 function build(s, action, note, sp) {
   var aviso = note ? "AVISO: " + note + "\n" : "";
-  if (s.state && s.state.salud <= 0) aviso += "AVISO: la salud del protagonista es 0. Escribe el desenlace con \"fin\":true.\n";
+  if (s.state && s.state.salud <= 0 && s.pmode !== "relajado") aviso += "AVISO: la salud del protagonista es 0. Escribe el desenlace con \"fin\":true.\n";
   var dir = s.director || "Auto", len = s.len || DEF.len, sty = s.sty || DEF.sty, ten = s.ten || DEF.ten, aut = s.aut || "Coautor";
   return RULES + "\n\nGÉNEROS (mézclalos con naturalidad, sin que uno anule al otro): " + gtxt(s) + "\nDIRECTOR NARRATIVO (" + dir + "): " + DIR[dir] +
     genreRules(s) + "\n" + CLICHES + "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nLONGITUD: 2 o 3 párrafos cortos, de " + LEN[len] + " palabras en total." +
@@ -1465,6 +1533,65 @@ function planPoint(s) {
   var tot = Math.max(20, pl.total || 120), k = Math.min(pl.pts.length - 1, Math.floor(s.scenes.length / tot * pl.pts.length));
   return { i: k, n: pl.pts.length, now: pl.pts[k], next: pl.pts[k + 1] || "", last: k >= pl.pts.length - 1 };
 }
+
+/* v0.9.7: recursos de oficio, ejemplos por género y biblia */
+var RECURSOS = [
+  "Una revelación que cambia el sentido de algo ya visto (una pista que estaba delante desde el principio).",
+  "Un aliado miente por una razón comprensible, no por maldad.",
+  "Un éxito que cuesta algo concreto: el personaje consigue lo que quería y pierde otra cosa.",
+  "Una consecuencia tardía de una decisión pequeña tomada hace varias escenas.",
+  "Un objeto o detalle ya mencionado vuelve con otra función.",
+  "Un personaje secundario hace algo inesperado que lo define de golpe.",
+  "Un obstáculo que no se vence por la fuerza: hay que renunciar a algo, esperar o pedir ayuda a quien no se quiere.",
+  "Una conversación en la que lo importante se calla y el subtexto pesa más que las palabras.",
+  "Un cambio de ritmo: tras la tensión, una escena breve y cotidiana que revela algo de los personajes.",
+  "Una información llega incompleta y obliga a decidir con dudas.",
+  "Una regla del mundo (magia, tecnología, ley, costumbre) se aplica con rigor y tiene un coste inesperado.",
+  "Un recuerdo o un secreto del pasado de un personaje sale a la superficie por una causa concreta.",
+  "Dos objetivos legítimos chocan: nadie es villano, pero uno de los dos va a perder.",
+  "Un error del protagonista, humano y creíble, con consecuencias que no se pueden deshacer.",
+  "Una pequeña victoria que abre un problema mayor.",
+  "El entorno actúa (clima, multitud, terreno, avería) y cambia lo que era posible hacer.",
+  "Un personaje ausente condiciona la escena: se habla de él, se huye de él o se espera su llegada.",
+  "Una deuda, promesa o favor pendiente se cobra en el peor momento.",
+  "Un detalle sensorial concreto e inesperado ancla la escena (un olor, un ruido, una textura), sin enumerar sentidos.",
+  "Una pregunta importante queda sin respuesta al final de la escena, pero ya sabemos cómo se hará.",
+  "Un personaje cambia de bando o de opinión por un motivo sembrado antes.",
+  "Una decisión moral sin salida limpia, con un coste para cada opción."
+];
+var ESTRUCTURA = [
+  [0.15, "INICIO de la novela: ancla al lector en lo concreto (quién, dónde, qué quiere) y siembra una pregunta o un problema que pida respuesta. Evita explicar el mundo de golpe."],
+  [0.45, "NUDO: complica, no resuelvas. Cada escena debe cambiar algo (una relación, un riesgo, lo que se sabe). Siembra pistas y deudas que se cobrarán más adelante."],
+  [0.75, "ESCALADA: las consecuencias de lo anterior se acumulan y las decisiones cuestan más. Acerca a los personajes a lo que más temen."],
+  [1.01, "TRAMO FINAL: cobra lo sembrado, haz que las decisiones pasadas pesen y prepara el clímax; no abras tramas nuevas grandes."]
+];
+var EJEMPLOS = {
+  "Fantasía Épica": "Kerran subió el último tramo con la espada atada a la espalda y las manos en carne viva. Arriba, el viejo faro no tenía luz, pero alguien había dejado un cuenco de sopa sobre el escalón, todavía caliente. Se quedó mirándolo un buen rato. Nadie vivía allí desde hacía cuarenta años.",
+  "Ciencia Ficción": "La nave llevaba tres días sin decir la hora. Mara lo notó cuando el café se enfrió sin que nadie lo apagara: los relojes seguían marcando las seis y diez, pero el pasillo olía a noche. Tocó el panel con la uña. —¿Quién te ha dicho que es de día? —preguntó. El sistema tardó demasiado en responder.",
+  "Terror / Horror": "La casa estaba bien. Eso era lo raro. Tomás recorrió las habitaciones con la linterna sin encontrar nada fuera de sitio, ni polvo ni humedad, ni siquiera el olor a cerrado que esperaba. Solo en la cocina, sobre la mesa limpia, había un plato con su nombre. Lo había escrito su madre. Su madre llevaba diez años enterrada.",
+  "Misterio": "—Dijo que volvía en cinco minutos —repitió el camarero—. Pagó dos cafés. Uno sigue ahí. Inés miró la taza intacta, la silla apartada, el abrigo colgado. Un hombre que se va sin abrigo en noviembre o tiene prisa o no pensaba necesitarlo. Ninguna de las dos opciones le gustó.",
+  "Novela Negra": "Salvatierra me dejó pasar sin levantar la vista del periódico. En aquella comisaría todos sabían quién pagaba las cenas del jefe, y nadie me preguntó por qué volvía a las once. Dejé el sobre sobre la mesa y esperé. Pesaba menos de lo que debía, y los dos lo supimos al mismo tiempo.",
+  "Romance": "Lucía llevaba veinte minutos fingiendo que leía la carta del vino. Él se había sentado en la barra, de espaldas, y aun así ella sabía exactamente cuándo se reía. Era una risa corta, como de quien se lo piensa antes. Hacía seis años que no la oía, y le dio rabia que siguiera siendo la misma.",
+  "Histórico": "En Sevilla, aquel invierno, el pan se pagaba con promesas. Beatriz contó las monedas dos veces en el portal, por si el frío las había multiplicado, y entró en el taller de su padre con la cara de quien trae malas noticias. Él no levantó los ojos del telar. —Ya lo sé —dijo—. Los he visto pasar por la calle.",
+  "Aventura": "El mapa se acababa en el río, y el río no estaba donde debía. Dani lo comprobó tres veces mientras Ruy preparaba la balsa sin hacer preguntas, que era su forma de protestar. Al otro lado, entre los árboles, algo reflejaba el sol: un tejado de zinc, nuevo, en una selva que nadie había pisado en un siglo.",
+  "Drama": "Mi hermana puso la mesa para seis, aunque íbamos a ser cinco. Nadie dijo nada. Papá cortó el pan con más cuidado de lo normal, y yo me di cuenta de que hacía meses que no le veía las manos temblar así. —Está todo muy rico —dijo mamá, sin haber probado nada.",
+  "Comedia": "El plan era sencillo, que es lo que se dice siempre justo antes de que deje de serlo. Paco entraba, cambiaba la urna por la copia y salía antes de que el conserje volviera del baño. Lo único que no había previsto era que el conserje, ese día, estuviera estreñido, y que la copia pesara el doble."
+};
+var PMODES = {
+  libre: "",
+  dura: "MODO DE JUEGO — AVENTURA DURA: el mundo es peligroso y no perdona. Los errores y las decisiones arriesgadas tienen consecuencias graves y permanentes (heridas que persisten, pérdidas, personajes que pueden morir, también aliados importantes si la trama lo justifica). Nada se arregla gratis.",
+  relajado: "MODO DE JUEGO — RELAJADO: tono cálido y de bajo riesgo. Ningún personaje importante muere ni sufre heridas graves; los conflictos son más de personas, descubrimiento y misterio que de peligro físico. Los problemas se resuelven con ingenio y relaciones, y aun así hay consecuencias reales (de confianza, de tiempo, de decisiones)."
+};
+function craftCtx(s) {
+  var o = (PMODES[s.pmode || "libre"] ? "\n" + PMODES[s.pmode || "libre"] : ""), g = (s.genres && s.genres[0]) || s.genre || "", gm = (typeof GMAP !== "undefined" && GMAP[g]) || g, ex = EJEMPLOS[gm];
+  if (ex) o += "\nREFERENCIA DE OFICIO (nivel de calidad y naturalidad que se busca; NO copies sus frases, personajes ni temas): «" + ex + "»";
+  var pl = s.plan, tot = Math.max(20, (pl && pl.total) || 120), pr = (s.scenes || []).length / tot, st = ESTRUCTURA.filter(function (x) { return pr < x[0]; })[0];
+  if (st && !(pl && pl.on && pl.pts && pl.pts.length)) o += "\nESTRUCTURA: " + st[1];
+  var k = ((s.turn || 0) * 7 + (s.scenes || []).length * 3) % RECURSOS.length;
+  if ((s.turn || 0) % 2 === 1) o += "\nRECURSO NARRATIVO (úsalo solo si encaja de forma natural; no lo anuncies ni lo fuerces): " + RECURSOS[k];
+  if (s.bible && s.bible.trim()) o += "\nBIBLIA DE LA HISTORIA (verdad fija del autor; no la contradigas): " + s.bible.trim().slice(0, 1200);
+  return o;
+}
 function extraCtx(s) {
   var o = "", m = ensureMem(s);
   if (s.author && AUTHOR[s.author]) o += "\nESTILO DE AUTOR (" + s.author + "): " + AUTHOR[s.author];
@@ -1477,6 +1604,7 @@ function extraCtx(s) {
   if (pp) o += "\nPLAN DE LA NOVELA (guía del autor; llévala hacia allí sin forzar ni anunciar): punto actual " + (pp.i + 1) + "/" + pp.n + ": «" + pp.now + "»" + (pp.next ? "; después: «" + pp.next + "»" : "") + ". " + (pp.last ? "Estás en la recta final: puedes cerrar la historia cuando el punto se cumpla." : "NO cierres la historia ni uses \"fin\":true antes del último punto.");
   if (s.rules && s.rules.length) o += "\nREGLAS INAMOVIBLES DEL MUNDO (el autor las fijó; no las contradigas jamás): " + s.rules.join(" | ");
   o += charMot(m);
+  o += craftCtx(s);
   var nm = Object.keys(m.chars).map(function (k) { return m.chars[k]; }).sort(function (a, b) { return b.last - a.last; }).slice(0, 25).map(function (c) { return c.name; });
   if (nm.length) o += "\nNOMBRES YA USADOS (escríbelos siempre igual en mem; no inventes variantes ni apodos como personajes nuevos): " + nm.join(", ");
   if (s.style && s.style.sample) o += "\nESTILO DEL AUTOR (imita su ritmo, la longitud de sus frases y su tipo de vocabulario; NO copies sus frases ni sus temas): «" + s.style.sample + "»";
@@ -1542,7 +1670,7 @@ async function turn(action, shown, extra) {
   pending = [action, shown]; busy = true; $("err").hidden = true; stopTalk(); render(true);
   try {
     for (var i = 0; i < 2; i++) {
-      var t0 = Date.now(), r = await ask(build(s, action, note, sp)), d; dg(s, "ms", Date.now() - t0);
+      var t0 = Date.now(), r = await ask(build(s, action, note, sp), "turn"), d; dg(s, "ms", Date.now() - t0);
       try { d = parse(r.text); } catch (e) { dg(s, "jsonFail"); note = "Tu respuesta anterior no era JSON válido."; continue; }
       if (!d.escena) { dg(s, "noScene"); note = "Falta la escena."; continue; }
       cand = d;
@@ -1715,7 +1843,16 @@ $("paddpick").onclick = function () {
     b.appendChild(x);
   });
 };
-function startCreate(idea) { C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; themeSel(); view("create"); }
+var CMODE = "simple"; try { CMODE = localStorage.getItem("hv:cmode") || (LIB.length ? "adv" : "simple"); } catch (e) {}
+function setCMode(m) {
+  CMODE = m === "adv" ? "adv" : "simple"; try { localStorage.setItem("hv:cmode", CMODE); } catch (e) {}
+  var c = $("create"); c.classList.toggle("simple", CMODE === "simple"); $("cm-s").classList.toggle("on", CMODE === "simple"); $("cm-a").classList.toggle("on", CMODE !== "simple");
+  $("cmhint").textContent = CMODE === "simple" ? "Solo eliges la idea y el género; la IA decide el resto. Puedes cambiar a avanzado cuando quieras." : "Controlas todo: título, protagonistas, biblia, estilo, tono e intensidad.";
+  var f = document.querySelector("#rows>details"); if (f) f.open = CMODE === "simple";
+}
+$("cm-s").onclick = function () { setCMode("simple"); }; $("cm-a").onclick = function () { setCMode("adv"); };
+$("quick").onclick = function () { if (!$("idea").value.trim()) $("idea").value = IDEAS[Math.floor(Math.random() * IDEAS.length)]; $("make").click(); };
+function startCreate(idea) { C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; $("bible0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; themeSel(); setCMode(CMODE); view("create"); }
 
 function renderActors() {
   var b = $("actors"); b.innerHTML = ""; var pr = (cur && cur.prot) || [];
@@ -1813,7 +1950,7 @@ function imgPanel(box, withTitle) {
   if (s.cover) { var im = el("img", "pv"); im.src = s.cover; im.alt = "Portada"; box.appendChild(im); }
 }
 function wrapTxt(x, t, maxW) { var w = t.split(/\s+/), l = "", out = []; w.forEach(function (z) { var tt = l ? l + " " + z : z; if (x.measureText(tt).width > maxW && l) { out.push(l); l = z; } else l = tt; }); if (l) out.push(l); return out; }
-async function shareCard(i) {
+async function shareCard(i, quote) {
   var s = cur, sc = s.scenes[i]; if (!sc) return;
   var W = 1080, H = 1350, c = document.createElement("canvas"); c.width = W; c.height = H; var x = c.getContext("2d");
   var th = GT(s.genre), img = new Image();
@@ -1825,7 +1962,7 @@ async function shareCard(i) {
     x.fillStyle = th.acc2; x.font = "700 30px sans-serif"; x.fillText(gtxt(s).toUpperCase(), 80, 150);
     x.fillStyle = "#fff"; x.font = "italic 700 78px Georgia, serif"; var y = 760;
     wrapTxt(x, s.title, W - 160).slice(0, 2).forEach(function (l) { x.fillText(l, 80, y); y += 90; });
-    var ex = sc.t.replace(/\s+/g, " ").trim(); if (ex.length > 360) { ex = ex.slice(0, 360); ex = ex.slice(0, Math.max(ex.lastIndexOf(". "), ex.lastIndexOf(" ")) + 1).trim() + "…"; }
+    var ex = quote ? String(quote).trim() : sc.t.replace(/\s+/g, " ").trim(); if (!quote && ex.length > 360) { ex = ex.slice(0, 360); ex = ex.slice(0, Math.max(ex.lastIndexOf(". "), ex.lastIndexOf(" ")) + 1).trim() + "…"; }
     x.font = "38px Georgia, serif"; x.fillStyle = "rgba(255,255,255,.92)"; y += 20;
     wrapTxt(x, "«" + ex + "»", W - 160).slice(0, 9).forEach(function (l) { x.fillText(l, 80, y); y += 54; });
     x.fillStyle = th.acc2; x.fillRect(80, H - 140, 90, 5); x.fillStyle = "#fff"; x.font = "italic 700 40px Georgia, serif"; x.fillText("Historias vivas", 80, H - 80);
@@ -1838,6 +1975,15 @@ async function shareCard(i) {
   var dl = null; try { dl = await claude.use("downloads"); } catch (e) {}
   if (!dl) { emsg("Guardar archivos no está disponible aquí."); return; }
   try { await dl.save({ filename: "escena-" + (i + 1) + ".png", data: new Uint8Array(await blob.arrayBuffer()) }); emsg("Imagen guardada: escena-" + (i + 1) + ".png"); } catch (e) { emsg("No se pudo guardar la imagen."); }
+}
+function quoteSheet(i) {
+  var sc = cur.scenes[i];
+  sheet("Elige una frase", function (sh) {
+    var c = sentences(sc.t).map(function (x) { return String(x).replace(/\s+/g, " ").trim(); }).filter(function (x) { return x.length >= 40 && x.length <= 240; });
+    if (!c.length) para(sh, "Esta escena no tiene frases adecuadas. Usa «Compartir como imagen».");
+    c.slice(0, 8).forEach(function (q) { var b = el("button", null, "«" + q + "»"); b.style.cssText = "display:block;width:100%;text-align:left;margin:.3rem 0;border-radius:12px"; b.onclick = function () { closeSheet(); shareCard(i, q); }; sh.appendChild(b); });
+    closeBtn(sh);
+  });
 }
 var OPEN_SC = -1;
 function sceneImg(sc, i) {
@@ -1861,6 +2007,7 @@ function sceneImg(sc, i) {
   if (i === cur.scenes.length - 1 && chEnds(cur).indexOf(cur.scenes.length) < 0) { var cc = el("button", "small", "Terminar el capítulo aquí"); cc.onclick = function () { closeChapterSheet(); }; r.appendChild(cc); }
   if (i === cur.scenes.length - 1 && !cur.fin) { var en = el("button", "small", cur.endIn != null ? "Cancelar el final" : "Empezar a cerrar la historia"); en.onclick = function () { if (cur.endIn != null) { delete cur.endIn; save(); render(true); } else endSheet(); }; r.appendChild(en); }
   var sh2 = el("button", "small", "Compartir como imagen"); sh2.onclick = function () { shareCard(i); }; r.appendChild(sh2);
+  var sq = el("button", "small", "Compartir una frase"); sq.onclick = function () { quoteSheet(i); }; r.appendChild(sq);
   var rp = el("button", "small", "Denunciar contenido"); rp.onclick = function () { reportScene(i); }; r.appendChild(rp);
   d.appendChild(r); return d;
 }
@@ -1904,9 +2051,55 @@ $("pcopy").onclick = function () {
 /* ---------- Atlas ---------- */
 var ATL = { tab: "chars", sec: false, q: "" };
 function gotoScene(i) { if (!$("sc-" + i)) { WIN = cur.scenes.length - i + 4; render(true); } var e = $("sc-" + i); if (e) e.scrollIntoView({ behavior: "smooth", block: "start" }); }
+
+/* v0.9.7: logros suaves (sin monedas) */
+var ACH = [
+  ["first", "Primera página", "Escribe tu primera escena."],
+  ["s10", "Diez escenas", "Llega a 10 escenas en una historia."],
+  ["s50", "Medio centenar", "Llega a 50 escenas en una historia."],
+  ["s100", "Cien escenas", "Llega a 100 escenas en una historia."],
+  ["s200", "Novelista", "Llega a 200 escenas en una historia."],
+  ["ch2", "Primer capítulo", "Cierra tu primer capítulo."],
+  ["ch10", "Diez capítulos", "Llega al capítulo 10."],
+  ["mark", "Marcapáginas", "Marca una escena."],
+  ["img", "Ilustrador", "Añade una imagen a una escena."],
+  ["fork", "Otra línea del tiempo", "Crea una rama desde una escena."],
+  ["fin", "Punto final", "Termina una historia."],
+  ["plan", "Con brújula", "Activa el plan de la novela."],
+  ["bible", "Con biblia", "Escribe la biblia de una historia."],
+  ["polish", "Pulido", "Acepta la revisión de un capítulo."],
+  ["dict", "Curioso", "Consulta una palabra con el diccionario."],
+  ["h5", "Cinco historias", "Ten cinco historias en tu biblioteca."]
+];
+function achGet() { try { return JSON.parse(localStorage.getItem("hv:ach") || "{}") || {}; } catch (e) { return {}; } }
+function achTest() {
+  var L = LIB || [], t = {}, mx = 0, mc = 0;
+  L.forEach(function (x) {
+    var n = (x.scenes || []).length; mx = Math.max(mx, n); try { mc = Math.max(mc, n ? chCur(x) : 0); } catch (e) {}
+    if (x.fork) t.fork = 1; if (x.fin) t.fin = 1; if (x.plan && x.plan.on) t.plan = 1; if (x.bible) t.bible = 1;
+    (x.scenes || []).forEach(function (sc) { if (sc.bm) t.mark = 1; if (sc.img) t.img = 1; });
+    if (x.rev && x.rev.ch) Object.keys(x.rev.ch).forEach(function (k) { if (x.rev.ch[k].state === "applied") t.polish = 1; });
+  });
+  if (mx >= 1) t.first = 1; if (mx >= 10) t.s10 = 1; if (mx >= 50) t.s50 = 1; if (mx >= 100) t.s100 = 1; if (mx >= 200) t.s200 = 1; if (mc >= 2) t.ch2 = 1; if (mc >= 10) t.ch10 = 1; if (L.length >= 5) t.h5 = 1;
+  try { if (localStorage.getItem("hv:dict")) t.dict = 1; } catch (e) {}
+  return t;
+}
+function toast(t) {
+  var d = document.getElementById("toast"); if (!d) { d = el("div"); d.id = "toast"; d.setAttribute("role", "status"); document.body.appendChild(d); }
+  d.textContent = t; d.className = "show"; clearTimeout(d._t); d._t = setTimeout(function () { d.className = ""; }, 3600);
+}
+var ACH_T = 0;
+function achSoon() { clearTimeout(ACH_T); ACH_T = setTimeout(achCheck, 1500); }
+function achCheck() {
+  try {
+    var got = achGet(), t = achTest(), nw = [], first = !Object.keys(got).length && !(LIB || []).length;
+    ACH.forEach(function (a) { if (t[a[0]] && !got[a[0]]) { got[a[0]] = Date.now(); nw.push(a[1]); } });
+    if (nw.length) { localStorage.setItem("hv:ach", JSON.stringify(got)); toast(nw.length > 3 ? "Has desbloqueado " + nw.length + " logros (Atlas → Logros)" : "Logro: " + nw.join(", ")); if ($("atlbox") && $("atlbox").open && ATL.tab === "ach") renderAtlas(); }
+  } catch (e) {}
+}
 function renderAtlas() {
   var b = $("atlbody"), s = cur; if (!b) return; b.innerHTML = ""; if (!s) return;
-  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["places", "Lugares"], ["pend", "Pendientes"], ["ev", "Cronología"], ["rules", "Reglas"], ["rel", "Relaciones"], ["stats", "Estadísticas"], ["marks", "Marcas"], ["search", "Buscar"]];
+  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["places", "Lugares"], ["pend", "Pendientes"], ["thread", "Hilo"], ["ach", "Logros"], ["ev", "Cronología"], ["rules", "Reglas"], ["rel", "Relaciones"], ["stats", "Estadísticas"], ["marks", "Marcas"], ["search", "Buscar"]];
   var r = el("div", "row"); b.appendChild(r);
   tabs.forEach(function (t) { var x = el("button", ATL.tab === t[0] ? "small on" : "small", t[1]); x.onclick = function () { ATL.tab = t[0]; renderAtlas(); }; r.appendChild(x); });
   var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = ATL.sec;
@@ -2033,6 +2226,22 @@ function renderAtlas() {
       if (!n) out.appendChild(el("p", "hint", "No hay coincidencias."));
     }
     qi.oninput = go; go();
+  } else if (ATL.tab === "thread") {
+    var cn = chCur(s), pp0 = planPoint(s);
+    if (!s.scenes.length) empty("Cuando escribas las primeras escenas verás aquí el hilo de tu novela.");
+    if (pp0) { var pw = el("div", "lore"); pw.appendChild(el("b", null, "Plan de la novela")); s.plan.pts.forEach(function (h, k) { pw.appendChild(el("p", "hint", (k < pp0.i ? "✓ " : k === pp0.i ? "▶ " : "· ") + h)); }); box.appendChild(pw); }
+    for (var cq = 1; cq <= cn; cq++) (function (cq) {
+      var a0 = chStartIdx(s, cq), cd = el("div", "lore"), hb = el("button", "small", "Capítulo " + cq + (ctitle(s, cq) ? " · " + ctitle(s, cq) : "") + (cq === cn ? " (en curso)" : ""));
+      hb.onclick = function () { gotoScene(a0); }; cd.appendChild(hb);
+      var rs = (m.chap || {})[String(cq)]; if (rs) cd.appendChild(el("p", "hint", rs));
+      chScenes(s, cq).forEach(function (i) { if (s.scenes[i].bm) { var mk = el("button", "small", "★ Escena " + (i + 1) + ": " + s.scenes[i].t.replace(/\s+/g, " ").slice(0, 70) + "…"); mk.onclick = function () { gotoScene(i); }; cd.appendChild(mk); } });
+      box.appendChild(cd);
+    })(cq);
+    var op0 = m.pend.filter(function (x) { return x.open; }); if (op0.length) { var pq = el("div", "lore"); pq.appendChild(el("b", null, "Hilos abiertos (" + op0.length + ")")); op0.slice(-6).forEach(function (x) { pq.appendChild(el("p", "hint", "· " + x.text)); }); box.appendChild(pq); }
+  } else if (ATL.tab === "ach") {
+    var got = achGet(), nGot = ACH.filter(function (a) { return got[a[0]]; }).length;
+    box.appendChild(el("p", "hint", "Logros: " + nGot + " de " + ACH.length + ". Son solo para disfrutar: no dan nada ni tienen monedas."));
+    ACH.forEach(function (a) { var d = el("div", "lore"); d.appendChild(el("b", null, (got[a[0]] ? "✓ " : "· ") + a[1])); d.appendChild(el("p", "hint", a[2] + (got[a[0]] ? " — conseguido el " + new Date(got[a[0]]).toLocaleDateString("es") : ""))); box.appendChild(d); });
   } else if (ATL.tab === "pend") {
     var ps = m.pend.slice().reverse();
     if (!ps.length) empty("No hay asuntos pendientes.");
@@ -2062,6 +2271,54 @@ function optRow(b, items, get, set) {
     r.appendChild(x);
   });
 }
+
+/* v0.9.7: sonido ambiente generado (sin archivos) */
+var AMB = { ctx: null, g: null, nodes: [], timers: [], kind: "" };
+function ambKindFor(s) {
+  var a = RD.amb || "off"; if (a !== "auto") return a === "off" ? "" : a;
+  var g = (s && ((s.genres && s.genres[0]) || s.genre)) || ""; g = (typeof GMAP !== "undefined" && GMAP[g]) || g;
+  return ({ "Fantasía Épica": "wind", "Ciencia Ficción": "night", "Terror / Horror": "night", "Misterio": "rain", "Novela Negra": "rain", "Romance": "fire", "Histórico": "fire", "Aventura": "sea", "Drama": "rain", "Comedia": "wind" })[g] || "wind";
+}
+function ambStop() {
+  AMB.timers.forEach(clearTimeout); AMB.timers = [];
+  AMB.nodes.forEach(function (n) { try { n.stop && n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} }); AMB.nodes = []; AMB.kind = "";
+}
+function ambNoise(ctx, brown) {
+  var len = ctx.sampleRate * 3, b = ctx.createBuffer(1, len, ctx.sampleRate), d = b.getChannelData(0), last = 0;
+  for (var i = 0; i < len; i++) { var w = Math.random() * 2 - 1; if (brown) { last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w; }
+  var src = ctx.createBufferSource(); src.buffer = b; src.loop = true; return src;
+}
+function ambPlay(kind) {
+  ambStop(); if (!kind) return;
+  var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
+  try {
+    if (!AMB.ctx) { AMB.ctx = new AC(); AMB.g = AMB.ctx.createGain(); AMB.g.connect(AMB.ctx.destination); }
+    var ctx = AMB.ctx; if (ctx.state === "suspended") ctx.resume();
+    AMB.g.gain.value = Math.max(0, Math.min(1, (RD.ambv == null ? 0.4 : RD.ambv))) * 0.5;
+    function add(n) { AMB.nodes.push(n); return n; }
+    function lfo(freq, depth, param) { var o = add(ctx.createOscillator()), g = add(ctx.createGain()); o.frequency.value = freq; g.gain.value = depth; o.connect(g); g.connect(param); o.start(); }
+    var out = add(ctx.createGain()); out.connect(AMB.g);
+    if (kind === "rain") { var n1 = add(ambNoise(ctx, false)), hp = add(ctx.createBiquadFilter()), lp = add(ctx.createBiquadFilter()); hp.type = "highpass"; hp.frequency.value = 900; lp.type = "lowpass"; lp.frequency.value = 7000; out.gain.value = .35; n1.connect(hp); hp.connect(lp); lp.connect(out); n1.start(); }
+    else if (kind === "wind") { var n2 = add(ambNoise(ctx, true)), bp = add(ctx.createBiquadFilter()); bp.type = "bandpass"; bp.frequency.value = 420; bp.Q.value = .8; out.gain.value = 1.4; n2.connect(bp); bp.connect(out); n2.start(); lfo(.07, 220, bp.frequency); lfo(.11, .5, out.gain); }
+    else if (kind === "sea") { var n3 = add(ambNoise(ctx, true)), lp3 = add(ctx.createBiquadFilter()); lp3.type = "lowpass"; lp3.frequency.value = 700; out.gain.value = 1; n3.connect(lp3); lp3.connect(out); n3.start(); lfo(.09, .7, out.gain); }
+    else if (kind === "fire") {
+      var n4 = add(ambNoise(ctx, true)), lp4 = add(ctx.createBiquadFilter()); lp4.type = "lowpass"; lp4.frequency.value = 260; out.gain.value = 1.2; n4.connect(lp4); lp4.connect(out); n4.start();
+      (function crack() { if (AMB.kind !== "fire") return; var nz = ambNoise(ctx, false), e = ctx.createGain(), hp4 = ctx.createBiquadFilter(); hp4.type = "highpass"; hp4.frequency.value = 2500; e.gain.setValueAtTime(.5 + Math.random() * .6, ctx.currentTime); e.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + .05 + Math.random() * .06); nz.connect(hp4); hp4.connect(e); e.connect(out); nz.start(); nz.stop(ctx.currentTime + .15); AMB.timers.push(setTimeout(crack, 120 + Math.random() * 700)); })();
+    }
+    else if (kind === "night") {
+      out.gain.value = .5; [110, 164.8, 220.5].forEach(function (f, k) { var o = add(ctx.createOscillator()), g = add(ctx.createGain()); o.type = "sine"; o.frequency.value = f; g.gain.value = .12 / (k + 1); o.connect(g); g.connect(out); o.start(); lfo(.05 + k * .03, .05, g.gain); });
+      var n5 = add(ambNoise(ctx, true)), lp5 = add(ctx.createBiquadFilter()); lp5.type = "lowpass"; lp5.frequency.value = 300; var g5 = add(ctx.createGain()); g5.gain.value = .4; n5.connect(lp5); lp5.connect(g5); g5.connect(out); n5.start();
+    }
+    AMB.kind = kind;
+  } catch (e) { ambStop(); }
+}
+function ambApply() { if (!RD.amb || RD.amb === "off") { ambStop(); return; } var k = ambKindFor(cur); if (k !== AMB.kind) ambPlay(k); }
+function ambArm() {
+  if (!RD.amb || RD.amb === "off") return;
+  var go = function () { document.removeEventListener("pointerdown", go, true); if (document.body.getAttribute("data-v") === "play") ambApply(); };
+  document.addEventListener("pointerdown", go, true);
+}
+document.addEventListener("visibilitychange", function () { try { if (!AMB.ctx) return; if (document.hidden) AMB.ctx.suspend(); else if (AMB.kind) AMB.ctx.resume(); } catch (e) {} });
 function renderRead() {
   applyRead();
   var b = $("rdbody"); b.innerHTML = "";
@@ -2080,6 +2337,10 @@ function renderRead() {
   lj.appendChild(ij); lj.appendChild(document.createTextNode("Texto justificado (como un libro)")); lj.style.margin = ".4rem 0"; b.appendChild(lj);
   var ld = el("label", "chk"), id2 = el("input"); id2.type = "checkbox"; id2.checked = !!RD.drop; id2.onchange = function () { RD.drop = id2.checked; saveRead(); applyRead(); };
   ld.appendChild(id2); ld.appendChild(document.createTextNode("Letra capital al empezar cada capítulo")); ld.style.margin = ".4rem 0"; b.appendChild(ld);
+  b.appendChild(el("p", "hint", "Sonido ambiente (generado en el móvil, sin descargas)"));
+  optRow(b, [["off", "Ninguno"], ["auto", "Según el género"], ["rain", "Lluvia"], ["wind", "Viento"], ["sea", "Mar"], ["fire", "Fuego"], ["night", "Noche"]], function () { return RD.amb || "off"; }, function (v) { RD.amb = v; if (v === "off") ambStop(); else { var k = ambKindFor(cur); ambPlay(k); } });
+  var av = el("div", "row"), avi = el("input"); avi.type = "range"; avi.min = 0; avi.max = 100; avi.value = Math.round((RD.ambv == null ? .4 : RD.ambv) * 100); avi.setAttribute("aria-label", "Volumen del ambiente"); avi.style.flex = "1";
+  avi.oninput = function () { RD.ambv = avi.value / 100; saveRead(); if (AMB.g) AMB.g.gain.value = RD.ambv * 0.5; }; av.appendChild(el("span", "hint", "Volumen")); av.appendChild(avi); b.appendChild(av);
   b.appendChild(el("p", "hint", "Intensidad del fondo animado"));
   optRow(b, [["sutil", "Sutil"], ["normal", "Normal"]], function () { return RD.fxl || "sutil"; }, function (v) { RD.fxl = v; fxInit(FX.t); });
   var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = RD.tex;
@@ -2203,6 +2464,56 @@ function buildEpubFiles(s) {
   f["OEBPS/content.opf"] = '<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bid" xml:lang="es"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bid">' + xe(id) + '</dc:identifier><dc:title>' + xe(s.title) + '</dc:title><dc:language>es</dc:language><dc:creator>Historias vivas</dc:creator><meta name="cover" content="cover"/><meta property="dcterms:modified">' + new Date().toISOString().replace(/\.\d+Z$/, "Z") + '</meta></metadata><manifest>' + items + '</manifest><spine>' + spine + '</spine></package>';
   return f;
 }
+/* Diccionario: mantén pulsada una palabra del texto */
+function wordAt(x, y) {
+  var r = null;
+  try { if (document.caretRangeFromPoint) r = document.caretRangeFromPoint(x, y); else if (document.caretPositionFromPoint) { var cp = document.caretPositionFromPoint(x, y); if (cp) { r = document.createRange(); r.setStart(cp.offsetNode, cp.offset); } } } catch (e) {}
+  if (!r || !r.startContainer || r.startContainer.nodeType !== 3) return null;
+  var t = r.startContainer.textContent, i = r.startOffset, re = /[A-Za-zÀ-ÿñÑüÜ'’-]/;
+  var a = i, b = i; while (a > 0 && re.test(t.charAt(a - 1))) a--; while (b < t.length && re.test(t.charAt(b))) b++;
+  var w = t.slice(a, b).replace(/^['’-]+|['’-]+$/g, ""); if (w.length < 2) return null;
+  var ctx = t.slice(Math.max(0, a - 90), Math.min(t.length, b + 90)); return { w: w, ctx: ctx };
+}
+function defFromRaw(raw) {
+  if (!raw) return "";
+  var j = null; try { j = typeof raw === "string" ? JSON.parse(raw) : raw; } catch (e) { return String(raw).replace(/<[^>]+>/g, "").slice(0, 700); }
+  var out = [];
+  try {
+    if (j.query && j.query.pages) { Object.keys(j.query.pages).forEach(function (k) { var pg = j.query.pages[k]; if (pg && pg.extract) out.push(String(pg.extract)); }); }
+    else if (typeof j === "object") { var lang = j.es || j[Object.keys(j)[0]] || []; arr(lang).forEach(function (e) { arr(e.definitions).slice(0, 4).forEach(function (d) { out.push((e.partOfSpeech ? e.partOfSpeech + ": " : "") + String(d.definition || "").replace(/<[^>]+>/g, "")); }); }); }
+  } catch (e) {}
+  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim().slice(0, 900);
+}
+function dictSheet(word, ctx) {
+  try { localStorage.setItem("hv:dict", "1"); achSoon(); } catch (e) {}
+  sheet("«" + word + "»", function (sh) {
+    var box = el("div"); sh.appendChild(box); var st = para(sh, "Buscando en el diccionario…");
+    var def = el("p"); def.style.whiteSpace = "pre-wrap"; box.appendChild(def);
+    (async function () {
+      var raw = null; try { if (window.hvDefine) raw = await window.hvDefine(word); } catch (e) {}
+      var t = defFromRaw(raw);
+      if (t) { def.textContent = t; st.textContent = "Fuente: Wiktionary (CC BY-SA 4.0)."; }
+      else st.textContent = window.hvDefine ? "No he encontrado esta palabra en el diccionario." : "El diccionario sin conexión a la IA solo está en la app instalada. Puedes pedirle a la IA que te la explique.";
+    })();
+    var ai = el("button", "go", "Explicar con la IA (1 consulta)"); ai.style.marginTop = ".6rem";
+    ai.onclick = async function () {
+      ai.disabled = true; st.textContent = "Consultando…";
+      try { var r = await ask("Explica en español sencillo qué significa «" + word + "» en este fragmento de una novela: «" + ctx + "». Responde solo con 2 frases: el significado y, si es un nombre o término inventado de la historia, di que lo es. No añadas nada más.", "dict"); def.textContent = String(r.text || "").trim().slice(0, 600); st.textContent = "Explicación de la IA (puede equivocarse)."; }
+      catch (e) { st.textContent = (e && e.message) || "No se pudo consultar a la IA."; }
+      ai.disabled = false;
+    };
+    sh.appendChild(ai); closeBtn(sh);
+  });
+}
+(function () {
+  var tm = 0, sx = 0, sy = 0, fired = 0;
+  function open(x, y) { var w = wordAt(x, y); if (!w) return false; fired = 1; try { var sel = window.getSelection(); if (sel) sel.removeAllRanges(); } catch (e) {} dictSheet(w.w, w.ctx); return true; }
+  var bk = document.getElementById("book"); if (!bk) return;
+  bk.addEventListener("touchstart", function (e) { var t = e.touches[0]; if (!t || e.touches.length > 1) return; sx = t.clientX; sy = t.clientY; fired = 0; clearTimeout(tm); tm = setTimeout(function () { open(sx, sy); }, 600); }, { passive: true });
+  bk.addEventListener("touchmove", function (e) { var t = e.touches[0]; if (t && (Math.abs(t.clientX - sx) > 10 || Math.abs(t.clientY - sy) > 10)) clearTimeout(tm); }, { passive: true });
+  ["touchend", "touchcancel"].forEach(function (ev) { bk.addEventListener(ev, function () { clearTimeout(tm); }, { passive: true }); });
+  bk.addEventListener("contextmenu", function (e) { if (e.target && e.target.closest && e.target.closest("p")) { if (fired || open(e.clientX, e.clientY)) e.preventDefault(); } });
+})();
 function emsg(t) { var m = $("emsg"); m.textContent = t; m.hidden = false; }
 function fb2Doc(s) {
   var chs = [], bin = "", ic = 0, b64 = function (u) { return String(u).split(",")[1] || ""; };
@@ -2264,6 +2575,84 @@ async function pdfDoc(s) {
   for (var i = hasCover ? 1 : 0; i < pgs.length; i++) { var t = String(i + 1 - (hasCover ? 1 : 0)); pgs[i].drawText(t, { x: (W - fR.widthOfTextAtSize(t, 9)) / 2, y: 24, size: 9, font: fR }); }
   return await doc.save();
 }
+
+/* v0.9.7: pulir el texto antes de exportar (por capítulos, con aprobación) */
+function chScenes(s, n) { var a = [], i; for (i = 0; i < s.scenes.length; i++) if (chOf(s, i) === n) a.push(i); return a; }
+function chCount(s) { return s.scenes.length ? chOf(s, s.scenes.length - 1) : 0; }
+function polishPrompt(s, lvl, idxs) {
+  var m = ensureMem(s), names = Object.keys(m.chars).map(function (k) { return m.chars[k].name; }).slice(0, 25).join(", ");
+  var task = lvl === "light"
+    ? "Corrige SOLO: ortografía, puntuación, concordancias, repeticiones de palabras muy cercanas y frases torpes o ambiguas. Si una frase está bien, déjala EXACTAMENTE igual."
+    : "Mejora la calidad literaria sin cambiar la historia: elimina tópicos y repeticiones, afina el ritmo, unifica la voz del narrador, haz los diálogos más naturales y concreta lo vago. Mantén el estilo del autor, la longitud parecida (±15 %) y el registro contemporáneo y accesible.";
+  var tx = idxs.map(function (i, k) { return "<<<E" + (k + 1) + ">>>\n" + s.scenes[i].t; }).join("\n\n");
+  return "Eres un editor literario profesional. Vas a pulir las escenas de un capítulo de una novela antes de publicarla.\n" + task +
+    "\nREGLAS ESTRICTAS: no cambies hechos, sucesos, nombres, lugares, orden de los acontecimientos ni el final de cada escena; no añadas ni quites escenas ni párrafos enteros; no censures ni suavices el contenido; mantén el mismo idioma, la misma persona y el mismo tiempo verbal; no expliques nada. NOMBRES CORRECTOS: " + names +
+    "\nDevuelve TODAS las escenas, cada una precedida exactamente por su marcador (<<<E1>>>, <<<E2>>>…), sin ningún texto antes, entre o después de ellas.\n\n" + tx;
+}
+function polishParse(txt, n) {
+  var parts = String(txt || "").split(/<<<E(\d+)>>>/), out = {}, i;
+  for (i = 1; i + 1 < parts.length; i += 2) out[Number(parts[i])] = parts[i + 1].trim();
+  var res = []; for (i = 1; i <= n; i++) { if (!out[i]) return null; res.push(out[i]); } return res;
+}
+function polishSheet() {
+  var s = cur; if (!s || busy || !s.scenes.length) return;
+  sheet("Pulir el texto antes de exportar", function (sh) {
+    var chn = chCount(s), pv = s.rev || {};
+    para(sh, "Una IA lee cada capítulo y propone una versión mejorada. No cambia los hechos. Tú ves el antes y el después de cada capítulo y decides si aceptarlo; lo aceptado se puede deshacer. Gasta al menos 1 consulta por capítulo (" + chn + " en total, más si son muy largos).");
+    var lvl = "light", sel = el("select"); [["light", "Ligera: erratas, puntuación y frases torpes"], ["style", "Estilo: además mejora ritmo, tópicos y diálogos"]].forEach(function (x) { var o = el("option", null, x[1]); o.value = x[0]; sel.appendChild(o); });
+    sel.setAttribute("aria-label", "Nivel de revisión"); sel.style.width = "100%"; sel.style.padding = ".6rem"; sh.appendChild(sel); sel.onchange = function () { lvl = sel.value; };
+    var list = el("div"), st = el("p", "hint"); st.setAttribute("role", "status");
+    function drawList() {
+      list.innerHTML = ""; var R = s.rev = s.rev || { ch: {} };
+      for (var n = 1; n <= chn; n++) (function (n) {
+        var r = R.ch[n], row = el("div", "row"); row.style.alignItems = "center"; row.style.margin = ".3rem 0";
+        var lab = el("span", null, "Capítulo " + n + (ctitle(s, n) ? " · " + ctitle(s, n) : "") + " — " + (!r ? "sin revisar" : r.state === "applied" ? "aceptado" : r.state === "rejected" ? "rechazado" : r.state === "fail" ? "no se pudo" : r.changed ? "listo (" + r.changed + " escenas con cambios)" : "sin cambios")); lab.style.flex = "1"; row.appendChild(lab);
+        if (r && r.state === "ready" && r.changed) { var v = el("button", "small", "Ver cambios"); v.onclick = function () { diffSheet(n, drawList); }; row.appendChild(v); }
+        if (r && r.state === "applied") { var u = el("button", "small", "Deshacer"); u.onclick = function () { chScenes(s, n).forEach(function (i) { if (s.scenes[i].t0 != null) { s.scenes[i].t = s.scenes[i].t0; delete s.scenes[i].t0; } }); r.state = "ready"; save(); drawList(); }; row.appendChild(u); }
+        list.appendChild(row);
+      })(n);
+    }
+    var go = el("button", "go", "Empezar la revisión"); go.style.marginTop = ".6rem";
+    var stop = false;
+    go.onclick = async function () {
+      go.disabled = true; stop = false; var R = s.rev = s.rev || { ch: {} }, done = 0;
+      try {
+        for (var n = 1; n <= chn; n++) {
+          if (stop) break; var r0 = R.ch[n]; if (r0 && (r0.state === "ready" || r0.state === "applied" || r0.state === "rejected") && r0.lvl === lvl) continue;
+          var idxs = chScenes(s, n); if (!idxs.length) continue;
+          st.textContent = "Revisando el capítulo " + n + " de " + chn + "… (" + done + " hechos ahora)";
+          var rs = null, resp = (await ask(polishPrompt(s, lvl, idxs), "auto")).text; rs = polishParse(resp, idxs.length);
+          if (!rs) { R.ch[n] = { state: "fail", lvl: lvl }; save(); drawList(); continue; }
+          var out = [], changed = 0;
+          idxs.forEach(function (i, k) { var o0 = s.scenes[i].t, nw = rs[k], ratio = nw.length / Math.max(1, o0.length); if (nw !== o0 && ratio > .7 && ratio < 1.35) { out.push(nw); changed++; } else out.push(o0); });
+          R.ch[n] = { state: "ready", lvl: lvl, changed: changed, nt: out }; done++; save(); drawList();
+        }
+        st.textContent = stop ? "Detenido. Puedes continuar cuando quieras." : "Revisión terminada. Revisa cada capítulo con «Ver cambios».";
+      } catch (e) { st.textContent = ((e && e.message && e.code) ? e.message : "Se interrumpió la revisión.") + " Lo hecho está guardado: pulsa de nuevo para continuar."; }
+      go.disabled = false;
+    };
+    var sp = el("button", "small", "Detener"); sp.onclick = function () { stop = true; };
+    sh.appendChild(go); sh.appendChild(sp); sh.appendChild(st); sh.appendChild(list); drawList();
+    para(sh, "Para buscar contradicciones sin cambiar nada, usa «Revisar el libro».");
+    closeBtn(sh, "Cerrar y exportar");
+  });
+}
+function diffSheet(n, back) {
+  var s = cur, r = s.rev.ch[n], idxs = chScenes(s, n);
+  sheet("Capítulo " + n + ": cambios propuestos", function (sh) {
+    para(sh, "Solo se muestran las escenas que cambian.");
+    idxs.forEach(function (i, k) {
+      if (r.nt[k] === s.scenes[i].t) return;
+      var c = el("div", "rres"); c.appendChild(el("b", null, "Escena " + (i + 1)));
+      var a = el("p", "hint", "Antes: " + s.scenes[i].t); a.style.whiteSpace = "pre-wrap"; var b = el("p", null, "Después: " + r.nt[k]); b.style.whiteSpace = "pre-wrap";
+      c.appendChild(a); c.appendChild(b); sh.appendChild(c);
+    });
+    var row = el("div", "row"), ok = el("button", "go", "Aceptar este capítulo"), no = el("button", null, "Rechazar");
+    ok.onclick = function () { idxs.forEach(function (i, k) { if (r.nt[k] !== s.scenes[i].t) { if (s.scenes[i].t0 == null) s.scenes[i].t0 = s.scenes[i].t; s.scenes[i].t = r.nt[k]; } }); if (idxs.length && idxs[idxs.length - 1] === s.scenes.length - 1) s.last = s.scenes[s.scenes.length - 1].t; r.state = "applied"; delete r.nt; save(); render(true); closeSheet(); polishSheet(); };
+    no.onclick = function () { r.state = "rejected"; delete r.nt; save(); closeSheet(); polishSheet(); };
+    ok.style.flex = "1"; row.appendChild(ok); row.appendChild(no); sh.appendChild(row);
+  });
+}
 async function exportAs(fmt) {
   var s = cur; if (!s || !s.scenes.length) return;
   var dl = null;
@@ -2292,8 +2681,10 @@ async function exportAs(fmt) {
     emsg(e && e.code === "declined" ? "Descarga cancelada." : "No se pudo crear el archivo. Inténtalo de nuevo.");
   }
 }
+$("recapb").onclick = function () { if (cur) recapSheet(cur); };
 $("exp").onclick = function () { $("exprow").hidden = !$("exprow").hidden; };
-Array.prototype.forEach.call($("exprow").querySelectorAll("button"), function (b) { b.onclick = function () { exportAs(b.getAttribute("data-f")); }; });
+Array.prototype.forEach.call($("exprow").querySelectorAll("button[data-f]"), function (b) { b.onclick = function () { exportAs(b.getAttribute("data-f")); }; });
+$("polish").onclick = function () { polishSheet(); };
 
 /* ---------- Hojas modales ---------- */
 function closeSheet() { $("gmodal").hidden = true; $("gsheet").innerHTML = ""; }

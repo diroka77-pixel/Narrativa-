@@ -173,6 +173,14 @@
   window.openAISettings = openSettings;
   window.hvIsManual = function () { return cfg().mode === "manual"; };
   window.hvStatusRefresh = function () { try { paintStatus(); } catch (e) {} };
+  // v0.9.7: diccionario. Requiere que la parte nativa ofrezca N.httpGet(id, url, headersJson) con el mismo callback __httpDone y permita es.wiktionary.org.
+  window.hvDefine = (typeof N.httpGet === "function") ? function (word) {
+    return new Promise(function (res) {
+      var id = "h" + (++hid); waits[id] = function (st, tx) { res(st === 200 ? tx : null); };
+      try { N.httpGet(id, "https://es.wiktionary.org/w/api.php?action=query&prop=extracts&explaintext=1&redirects=1&format=json&titles=" + encodeURIComponent(String(word).toLowerCase()), "{}"); } catch (e) { delete waits[id]; res(null); }
+    });
+  } : null;
+  window.hvCurModel = function () { try { var c = cfg(); if (!c.mode || c.mode === "manual") return ""; return (c.models && c.models[c.mode]) || PROV[c.mode].model; } catch (e) { return ""; } };
   /* ---------- Asistente de conexión paso a paso ---------- */
   var AI_INFO = {
     checked: "24 de octubre de 2026",

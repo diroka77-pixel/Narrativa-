@@ -1,0 +1,33 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.__prompts=[];
+ window.claude={use:async k=>k==='sample'?async q=>{__prompts.push(q);const i=cur.scenes.length+1;
+  const mem={eventos:[{que:'e'+i}]};if(i===5){mem.cierra_capitulo=true;mem.titulo_capitulo='Capítulo 1: La llave rota';mem.resumen_capitulo='res';}
+  return{text:JSON.stringify({escena:'Escena '+i+'.'+' palabra'.repeat(100),opciones:['a'],mem,estado:{}})}}:null}});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(500);
+const o={};
+o.simpleDefault=await p.evaluate(()=>RD.simple);
+o.bodySimple=await p.evaluate(()=>document.body.classList.contains('simple'));
+await p.evaluate(()=>{RD.type=false;const s={id:'3',title:'T',syn:'s',genre:'Misterio',genres:['Misterio','Vampírico'],premise:'p',lore:[],prot:[{name:'M'}],memory:'',last:'',turn:0,state:{},scenes:[],opts:[],fin:false,prev:null,review:false};LIB.push(s);openStory(s)});
+await p.waitForTimeout(300);
+o.atlHidden=await p.evaluate(()=>getComputedStyle(document.getElementById('atlbox')).display);
+for(let i=0;i<5;i++)await p.evaluate(async i=>{await turn('[ACCIÓN] a'+i,'x'+i)},i);
+const pr=await p.evaluate(()=>__prompts[__prompts.length-1]);
+o.genreRules=pr.includes('REGLAS DEL GÉNERO')&&pr.includes('Pistas justas')&&pr.includes('Retén información');
+o.cliches=pr.includes('PROHIBIDO (tópicos de IA');
+o.ctit=await p.evaluate(()=>cur.mem.ctit);
+o.heading=await p.evaluate(()=>[...document.querySelectorAll('#book .chh')].map(h=>h.textContent));
+o.hook=pr.includes('gancho')||await p.evaluate(()=>__prompts.some(q=>q.includes('gancho')));
+await p.evaluate(()=>{RD.simple=false;applyRead();OPEN_SC=0;render(true)});
+o.atlShown=await p.evaluate(()=>getComputedStyle(document.getElementById('atlbox')).display);
+o.advBtns=await p.evaluate(()=>[...document.querySelectorAll('.scm button')].map(b=>b.textContent).slice(0,12));
+await p.evaluate(()=>{RD.simple=true;applyRead()});
+o.advHidden=await p.evaluate(()=>{const b=[...document.querySelectorAll('.scm button')].find(b=>b.textContent==='Prompt de imagen');return b?getComputedStyle(b).display+'/'+getComputedStyle(b.parentNode).display:'none'});
+o.denunciar=await p.evaluate(()=>{const b=[...document.querySelectorAll('.scm button')].find(b=>b.textContent==='Denunciar contenido');return !!b&&getComputedStyle(b).display!=='none'});
+o.epub=await p.evaluate(()=>{const f=buildEpubFiles(cur);return Object.keys(f).filter(k=>/c1\.xhtml/.test(k)).map(k=>String(f[k]).includes('La llave rota'))});
+// selector de géneros
+await p.evaluate(()=>{window.__moreG=false;startCreate('')});await p.waitForTimeout(300);
+o.genreBtns=await p.evaluate(()=>{const d=[...document.querySelectorAll('#rows details')].find(x=>/Géneros/.test(x.textContent));return [...d.querySelectorAll('.rb .row button')].length});
+console.log(JSON.stringify(o,null,1));console.log('errores',errs);await b.close()})();

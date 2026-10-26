@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
         "api.openai.com",
         "api.anthropic.com"
     )
+    private val dictionaryHosts = setOf("es.wiktionary.org")
     private val openHosts = setOf(
         "aistudio.google.com",
         "ai.google.dev",
@@ -551,6 +552,53 @@ class MainActivity : ComponentActivity() {
                 } catch (e: Exception) {
                     status = 0
                     text = e.message ?: "Sin conexión"
+                }
+                js("window.__httpDone(${JSONObject.quote(id)},$status,${JSONObject.quote(text)})")
+            }.start()
+        }
+
+        // v0.9.7: consulta pública del diccionario, sin claves ni cabeceras aportadas por la web.
+        @JavascriptInterface
+        fun httpGet(id: String, url: String, headersJson: String) {
+            Thread {
+                var status = 0
+                var text = ""
+                var connection: HttpURLConnection? = null
+                try {
+                    var current = URL(url)
+                    var redirects = 0
+                    while (true) {
+                        if (current.protocol != "https" || current.host !in dictionaryHosts) {
+                            throw SecurityException("Dirección no permitida")
+                        }
+                        connection = current.openConnection() as HttpURLConnection
+                        connection.instanceFollowRedirects = false
+                        connection.requestMethod = "GET"
+                        connection.connectTimeout = 15000
+                        connection.readTimeout = 15000
+                        connection.setRequestProperty("Accept", "application/json")
+                        status = connection.responseCode
+                        if (status !in 300..399) break
+
+                        val location = connection.getHeaderField("Location")
+                            ?: throw SecurityException("Redirección no permitida")
+                        val next = URL(current, location)
+                        if (next.protocol != "https" || next.host !in dictionaryHosts) {
+                            throw SecurityException("Redirección no permitida")
+                        }
+                        connection.disconnect()
+                        connection = null
+                        current = next
+                        redirects += 1
+                        if (redirects > 5) throw SecurityException("Demasiadas redirecciones")
+                    }
+                    val stream = if (status >= 400) connection.errorStream else connection.inputStream
+                    text = stream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
+                } catch (e: Exception) {
+                    status = 0
+                    text = e.message ?: "Sin conexión"
+                } finally {
+                    connection?.disconnect()
                 }
                 js("window.__httpDone(${JSONObject.quote(id)},$status,${JSONObject.quote(text)})")
             }.start()

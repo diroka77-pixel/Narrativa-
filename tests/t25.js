@@ -1,0 +1,12 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{let n=0;window.__clip='';Object.defineProperty(navigator,'clipboard',{value:{writeText:async t=>{window.__clip=t}}});
+ window.claude={use:async k=>k==='sample'?async q=>{n++;if(n===2)return{text:'no json'};const i=cur.scenes.length+1;return{text:JSON.stringify({escena:'Escena '+i+'.',opciones:['a'],mem:i===3?{}:{eventos:[{que:'e'+i}]},estado:{}})}}:null}});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+await p.evaluate(()=>{RD.type=false;const s={id:'9',title:'T',syn:'s',genre:'Misterio',genres:['Misterio'],premise:'p',lore:[],prot:[{name:'M'}],memory:'',last:'',turn:0,state:{},scenes:[],opts:[],fin:false,prev:null,review:false};LIB.push(s);openStory(s)});
+await p.waitForTimeout(300);
+for(let i=0;i<4;i++)await p.evaluate(async i=>{await turn('[ACCIÓN] a'+i,'x'+i)},i);
+await p.evaluate(()=>{ATL.tab='stats';document.getElementById('atlbox').open=true;renderAtlas();[...document.querySelectorAll('#atlbody button')].find(b=>b.textContent==='Copiar informe de prueba').click()});
+console.log(await p.evaluate(()=>__clip));console.log('errores',errs);await b.close()})();
