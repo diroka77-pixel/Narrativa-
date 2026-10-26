@@ -32,7 +32,7 @@ o.word=await p.evaluate(()=>{const w=wordAt; return typeof w});
 await p.evaluate(()=>dictSheet('compuerta','la compuerta cedió'));
 await p.waitForTimeout(300);
 o.dict=await p.evaluate(()=>$('gsheet').innerText.slice(0,200));
-await p.evaluate(()=>{[...document.querySelectorAll('#gsheet button')].find(b=>/IA/.test(b.textContent)).click()});
+await p.evaluate(()=>{[...document.querySelectorAll('#gsheet button')].find(b=>/El Cronista|IA/.test(b.textContent)).click()});
 await p.waitForTimeout(500);
 o.dictAI=await p.evaluate(()=>$('gsheet').innerText.slice(0,200));
 o.use2=await p.evaluate(()=>JSON.stringify(useGet().m));

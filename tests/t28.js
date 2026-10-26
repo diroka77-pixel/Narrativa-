@@ -20,9 +20,9 @@ console.log(JSON.stringify(o,null,1));
 // cierre manual
 await p.evaluate(async()=>{await turn('[ACCIÓN] m','m');await turn('[ACCIÓN] m2','m2')});
 await p.evaluate(()=>{OPEN_SC=cur.scenes.length-1;render(true)});
-console.log('btn',await p.evaluate(()=>!![...document.querySelectorAll('.scm button')].find(b=>b.textContent==='Terminar el capítulo aquí')));
-await p.evaluate(()=>{[...document.querySelectorAll('.scm button')].find(b=>b.textContent==='Terminar el capítulo aquí').click()});await p.waitForTimeout(300);
-await p.evaluate(()=>{[...document.querySelectorAll('button')].find(b=>b.textContent==='Terminar capítulo').click()});await p.waitForTimeout(600);
+console.log('btn',await p.evaluate(()=>!![...document.querySelectorAll('.scm button')].find(b=>b.textContent==='Cerrar el capítulo aquí')));
+await p.evaluate(()=>{[...document.querySelectorAll('.scm button')].find(b=>b.textContent==='Cerrar el capítulo aquí').click()});await p.waitForTimeout(300);
+await p.evaluate(()=>{[...document.querySelectorAll('button')].find(b=>b.textContent==='Cerrar el capítulo').click()});await p.waitForTimeout(600);
 console.log('manual',await p.evaluate(()=>({ce:cur.ce,t:cur.mem.ctit,res:cur.mem.chap[String(chCur(cur)-1)]})));
 // siguiente escena empieza capítulo nuevo + undo
 await p.evaluate(async()=>{await turn('[ACCIÓN] n','n')});

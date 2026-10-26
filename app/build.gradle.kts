@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "com.mibiblioteca.narrador"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.mibiblioteca.narrador"
         minSdk = 29
-        targetSdk = 34
-        versionCode = 16
-        versionName = "0.9.7"
+        targetSdk = 36
+        versionCode = 17
+        versionName = "0.9.8"
     }
     signingConfigs {
         getByName("debug") {

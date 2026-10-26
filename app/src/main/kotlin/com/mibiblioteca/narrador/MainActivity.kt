@@ -72,7 +72,9 @@ class MainActivity : ComponentActivity() {
     private val apiHosts = setOf(
         "generativelanguage.googleapis.com",
         "api.openai.com",
-        "api.anthropic.com"
+        "api.anthropic.com",
+        "api.groq.com",
+        "api.mistral.ai"
     )
     private val dictionaryHosts = setOf("es.wiktionary.org")
     private val openHosts = setOf(
@@ -84,7 +86,9 @@ class MainActivity : ComponentActivity() {
         "openai.com",
         "console.anthropic.com",
         "www.anthropic.com",
-        "anthropic.com"
+        "anthropic.com",
+        "console.groq.com",
+        "console.mistral.ai"
     )
 
     private val chooser = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
@@ -532,6 +536,7 @@ class MainActivity : ComponentActivity() {
                     val u = URL(url)
                     if (u.protocol != "https" || u.host !in apiHosts) throw SecurityException("Dirección no permitida")
                     val c = u.openConnection() as HttpURLConnection
+                    c.instanceFollowRedirects = false
                     c.requestMethod = "POST"
                     c.connectTimeout = 30000
                     c.readTimeout = 180000

@@ -36,10 +36,13 @@
     manual: { name: "Copiar y pegar", sub: "Funciona con cualquier IA" },
     gemini: { name: "Gemini", sub: "Recomendado · clave de API", model: "gemini-3.5-flash-lite", url: "https://aistudio.google.com/apikey" },
     openai: { name: "ChatGPT / OpenAI", sub: "Clave de API (de pago)", model: "gpt-6-luna", url: "https://platform.openai.com/api-keys" },
-    anthropic: { name: "Claude / Anthropic", sub: "Clave de API", model: "claude-haiku-5-5", url: "https://console.anthropic.com/settings/keys" }
+    anthropic: { name: "Claude / Anthropic", sub: "Clave de API", model: "claude-haiku-5-5", url: "https://console.anthropic.com/settings/keys" },
+    groq: { name: "Groq", sub: "Respaldo gratuito · muy rápido", model: "openai/gpt-oss-120b", light: "openai/gpt-oss-20b", url: "https://console.groq.com/keys", base: "https://api.groq.com/openai/v1/chat/completions", backup: true },
+    mistral: { name: "Mistral", sub: "Respaldo gratuito", model: "mistral-small-latest", light: "mistral-small-latest", url: "https://console.mistral.ai/api-keys", base: "https://api.mistral.ai/v1/chat/completions", backup: true }
   };
+  var ALLK = ["gemini", "openai", "anthropic", "groq", "mistral"];
   var KEYS = {};
-  ["gemini", "openai", "anthropic"].forEach(function (k) { try { KEYS[k] = N.secretGet("key_" + k) || ""; } catch (e) { KEYS[k] = ""; } });
+  ALLK.forEach(function (k) { try { KEYS[k] = N.secretGet("key_" + k) || ""; } catch (e) { KEYS[k] = ""; } });
   function cfg() {
     var c = null;
     try { c = JSON.parse(store.getItem(KEY) || "null"); } catch (e) {}
@@ -54,7 +57,7 @@
     return c;
   }
   function saveCfg(c) {
-    ["gemini", "openai", "anthropic"].forEach(function (k) { if (c.keys && k in c.keys) { KEYS[k] = c.keys[k] || ""; N.secretSet("key_" + k, KEYS[k]); } });
+    ALLK.forEach(function (k) { if (c.keys && k in c.keys) { KEYS[k] = c.keys[k] || ""; N.secretSet("key_" + k, KEYS[k]); } });
     store.setItem(KEY, JSON.stringify({ mode: c.mode, models: c.models || {} }));
   }
 
@@ -154,10 +157,38 @@
           Object.keys(boxes).forEach(function (z) { boxes[z].hidden = z !== k; boxes[z].parentNode.className = "o" + (z === k ? " on" : ""); });
         };
       });
+      var bh = mk("h3", null, "Respaldos gratuitos (opcional)"); bh.style.margin = "1rem 0 .3rem"; sh.appendChild(bh);
+      sh.appendChild(mk("p", "hint", "Si tu IA principal se queda sin consultas del día o está saturada, El Cronista pasa solo a un respaldo para que la historia no se pare. Los respaldos son gratis y sin tarjeta; solo necesitas una clave de cada uno."));
+      var GUIDE = {
+        groq: ["Groq · respaldo rápido", "Se usa para las tareas cortas automáticas (memoria, resúmenes) y como último recurso para las escenas.", ["Pulsa «Abrir página de claves» e inicia sesión (vale tu cuenta de Google).", "Pulsa «Create API Key», ponle el nombre que quieras y cópiala.", "Vuelve aquí, pulsa «Pegar clave» y luego «Probar conexión»."], "Privacidad: los textos se envían a Groq para generar la respuesta. Límite gratuito aproximado: unas 25–30 escenas al día."],
+        mistral: ["Mistral · respaldo para escenas", "Toma el relevo de las escenas cuando tu IA principal no puede.", ["Pulsa «Abrir página de claves» y crea una cuenta (puede pedirte verificar el móvil por SMS).", "En «API Keys» pulsa «Create new key» y cópiala.", "Vuelve aquí, pulsa «Pegar clave» y luego «Probar conexión»."], "Privacidad: en el plan gratuito Mistral puede usar los textos para mejorar sus modelos salvo que lo desactives en su panel (Admin › Privacy). Hazlo si te importa."]
+      };
+      ["groq", "mistral"].forEach(function (k) {
+        var g = GUIDE[k], box = mk("div", "o"), ki = document.createElement("input");
+        box.appendChild(mk("strong", null, g[0])); box.appendChild(mk("p", "hint", g[1]));
+        var ol = document.createElement("ol"); g[2].forEach(function (t) { ol.appendChild(mk("li", null, t)); }); ol.style.margin = ".2rem 0 .5rem 1.1rem"; box.appendChild(ol);
+        ki.type = "password"; ki.placeholder = "Pega aquí la clave de " + PROV[k].name; ki.value = KEYS[k] || ""; ki.id = "hvk_" + k; ki.setAttribute("aria-label", "Clave de " + PROV[k].name);
+        var ob = mk("button", null, "Abrir página de claves"); ob.onclick = function (e) { e.preventDefault(); N.openUrl(PROV[k].url); };
+        var pb = mk("button", null, "Pegar clave"); pb.onclick = function (e) { e.preventDefault(); var t = N.paste().trim(); if (t) { ki.value = t; N.toast("Clave pegada. Pulsa «Probar conexión»."); } else N.toast("No hay nada copiado."); };
+        var tb = mk("button", null, "Probar conexión");
+        tb.onclick = async function (e) {
+          e.preventDefault(); var kv = ki.value.trim();
+          if (!kv) { N.toast("Falta la clave."); return; }
+          if (k === "groq" && kv.indexOf("gsk_") !== 0) { N.toast("Las claves de Groq empiezan por gsk_. Revisa que has copiado la clave entera."); return; }
+          tb.textContent = "Probando…";
+          try { var tc = { mode: k, keys: {}, models: {} }; tc.keys[k] = kv; await viaCompat(k, "Responde solo con la palabra: listo", tc, { max: 300, quick: true }); N.toast("Conexión correcta."); }
+          catch (er) { N.toast((er && er.message) || "No se pudo conectar."); }
+          tb.textContent = "Probar conexión";
+        };
+        var br = mk("div", "r"); br.appendChild(ob); br.appendChild(pb); br.appendChild(tb);
+        box.appendChild(ki); box.appendChild(br); box.appendChild(mk("p", "hint", g[3]));
+        var dc = mk("button", null, "Borrar esta clave"); dc.onclick = function (e) { e.preventDefault(); ki.value = ""; KEYS[k] = ""; N.secretSet("key_" + k, ""); N.toast("Clave borrada."); };
+        box.appendChild(dc); box.style.marginBottom = ".6rem"; sh.appendChild(box);
+      });
       var row = mk("div", "r hv-save"), ok = mk("button", "go", "Guardar y conectar"), no = mk("button", null, "Cancelar");
       ok.onclick = function () {
         var n = { mode: sel, keys: {}, models: c.models || {} };
-        ["gemini", "openai", "anthropic"].forEach(function (k) {
+        ALLK.forEach(function (k) {
           var ki = document.getElementById("hvk_" + k), mi = document.getElementById("hvmo_" + k);
           n.keys[k] = ki ? ki.value.trim() : (KEYS[k] || "");
           if (mi) n.models[k] = ((mi.__mc && mi.__mc.value.trim()) || mi.value.trim());
@@ -488,6 +519,36 @@
     return t;
   }
 
+  async function viaCompat(prov, prompt, c, o) {
+    o = o || {}; var P = PROV[prov], model = o.model || (c.models && c.models[prov]) || P.model;
+    var body = { model: model, messages: [{ role: "user", content: prompt }], temperature: 0.9, max_tokens: o.max || 2200 };
+    if (prov === "groq") body.reasoning_effort = "low";
+    var r = await http(P.base, { "Content-Type": "application/json", "Authorization": "Bearer " + c.keys[prov] }, body, o.quick);
+    if (r.status !== 200) throw fail(r, P.name, model);
+    var j = JSON.parse(r.text), t = (((j.choices || [])[0] || {}).message || {}).content || "";
+    if (Array.isArray(t)) t = t.map(function (x) { return x.text || ""; }).join("");
+    if (!t) throw { code: "blocked", message: P.name + " no ha devuelto texto. Prueba a reformular la acción." };
+    return t;
+  }
+  var COOL = {};
+  function cap(prompt, max) { if (prompt.length <= max) return prompt; var h = Math.floor(max * 0.35); return prompt.slice(0, h) + "\n[…]\n" + prompt.slice(prompt.length - (max - h)); }
+  function chainFor(c, cls) {
+    var P = c.mode, has = function (k) { return !!KEYS[k]; }, out = [];
+    function add(prov, model, compact) { if (has(prov) && !out.some(function (x) { return x.prov === prov && x.model === model; })) out.push({ prov: prov, model: model, compact: !!compact }); }
+    function mine() { var m = (c.models && c.models[P]) || PROV[P].model; add(P, m, false); }
+    if (cls === "light") { add("groq", PROV.groq.light, true); mine(); add("mistral", PROV.mistral.light, false); }
+    else { mine(); add("mistral", PROV.mistral.model, false); add("groq", PROV.groq.model, true); }
+    return out;
+  }
+  async function callOne(st, prompt, c, o) {
+    var prov = st.prov, p = prompt;
+    if (st.compact) p = (o && o.alt) ? o.alt : cap(prompt, 16000);
+    if (prov === "gemini") return viaGemini(p, c, o && o.quick);
+    if (prov === "openai") return viaOpenAI(p, c, o && o.quick);
+    if (prov === "anthropic") return viaAnthropic(p, c, o && o.quick);
+    return viaCompat(prov, p, c, { model: st.model, max: o && o.cls === "light" ? 1500 : 2200, quick: o && o.quick });
+  }
+
   function viaManual(prompt) {
     return new Promise(function (resolve, reject) {
       var v = overlay("Pásale esto a tu IA"), sh = v.sh;
@@ -511,24 +572,37 @@
     });
   }
 
-  async function sample(input) {
+  async function sample(input, opts) {
+    opts = opts || {};
     var prompt = typeof input === "string" ? input : (input || []).map(function (m) { return m.content; }).join("\n\n");
     // v0.9: no intentamos enviar cuando Android confirma que no hay red.
     if (typeof N.online === "function" && !N.online()) throw { code: "offline", message: "No hay conexión. La acción se guardará en el móvil." };
     var c = cfg();
     if (!c.mode || (c.mode !== "manual" && !KEYS[c.mode])) { var ok = await wiz({}); if (!ok) throw { code: "not_granted", message: "No has conectado ninguna IA." }; c = cfg(); }
-    var t;
-    try {
-      if (c.mode === "gemini") t = await viaGemini(prompt, c);
-      else if (c.mode === "openai") t = await viaOpenAI(prompt, c);
-      else if (c.mode === "anthropic") t = await viaAnthropic(prompt, c);
-      else t = await viaManual(prompt);
-    } catch (e) {
-      if (e && (e.code === "bad_key" || e.code === "network" || e.code === "bad_model")) setStatus("fail", e.message ? e.message.slice(0, 90) : "");
-      throw e;
+    if (c.mode === "manual") { var tm = await viaManual(prompt); return { text: String(tm), truncated: false }; }
+    var cls = opts.kind === "light" ? "light" : "quality", chain = chainFor(c, cls), first = null, tried = [], now = Date.now();
+    var live = chain.filter(function (x) { return !(COOL[x.prov + x.model] > now); });
+    if (!live.length) live = chain;
+    for (var i = 0; i < live.length; i++) {
+      var st = live[i];
+      try {
+        var t = await callOne(st, prompt, c, { alt: opts.alt, cls: cls, quick: i < live.length - 1 });
+        if (st.prov === c.mode) setStatus("ok");
+        var fb = st.prov !== c.mode && cls !== "light";
+        if (fb && tried.length) { try { N.toast("Respondió " + PROV[st.prov].name + " (respaldo)."); } catch (e) {} }
+        return { text: String(t), truncated: false, via: { prov: st.prov, model: st.model, fb: fb } };
+      } catch (e) {
+        first = first || e; tried.push(st.prov);
+        if (e && e.code === "rate_limited") COOL[st.prov + st.model] = Date.now() + 65000;
+        if (e && e.code === "busy") COOL[st.prov + st.model] = Date.now() + 20000;
+        if (e && e.code === "cancelled") throw e;
+        if (e && st.prov === c.mode && (e.code === "bad_key" || e.code === "network" || e.code === "bad_model")) setStatus("fail", e.message ? e.message.slice(0, 90) : "");
+        if (e && e.code === "network" && i === 0 && live.length > 1) { /* sin red: probar igualmente el siguiente, pero no insistir */ }
+        if (e && (e.code === "offline")) throw e;
+      }
     }
-    if (c.mode !== "manual") setStatus("ok");
-    return { text: String(t), truncated: false };
+    if (tried.length > 1 && first) first.message = (first.message || "") + " (También probé el respaldo: " + tried.slice(1).map(function (k) { return PROV[k].name; }).join(", ") + ", sin éxito.)";
+    throw first || { code: "error", message: "No se pudo obtener respuesta." };
   }
 
   /* ---------- Descargas ---------- */

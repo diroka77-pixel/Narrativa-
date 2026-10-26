@@ -157,7 +157,7 @@ section:not([hidden]){animation:fadein .28s ease}
 .bmk{display:inline-block;font-size:.8rem;border:1px solid currentColor;border-radius:999px;padding:.05rem .6rem;opacity:.8;margin:.2rem 0}
 .speaking{background:rgba(255,165,31,.18);border-radius:6px;box-shadow:0 0 0 4px rgba(255,165,31,.18)}
 #imx{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:15;box-shadow:0 4px 14px rgba(0,0,0,.35)}
-body.imm header.top,body.imm #play>*:not(#book):not(#imx):not(#rdbar){display:none!important}
+body.imm header.top,body.imm #play>*:not(#book):not(#imx):not(#rdbar):not(#pgbar){display:none!important}
 body.imm #rdbar button:not(#listen):not(#stoplisten){display:none}
 .rres{border:1.5px solid var(--line);border-radius:12px;padding:.7rem .8rem;margin:.5rem 0;font-size:.95rem}
 .rres b{display:block}
@@ -219,7 +219,10 @@ body:not([data-v="lib"]) #bgshade{background:linear-gradient(180deg,rgba(7,11,20
 @keyframes mist{from{transform:translateX(-4%)}to{transform:translateX(5%)}}
 body.noanim #bgart,body.noanim #bgmist{animation:none}
 body.noanim #fx{display:none}
-:root[data-theme="light"] #bgart,:root[data-theme="light"] #bgmist,:root[data-theme="light"] #fx,:root[data-theme="light"] #bgshade{display:none}
+:root[data-theme="light"] #bgmist,:root[data-theme="light"] #fx{display:none}
+:root[data-theme="light"] #bgart{opacity:1;animation:none}
+:root[data-theme="light"] #bgshade,:root[data-theme="light"] body[data-v] #bgshade{background:linear-gradient(180deg,rgba(247,241,231,.82) 0%,rgba(247,241,231,.74) 45%,rgba(247,241,231,.86) 100%)!important}
+.fab{width:auto!important;left:auto!important}
 :root[data-theme="light"]{background:var(--bg)}
 :root:not([data-theme="light"]) button.go,:root:not([data-theme="light"]) .fab{background:linear-gradient(90deg,var(--acc),var(--acc2));color:var(--accink)}
 .hero{background:none!important}.hero::after{display:none}
@@ -236,7 +239,22 @@ main{padding-bottom:9rem}
 #tabs{align-items:flex-start;position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;gap:.2rem;padding:.35rem .4rem calc(.35rem + env(safe-area-inset-bottom,0px));background:rgba(8,12,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,214,150,.25)}
 #tabs button{flex:1 1 0;height:54px;max-height:54px;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-height:54px;padding:.3rem .1rem;border:0;background:none;color:var(--mute);font-size:.68rem;text-align:center;border-radius:12px;justify-content:center}
 #tabs button.tabon{background:linear-gradient(180deg,var(--acc),var(--acc2));color:var(--accink);font-weight:700}
+.sronly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 body.imm #tabs{display:none}
+body.imm.paged{overflow:hidden}
+body.imm.paged #book{padding:1rem!important;box-sizing:border-box;position:fixed;left:.6rem;right:.6rem;top:calc(env(safe-area-inset-top,0px) + 2.6rem);bottom:calc(4.4rem + env(safe-area-inset-bottom,0px));overflow:hidden;column-width:calc(100vw - 2.4rem);column-gap:2rem;column-fill:auto;height:auto;margin:0;max-width:none;font-size:1.08rem;line-height:1.65}
+body.imm.paged #rdbar{display:none!important}
+body.imm.paged #book img{max-width:100%;max-height:55vh;object-fit:contain}
+body.imm.paged #book .sc{break-inside:auto;margin:0 0 1.1rem}
+body.imm.paged #imx{top:calc(6px + env(safe-area-inset-top,0px));bottom:auto;right:8px;padding:.35rem .8rem;font-size:.85rem}
+#pgbar{position:fixed;left:0;right:0;bottom:0;z-index:14;display:none;align-items:center;justify-content:center;gap:.8rem;padding:.5rem .8rem calc(.5rem + env(safe-area-inset-bottom,0px));background:var(--bg);border-top:1px solid var(--line)}
+body.imm.paged #pgbar{display:flex}
+#pgbar.hid{display:none!important}
+#pgbar button{min-width:48px;min-height:44px;font-size:1.4rem;line-height:1}
+#pgbar #pgtog{font-size:.85rem;min-width:0;width:auto;padding:0 .8rem}
+#pglab{min-width:5.5rem;text-align:center;font-variant-numeric:tabular-nums}
+@media (min-width:700px){body.imm.paged #book{left:calc(50vw - 350px);right:calc(50vw - 350px);column-width:668px}}
+@media (orientation:landscape) and (min-width:700px) and (max-height:520px){body.imm.paged #book{top:2.6rem;bottom:4.4rem}}
 :root[data-theme="light"] #tabs{background:rgba(255,250,240,.95)}
 body.kb #tabs,body.kb .fab{display:none}
 body.simple #atlbox,body.simple #lorebox,body.simple #imgbox,body.simple #set,body.simple .scm .adv{display:none!important}
@@ -247,7 +265,7 @@ body.hc .rd.t-noche{background:#000;color:#fff}
 body.hc .big,body.hc .rw,body.hc .psheet,body.hc .dnav{background:#000;border-color:#aaa}
 /* v0.9: tema claro real, contraste legible y objetivos táctiles de al menos 44 px. */
 :root[data-theme="light"]{--bg:#f7f1e7;--ink:#211a12;--mute:#5b5044;--line:#9f8e78;--card:#fffaf2;--acc:#8b4100;--acc2:#b85c00;--accink:#fff}
-:root[data-theme="light"] body{background:var(--bg)!important;color:var(--ink)}
+:root[data-theme="light"] body{background:transparent!important;color:var(--ink)}
 :root[data-theme="light"] .top{background:rgba(247,241,231,.97);border-bottom:1px solid var(--line)}
 :root[data-theme="light"] .big,:root[data-theme="light"] .rw,:root[data-theme="light"] .pcard,:root[data-theme="light"] .psheet,:root[data-theme="light"] .dnav,:root[data-theme="light"] .lore{background:var(--card);color:var(--ink);border-color:var(--line);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
 :root[data-theme="light"] .bar{background:linear-gradient(180deg,transparent,var(--bg) 40%)}
@@ -257,8 +275,10 @@ body.hc .big,body.hc .rw,body.hc .psheet,body.hc .dnav{background:#000;border-co
 :root:not([data-theme="light"]){--mute:#c2b9aa}
 @media (prefers-color-scheme:light){
   :root:not([data-theme]){--bg:#f7f1e7;--ink:#211a12;--mute:#5b5044;--line:#9f8e78;--card:#fffaf2;--acc:#8b4100;--acc2:#b85c00;--accink:#fff;background:var(--bg)}
-  :root:not([data-theme]) #bgart,:root:not([data-theme]) #bgmist,:root:not([data-theme]) #fx,:root:not([data-theme]) #bgshade{display:none}
-  :root:not([data-theme]) body{background:var(--bg)!important;color:var(--ink)}
+  :root:not([data-theme]) #bgmist,:root:not([data-theme]) #fx{display:none}
+  :root:not([data-theme]) #bgart{opacity:1;animation:none}
+  :root:not([data-theme]) #bgshade,:root:not([data-theme]) body[data-v] #bgshade{background:linear-gradient(180deg,rgba(247,241,231,.82) 0%,rgba(247,241,231,.74) 45%,rgba(247,241,231,.86) 100%)!important}
+  :root:not([data-theme]) body{background:transparent!important;color:var(--ink)}
   :root:not([data-theme]) .top{background:rgba(247,241,231,.97);border-bottom:1px solid var(--line)}
   :root:not([data-theme]) .big,:root:not([data-theme]) .rw,:root:not([data-theme]) .pcard,:root:not([data-theme]) .psheet,:root:not([data-theme]) .dnav,:root:not([data-theme]) .lore{background:var(--card);color:var(--ink);border-color:var(--line);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none}
   :root:not([data-theme]) .bar{background:linear-gradient(180deg,transparent,var(--bg) 40%)}
@@ -302,7 +322,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <div class="row" style="margin-top:.6rem" id="ideas"></div>
 <button class="go simp" id="quick" style="margin-top:.8rem">✨ Sorpréndeme y empezar ya</button>
 <p class="hint adv" style="margin:1rem 0 .4rem">Título (opcional)</p>
-<input id="ttl0" class="adv" type="text" autocomplete="off" placeholder="Si lo dejas vacío, lo inventa la IA">
+<input id="ttl0" class="adv" type="text" autocomplete="off" placeholder="Si lo dejas vacío, lo inventa El Cronista">
 <p class="hint adv" style="margin:1rem 0 .4rem">Protagonistas (opcional)</p>
 <div class="row adv" id="plist"></div>
 <div class="row adv" style="margin-top:.5rem"><button class="small" id="paddnew">+ Diseñar protagonista</button><button class="small" id="paddpick">+ Elegir de Mis personajes</button></div>
@@ -311,10 +331,10 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <textarea id="bible0" class="adv" maxlength="1200" placeholder="Ej.: La magia siempre cobra un precio físico. El tono es sobrio. Nadie vuelve de entre los muertos."></textarea>
 </div>
 <h2 class="adv">Hazla tuya</h2>
-<p class="hint adv">Opcional. Lo que dejes en Auto lo decide la IA.</p>
+<p class="hint adv">Opcional. Lo que dejes en Auto lo decide El Cronista.</p>
 <div id="rows"></div>
 <div class="bar"><button class="go" id="make">Crear aventura</button>
-<p class="hint" style="text-align:center;margin:.5rem 0 0">Si no escribes nada, la IA inventa la aventura.</p></div>
+<p class="hint" style="text-align:center;margin:.5rem 0 0">Si no escribes nada, El Cronista inventa la aventura.</p></div>
 </section>
 
 <section id="chars" hidden>
@@ -327,7 +347,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <section id="chared" hidden>
 <div class="row" style="align-items:center"><button class="small" id="cdback">← Volver</button></div>
 <h2 id="cdtitle">Diseña a tu protagonista</h2>
-<p class="hint">Lo que dejes vacío lo inventa la IA. Los protagonistas son siempre adultos.</p>
+<p class="hint">Lo que dejes vacío lo inventa El Cronista. Los protagonistas son siempre adultos.</p>
 <label class="f" for="cn">Nombre</label><input id="cn" type="text" autocomplete="off">
 <label class="f" for="ca">Edad (18 o más)</label><input id="ca" type="number" min="18" max="120" inputmode="numeric">
 <h3>Físico</h3>
@@ -349,7 +369,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 
 <section id="making" hidden>
 <h2>Creando tu aventura</h2>
-<p class="sub">Suele tardar menos de un minuto. La IA sigue estos pasos:</p>
+<p class="sub">Suele tardar menos de un minuto. El Cronista sigue estos pasos:</p>
 <ul class="steps" id="steps"></ul>
 <div class="err" id="merr" hidden></div>
 </section>
@@ -376,8 +396,10 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
 <details class="pl" id="imgbox"><summary>Título, portada e imágenes</summary><div id="imgbody"></div></details>
 <details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
-<div class="row" id="rdbar" style="margin:.8rem 0 0"><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="immb" class="small">Lectura inmersiva</button><button id="bgb" class="small">Cambiar fondo</button></div>
+<div class="row" id="rdbar" style="margin:.8rem 0 0"><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="immb" class="small">Lectura inmersiva</button><button id="immp" class="small">Leer en páginas</button><button id="bgb" class="small">Cambiar fondo</button></div>
 <button id="imx" class="go" hidden style="width:auto">Salir de la lectura</button>
+<div id="pgbar" role="group" aria-label="Pasar páginas"><button id="pgprev" aria-label="Página anterior">‹</button><span id="pglab" role="status" aria-live="polite">1 / 1</span><button id="pgnext" aria-label="Página siguiente">›</button><button id="pgtog" class="small">Desplazar</button></div>
+<div id="sr" class="sronly" role="status" aria-live="polite"></div>
 <div class="scene rd" id="book"></div>
 <p class="status" id="status" role="status" hidden>El narrador está escribiendo…</p>
 <div class="err" id="err" role="alert" hidden></div>
@@ -390,7 +412,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <button class="go" id="do" style="margin-top:.6rem">Continuar</button>
 <details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
 </div>
-<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Escribir otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="recapb" class="small">Resumen hasta ahora</button><button id="exp" class="small">Exportar para leer</button></div>
+<div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="recapb" class="small">Lo escrito hasta ahora</button><button id="exp" class="small">Exportar para leer</button></div>
 <div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
@@ -426,7 +448,8 @@ var KEY = "narrador:v1", LIB = [], cur = null, sample = null, busy = false, pend
 var $ = function (id) { return document.getElementById(id); };
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
 function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(LIB)); try { achSoon(); } catch (e2) {} return true; } catch (e) { return false; } }
+var BK_DIRTY = false;
+function save() { try { BK_DIRTY = true; localStorage.setItem(KEY, JSON.stringify(LIB)); try { achSoon(); } catch (e2) {} return true; } catch (e) { return false; } }
 function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
 function setTab(n) { var m = { lib: "tInicio", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
 /* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
@@ -684,13 +707,14 @@ function quotaSheet() {
   });
 }
 function useSave(o) { try { localStorage.setItem("hv:use", JSON.stringify(o)); } catch (e) {} }
-async function ask(p, kind) {
-  var r, md = curModel();
-  try { r = await sample(p, { cache: false, modelTier: "complex" }); }
+async function ask(p, kind, alt) {
+  var r, md = curModel(), cls = (kind === "turn" || kind === "create" || kind === "polish") ? "quality" : "light";
+  try { r = await sample(p, { cache: false, modelTier: "complex", kind: cls, alt: alt || "" }); }
   catch (e) { if (e && e.code === "rate_limited") { var h = useGet(); h.hit = 1; useSave(h); } throw e; }
+  if (r && r.via && r.via.model) md = r.via.model;
   var o = useGet(); o.n++; var me = (o.m[md] = o.m[md] || { t: 0, a: 0 }); if (kind === "turn") me.t++; else me.a++; useSave(o); try { if (window.hvStatusRefresh) window.hvStatusRefresh(); } catch (e) {} usePill();
   var lm = limFor(o, md), nn = me.t + me.a;
-  if (lm > 0 && !o.warned && nn >= Math.ceil(lm * 0.8)) { o.warned = 1; useSave(o); try { emsg("Llevas " + nn + " de tus " + lm + " consultas de hoy. Cuando se agoten, espera al reinicio (sobre las 9:00 en España) o cambia de modelo."); } catch (e) {} }
+  if (lm > 0 && !o.warned && nn >= Math.ceil(lm * 0.8)) { o.warned = 1; useSave(o); try { emsg("Llevas " + nn + " de tus " + lm + " consultas de hoy con " + md + ". Si tienes un respaldo conectado, El Cronista pasará a él; si no, espera al reinicio (sobre las 9:00 en España)."); } catch (e) {} }
   return r;
 }
 function parse(t) {
@@ -745,7 +769,7 @@ function renderLib() {
   } else {
     h.appendChild(el("span", "tag", "BIENVENIDO"));
     h.appendChild(el("h1", null, "Cada decisión deja huella"));
-    h.appendChild(el("p", "syn", "Una historia que recuerda lo que haces. Tú imaginas, la IA narra y el mundo evoluciona."));
+    h.appendChild(el("p", "syn", "Una historia que recuerda lo que haces. Tú imaginas, El Cronista narra y el mundo evoluciona."));
     var nb0 = el("button", "go", "Empezar mi primera historia"); nb0.onclick = function () { startCreate(""); }; h.appendChild(nb0);
   }
 
@@ -794,13 +818,14 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.9.7";
+var VERSION = "0.9.8";
 var NEWS = [
-  ["0.9.7", "Crear historia en modo simple o avanzado, con comienzo rápido. Pulir el texto con la IA antes de exportar (por capítulos, con antes y después). Exportar solo con el texto de la novela. Diccionario al dejar pulsada una palabra. Contador de consultas de IA siempre visible y pantalla de recursos. Biblia de la historia, ejemplos de calidad por género y recursos narrativos. Hilo de la historia y logros en el Atlas. Modos de juego (libre, aventura dura, relajado). Sonido ambiente generado. Compartir una frase como imagen. Etiqueta de rama en la biblioteca. Icono nuevo."],
+  ["0.9.8", "Respaldos gratuitos: si tu IA principal se agota o se satura, El Cronista pasa solo a Mistral o Groq (opcionales, sin tarjeta). Las tareas cortas automáticas se reparten para gastar menos de tu cupo. Copia de seguridad automática con aviso para activarla y estado visible en el menú. Lectura en páginas, como un libro. Modo claro con fondos. Pantallas grandes y horizontal, y avisos para lectores de pantalla. Textos con la voz de El Cronista."],
+  ["0.9.7", "Crear historia en modo simple o avanzado, con comienzo rápido. Que El Cronista pula el texto antes de exportar (por capítulos, con antes y después). Exportar solo con el texto de la novela. Diccionario al dejar pulsada una palabra. Contador de consultas de IA siempre visible y pantalla de recursos. Biblia de la historia, ejemplos de calidad por género y recursos narrativos. Hilo de la historia y logros en el Atlas. Modos de juego (libre, aventura dura, relajado). Sonido ambiente generado. Compartir una frase como imagen. Etiqueta de rama en la biblioteca. Icono nuevo."],
   ["0.9.5", "Estilos de autor, tono por escena, cerrar la historia con un final, motivaciones y evolución de personajes, modos de lectura (papel, interlineado, justificado, letra capital), efectos más sutiles, aviso de consultas diarias, modelo de Gemini personalizable e importar tu propio texto."],
-  ["0.9.4", "Los capítulos ya no miden 5 escenas: la IA los cierra en una pausa natural con intriga (nunca en medio de una pelea o una conversación) midiendo la longitud en páginas de libro de bolsillo, y tú puedes terminarlos cuando quieras. Lectura más tolerante de las respuestas de la IA (menos reintentos)."],
+  ["0.9.4", "Los capítulos ya no miden 5 escenas: El Cronista los cierra en una pausa natural con intriga (nunca en medio de una pelea o una conversación) midiendo la longitud en páginas de libro de bolsillo, y tú puedes terminarlos cuando quieras. Lectura más tolerante de las respuestas de la IA (menos reintentos)."],
   ["0.9.3", "Modo simple (solo leer y elegir; se activa solo si es tu primera vez), 10 géneros destacados con reglas narrativas propias, lista de tópicos de IA prohibidos y capítulos con título y final con gancho (también en EPUB y PDF)."],
-  ["0.9.2", "Plan de la novela con hitos (puedes pedirle a la IA que lo proponga), ramas: crea una copia de la historia desde cualquier escena nueva con su memoria de entonces, resumen «Anteriormente…» al volver tras unas horas y contador de consultas diarias con aviso."],
+  ["0.9.2", "Plan de la novela con hitos (puedes pedirle a El Cronista que lo proponga), ramas: crea una copia de la historia desde cualquier escena nueva con su memoria de entonces, resumen «Anteriormente…» al volver tras unas horas y contador de consultas diarias con aviso."],
   ["0.9", "Copias automáticas en una carpeta elegida, restauración sin borrar lo existente, lectura en segundo plano, widget Continuar leyendo, modo sin conexión, contador local de uso y tema claro accesible."],
   ["0.8", "Asistente paso a paso para conectar tu IA con costes comparados. Memoria reforzada para novelas largas (resúmenes por capítulo y por acto), reparación automática de la memoria, fusión de personajes, reglas inamovibles y fichas editables. Lector crítico, tu propio estilo, voz por personaje, mapa de relaciones, compartir escena como imagen, marcador de lectura y alto contraste."],
   ["0.7", "Nuevas portadas y fondos por género."]
@@ -914,7 +939,7 @@ addRow("Revisión de coherencia", "Más lento, más fiel", function () { return 
 }
 
 /* ---------- Crear: generación en pasos ---------- */
-var STEPS = ["Escribiendo tu historia", "Escribiendo cartas de lore", "Preparando la aventura"];
+var STEPS = ["El Cronista abre la crónica", "El Cronista anota el mundo", "El Cronista prepara la primera página"];
 function drawSteps(n) {
   var ul = $("steps"); ul.innerHTML = "";
   STEPS.forEach(function (t, i) { ul.appendChild(el("li", i < n ? "done" : i === n ? "run" : "", t)); });
@@ -935,10 +960,10 @@ $("make").onclick = async function () {
   var idea = $("idea").value.trim(); UT = $("ttl0").value.trim();
   busy = true; $("merr").hidden = true; view("making"); drawSteps(0);
   try {
-    var g = parse((await ask(genesisPrompt(idea))).text);
+    var g = parse((await ask(genesisPrompt(idea), "create")).text);
     if (!g.titulo || !g.sinopsis) throw new Error("vacío");
     drawSteps(1);
-    var l = parse((await ask(lorePrompt(g))).text);
+    var l = parse((await ask(lorePrompt(g), "create")).text);
     drawSteps(2);
     var genres = C.genres.length ? C.genres.slice() : (Array.isArray(g.generos) ? g.generos : [g.generos]).filter(function (x) { return GENRES.indexOf(x) >= 0; }).slice(0, 3);
     if (!genres.length) genres = [GENRES[0]];
@@ -1030,20 +1055,20 @@ function renderSet() {
   b.appendChild(el("p", "hint", "Modo de juego"));
   optRow(b, [["libre", "Libre"], ["dura", "Aventura dura"], ["relajado", "Relajado"]], function () { return cur.pmode || "libre"; }, function (v) { cur.pmode = v; save(); });
   b.appendChild(el("p", "hint", "Libre: lo que pida la historia. Aventura dura: consecuencias graves y permanentes. Relajado: sin muertes ni heridas graves."));
-  b.appendChild(el("p", "hint", "Biblia de la historia (opcional): las reglas del mundo, el tono, el destino de los personajes principales y lo que NUNCA debe pasar. La IA la tiene siempre presente."));
+  b.appendChild(el("p", "hint", "Biblia de la historia (opcional): las reglas del mundo, el tono, el destino de los personajes principales y lo que NUNCA debe pasar. El Cronista la tiene siempre presente."));
   var bb = el("textarea"); bb.value = cur.bible || ""; bb.maxLength = 1200; bb.style.minHeight = "6rem"; bb.setAttribute("aria-label", "Biblia de la historia"); bb.placeholder = "Ej.: La magia siempre tiene un precio físico. Marta no traicionará a su hermano. El tono es sobrio, sin humor.";
   bb.onchange = function () { var t = bb.value.trim().slice(0, 1200); if (t) cur.bible = t; else delete cur.bible; save(); }; b.appendChild(bb);
-  var bg = el("button", "small", "Redactarla con la IA"); bg.style.margin = ".3rem 0 .8rem";
+  var bg = el("button", "small", "Que El Cronista la redacte"); bg.style.margin = ".3rem 0 .8rem";
   bg.onclick = async function () {
-    bg.disabled = true; bg.textContent = "Pensando…";
+    bg.disabled = true; bg.textContent = "El Cronista piensa…";
     try {
       var q = "Eres un editor de novelas. Con esta premisa y lo que ya se sabe, redacta la BIBLIA de la historia en 6 a 10 líneas cortas: reglas del mundo (qué es posible y qué no), tono y voz del narrador, motivación y destino previsto de los personajes principales, y 2 cosas que nunca deben ocurrir. Responde SOLO con el texto, sin títulos ni comillas.\nPREMISA: " + cur.premise + "\nCARTAS:\n" + loreTxt(cur) + "\nRESUMEN:\n" + (cur.memory || "(inicio)");
-      var r = await ask(q); var t = String(r.text || "").trim().slice(0, 1200); if (t) { bb.value = t; cur.bible = t; save(); }
+      var r = await ask(q, "create"); var t = String(r.text || "").trim().slice(0, 1200); if (t) { bb.value = t; cur.bible = t; save(); }
     } catch (e) { emsg((e && e.message) || "No se pudo redactar la biblia."); }
-    bg.disabled = false; bg.textContent = "Redactarla con la IA";
+    bg.disabled = false; bg.textContent = "Que El Cronista la redacte";
   };
   b.appendChild(bg);
-  b.appendChild(el("p", "hint", "Plan de la novela (opcional): una lista de hitos que la IA seguirá sin cerrar la historia antes de tiempo."));
+  b.appendChild(el("p", "hint", "Plan de la novela (opcional): una lista de hitos que El Cronista seguirá sin cerrar la historia antes de tiempo."));
   var pl = cur.plan = cur.plan || { on: false, pts: [], total: 120 };
   var l5 = el("label", "chk"), i5 = el("input"); i5.type = "checkbox"; i5.checked = !!pl.on; i5.onchange = function () { pl.on = i5.checked; save(); };
   l5.appendChild(i5); l5.appendChild(document.createTextNode("Seguir el plan de la novela")); l5.style.margin = ".4rem 0"; b.appendChild(l5);
@@ -1051,8 +1076,8 @@ function renderSet() {
   pt.onchange = function () { pl.pts = pt.value.split("\n").map(function (x) { return x.trim().slice(0, 160); }).filter(Boolean).slice(0, 20); save(); }; b.appendChild(pt);
   var pr = el("div", "row"); pr.style.margin = ".4rem 0";
   var pn = el("input"); pn.type = "number"; pn.min = 20; pn.max = 400; pn.value = pl.total || 120; pn.style.maxWidth = "6rem"; pn.setAttribute("aria-label", "Escenas totales previstas"); pn.onchange = function () { pl.total = Math.max(20, Math.min(400, Number(pn.value) || 120)); save(); };
-  var pg = el("button", "small", "Proponer plan con la IA"); pg.onclick = async function () {
-    pg.disabled = true; pg.textContent = "Pensando…";
+  var pg = el("button", "small", "Que El Cronista proponga el plan"); pg.onclick = async function () {
+    pg.disabled = true; pg.textContent = "El Cronista piensa…";
     try {
       var q = "Eres un editor de novelas. Con esta premisa y lo ocurrido hasta ahora, propone entre 6 y 10 hitos de trama (inicio, complicaciones, giro, crisis, clímax y desenlace) para una novela de unas " + (pl.total || 120) + " escenas. Cada hito: una frase breve. No reveles el final en los primeros.\nPREMISA: " + (cur.premise || cur.syn || "") + "\nHASTA AHORA: " + (cur.memory || cur.last || "").slice(0, 700) + "\nResponde SOLO con JSON: {\"hitos\":[\"...\"]}";
       var d = parse((await ask(q)).text), h = arr(d.hitos).map(function (x) { return str(x, 160); }).filter(Boolean).slice(0, 12);
@@ -1257,12 +1282,12 @@ function forkStory(src, upto) {
 }
 function endSheet() {
   var s = cur; if (!s) return;
-  sheet("Cerrar la historia", function (sh) {
-    para(sh, "La IA llevará la historia a un final en las próximas escenas, resolviendo los asuntos abiertos. Puedes cancelarlo cuando quieras antes de que acabe.");
+  sheet("Escribir el final", function (sh) {
+    para(sh, "El Cronista llevará la historia a un final en las próximas escenas, resolviendo los asuntos abiertos. Puedes cancelarlo cuando quieras antes de que acabe.");
     var q = el("div", "row"), n = 4;
     var sel = el("select"); [[2, "Final rápido (2 escenas)"], [4, "Final normal (4 escenas)"], [8, "Final largo (8 escenas)"]].forEach(function (x) { var o = el("option", null, x[1]); o.value = x[0]; if (x[0] === 4) o.selected = true; sel.appendChild(o); });
     sel.setAttribute("aria-label", "Duración del final"); sh.appendChild(sel);
-    var r = el("div", "row"), ok = el("button", "go", "Cerrar la historia"); ok.style.flex = "1"; ok.onclick = function () { s.endIn = Number(sel.value) - 1; save(); closeSheet(); render(true); };
+    var r = el("div", "row"), ok = el("button", "go", "Escribir el final"); ok.style.flex = "1"; ok.onclick = function () { s.endIn = Number(sel.value) - 1; save(); closeSheet(); render(true); };
     var no = el("button", null, "Cancelar"); no.onclick = closeSheet; r.appendChild(ok); r.appendChild(no); sh.appendChild(r);
   });
 }
@@ -1312,10 +1337,10 @@ function importSheet() {
 }
 function closeChapterSheet() {
   var s = cur; if (!s || busy) return; var c = chCur(s);
-  sheet("Terminar el capítulo " + c, function (sh) {
+  sheet("Cerrar el capítulo " + c, function (sh) {
     para(sh, "El capítulo " + c + " acabará con la escena que acabas de leer (≈ " + (Math.round(curChWords(s) / PAGE_W * 10) / 10) + " páginas). La siguiente escena empezará el capítulo " + (c + 1) + ".");
     var st = el("p", "hint"); st.setAttribute("role", "status");
-    var r = el("div", "row"), ok = el("button", "go", "Terminar capítulo"); ok.style.flex = "1";
+    var r = el("div", "row"), ok = el("button", "go", "Cerrar el capítulo"); ok.style.flex = "1";
     ok.onclick = async function () {
       ok.disabled = true; var m = ensureMem(s), from = chStartIdx(s, c), n = s.scenes.length;
       if (!s.ce) s.ce = chEnds(s).slice();
@@ -1507,15 +1532,15 @@ function redund(s, text) {
 function intTxt(s) { var o = s.intens || {}; return AXES.map(function (a) { var v = a in o ? o[a] : 1; return a + " " + v + " (" + LV[v] + ")"; }).join(", "); }
 function loreTxt(s) { return (s.lore || []).slice(0, 30).map(function (c) { return "- " + c.tipo + " " + c.nombre + ": " + c.desc; }).join("\n") || "(ninguna)"; }
 
-function build(s, action, note, sp) {
+function build(s, action, note, sp, compact) {
   var aviso = note ? "AVISO: " + note + "\n" : "";
   if (s.state && s.state.salud <= 0 && s.pmode !== "relajado") aviso += "AVISO: la salud del protagonista es 0. Escribe el desenlace con \"fin\":true.\n";
   var dir = s.director || "Auto", len = s.len || DEF.len, sty = s.sty || DEF.sty, ten = s.ten || DEF.ten, aut = s.aut || "Coautor";
-  return RULES + "\n\nGÉNEROS (mézclalos con naturalidad, sin que uno anule al otro): " + gtxt(s) + "\nDIRECTOR NARRATIVO (" + dir + "): " + DIR[dir] +
-    genreRules(s) + "\n" + CLICHES + "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nLONGITUD: 2 o 3 párrafos cortos, de " + LEN[len] + " palabras en total." +
+  return RULES + "\n\nGÉNEROS (mézclalos con naturalidad, sin que uno anule al otro): " + gtxt(s) + "\nDIRECTOR NARRATIVO (" + dir + "): " + (compact ? "" : DIR[dir]) +
+    (compact ? genreRules(s).slice(0, 700) : genreRules(s)) + "\n" + (compact ? "" : CLICHES) + "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nLONGITUD: 2 o 3 párrafos cortos, de " + LEN[len] + " palabras en total." +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
-    "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + loreTxt(s) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s) +
+    "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s).slice(0, 1800) : loreTxt(s)) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
+    extraCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -1592,9 +1617,9 @@ function craftCtx(s) {
   if (s.bible && s.bible.trim()) o += "\nBIBLIA DE LA HISTORIA (verdad fija del autor; no la contradigas): " + s.bible.trim().slice(0, 1200);
   return o;
 }
-function extraCtx(s) {
+function extraCtx(s, compact) {
   var o = "", m = ensureMem(s);
-  if (s.author && AUTHOR[s.author]) o += "\nESTILO DE AUTOR (" + s.author + "): " + AUTHOR[s.author];
+  if (!compact && s.author && AUTHOR[s.author]) o += "\nESTILO DE AUTOR (" + s.author + "): " + AUTHOR[s.author];
   var tn = TONES[s.nextTone]; if (tn) o += "\nTONO DE ESTA ESCENA (solo esta): " + tn;
   if (s.endIn != null) {
     var oppn = ensureMem(s).pend.filter(function (x) { return x.open; }).slice(-8).map(function (x) { return x.text; });
@@ -1603,8 +1628,7 @@ function extraCtx(s) {
   var pp = planPoint(s);
   if (pp) o += "\nPLAN DE LA NOVELA (guía del autor; llévala hacia allí sin forzar ni anunciar): punto actual " + (pp.i + 1) + "/" + pp.n + ": «" + pp.now + "»" + (pp.next ? "; después: «" + pp.next + "»" : "") + ". " + (pp.last ? "Estás en la recta final: puedes cerrar la historia cuando el punto se cumpla." : "NO cierres la historia ni uses \"fin\":true antes del último punto.");
   if (s.rules && s.rules.length) o += "\nREGLAS INAMOVIBLES DEL MUNDO (el autor las fijó; no las contradigas jamás): " + s.rules.join(" | ");
-  o += charMot(m);
-  o += craftCtx(s);
+  if (!compact) { o += charMot(m); o += craftCtx(s); }
   var nm = Object.keys(m.chars).map(function (k) { return m.chars[k]; }).sort(function (a, b) { return b.last - a.last; }).slice(0, 25).map(function (c) { return c.name; });
   if (nm.length) o += "\nNOMBRES YA USADOS (escríbelos siempre igual en mem; no inventes variantes ni apodos como personajes nuevos): " + nm.join(", ");
   if (s.style && s.style.sample) o += "\nESTILO DEL AUTOR (imita su ritmo, la longitud de sus frases y su tipo de vocabulario; NO copies sus frases ni sus temas): «" + s.style.sample + "»";
@@ -1631,8 +1655,8 @@ function chapNote(s) {
   return t + "Es demasiado largo: ciérralo YA en esta escena con un buen gancho." + close + "\n";
 }
 function factsTxt(s) { var f = (s.facts || []).slice(-60); return f.length ? f.map(function (x) { return "- " + x; }).join("\n") : "(ninguno todavía)"; }
-function recentTxt(s) {
-  var r = (s.scenes || []).slice(-3);
+function recentTxt(s, n) {
+  var r = (s.scenes || []).slice(-(n || 3));
   if (!r.length) return s.last || "(ninguna)";
   return r.map(function (sc) { return (sc.a ? "[El jugador: " + sc.a + "]\n" : "") + sc.t; }).join("\n---\n");
 }
@@ -1670,7 +1694,7 @@ async function turn(action, shown, extra) {
   pending = [action, shown]; busy = true; $("err").hidden = true; stopTalk(); render(true);
   try {
     for (var i = 0; i < 2; i++) {
-      var t0 = Date.now(), r = await ask(build(s, action, note, sp), "turn"), d; dg(s, "ms", Date.now() - t0);
+      var t0 = Date.now(), r = await ask(build(s, action, note, sp), "turn", build(s, action, note, sp, true)), d; dg(s, "ms", Date.now() - t0);
       try { d = parse(r.text); } catch (e) { dg(s, "jsonFail"); note = "Tu respuesta anterior no era JSON válido."; continue; }
       if (!d.escena) { dg(s, "noScene"); note = "Falta la escena."; continue; }
       cand = d;
@@ -1679,7 +1703,7 @@ async function turn(action, shown, extra) {
         if (rd.n >= 6 || rd.motifs.length) { dg(s, "redund"); note = "Repites recursos ya usados" + (rd.ex.length ? " (por ejemplo «" + rd.ex[0] + "»)" : "") + (rd.motifs.length ? " y descripciones como «" + rd.motifs[0] + "»" : "") + ". Reescribe la escena con imágenes, gestos y palabras distintos y avanza la trama."; continue; }
       }
       if (s.review && i === 0) {
-        try { var rv = parse((await ask(reviewPrompt(s, d))).text); if (rv.ok === false) { note = "Corrige este problema de coherencia: " + rv.problema; continue; } } catch (e) {}
+        try { var rv = parse((await ask(reviewPrompt(s, d), "light")).text); if (rv.ok === false) { note = "Corrige este problema de coherencia: " + rv.problema; continue; } } catch (e) {}
       }
       break;
     }
@@ -1706,7 +1730,7 @@ async function turn(action, shown, extra) {
     if (sp) s.ls = s.turn;
     s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3); s.lastAct = [action, shown];
     var sn = s.scenes[s.scenes.length - 1]; sn.m = cand.mem || null; sn.hn = Array.isArray(cand.hechos_nuevos) ? cand.hechos_nuevos : null; sn.st = cand.estado || null; sn.o = s.opts.slice(); sn.mt = cand.memoria || ""; sn.l = Array.isArray(cand.lore_nuevo) ? cand.lore_nuevo : null;
-    save(); autoBackup(false); renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
+    save(); autoBackup(false); try { bkNudge(); } catch (e) {} try { $("sr").textContent = ""; setTimeout(function () { $("sr").textContent = "El Cronista ha escrito una nueva escena. " + String(cand.escena || "").replace(/\s+/g, " ").slice(0, 220); }, 60); } catch (e) {} renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
     dg(s, "turns"); delete s.nextTone; if (window.hvToneReset) window.hvToneReset();
     if (s.endIn != null) { s.endIn--; if (s.endIn < -1) s.fin = true; }
     if (_close) { if (!s.ce) s.ce = chEnds(s).filter(function (x) { return x < s.scenes.length; }); closeChapterNow(s); }
@@ -1830,7 +1854,7 @@ $("cnew").onclick = function () { openDesigner(null, "chars"); };
 
 function buildPlist() {
   var b = $("plist"); b.innerHTML = "";
-  if (!P.length) b.appendChild(el("span", "hint", "AUTO · la IA inventa al protagonista"));
+  if (!P.length) b.appendChild(el("span", "hint", "AUTO · El Cronista inventa al protagonista"));
   P.forEach(function (c, i) { var x = el("button", "on", c.name + " ✕"); x.onclick = function () { P.splice(i, 1); buildPlist(); }; b.appendChild(x); });
 }
 $("paddnew").onclick = function () { openDesigner(null, "create"); };
@@ -1847,7 +1871,7 @@ var CMODE = "simple"; try { CMODE = localStorage.getItem("hv:cmode") || (LIB.len
 function setCMode(m) {
   CMODE = m === "adv" ? "adv" : "simple"; try { localStorage.setItem("hv:cmode", CMODE); } catch (e) {}
   var c = $("create"); c.classList.toggle("simple", CMODE === "simple"); $("cm-s").classList.toggle("on", CMODE === "simple"); $("cm-a").classList.toggle("on", CMODE !== "simple");
-  $("cmhint").textContent = CMODE === "simple" ? "Solo eliges la idea y el género; la IA decide el resto. Puedes cambiar a avanzado cuando quieras." : "Controlas todo: título, protagonistas, biblia, estilo, tono e intensidad.";
+  $("cmhint").textContent = CMODE === "simple" ? "Solo eliges la idea y el género; El Cronista decide el resto. Puedes cambiar a avanzado cuando quieras." : "Controlas todo: título, protagonistas, biblia, estilo, tono e intensidad.";
   var f = document.querySelector("#rows>details"); if (f) f.open = CMODE === "simple";
 }
 $("cm-s").onclick = function () { setCMode("simple"); }; $("cm-a").onclick = function () { setCMode("adv"); };
@@ -2004,7 +2028,7 @@ function sceneImg(sc, i) {
   var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
   var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
   var fk = el("button", "small", "Crear rama desde aquí"); fk.onclick = function () { forkSheet(i); }; advw.appendChild(fk);
-  if (i === cur.scenes.length - 1 && chEnds(cur).indexOf(cur.scenes.length) < 0) { var cc = el("button", "small", "Terminar el capítulo aquí"); cc.onclick = function () { closeChapterSheet(); }; r.appendChild(cc); }
+  if (i === cur.scenes.length - 1 && chEnds(cur).indexOf(cur.scenes.length) < 0) { var cc = el("button", "small", "Cerrar el capítulo aquí"); cc.onclick = function () { closeChapterSheet(); }; r.appendChild(cc); }
   if (i === cur.scenes.length - 1 && !cur.fin) { var en = el("button", "small", cur.endIn != null ? "Cancelar el final" : "Empezar a cerrar la historia"); en.onclick = function () { if (cur.endIn != null) { delete cur.endIn; save(); render(true); } else endSheet(); }; r.appendChild(en); }
   var sh2 = el("button", "small", "Compartir como imagen"); sh2.onclick = function () { shareCard(i); }; r.appendChild(sh2);
   var sq = el("button", "small", "Compartir una frase"); sq.onclick = function () { quoteSheet(i); }; r.appendChild(sq);
@@ -2137,8 +2161,8 @@ function renderAtlas() {
       ed(d, "Lo que quiere", c.want, function (v) { c.want = v; });
       ed(d, "Lo que necesita (aunque no lo sepa)", c.need, function (v) { c.need = v; });
       ed(d, "Su mayor miedo", c.fear, function (v) { c.fear = v; });
-      var ab = el("button", "small", "Completar con la IA"); ab.onclick = async function () {
-        ab.disabled = true; ab.textContent = "Pensando…";
+      var ab = el("button", "small", "Que El Cronista complete"); ab.onclick = async function () {
+        ab.disabled = true; ab.textContent = "El Cronista piensa…";
         try { var dd = parse((await ask("Eres un editor de novelas. Con lo que se sabe de este personaje, propón sus motivaciones. Responde SOLO con JSON: {\"quiere\":\"...\",\"necesita\":\"...\",\"teme\":\"...\"} (frases cortas).\nPERSONAJE: " + c.name + " — " + (c.desc || "") + "\nHISTORIA: " + (s.premise || "") + " " + (s.memory || "").slice(0, 400) + "\nSABE/CREE: " + c.know.slice(-6).map(function (x) { return x.t; }).join("; "))).text); c.want = str(dd.quiere, 160); c.need = str(dd.necesita, 160); c.fear = str(dd.teme, 160); save(); renderAtlas(); } catch (e) { ab.textContent = "Error; reintenta"; ab.disabled = false; }
       }; d.appendChild(ab);
       ed(d, "Corregir descripción", c.desc, function (v) { c.desc = v; }, true);
@@ -2412,7 +2436,37 @@ $("listen").onclick = function () {
 $("stoplisten").onclick = stopTalk;
 
 /* ---------- Lectura inmersiva, dictado ---------- */
-function setImm(v) { document.body.classList.toggle("imm", v); $("imx").hidden = !v; window.scrollTo(0, 0); }
+var PAGED = false; try { PAGED = localStorage.getItem("hv:paged") === "1"; } catch (e) {}
+function setImm(v) { document.body.classList.toggle("imm", v); document.body.classList.toggle("paged", !!(v && PAGED)); $("imx").hidden = !v; window.scrollTo(0, 0); if (v && PAGED) setTimeout(pgStart, 60); else { $("pgbar").classList.remove("hid"); } }
+function pgStep() { return $("book").clientWidth; }
+function pgInfo() { var b = $("book"), st = pgStep(), n = Math.max(1, Math.round(b.scrollWidth / st)), i = Math.min(n - 1, Math.round(b.scrollLeft / st)); return { n: n, i: i, st: st }; }
+function pgLabel() { var f = pgInfo(); $("pglab").textContent = (f.i + 1) + " / " + f.n; }
+function pgGo(i, noSave) { var b = $("book"), f = pgInfo(); i = Math.max(0, Math.min(f.n - 1, i)); b.scrollLeft = i * f.st; pgLabel(); if (!noSave && cur) { cur.pgf = b.scrollWidth ? b.scrollLeft / b.scrollWidth : 0; try { save(); } catch (e) {} } }
+function pgStart() {
+  if (!document.body.classList.contains("paged") || !cur) return;
+  var b = $("book"), f = pgInfo(), i;
+  if (cur.pgf != null && cur.read !== cur.scenes.length - 1 && cur.pgf > 0) i = Math.round(cur.pgf * b.scrollWidth / f.st);
+  else { var e = b.lastElementChild; if (e) { var x = e.getBoundingClientRect().left - b.getBoundingClientRect().left + b.scrollLeft; i = Math.floor(Math.max(0, x) / f.st); } else i = 0; }
+  pgGo(i, true);
+}
+$("immp").onclick = function () { PAGED = true; try { localStorage.setItem("hv:paged", "1"); } catch (e) {} setImm(true); };
+$("pgprev").onclick = function () { pgGo(pgInfo().i - 1); };
+$("pgnext").onclick = function () { pgGo(pgInfo().i + 1); };
+$("pgtog").onclick = function () { PAGED = false; try { localStorage.setItem("hv:paged", "0"); } catch (e) {} document.body.classList.remove("paged"); toast("Lectura con desplazamiento."); };
+(function () {
+  var b = $("book"), sx = 0, sy = 0, moved = false;
+  b.addEventListener("touchstart", function (e) { if (!document.body.classList.contains("paged")) return; var t = e.touches[0]; sx = t.clientX; sy = t.clientY; moved = false; }, { passive: true });
+  b.addEventListener("touchend", function (e) { if (!document.body.classList.contains("paged")) return; var t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) { moved = true; pgGo(pgInfo().i + (dx < 0 ? 1 : -1)); } }, { passive: true });
+  b.addEventListener("click", function (e) {
+    if (!document.body.classList.contains("paged") || moved) { moved = false; return; }
+    var sel = window.getSelection && String(window.getSelection()); if (sel) return;
+    var w = window.innerWidth, x = e.clientX;
+    if (x < w * 0.33) pgGo(pgInfo().i - 1); else if (x > w * 0.67) pgGo(pgInfo().i + 1); else $("pgbar").classList.toggle("hid");
+  });
+  document.addEventListener("keydown", function (e) { if (!document.body.classList.contains("paged")) return; if (e.key === "ArrowRight" || e.key === "PageDown") pgGo(pgInfo().i + 1); else if (e.key === "ArrowLeft" || e.key === "PageUp") pgGo(pgInfo().i - 1); });
+  window.addEventListener("resize", function () { if (document.body.classList.contains("paged")) { var f = pgInfo(); pgGo(f.i, true); } });
+  try { new MutationObserver(function () { if (document.body.classList.contains("paged")) pgLabel(); }).observe(b, { childList: true, subtree: true }); } catch (e) {}
+})();
 $("immb").onclick = function () { setImm(true); };
 $("bgb").onclick = function () { if (!cur) return; cur.bgv = (storyVar(cur) + 1) % 3; save(); applyTheme(cur.genre, cur.bgv, cur.id); };
 $("tInicio").onclick = function () { goHome(); };
@@ -2495,10 +2549,10 @@ function dictSheet(word, ctx) {
       if (t) { def.textContent = t; st.textContent = "Fuente: Wiktionary (CC BY-SA 4.0)."; }
       else st.textContent = window.hvDefine ? "No he encontrado esta palabra en el diccionario." : "El diccionario sin conexión a la IA solo está en la app instalada. Puedes pedirle a la IA que te la explique.";
     })();
-    var ai = el("button", "go", "Explicar con la IA (1 consulta)"); ai.style.marginTop = ".6rem";
+    var ai = el("button", "go", "Que El Cronista lo explique (1 consulta)"); ai.style.marginTop = ".6rem";
     ai.onclick = async function () {
       ai.disabled = true; st.textContent = "Consultando…";
-      try { var r = await ask("Explica en español sencillo qué significa «" + word + "» en este fragmento de una novela: «" + ctx + "». Responde solo con 2 frases: el significado y, si es un nombre o término inventado de la historia, di que lo es. No añadas nada más.", "dict"); def.textContent = String(r.text || "").trim().slice(0, 600); st.textContent = "Explicación de la IA (puede equivocarse)."; }
+      try { var r = await ask("Explica en español sencillo qué significa «" + word + "» en este fragmento de una novela: «" + ctx + "». Responde solo con 2 frases: el significado y, si es un nombre o término inventado de la historia, di que lo es. No añadas nada más.", "dict"); def.textContent = String(r.text || "").trim().slice(0, 600); st.textContent = "Explicación de El Cronista (puede equivocarse)."; }
       catch (e) { st.textContent = (e && e.message) || "No se pudo consultar a la IA."; }
       ai.disabled = false;
     };
@@ -2598,7 +2652,7 @@ function polishSheet() {
   var s = cur; if (!s || busy || !s.scenes.length) return;
   sheet("Pulir el texto antes de exportar", function (sh) {
     var chn = chCount(s), pv = s.rev || {};
-    para(sh, "Una IA lee cada capítulo y propone una versión mejorada. No cambia los hechos. Tú ves el antes y el después de cada capítulo y decides si aceptarlo; lo aceptado se puede deshacer. Gasta al menos 1 consulta por capítulo (" + chn + " en total, más si son muy largos).");
+    para(sh, "El Cronista lee cada capítulo y propone una versión mejorada. No cambia los hechos. Tú ves el antes y el después de cada capítulo y decides si aceptarlo; lo aceptado se puede deshacer. Gasta al menos 1 consulta por capítulo (" + chn + " en total, más si son muy largos).");
     var lvl = "light", sel = el("select"); [["light", "Ligera: erratas, puntuación y frases torpes"], ["style", "Estilo: además mejora ritmo, tópicos y diálogos"]].forEach(function (x) { var o = el("option", null, x[1]); o.value = x[0]; sel.appendChild(o); });
     sel.setAttribute("aria-label", "Nivel de revisión"); sel.style.width = "100%"; sel.style.padding = ".6rem"; sh.appendChild(sel); sel.onchange = function () { lvl = sel.value; };
     var list = el("div"), st = el("p", "hint"); st.setAttribute("role", "status");
@@ -2621,7 +2675,7 @@ function polishSheet() {
           if (stop) break; var r0 = R.ch[n]; if (r0 && (r0.state === "ready" || r0.state === "applied" || r0.state === "rejected") && r0.lvl === lvl) continue;
           var idxs = chScenes(s, n); if (!idxs.length) continue;
           st.textContent = "Revisando el capítulo " + n + " de " + chn + "… (" + done + " hechos ahora)";
-          var rs = null, resp = (await ask(polishPrompt(s, lvl, idxs), "auto")).text; rs = polishParse(resp, idxs.length);
+          var rs = null, resp = (await ask(polishPrompt(s, lvl, idxs), "polish")).text; rs = polishParse(resp, idxs.length);
           if (!rs) { R.ch[n] = { state: "fail", lvl: lvl }; save(); drawList(); continue; }
           var out = [], changed = 0;
           idxs.forEach(function (i, k) { var o0 = s.scenes[i].t, nw = rs[k], ratio = nw.length / Math.max(1, o0.length); if (nw !== o0 && ratio > .7 && ratio < 1.35) { out.push(nw); changed++; } else out.push(o0); });
@@ -2790,7 +2844,31 @@ async function autoBackup(force) {
   var n = cur && cur.scenes ? cur.scenes.length : 0, every = Number(localStorage.getItem("hv:backup:every") || 5);
   if (!force && (!n || n % every !== 0 || Number(localStorage.getItem("hv:backup:lastScene") || -1) === n)) return;
   var r = await window.hvBackup.write(JSON.stringify(backupData()));
-  if (r && r.ok && n) localStorage.setItem("hv:backup:lastScene", String(n));
+  if (r && r.ok) { BK_DIRTY = false; if (n) localStorage.setItem("hv:backup:lastScene", String(n)); }
+  else if (r && !r.ok) { try { var dd = new Date().toDateString(); if (localStorage.getItem("hv:bk:errday") !== dd) { localStorage.setItem("hv:bk:errday", dd); toast("No se pudo hacer la copia automática: " + (r.error || "revisa la carpeta") + ". Ábrela en Copia de seguridad."); } } catch (e) {} }
+}
+// v0.9.8: la copia se hace sola cada pocos minutos si hay cambios, y se avisa una vez si todavía no hay carpeta.
+setInterval(function () { if (!document.hidden && BK_DIRTY) autoBackup(true); }, 480000);
+async function bkNudge() {
+  if (!window.hvBackup || !window.hvBackup.available) return;
+  var st = await window.hvBackup.status(); if (st && st.folder) return;
+  var asked = Number(localStorage.getItem("hv:bk:asked") || 0), last = Number(localStorage.getItem("hv:bk:askedAt") || 0), total = 0;
+  LIB.forEach(function (x) { total += (x.scenes || []).length; });
+  if (localStorage.getItem("hv:bk:never") === "1" || asked >= 3 || total < 6 || Date.now() - last < 3 * 86400000) return;
+  localStorage.setItem("hv:bk:asked", String(asked + 1)); localStorage.setItem("hv:bk:askedAt", String(Date.now()));
+  sheet("Protege tu crónica", function (sh) {
+    para(sh, "Ya llevas " + total + " escenas escritas. Tus historias viven solo en este móvil: si lo pierdes o lo cambias, se perderían.");
+    para(sh, "Elige una carpeta (Google Drive, Dropbox o del móvil) y El Cronista guardará una copia solo, cada pocas escenas y al cerrar la app. Se hace una vez y ya no tienes que acordarte.");
+    var r = el("div", "row"), go = el("button", "go", "Elegir carpeta ahora"), later = el("button", null, "Más tarde"), nv = el("button", "small", "No volver a preguntar");
+    go.onclick = async function () { var x = await window.hvBackup.choose(); if (x && x.ok) { await window.hvBackup.write(JSON.stringify(backupData())); BK_DIRTY = false; toast("Copia automática activada ✓"); closeSheet(); } };
+    later.onclick = function () { closeSheet(); }; nv.onclick = function () { localStorage.setItem("hv:bk:never", "1"); closeSheet(); };
+    r.appendChild(go); r.appendChild(later); sh.appendChild(r); sh.appendChild(nv);
+  });
+}
+async function bkLabel() {
+  var b = $("dbackup"); if (!b) return;
+  if (!window.hvBackup || !window.hvBackup.available) { b.textContent = "Copia de seguridad"; return; }
+  try { var st = await window.hvBackup.status(); if (!st || !st.folder) b.textContent = "Copia de seguridad · sin configurar"; else if (st.error) b.textContent = "Copia de seguridad · con error"; else if (st.last) { var d = Math.floor((Date.now() - st.last) / 86400000); b.textContent = "Copia de seguridad · " + (d < 1 ? "hoy" : "hace " + d + " d"); } else b.textContent = "Copia de seguridad · aún sin copias"; } catch (e) {}
 }
 document.addEventListener("visibilitychange", function () { if (document.hidden) autoBackup(true); });
 
@@ -2825,7 +2903,7 @@ $("dhelp").onclick = function () { drawer(false); helpSheet(); };
 /* Bienvenida */
 function welcomeSheet() {
   sheet("Bienvenido a Historias vivas", function (sh) {
-    para(sh, "Una historia que recuerda lo que haces: tú imaginas y decides, la IA escribe, recuerda y hace evolucionar el mundo, y nadie sabe cómo acabará.");
+    para(sh, "Una historia que recuerda lo que haces: tú imaginas y decides, El Cronista escribe, recuerda y hace evolucionar el mundo, y nadie sabe cómo acabará.");
     var ol = el("ol"); ol.style.paddingLeft = "1.2rem";
     ["Conecta tu IA (si usas una clave de Gemini es gratis y lo más cómodo; también puedes copiar y pegar con cualquier IA).", "Cuenta tu idea y elige géneros, estilo y protagonista.", "Lee y decide qué hace tu personaje. La memoria de la historia se guarda sola."].forEach(function (t) { ol.appendChild(el("li", null, t)); });
     sh.appendChild(ol);
@@ -2881,7 +2959,7 @@ function reviewBook() {
   var s = cur; if (!s || busy) return;
   var batches = Math.ceil(s.scenes.length / 10);
   sheet("Revisar el libro", function (sh) {
-    para(sh, "Una IA lee la novela por tandas de 10 escenas y te dice dónde hay repeticiones, contradicciones o personajes que saben lo que no deberían. No cambia ningún texto: tú decides qué corregir. Se harán " + batches + " consulta" + (batches === 1 ? "" : "s") + " a tu IA.");
+    para(sh, "El Cronista lee la novela por tandas de 10 escenas y te dice dónde hay repeticiones, contradicciones o personajes que saben lo que no deberían. No cambia ningún texto: tú decides qué corregir. Se harán " + batches + " consulta" + (batches === 1 ? "" : "s") + " a tu IA.");
     var res = el("div"), st = el("p", "hint"); st.setAttribute("role", "status");
     var go = el("button", "go", "Empezar la revisión"); go.style.marginTop = ".6rem";
     go.onclick = async function () {
@@ -2912,7 +2990,7 @@ $("rvw").onclick = reviewBook;
 /* ---------- Menú ---------- */
 function drawer(v) { $("drawer").hidden = !v; }
 function goHome() { drawer(false); renderLib(); view("lib"); }
-$("menu").onclick = function () { drawer(true); };
+$("menu").onclick = function () { drawer(true); try { bkLabel(); } catch (e) {} };
 $("dov").onclick = function () { drawer(false); };
 $("home").onclick = goHome; $("dhome").onclick = goHome;
 $("dchars").onclick = function () { drawer(false); renderChars(); view("chars"); };
