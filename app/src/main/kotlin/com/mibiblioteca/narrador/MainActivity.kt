@@ -592,7 +592,8 @@ class MainActivity : ComponentActivity() {
                         redirects += 1
                         if (redirects > 5) throw SecurityException("Demasiadas redirecciones")
                     }
-                    val stream = if (status >= 400) connection.errorStream else connection.inputStream
+                    val activeConnection = connection ?: throw IllegalStateException("Conexión no disponible")
+                    val stream = if (status >= 400) activeConnection.errorStream else activeConnection.inputStream
                     text = stream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() } ?: ""
                 } catch (e: Exception) {
                     status = 0
