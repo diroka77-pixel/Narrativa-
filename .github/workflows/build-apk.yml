@@ -22,6 +22,7 @@ jobs:
           npx playwright install chromium
           sudo mkdir -p /home/claude/v08 /home/claude/v091 /home/claude/apk
           sudo mkdir -p /tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad
+          sudo chown -R "$USER":"$(id -gn)" /tmp/claude-0
           sudo ln -sfn "$GITHUB_WORKSPACE/app/src/main/assets" /home/claude/v08/assets
           sudo ln -sfn "$GITHUB_WORKSPACE/app/src/main/assets" /home/claude/v091/assets
           sudo ln -sfn "$GITHUB_WORKSPACE" /home/claude/apk/HistoriasVivas
