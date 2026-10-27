@@ -325,6 +325,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <div class="row" style="align-items:center;margin-bottom:.5rem"><button class="small" id="back1">← Volver</button></div>
 <div class="row" id="cmode" style="margin-bottom:.6rem"><button class="small" id="cm-s" data-m="simple">Creación simple</button><button class="small" id="cm-a" data-m="adv">Creación avanzada</button></div>
 <p class="hint" id="cmhint" style="margin-top:0"></p>
+<button class="small" id="impgo" style="margin:0 0 .8rem">📄 Ya tengo material escrito: importarlo</button>
 <div class="big">
 <h2>¿Cuál es tu aventura?</h2>
 <textarea id="idea" placeholder="Por ejemplo: un alquimista caído en desgracia planea un golpe en una ciudad que flota sobre las nubes…"></textarea>
@@ -374,6 +375,19 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <label class="f" for="cp">Pasado que lo marcó</label><input id="cp" type="text">
 <div class="err" id="cderr" hidden></div>
 <button class="go" id="csave" style="margin-top:1.2rem">Guardar protagonista</button>
+</section>
+
+<section id="imp" hidden>
+<div class="row" style="align-items:center;margin-bottom:.5rem"><button class="small" id="impback">← Volver</button></div>
+<div class="big">
+<h2>Importar mi material</h2>
+<p class="hint">Un PDF, un Word (.docx), un texto, o pega aquí lo que tengas: argumento, personajes, lugares, reglas, capítulos… todo o solo una parte. El Cronista lo estudia, te enseña lo que ha entendido y lo consulta apartado por apartado mientras escribe.</p>
+<label class="fb">📂 Elegir archivo (PDF, Word o texto)<input type="file" id="impfile" class="fpick" accept=".pdf,.docx,.txt,.md,application/pdf,text/plain"></label>
+<textarea id="imptxt" style="min-height:10rem;margin-top:.8rem" placeholder="…o pega aquí tu texto"></textarea>
+<p class="hint" id="impinfo" hidden></p>
+<button class="go" id="impstudy" style="margin-top:.6rem">Estudiar mi material</button>
+<div id="impres" hidden></div>
+</div>
 </section>
 
 <section id="making" hidden>
@@ -467,7 +481,7 @@ function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c
 function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
 var BK_DIRTY = false;
 function save() { try { BK_DIRTY = true; localStorage.setItem(KEY, JSON.stringify(LIB)); try { achSoon(); } catch (e2) {} return true; } catch (e) { return false; } }
-function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "create", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
+function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "create", "imp", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
 function setTab(n) { var m = { lib: "tInicio", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
 /* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
 var GTH = {
@@ -838,7 +852,7 @@ function renderLib() {
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
 var VERSION = "0.10.0";
 var NEWS = [
-  ["0.10.0", "Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
+  ["0.10.0", "Voz natural opcional para escuchar tus historias (Ajustes → Lectura → Voz para escuchar): usa tu clave de Gemini, suena más humana y, si falla, vuelve a la voz del teléfono. Importar tu material: en Crear, «Ya tengo material escrito». Carga un PDF, Word, texto o pega tu croquis, fichas o capítulos; El Cronista los estudia, te enseña lo que entendió (personajes, plan, tono) y te pide decidir las contradicciones. Al narrar consulta solo los apartados que hacen falta, en modo fiel o como inspiración. Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
   ["0.9.10", "Botón grande «Leer como un libro» sobre el texto de la historia (antes estaba escondido entre botones pequeños). Al exportar y al guardar cada escena se corrigen la raya de diálogo, las palabras duplicadas y el «¿Qué decides hacer?» final. Nuevas reglas de prosa: menos párrafos que empiezan igual, pausa en las revelaciones."],
   ["0.9.9", "Portadas despejadas en el inicio (el título y el estado van debajo, sin tapar la imagen). El Cronista evita repetir expresiones de las últimas escenas («zumbido sordo» y similares). Guía de Mistral corregida: hay que elegir el plan gratuito Experiment."],
   ["0.9.8", "Respaldos gratuitos: si tu IA principal se agota o se satura, El Cronista pasa solo a Mistral o Groq (opcionales, sin tarjeta). Las tareas cortas automáticas se reparten para gastar menos de tu cupo. Copia de seguridad automática con aviso para activarla y estado visible en el menú. Lectura en páginas, como un libro. Modo claro con fondos. Pantallas grandes y horizontal, y avisos para lectores de pantalla. Textos con la voz de El Cronista."],
@@ -1004,6 +1018,273 @@ $("make").onclick = async function () {
   }
 };
 
+/* ---------- v0.10.0: leer el material del autor (PDF, Word, texto) ---------- */
+function impHexU(h) { if (h.length <= 2) return String.fromCharCode(parseInt(h, 16)); var s = ""; for (var i = 0; i + 3 < h.length + 1; i += 4) s += String.fromCharCode(parseInt(h.substr(i, 4), 16)); return s; }
+function impCmap(t) {
+  var map = {}, two = false, m, q;
+  var cs = /begincodespacerange\s*<([0-9A-Fa-f]+)>/.exec(t); if (cs && cs[1].length >= 4) two = true;
+  var bf = /beginbfchar([\s\S]*?)endbfchar/g;
+  while ((m = bf.exec(t))) { var pr = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>/g; while ((q = pr.exec(m[1]))) { if (q[1].length > 2) two = true; map[parseInt(q[1], 16)] = impHexU(q[2]); } }
+  var br = /beginbfrange([\s\S]*?)endbfrange/g;
+  while ((m = br.exec(t))) {
+    var rr = /<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*(<[0-9A-Fa-f]+>|\[[^\]]*\])/g;
+    while ((q = rr.exec(m[1]))) {
+      var a = parseInt(q[1], 16), b = parseInt(q[2], 16); if (q[1].length > 2) two = true;
+      if (q[3].charAt(0) === "[") { var it = q[3].match(/<[0-9A-Fa-f]+>/g) || []; for (var k = 0; k < it.length && a + k <= b; k++) map[a + k] = impHexU(it[k].slice(1, -1)); }
+      else { var base = impHexU(q[3].slice(1, -1)), cp = base.charCodeAt(base.length - 1), pre = base.slice(0, -1); for (var j = a; j <= b && j - a < 4096; j++) map[j] = pre + String.fromCharCode(cp + j - a); }
+    }
+  }
+  return { map: map, two: two };
+}
+function impDec(raw, f) {
+  var o = "", i;
+  if (f && f.cm && f.cm.two) { for (i = 0; i + 1 < raw.length; i += 2) { var c2 = raw.charCodeAt(i) * 256 + raw.charCodeAt(i + 1), v = f.cm.map[c2]; o += v == null ? "" : v; } return o; }
+  for (i = 0; i < raw.length; i++) { var c = raw.charCodeAt(i), w = f && f.cm ? f.cm.map[c] : null; o += w != null ? w : String.fromCharCode(c); }
+  return o;
+}
+function impStream(c, fonts) {
+  var i = 0, n = c.length, st = [], font = null, out = "", lastY = null, curY = 0, ws = /[\s\0]/, dl = "()<>[]{}/%";
+  function nl() { if (out && out.charAt(out.length - 1) !== "\n") out += "\n"; }
+  function mv() { if (lastY != null && Math.abs(curY - lastY) > 1) nl(); lastY = curY; }
+  while (i < n) {
+    var ch = c.charAt(i);
+    if (ws.test(ch)) { i++; continue; }
+    if (ch === "%") { while (i < n && c.charAt(i) !== "\n" && c.charAt(i) !== "\r") i++; continue; }
+    if (ch === "(") {
+      var d = 1, s = ""; i++;
+      while (i < n && d > 0) {
+        var x = c.charAt(i);
+        if (x === "\\") { var y = c.charAt(i + 1); i += 2; if (y === "n") s += "\n"; else if (y === "r") s += "\r"; else if (y === "t") s += "\t"; else if (y === "b") s += "\b"; else if (y === "f") s += "\f"; else if (/[0-7]/.test(y)) { var oc = y; while (oc.length < 3 && /[0-7]/.test(c.charAt(i))) { oc += c.charAt(i); i++; } s += String.fromCharCode(parseInt(oc, 8) & 255); } else if (y === "\r" || y === "\n") { /* línea continuada */ } else s += y; continue; }
+        if (x === "(") d++; else if (x === ")") { d--; if (d === 0) { i++; break; } }
+        s += x; i++;
+      }
+      st.push({ s: s }); continue;
+    }
+    if (ch === "<" && c.charAt(i + 1) !== "<") { var e = c.indexOf(">", i); if (e < 0) e = n; var h = c.slice(i + 1, e).replace(/\s+/g, ""); if (h.length % 2) h += "0"; var bs = ""; for (var k = 0; k < h.length; k += 2) bs += String.fromCharCode(parseInt(h.substr(k, 2), 16)); st.push({ s: bs }); i = e + 1; continue; }
+    if (ch === "<" || ch === ">") { i += 2; continue; }
+    if (ch === "[") { st.push("["); i++; continue; }
+    if (ch === "]") { var arr = []; while (st.length) { var t = st.pop(); if (t === "[") break; arr.unshift(t); } st.push({ a: arr }); i++; continue; }
+    if (ch === "/") { var j = i + 1; while (j < n && !ws.test(c.charAt(j)) && dl.indexOf(c.charAt(j)) < 0) j++; st.push({ nm: c.slice(i + 1, j) }); i = j; continue; }
+    var j2 = i; while (j2 < n && !ws.test(c.charAt(j2)) && dl.indexOf(c.charAt(j2)) < 0) j2++; if (j2 === i) { i++; continue; }
+    var tk = c.slice(i, j2); i = j2;
+    if (/^[+-]?(\d+\.?\d*|\.\d+)$/.test(tk)) { st.push(parseFloat(tk)); continue; }
+    if (tk === "BI") { var ei = c.indexOf("EI", i); i = ei < 0 ? n : ei + 2; st = []; continue; }
+    if (tk === "Tf") { var nmv = st[st.length - 2]; font = nmv && nmv.nm ? fonts[nmv.nm] : null; }
+    else if (tk === "Tj") { mv(); var a1 = st[st.length - 1]; if (a1 && a1.s != null) out += impDec(a1.s, font); }
+    else if (tk === "'" || tk === "\"") { nl(); lastY = curY; var a2 = st[st.length - 1]; if (a2 && a2.s != null) out += impDec(a2.s, font); }
+    else if (tk === "TJ") { mv(); var a3 = st[st.length - 1]; if (a3 && a3.a) a3.a.forEach(function (z) { if (z && z.s != null) out += impDec(z.s, font); else if (typeof z === "number" && z < -220) out += " "; }); }
+    else if (tk === "Td" || tk === "TD") { var ty = st[st.length - 1]; if (typeof ty === "number") curY += ty; }
+    else if (tk === "Tm") { var yy = st[st.length - 1]; if (typeof yy === "number") curY = yy; }
+    else if (tk === "T*") { nl(); lastY = curY; }
+    st = [];
+  }
+  return out;
+}
+async function impPdf(buf) {
+  var L = window.PDFLib; if (!L) throw new Error("sin pdf-lib");
+  var doc = await L.PDFDocument.load(buf, { ignoreEncryption: true, updateMetadata: false }), pages = doc.getPages(), all = [];
+  function bytes(o) { try { if (o.getUnencodedContents) return o.getUnencodedContents(); return L.decodePDFRawStream(o).decode(); } catch (e) { return null; } }
+  for (var p = 0; p < pages.length && p < 120; p++) {
+    var node = pages[p].node, fonts = {};
+    try {
+      var res = node.Resources(), fd = res && res.lookupMaybe(L.PDFName.of("Font"), L.PDFDict);
+      if (fd) fd.keys().forEach(function (k) {
+        var f = fd.lookupMaybe(k, L.PDFDict), tu = f && f.lookupMaybe(L.PDFName.of("ToUnicode"), L.PDFStream), nm = k.decodeText ? k.decodeText() : String(k).replace(/^\//, "");
+        var b = tu && bytes(tu); fonts[nm] = { cm: b ? impCmap(impBytesStr(b)) : null };
+      });
+    } catch (e) {}
+    var ct = node.Contents(), parts = [];
+    if (ct instanceof L.PDFArray) { for (var q = 0; q < ct.size(); q++) { var sObj = ct.lookup(q, L.PDFStream), bb = sObj && bytes(sObj); if (bb) parts.push(impBytesStr(bb)); } }
+    else if (ct) { var b1 = bytes(ct); if (b1) parts.push(impBytesStr(b1)); }
+    all.push(impStream(parts.join("\n"), fonts));
+  }
+  return all.join("\n\n");
+}
+function impBytesStr(u8) { var s = ""; for (var i = 0; i < u8.length; i += 8192) s += String.fromCharCode.apply(null, u8.subarray(i, i + 8192)); return s; }
+async function impDocx(buf) {
+  if (!window.JSZip) throw new Error("sin jszip");
+  var z = await JSZip.loadAsync(buf), f = z.file("word/document.xml"); if (!f) throw new Error("no es un Word");
+  var x = await f.async("string");
+  x = x.replace(/<w:tab\/>/g, "\t").replace(/<w:br[^>]*\/>/g, "\n").replace(/<\/w:p>/g, "\n").replace(/<\/w:tc>/g, " | ").replace(/<[^>]+>/g, "");
+  return x.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, "\"").replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+}
+function impClean(t) {
+  return String(t || "").replace(/\r/g, "").replace(/ /g, " ").replace(/[​‍﻿]/g, "").replace(/[●•▪◦]\s*/g, "- ").replace(/[ \t]+/g, " ").replace(/ *\n */g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+}
+async function impFile(file) {
+  var name = (file.name || "").toLowerCase(), buf = await file.arrayBuffer(), t;
+  if (/\.pdf$/.test(name) || file.type === "application/pdf") t = await impPdf(buf);
+  else if (/\.docx$/.test(name)) t = await impDocx(buf);
+  else t = new TextDecoder("utf-8").decode(new Uint8Array(buf));
+  return impClean(t);
+}
+
+/* ---------- v0.10.0: importar el material del autor ---------- */
+var IMPMAX = 60000, IMP = { text: "", mode: "fiel", R: null };
+function impSections(t) {
+  var lines = t.split("\n"), secs = [], h = "Inicio", buf = [];
+  function flush() {
+    var x = buf.join("\n").trim(); buf = [];
+    while (x.length > 40) { var k = x.length > 1300 ? x.lastIndexOf("\n", 1300) : x.length; if (k < 600) k = Math.min(x.length, 1300); secs.push({ h: h, t: x.slice(0, k).trim() }); x = x.slice(k).trim(); if (x.length && x.length <= 40) { secs[secs.length - 1].t += "\n" + x; x = ""; } }
+  }
+  lines.forEach(function (l) {
+    var tl = l.trim(), isH = tl && tl.length <= 90 && !/[.:;,]$/.test(tl) && (/^(PARTE|Parte|ACTO|Acto|Capítulo|CAPÍTULO|Escena|ESCENA|[IVX]+\.|\d+[.)])/.test(tl) || (tl === tl.toUpperCase() && /[A-ZÁÉÍÓÚ]{4}/.test(tl)));
+    if (isH && buf.join("\n").length > 250) { flush(); h = tl.slice(0, 60); } else if (isH && !buf.length) h = tl.slice(0, 60);
+    buf.push(l);
+  });
+  flush(); var tot = 0; return secs.filter(function (s) { tot += s.t.length; return tot <= 52000; }).slice(0, 70);
+}
+function impChunks(t) {
+  var out = [], max = 11000;
+  while (t.length > max) { var k = t.lastIndexOf("\n\n", max); if (k < max * 0.5) k = t.lastIndexOf("\n", max); if (k < max * 0.5) k = max; out.push(t.slice(0, k)); t = t.slice(k); }
+  if (t.trim()) out.push(t); return out;
+}
+function impPrompt(txt, i, n) {
+  return "Eres un editor de novelas. El autor te da su material de trabajo (croquis, fichas de personajes, notas, capítulos…)" + (n > 1 ? "; esto es la parte " + i + " de " + n : "") + ". Extrae SOLO lo que aparece escrito; no inventes ni rellenes huecos. Todos los personajes son adultos." +
+    "\nResponde SOLO con JSON: {\"titulo\":\"el título que figure en el material o uno propuesto, máx 8 palabras\",\"generos\":[\"de esta lista: " + GENRES.join(", ") + "\"],\"sinopsis\":\"2 o 3 frases con el conflicto central y los protagonistas por su nombre\",\"tono\":\"estilo y tono que pide el autor, 1 frase\",\"reglas\":[\"reglas del mundo o cosas que NUNCA deben pasar, solo si el autor las dice (máx 5)\"],\"personajes\":[{\"nombre\":\"\",\"protagonista\":true,\"desc\":\"ficha en un solo texto: edad, aspecto, carácter, oficio, relaciones, secretos y conflicto tal como aparecen (máx 380 caracteres)\"}],\"lugares\":[{\"nombre\":\"\",\"desc\":\"máx 200 caracteres\"}],\"otros\":[{\"tipo\":\"facción|objeto|evento|tema\",\"nombre\":\"\",\"desc\":\"máx 200 caracteres\"}],\"plan\":[\"hitos de la trama en orden, una frase cada uno (máx 12)\"],\"contradicciones\":[\"cada dato que el material cuenta de dos maneras incompatibles: las dos versiones y dónde aparecen (máx 6)\"]}" +
+    "\n\nMATERIAL:\n" + txt;
+}
+function impKey(n) { return unacc(String(n || "").toLowerCase()).replace(/[^a-zñ ]/g, "").trim().split(" ")[0]; }
+function impMerge(list) {
+  var R = { titulo: "", generos: [], sinopsis: "", tono: "", reglas: [], personajes: [], lugares: [], otros: [], plan: [], contradicciones: [] };
+  function uni(dst, src, key, n) { arr(src).forEach(function (x) { var k = key(x); if (k && !dst.some(function (y) { return key(y) === k; }) && dst.length < n) dst.push(x); }); }
+  list.forEach(function (d) {
+    if (!d || typeof d !== "object") return;
+    if (!R.titulo) R.titulo = str(d.titulo, 80); if (!R.sinopsis) R.sinopsis = str(d.sinopsis, 600); if (!R.tono) R.tono = str(d.tono, 240);
+    arr(d.generos).forEach(function (g) { if (GENRES.indexOf(g) >= 0 && R.generos.indexOf(g) < 0 && R.generos.length < 3) R.generos.push(g); });
+    uni(R.reglas, arr(d.reglas).map(function (x) { return str(x, 200); }), function (x) { return x.toLowerCase().slice(0, 40); }, 6);
+    arr(d.personajes).forEach(function (c) {
+      if (!c || !c.nombre) return; var k = impKey(c.nombre), f = R.personajes.filter(function (y) { return impKey(y.nombre) === k; })[0], ds = str(c.desc, 420);
+      if (f) { if (ds && f.desc.indexOf(ds.slice(0, 30)) < 0) f.desc = (f.desc + " " + ds).slice(0, 460); f.protagonista = f.protagonista || !!c.protagonista; }
+      else if (R.personajes.length < 20) R.personajes.push({ nombre: str(c.nombre, 40), protagonista: !!c.protagonista, desc: ds });
+    });
+    uni(R.lugares, arr(d.lugares).filter(function (x) { return x && x.nombre; }).map(function (x) { return { nombre: str(x.nombre, 50), desc: str(x.desc, 220) }; }), function (x) { return impKey(x.nombre); }, 10);
+    uni(R.otros, arr(d.otros).filter(function (x) { return x && x.nombre; }).map(function (x) { return { tipo: str(x.tipo, 14) || "otro", nombre: str(x.nombre, 50), desc: str(x.desc, 220) }; }), function (x) { return impKey(x.nombre); }, 8);
+    var pl = arr(d.plan).map(function (x) { return str(x, 160); }).filter(Boolean); if (pl.length > R.plan.length) R.plan = pl.slice(0, 14);
+    uni(R.contradicciones, arr(d.contradicciones).map(function (x) { return str(x, 400); }), function (x) { return x.toLowerCase().slice(0, 50); }, 8);
+  });
+  return R;
+}
+function impInfo(t, bad) { var p = $("impinfo"); p.textContent = t || ""; p.className = bad ? "err" : "hint"; p.hidden = !t; }
+$("impgo").onclick = function () { $("impres").hidden = true; impInfo(""); $("impstudy").disabled = false; view("imp"); };
+$("impback").onclick = function () { view("create"); };
+function impSet(t) {
+  var cut = t.length > IMPMAX; if (cut) t = t.slice(0, IMPMAX); $("imptxt").value = t;
+  impInfo((cut ? "He leído solo los primeros " + IMPMAX.toLocaleString("es") + " caracteres. " : "Leído: ") + t.length.toLocaleString("es") + " caracteres (unas " + Math.round(t.split(/\s+/).length).toLocaleString("es") + " palabras)." + (cut ? " Si hay más, impórtalo en otra historia o resume lo secundario." : ""));
+}
+$("impfile").onchange = async function () {
+  var f = this.files && this.files[0]; this.value = ""; if (!f) return; impInfo("Leyendo el archivo…");
+  try {
+    var t = await impFile(f), letters = (t.match(/[A-Za-zÁÉÍÓÚáéíóúñÑ]/g) || []).length;
+    if (t.length < 80 || letters < t.length * 0.4) { impInfo("No encuentro texto legible en este archivo (si es un PDF escaneado o de fotos, no puedo leerlo). Prueba con otro, o copia el texto y pégalo aquí.", true); return; }
+    impSet(t);
+  } catch (e) { impInfo("No pude leer este archivo (" + ((e && e.message) || "error") + "). Prueba a pegar el texto aquí.", true); }
+};
+$("imptxt").oninput = function () { var t = $("imptxt").value; if (t.length > IMPMAX) t = t.slice(0, IMPMAX); impInfo(t.trim() ? t.length.toLocaleString("es") + " caracteres." : ""); };
+$("impstudy").onclick = async function () {
+  if (!sample || busy) return; var t = impClean($("imptxt").value).slice(0, IMPMAX);
+  if (t.length < 200) { impInfo("Escribe o carga algo más de material (al menos unas líneas).", true); return; }
+  var ch = impChunks(t), outs = [], bt = $("impstudy"); busy = true; bt.disabled = true; $("impres").hidden = true;
+  try {
+    for (var i = 0; i < ch.length; i++) { impInfo("El Cronista estudia tu material… (" + (i + 1) + " de " + ch.length + ")"); outs.push(parse((await ask(impPrompt(ch[i], i + 1, ch.length), "create")).text)); }
+    var R = impMerge(outs); if (!R.sinopsis && !R.personajes.length) throw new Error("vacío");
+    IMP.text = t; IMP.R = R; impInfo(""); impReview(R);
+  } catch (e) { impInfo(e && e.code === "rate_limited" ? "Hay demasiadas peticiones seguidas. Espera un minuto y vuelve a pulsar." : "No pude estudiar el material. Reintenta; si el texto es muy largo, prueba con una parte.", true); }
+  busy = false; bt.disabled = false;
+};
+function impReview(R) {
+  var b = $("impres"); b.innerHTML = ""; b.hidden = false;
+  function lab(t) { var p = el("p", "hint", t); p.style.margin = "1rem 0 .3rem"; b.appendChild(p); return p; }
+  var h = el("h3", null, "Esto es lo que he entendido"); h.style.margin = ".6rem 0 0"; b.appendChild(h);
+  b.appendChild(el("p", "hint", "Revísalo y corrige lo que quieras. Nada se inventa: solo sale de tu material."));
+  lab("Título"); var ti = el("input"); ti.type = "text"; ti.value = R.titulo || "Mi historia"; ti.maxLength = 80; b.appendChild(ti);
+  lab("Géneros" + (R.generos.length ? ": " + R.generos.join(" + ") : " (los elegirá El Cronista)"));
+  lab("Sinopsis"); var sy = el("textarea"); sy.value = R.sinopsis; sy.style.minHeight = "5rem"; b.appendChild(sy);
+  lab("Personajes (marca los protagonistas, la historia se centrará en ellos)");
+  var cl = []; R.personajes.forEach(function (c) {
+    var w = el("div", "lore"), l = el("label", "chk"), cb = el("input"); cb.type = "checkbox"; cb.checked = !!c.protagonista; l.appendChild(cb); l.appendChild(document.createTextNode(" " + c.nombre + " · protagonista")); w.appendChild(l);
+    var ta = el("textarea"); ta.value = c.desc; ta.style.minHeight = "4rem"; ta.maxLength = 480; ta.setAttribute("aria-label", "Ficha de " + c.nombre); w.appendChild(ta); b.appendChild(w); cl.push({ c: c, cb: cb, ta: ta });
+  });
+  if (!R.personajes.length) b.appendChild(el("p", "hint", "No he encontrado personajes; El Cronista los irá creando."));
+  var extra = R.lugares.length + R.otros.length;
+  if (extra) { var d = el("details", "pl"); d.appendChild(el("summary", null, "Lugares y otros elementos (" + extra + ")")); R.lugares.concat(R.otros).forEach(function (x) { var q = el("div", "lore"); q.appendChild(el("b", null, x.nombre)); q.appendChild(document.createTextNode(" · " + x.desc)); d.appendChild(q); }); b.appendChild(d); }
+  lab("Plan de la novela (un hito por línea; El Cronista irá hacia allí sin precipitarse)"); var pt = el("textarea"); pt.value = R.plan.join("\n"); pt.style.minHeight = "7rem"; b.appendChild(pt);
+  lab("Tono y reglas (lo que siempre se cumple y lo que nunca debe pasar)"); var bi = el("textarea"); bi.value = ((R.tono ? "Tono: " + R.tono + "\n" : "") + R.reglas.join("\n")).slice(0, 1200); bi.maxLength = 1200; bi.style.minHeight = "5rem"; b.appendChild(bi);
+  var cd = [];
+  if (R.contradicciones.length) {
+    lab("Tu material se contradice en esto. Dime qué es verdad en tu historia (si lo dejas en blanco, no lo cerraré yo: lo dejaré abierto)");
+    R.contradicciones.forEach(function (x) { var w = el("div", "lore"); w.appendChild(document.createTextNode(x)); var ta = el("textarea"); ta.style.minHeight = "3rem"; ta.maxLength = 300; ta.placeholder = "Ej.: El secreto es de María, no de Ramiro."; ta.setAttribute("aria-label", "Decisión sobre: " + x.slice(0, 60)); w.appendChild(ta); b.appendChild(w); cd.push({ q: x, ta: ta }); });
+  }
+  lab("¿Cómo usar tu material?");
+  var mr = el("div", "row"), m1 = el("button", "small on", "Seguirlo fielmente"), m2 = el("button", "small", "Usarlo como inspiración");
+  function setM(m) { IMP.mode = m; m1.classList.toggle("on", m === "fiel"); m2.classList.toggle("on", m === "libre"); mh.textContent = m === "fiel" ? "Respeta tus hechos, nombres y el orden de tu trama. Lo que falta, lo improvisa." : "Lo toma como punto de partida y puede cambiarlo y sorprenderte."; }
+  m1.onclick = function () { setM("fiel"); }; m2.onclick = function () { setM("libre"); }; mr.appendChild(m1); mr.appendChild(m2); b.appendChild(mr);
+  var mh = el("p", "hint"); b.appendChild(mh); setM(IMP.mode);
+  var go = el("button", "go", "Crear mi historia"); go.style.marginTop = ".8rem"; b.appendChild(go);
+  var er = el("p", "err"); er.hidden = true; b.appendChild(er);
+  go.onclick = function () {
+    var s = impBuild(R, { ti: ti.value, sy: sy.value, cl: cl, pt: pt.value, bi: bi.value, cd: cd });
+    if (!save()) { LIB.pop(); er.textContent = "No cabe en la memoria del móvil. Prueba con menos material."; er.hidden = false; return; }
+    showCreated(s);
+  };
+  b.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function impBuild(R, f) {
+  var D = JSON.parse(JSON.stringify(DEF)), lore = [], prot = [], genres = R.generos.length ? R.generos.slice() : [GENRES[0]];
+  function short(t, n) { t = String(t || "").trim(); if (t.length <= n) return t; var k = t.lastIndexOf(". ", n); return t.slice(0, k > n * 0.5 ? k + 1 : n).trim(); }
+  var fich = [];
+  f.cl.forEach(function (x) {
+    var nm = x.c.nombre, ds = x.ta.value.trim(); if (!nm) return;
+    if (x.cb.checked) prot.push({ name: nm, note: ds });
+    if (lore.length < 30) lore.push({ tipo: x.cb.checked ? "protagonista" : "personaje", nombre: nm, desc: short(ds, 170) });
+    if (ds) fich.push({ h: "Personaje: " + nm, t: nm + ": " + ds });
+  });
+  R.lugares.slice(0, 8).forEach(function (x) { if (lore.length < 30) lore.push({ tipo: "lugar", nombre: x.nombre, desc: short(x.desc, 170) }); fich.push({ h: "Lugar: " + x.nombre, t: x.nombre + ": " + x.desc }); });
+  R.otros.slice(0, 6).forEach(function (x) { if (lore.length < 30) lore.push({ tipo: x.tipo, nombre: x.nombre, desc: short(x.desc, 170) }); fich.push({ h: x.tipo + ": " + x.nombre, t: x.nombre + ": " + x.desc }); });
+  var pts = f.pt.split("\n").map(function (x) { return x.trim().slice(0, 160); }).filter(Boolean).slice(0, 20);
+  var rules = [], open = [];
+  f.bi.split("\n").forEach(function (x) { x = x.trim(); if (x && !/^tono:/i.test(x)) rules.push(x.slice(0, 200)); });
+  f.cd.forEach(function (x) { var v = x.ta.value.trim(); if (v) rules.push("DECISIÓN DEL AUTOR: " + v.slice(0, 300)); else open.push(x.q.slice(0, 300)); });
+  var tono = (f.bi.split("\n").filter(function (x) { return /^tono:/i.test(x.trim()); })[0] || "").replace(/^tono:\s*/i, "").trim();
+  var s = {
+    id: String(Date.now()), title: f.ti.trim().slice(0, 80) || "Mi historia", syn: f.sy.trim() || R.sinopsis, genre: genres[0], genres: genres, director: D.dir, pov: D.pov, aut: D.aut, review: D.rev, len: D.len, sty: D.sty,
+    intens: D.lv, lore: lore, premise: f.sy.trim() || R.sinopsis, prot: prot, ten: D.ten, at: Date.now(), bible: tono ? ("Tono: " + tono).slice(0, 1200) : undefined,
+    rules: rules.slice(0, 12), plan: pts.length >= 3 ? { on: true, pts: pts, total: Math.max(40, pts.length * 10) } : undefined,
+    src: { mode: IMP.mode, secs: fich.concat(impSections(IMP.text)).slice(0, 90), open: open.length ? open : undefined },
+    memory: "", last: "", turn: 0, state: {}, scenes: [], opts: [], fin: false, prev: null
+  };
+  if (!s.bible) delete s.bible; if (!s.plan) delete s.plan; if (!s.rules.length) delete s.rules; if (!s.src.open) delete s.src.open;
+  LIB.push(s); return s;
+}
+var IMP_STOP = "los las que por con una del sus muy mas sin ser fue era son han hay ese esa eso nos les mis tus sea hoy ahi alli asi aun vez dos tres uno ver voy van vez para pero como esta este esto esas esos sobre entre desde hasta cuando donde porque tambien todo toda todos todas cada otro otra otros otras muy mas menos sin con una unos unas del los las que por sus suyo suya sino ante bajo contra segun tras durante tiene tienen hace hacer siendo estan estar esta fue era son han hay ser".split(" ");
+function impToks(t) { var m = unacc(String(t || "").toLowerCase()).match(/[a-zñ]{3,}/g) || [], o = {}; m.forEach(function (w) { if (IMP_STOP.indexOf(w) < 0) o[w] = 1; }); return o; }
+function srcCtx(s, action, compact) {
+  var S = s.src; if (!S || !S.secs || !S.secs.length) return "";
+  var sc = s.scenes || [], last = sc.length ? String((sc[sc.length - 1] || {}).t || "").slice(-800) : "", pp = planPoint(s);
+  var q = impToks(String(action || "") + " " + last + " " + String(action || "") + " " + (pp ? pp.now : ""));
+  var rk = S.secs.map(function (x, i) {
+    var kt = impToks(x.t), kh = impToks(x.h), p = 0; Object.keys(q).forEach(function (w) { if (kt[w]) p += 1; if (kh[w]) p += 5; });
+    return { i: i, p: p / (1 + x.t.length / 1500) };
+  }).filter(function (x) { return x.p >= 2; }).sort(function (a, b) { return b.p - a.p; }).slice(0, compact ? 1 : 3);
+  var o = "";
+  if (rk.length) {
+    var lim = compact ? [650] : [1100, 800, 600];
+    o += "\nMATERIAL DEL AUTOR RELEVANTE PARA ESTA ESCENA (" + (S.mode === "libre" ? "inspiración del autor: úsala como guía, puedes variarla" : "fuente fija del autor: respeta sus hechos, nombres, rasgos y el orden de su trama; no la cites ni la resumas") + "):\n" +
+      rk.map(function (x, j) { var z = S.secs[x.i]; return "[" + z.h + "] " + z.t.slice(0, lim[j]); }).join("\n---\n");
+  }
+  if (S.open && S.open.length) o += "\nPUNTOS SIN DECIDIR (el material se contradice; no los cierres ni elijas versión: mantén la ambigüedad hasta que el jugador decida): " + S.open.slice(0, compact ? 2 : 6).join(" | ");
+  return o;
+}
+function impSettings(b) {
+  var S = cur.src; if (!S) return;
+  b.appendChild(el("p", "hint", "Material del autor: " + S.secs.length + " apartados importados. El Cronista consulta los que hacen falta en cada escena."));
+  var r = el("div", "row"), m1 = el("button", "small", "Seguirlo fielmente"), m2 = el("button", "small", "Usarlo como inspiración");
+  function paint() { m1.classList.toggle("on", S.mode !== "libre"); m2.classList.toggle("on", S.mode === "libre"); }
+  m1.onclick = function () { S.mode = "fiel"; save(); paint(); }; m2.onclick = function () { S.mode = "libre"; save(); paint(); }; paint(); r.appendChild(m1); r.appendChild(m2);
+  var q = el("button", "small", "Quitar el material"); q.onclick = function () { if (confirm("¿Quitar el material importado de esta historia? Las cartas de lore y el plan se quedan.")) { delete cur.src; save(); renderSet(); } }; r.appendChild(q); b.appendChild(r);
+  if (S.open && S.open.length) { b.appendChild(el("p", "hint", "Contradicciones sin decidir:")); S.open.forEach(function (x, i) { var d = el("div", "lore"); d.appendChild(document.createTextNode(x + " ")); var ta = el("textarea"); ta.style.minHeight = "3rem"; ta.placeholder = "¿Qué es verdad?"; var ok = el("button", "small", "Fijar esta decisión"); ok.onclick = function () { var v = ta.value.trim(); if (!v) return; cur.rules = (cur.rules || []).concat(["DECISIÓN DEL AUTOR: " + v.slice(0, 300)]).slice(-14); S.open.splice(i, 1); if (!S.open.length) delete S.open; save(); renderSet(); }; d.appendChild(ta); d.appendChild(ok); b.appendChild(d); }); }
+}
+
 function showCreated(s) {
   cur = s; view("created");
   $("ccover").style.background = coverBg(s); $("ccover").classList.toggle("hasimg", !!s.cover);
@@ -1103,6 +1384,7 @@ function renderSet() {
     bg.disabled = false; bg.textContent = "Que El Cronista la redacte";
   };
   b.appendChild(bg);
+  impSettings(b);
   b.appendChild(el("p", "hint", "Plan de la novela (opcional): una lista de hitos que El Cronista seguirá sin cerrar la historia antes de tiempo."));
   var pl = cur.plan = cur.plan || { on: false, pts: [], total: 120 };
   var l5 = el("label", "chk"), i5 = el("input"); i5.type = "checkbox"; i5.checked = !!pl.on; i5.onchange = function () { pl.on = i5.checked; save(); };
@@ -1605,7 +1887,7 @@ function build(s, action, note, sp, compact) {
     "\nLONGITUD: párrafos de longitud natural, " + (compact ? "de 250 a 350 palabras en total (sé breve)" : "de " + LEN[len] + " palabras en total") + "." +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s).slice(0, 1800) : loreTxt(s)) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + srcCtx(s, action, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -2023,7 +2305,7 @@ var FIELDS = [["cn", "name"], ["ca", "age"], ["ch", "hair"], ["ce", "eyes"], ["c
 function loadChars() { try { CHARS = JSON.parse(localStorage.getItem("narrador:chars:v1") || "[]"); } catch (e) { CHARS = []; } }
 function saveChars() { try { localStorage.setItem("narrador:chars:v1", JSON.stringify(CHARS)); } catch (e) {} }
 function charTxt(c) {
-  var f = [];
+  var f = []; if (c.note) f.push(String(c.note).replace(/[.\s]+$/, ""));
   if (c.age) f.push(c.age + " años");
   var ph = [c.height && "altura " + c.height.toLowerCase(), c.build && "complexión " + c.build.toLowerCase(), c.hair && "pelo " + c.hair, c.eyes && "ojos " + c.eyes, c.marks].filter(Boolean);
   if (ph.length) f.push("físico: " + ph.join(", "));
@@ -2618,6 +2900,21 @@ function renderRead() {
     b.appendChild(el("p", "hint", "Velocidad de la voz"));
     optRow(b, [[0.8, "Lenta"], [1, "Normal"], [1.25, "Rápida"]], function () { return RD.rate; }, function (v) { RD.rate = v; });
   }
+  if (window.hvTTS) {
+    b.appendChild(el("p", "hint", "Voz para escuchar"));
+    optRow(b, [["sys", "Del teléfono"], ["gem", "Natural (Gemini)"]], function () { return RD.voice || "sys"; }, function (v) { RD.voice = v; });
+    b.appendChild(el("p", "hint", "La voz natural suena mucho más humana. Usa tu clave de Gemini (gratis, con un límite diario), necesita internet y solo suena con la app abierta. Si falla, vuelve sola a la del teléfono."));
+    optRow(b, [["Kore", "Kore (firme)"], ["Charon", "Charon (informativa)"], ["Aoede", "Aoede (ligera)"], ["Algieba", "Algieba (suave)"], ["Gacrux", "Gacrux (madura)"], ["Puck", "Puck (alegre)"]], function () { return RD.gv || "Kore"; }, function (v) { RD.gv = v; });
+    var tb = el("button", "small", "Probar la voz natural"); tb.style.marginTop = ".4rem"; var tm = el("p", "hint"); tm.setAttribute("role", "status");
+    tb.onclick = async function () {
+      if (!window.hvTTSReady()) { tm.textContent = "Primero conecta tu clave de Gemini en «Conectar mi IA»."; return; }
+      tb.disabled = true; tm.textContent = "Preparando la voz…";
+      try { stopTalk(); GA.ctx = GA.ctx || new (window.AudioContext || window.webkitAudioContext)(); GA.ctx.resume(); var r = await window.hvTTS("Las luces de la ciudad se apagaron una a una, y en el silencio, alguien empezó a hablar.", RD.gv || "Kore", gemStyle()); tm.textContent = ""; await gemPlay(await gemBuf(r)); }
+      catch (e) { tm.textContent = (e && e.message) || "No pude generar la voz."; }
+      tb.disabled = false;
+    };
+    b.appendChild(tb); b.appendChild(tm);
+  }
   }
 // v0.9: el servicio nativo continúa leyendo con la pantalla apagada; el lector web queda como respaldo.
 var TS = { ch: [], i: 0, on: false, paused: false, ps: [], scene: -1, native: false, poll: 0 };
@@ -2630,7 +2927,7 @@ function hilite(k) {
   Array.prototype.forEach.call($("book").querySelectorAll(".speaking"), function (x) { x.classList.remove("speaking"); });
   var e = TS.ps[k]; if (e) { e.classList.add("speaking"); if (e.scrollIntoView) e.scrollIntoView({ behavior: "smooth", block: "center" }); }
 }
-function stopTalk() { if (TS.poll) { clearInterval(TS.poll); TS.poll = 0; } if (TS.native && window.hvBackgroundSpeech) window.hvBackgroundSpeech.action("stop"); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} TS.on = false; TS.paused = false; TS.native = false; hilite(-1); setListen(); }
+function stopTalk() { GA.gen++; try { if (GA.src) GA.src.stop(); } catch (e) {} TS.gem = false; try { if (GA.ctx && GA.ctx.state === "suspended") GA.ctx.resume(); } catch (e) {} if (TS.poll) { clearInterval(TS.poll); TS.poll = 0; } if (TS.native && window.hvBackgroundSpeech) window.hvBackgroundSpeech.action("stop"); try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {} TS.on = false; TS.paused = false; TS.native = false; hilite(-1); setListen(); }
 function sentences(t) {
   var a = String(t).match(/[^.!?…]+[.!?…]*["»”)]*\s*/g) || [t], out = [], cur = "";
   a.forEach(function (x) { if ((cur + x).length > 220 && cur) { out.push(cur); cur = x; } else cur += x; });
@@ -2645,6 +2942,43 @@ function speakNext() {
   u.onend = u.onerror = function () { if (!TS.on || TS.paused || TS.i !== idx) return; TS.i++; speakNext(); };
   hilite(c.p); speechSynthesis.speak(u);
 }
+var GA = { ctx: null, src: null, gen: 0 };
+function gemStyle() { return "Lee en español de España, con voz de narrador de audiolibro, " + (RD.rate < 1 ? "muy pausada" : RD.rate > 1 ? "algo más ágil" : "pausada y expresiva"); }
+function gemBuf(r) {
+  var ctx = GA.ctx, bin = atob(r.data), n = bin.length >> 1, buf = ctx.createBuffer(1, n, r.rate || 24000), ch = buf.getChannelData(0);
+  for (var i = 0; i < n; i++) { var v = bin.charCodeAt(2 * i) | (bin.charCodeAt(2 * i + 1) << 8); if (v >= 32768) v -= 65536; ch[i] = v / 32768; }
+  return buf;
+}
+function gemPlay(buf, gen) {
+  return new Promise(function (res) { var s = GA.ctx.createBufferSource(); s.buffer = buf; s.connect(GA.ctx.destination); s.onended = function () { res(); }; GA.src = s; s.start(); });
+}
+function gemChunks() {
+  var q = [], cur = null;
+  TS.ch.forEach(function (c, k) { if (cur && cur.t.length + c.t.length < 650 && TS.ch[cur.from].p === c.p) { cur.t += " " + c.t; } else { cur = { t: c.t, from: k }; q.push(cur); } });
+  return q;
+}
+async function gemRun(gen) {
+  var q = TS.gq, pre = null;
+  function get(i) { var p = window.hvTTS(q[i].t, RD.gv || "Kore", gemStyle()); p.catch(function () {}); return p; }
+  try {
+    for (var i = 0; i < q.length; i++) {
+      if (gen !== GA.gen) return;
+      var cur = pre || get(i); pre = i + 1 < q.length ? get(i + 1) : null;
+      var buf = gemBuf(await cur); if (gen !== GA.gen) return;
+      TS.i = q[i].from; hilite(TS.ch[q[i].from].p); await gemPlay(buf, gen);
+    }
+    if (gen === GA.gen) stopTalk();
+  } catch (e) {
+    if (gen !== GA.gen) return;
+    var from = TS.i; stopTalk(); emsg(((e && e.message) || "No pude generar la voz natural.") + " Sigo con la voz del teléfono.");
+    TS.ch = TS.ch.slice(from); TS.i = 0; TS.on = true; TS.paused = false; TS.native = false; setListen(); speakNext();
+  }
+}
+function gemStart() {
+  TS.gem = true; TS.native = false; TS.gq = gemChunks();
+  try { GA.ctx = GA.ctx || new (window.AudioContext || window.webkitAudioContext)(); GA.ctx.resume(); } catch (e) { TS.gem = false; return false; }
+  GA.gen++; gemRun(GA.gen); return true;
+}
 function startTalk(i) {
   if (!window.speechSynthesis && !(window.hvBackgroundSpeech && window.hvBackgroundSpeech.available)) { emsg("Este dispositivo no permite leer en voz alta."); return; }
   if (!cur || !cur.scenes.length) return;
@@ -2654,6 +2988,7 @@ function startTalk(i) {
   TS.ps = Array.prototype.filter.call(w.querySelectorAll("p"), function (p) { return !p.classList.contains("act"); });
   TS.ch = []; TS.ps.forEach(function (p, k) { sentences(p.textContent).forEach(function (t) { TS.ch.push({ t: t.trim(), p: k }); }); });
   TS.i = 0; TS.on = true; TS.paused = false; TS.scene = i; TS.native = !!(window.hvBackgroundSpeech && window.hvBackgroundSpeech.available); setListen();
+  if (RD.voice === "gem" && window.hvTTS) { if (window.hvTTSReady()) { if (gemStart()) return; } else emsg("Para la voz natural, conecta tu clave de Gemini en «Conectar mi IA». Uso la del teléfono."); }
   if (TS.native) {
     window.hvBackgroundSpeech.play(TS.ch.map(function (c) { return c.t; }), RD.rate); hilite(0);
     TS.poll = setInterval(function () { var st = window.hvBackgroundSpeech.state(); if (!TS.on) return; TS.i = Number(st.index || 0); TS.paused = st.status === "paused"; hilite(TS.ch[TS.i] ? TS.ch[TS.i].p : -1); setListen(); if (st.status === "stopped") stopTalk(); }, 700);
@@ -2661,6 +2996,7 @@ function startTalk(i) {
 }
 $("listen").onclick = function () {
   if (!TS.on) { startTalk(); return; }
+  if (TS.gem) { TS.paused = !TS.paused; try { if (TS.paused) GA.ctx.suspend(); else GA.ctx.resume(); } catch (e) {} setListen(); return; }
   if (TS.native) { window.hvBackgroundSpeech.action("toggle"); TS.paused = !TS.paused; setListen(); return; }
   if (TS.paused) { TS.paused = false; setListen(); speakNext(); }
   else { TS.paused = true; try { speechSynthesis.cancel(); } catch (e) {} setListen(); }

@@ -677,6 +677,28 @@
     action: function (a) { if (typeof N.speakAction === "function") N.speakAction(a); }
   };
 
+  // v0.10.0: voz natural con Gemini (misma clave que el texto). Devuelve audio PCM en base64.
+  var TTSM = ["gemini-3.1-flash-tts-preview", "gemini-2.5-flash-preview-tts", "gemini-3.8-flash-tts"];
+  window.hvTTSReady = function () { try { return !!(cfg().keys || {}).gemini; } catch (e) { return false; } };
+  window.hvTTS = async function (text, voice, style) {
+    var c = cfg(); if (!c.keys || !c.keys.gemini) throw { code: "no_key", message: "Falta la clave de Gemini en «Conectar mi IA»." };
+    var pref = ""; try { pref = store.getItem("hv:ttsm") || ""; } catch (e) {}
+    var ms = (pref ? [pref] : []).concat(TTSM.filter(function (m) { return m !== pref; })), last = null;
+    for (var i = 0; i < ms.length; i++) {
+      var r = await http("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(ms[i]) + ":generateContent",
+        { "Content-Type": "application/json", "x-goog-api-key": c.keys.gemini },
+        { contents: [{ parts: [{ text: (style ? style + ": " : "") + text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice || "Kore" } } } } }, true);
+      if (r.status === 404) { last = fail(r, "Gemini", ms[i]); continue; }
+      if (r.status !== 200) throw fail(r, "Gemini", ms[i]);
+      var j = JSON.parse(r.text), pt = (((j.candidates || [])[0] || {}).content || {}).parts || [], d = null;
+      pt.forEach(function (x) { if (x.inlineData && x.inlineData.data) d = x.inlineData; });
+      if (!d) { last = { code: "blocked", message: "Gemini no devolvió audio para este fragmento." }; continue; }
+      try { store.setItem("hv:ttsm", ms[i]); } catch (e) {}
+      var m = /rate=(\d+)/.exec(d.mimeType || ""); return { data: d.data, rate: m ? parseInt(m[1], 10) : 24000 };
+    }
+    throw last || { code: "error", message: "No pude generar la voz." };
+  };
+
   var cbs = {}, k = 0;
   window.__ttsDone = function (id) { var u = cbs[id]; delete cbs[id]; if (u && u.onend) u.onend(); };
   function Utt(t) { this.text = t; this.lang = "es-ES"; this.rate = 1; this.voice = null; this.onend = null; this.onerror = null; }
