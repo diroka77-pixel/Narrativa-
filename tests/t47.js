@@ -1,0 +1,28 @@
+const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
+const SP='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.__calls=[];window.claude={use:async k=>k==='sample'?async q=>{window.__calls.push(String(q).length);const t=String(q);if(t.indexOf('MATERIAL:')>=0)return{text:JSON.stringify({titulo:'El Camino a Casa',generos:['Comedia'],sinopsis:'Tres matrimonios septuagenarios viajan en furgoneta.',tono:'Realismo costumbrista con un toque de fantasía oscura',reglas:['Samuel es Lucifer y nunca se revela del todo'],personajes:[{nombre:'Ramiro',protagonista:true,desc:'80 años, 1,65 m, fondón. Serio, machista, acento cerrado. Obrero jubilado.'},{nombre:'María',protagonista:true,desc:'74 años, 1,50 m. Sociable, sin filtros.'},{nombre:'Teo',protagonista:false,desc:'79 años, soñador, olvidadizo, conserje jubilado, flipado del cine.'}],lugares:[{nombre:'La furgoneta',desc:'Vieja furgoneta alquilada que huele fatal'}],otros:[],plan:['La decisión del viaje','Arranca el viaje','De repente un extraño','La influencia del extraño','Locura general','Recuperan la cordura','Desenlace'],contradicciones:['El secreto del origen lo tiene María (trama) y Ramiro (hoja de personajes)']})};return{text:'{}'}}:null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+await p.evaluate(()=>{document.getElementById('new').click()});await p.waitForTimeout(200);
+await p.click('#impgo');
+await p.setInputFiles('#impfile',path.join(__dirname,'fixtures','import_sample.pdf'));await p.waitForTimeout(1500);
+console.log('info:',await p.textContent('#impinfo'),'len',(await p.inputValue('#imptxt')).length);
+await p.click('#impstudy');await p.waitForTimeout(1200);
+console.log('calls',await p.evaluate(()=>window.__calls));
+await p.screenshot({path:SP+'imp1.png',fullPage:true});
+await p.fill('#impres textarea[aria-label^="Decisión"]','El secreto del origen es de María; Ramiro lo ignora.');
+await p.click('#impres button.go');await p.waitForTimeout(400);
+const r=await p.evaluate(()=>{const s=cur;const out={title:s.title,genres:s.genres,prot:s.prot.map(x=>x.name),lore:s.lore.map(x=>x.tipo+':'+x.nombre+':'+x.desc.length),plan:s.plan&&s.plan.pts.length,rules:s.rules,bible:s.bible,secs:s.src.secs.length,open:s.src.open,mode:s.src.mode,view:document.body.getAttribute('data-v')};
+s.scenes=[{t:'Ramiro conduce en silencio. Teo mira por la ventanilla y recuerda aquella película.',m:{},o:[],st:{}}];
+const pr=build(s,'Teo habla del rencor contra Ramiro y su pasado de conserje',null,false,false);const i=pr.indexOf('MATERIAL DEL AUTOR');out.hasMat=i>=0;out.mat=pr.slice(i,i+700);out.ficha=charTxt(s.prot[0]).slice(0,80);
+const pc=build(s,'Teo habla del rencor contra Ramiro',null,false,true);out.compactLen=pc.length;out.openIn=pr.indexOf('PUNTOS SIN DECIDIR')>=0;
+const pn=build(s,'Se detienen a repostar gasolina',null,false,false);out.noMat=pn.indexOf('MATERIAL DEL AUTOR')<0;
+return out});
+console.log(JSON.stringify(r,null,1));
+// docx
+await p.evaluate(()=>{startCreate('')});await p.click('#impgo');
+await p.setInputFiles('#impfile',path.join(__dirname,'fixtures','import_sample.docx'));await p.waitForTimeout(600);
+console.log('docx:',(await p.inputValue('#imptxt')).slice(0,160).replace(/\n/g,' / '));
+console.log('errs',errs);await b.close()})();

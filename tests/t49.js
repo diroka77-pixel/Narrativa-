@@ -1,0 +1,20 @@
+const {chromium}=require('playwright');const fs=require('fs');
+const SP='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.claude={use:async k=>k==='downloads'?{save:async o=>{window.__saved=[o.filename,Array.from(o.data.slice?o.data.slice(0,0):[]),o.data.length];window.__data=Array.from(o.data)}}:null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(300);
+const r=await p.evaluate(async()=>{
+ const sc=[{t:'Kaelen miró a Diroka. —¿Dónde está el núcleo? —preguntó.',m:{},o:[],st:{}}];
+ const st={id:'q1',title:'Neón y Colmillos: «La Caída»',syn:'Un vampiro y una hacker roban un núcleo.',premise:'p',genre:'Ciberpunk',genres:['Ciberpunk'],scenes:sc,lore:[{tipo:'personaje',nombre:'Kaelen',desc:'Vampiro de ojos grises — líder.'},{tipo:'lugar',nombre:'La Torre',desc:'Sede de la corporación.'}],prot:[{name:'Diroka',note:'Hacker de 29 años, pupilas modificadas.'}],bible:'Tono: sobrio y oscuro',rules:['Los vampiros temen la luz solar'],plan:{on:true,pts:['Robo','Traición','Final'],total:60},ce:[],turn:1,state:{},opts:['a']};
+ LIB.push(st);openStory(st);const m=ensureMem(st);const c=getChar(m,'Diroka',0);c.desc='Hacker de 29 años.';c.loc='la Torre';c.goal='robar el núcleo';c.rel['kaelen']={name:'Kaelen',conf:-3,note:'desconfía',sc:0};c.know.push({t:'Kaelen es un vampiro',k:'hecho',src:'',sc:0});
+ m.items['nucleo']={name:'Núcleo',owner:'Kaelen',loc:'',state:'cifrado',hist:[]};m.world['x']={key:'Hora',val:'madrugada',sc:0,hist:[]};m.pend.push({id:'p1',text:'¿Quién traicionó a Diroka?',sc:0,open:true});m.ev.push({id:'e0',sc:0,what:'Diroka entra en la Torre',where:'La Torre',who:['Diroka'],cons:'salta la alarma'});
+ await exportFicha('pdf');const pdf=window.__data.slice();const nm=window.__saved[0];
+ await exportFicha('txt');const txt=new TextDecoder().decode(new Uint8Array(window.__data));
+ const back=impClean(await impPdf(new Uint8Array(pdf).buffer));
+ const v=validateScene(st,{escena:'Cruzó los brazos sobre el pecho cubierto por chaquetas de fibra sintética. Los ojos brillaron.'});
+ const v2=validateScene(st,{escena:'Cruzó los brazos sobre el pecho, cubierto por una chaqueta de fibra sintética.'});
+ return {nm,pdfBytes:pdf.length,txtHead:txt.slice(0,700),back:back.slice(0,900),backHas:['Núcleo','—','«La Caída»','• ','Hacker'].map(x=>back.indexOf(x)>=0),v:v.errs,v2:v2.errs,rules:RULES.indexOf('COHERENCIA FÍSICA')>=0}});
+console.log(JSON.stringify(r,null,1));console.log('errs',errs);
+await p.evaluate(()=>{});await b.close()})();

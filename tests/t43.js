@@ -1,0 +1,13 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.claude={use:async k=>k==='sample'?async q=>({text:'{}'}):null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+const o=await p.evaluate(()=>{const st={id:'q1',title:'N',syn:'s',premise:'p',genre:'Aventura',genres:['Aventura'],scenes:[{t:'x',m:{},o:[],st:{}}],lore:[],mem:null,ce:[],turn:1,state:{},opts:[]};LIB.push(st);openStory(st);
+ const r={};const a=build(st,'x','',false);r.old=/PUNTO DE VISTA \(Omnisciente\)/.test(a);
+ st.pov='Cercana al protagonista';st.lens='Compara a Dorgo con tiranos que ya conoció.';const c=build(st,'x','',false),k=build(st,'x','',false,true);
+ r.near=/PUNTO DE VISTA \(Cercana/.test(c)&&/nunca entrando en su cabeza/.test(c);r.lens=/MIRADA DEL PROTAGONISTA[^\n]*tiranos/.test(c);r.len=/300 a 480/.test(c);r.cmp=/250 a 350/.test(k);r.nodump=/INICIO: no presentes/.test(c);
+ renderSet();r.ui=['Punto de vista','Mirada del protagonista','Que El Cronista la proponga'].map(t=>$('setbody').textContent.includes(t));
+ startCreate('');r.def=DEF.pov;return r;});
+console.log(JSON.stringify(o),errs);await b.close()})();

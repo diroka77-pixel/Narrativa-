@@ -1,0 +1,17 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.claude={use:async k=>k==='sample'?async q=>({text:'{}'}):null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+await p.evaluate(()=>{const sc=[{t:'Texto de la escena. '.repeat(30),m:{},o:[],st:{}}];const st={id:'q1',title:'Neón y Colmillos: La Caída del Fundador',syn:'s',premise:'p',genre:'Aventura',genres:['Aventura'],scenes:sc,lore:[],mem:null,ce:[],turn:1,state:{},opts:['a']};LIB.push(st);openStory(st)});await p.waitForTimeout(500);
+const r=await p.evaluate(()=>{const q=id=>document.getElementById(id);const vis=e=>e.offsetParent!==null;return {pmenu:q('pmenu').open,setVis:vis(q('set')),immp:q('immp').getBoundingClientRect().width,sumH:q('pmenu').querySelector('summary').getBoundingClientRect().height}});
+console.log(JSON.stringify(r));
+const P='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
+await p.screenshot({path:P+'m1.png'});
+await p.click('#pmenu>summary');await p.waitForTimeout(200);
+console.log(await p.evaluate(()=>[...document.querySelectorAll('#pmenu>details')].map(d=>d.offsetParent!==null).join()));
+await p.screenshot({path:P+'m2.png'});console.log(await p.evaluate(()=>[...document.querySelectorAll('#pmenu>details')].map(d=>d.id+':'+d.hidden+':'+getComputedStyle(d).display).join()));
+await p.click('#pmenu>summary');
+await p.evaluate(()=>{document.getElementById('tMundo').click()});await p.waitForTimeout(400);
+console.log('mundo opens menu:',await p.evaluate(()=>document.getElementById('pmenu').open&&document.getElementById('atlbox').open));
+await b.close()})();

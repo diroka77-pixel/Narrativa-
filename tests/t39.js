@@ -1,0 +1,11 @@
+const {chromium}=require('playwright');
+const S='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.claude={use:async k=>k==='sample'?async q=>({text:'{}'}):null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(500);
+const o=await p.evaluate(()=>{const sc=[];for(let i=0;i<5;i++)sc.push({t:'Un zumbido sordo resonó en el exterior. Ella avanzó por el pasillo metálico sin mirar atrás, escena '+i+'.',m:{},o:[],st:{}});
+ const st={id:'q1',title:'El Último Colmillo de Acero',syn:'sinopsis larga',premise:'p',genre:'Ciencia ficción',genres:['Ciencia ficción'],scenes:sc,lore:[],mem:null,ce:[],turn:5,state:{},opts:[],cover:'art/home.webp'};
+ LIB.push(st);renderLib();return {rb:repeatedBits(st),inPrompt:/EXPRESIONES YA REPETIDAS[^\n]*zumbido sordo/.test(build(st,'avanzo','',false))};});
+await p.waitForTimeout(400);await p.screenshot({path:S+'cov.png'});console.log(JSON.stringify(o),errs);await b.close()})();

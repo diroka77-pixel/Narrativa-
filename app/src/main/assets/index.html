@@ -65,6 +65,16 @@ textarea{min-height:5.5rem;resize:vertical}
 .err{border:1.5px solid var(--acc);border-radius:12px;padding:.8rem 1rem;margin-top:1.2rem}
 .fin{text-align:center;color:var(--mute);margin:2rem 0;font-style:italic}
 .tail{margin-top:2rem;border-top:1px solid var(--line);padding-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+#rpghud{margin:.5rem 0;padding:.6rem .7rem;border:1px solid var(--line);border-radius:12px;background:var(--card);display:grid;gap:.4rem}
+#rpghud .rbar{display:flex;align-items:center;gap:.5rem;font-size:.85rem}
+#rpghud .rbar b{min-width:4.6rem}
+#rpghud .meter{flex:1;height:10px;border-radius:6px;background:rgba(127,127,127,.25);overflow:hidden}
+#rpghud .meter i{display:block;height:100%;border-radius:6px;background:#4caf6a}
+#rpghud .meter i.b2{background:#5a8fe0}
+#rpghud .meter i.low{background:#d9534f}
+#rpghud .rbar em{min-width:2rem;text-align:right;font-style:normal}
+#rpghud .rcred{font-size:.85rem}
+p.rollline{font-size:.82rem;color:var(--mute);margin:.2rem 0 .5rem;letter-spacing:.02em}
 #shelf{background:linear-gradient(180deg,#1b130c,#110b07);border:7px solid #3b2615;border-radius:8px;padding:1rem .8rem .3rem;box-shadow:inset 0 0 30px rgba(0,0,0,.7),0 6px 18px rgba(0,0,0,.4)}
 #shelf .srow{display:flex;align-items:flex-end;gap:5px;min-height:60px;padding:0 .2rem}
 #shelf .plank{height:15px;margin:0 -.8rem 1.1rem;background:linear-gradient(180deg,#6b4526,#4a2e18 60%,#2f1c0e);box-shadow:0 5px 8px rgba(0,0,0,.55);border-top:1px solid #8a5d36}
@@ -314,13 +324,61 @@ body.hc .big,body.hc .rw,body.hc .psheet,body.hc .dnav{background:#000;border-co
 button.small,.fb,.lvs button,.sh .more{min-height:44px}
 summary,select,input[type="checkbox"]{min-height:44px}
 [hidden]{display:none!important}
+
+/* v0.10: modo claro: fondos visibles, paneles blancos */
+:root[data-theme="light"] #bgshade,:root[data-theme="light"] body[data-v] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.28) 0%,rgba(7,11,20,.06) 30%,rgba(7,11,20,.1) 100%)!important}
+:root[data-theme="light"] body[data-v="lib"] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.2) 0%,rgba(7,11,20,.02) 40%,rgba(7,11,20,.08) 100%)!important}
+:root[data-theme="light"] #bgart{opacity:1}
+:root[data-theme="light"] .hero{color:#fff}
+:root[data-theme="light"] .hero h1,:root[data-theme="light"] .hero p.syn{text-shadow:0 2px 14px rgba(0,0,0,.65)}
+:root[data-theme="light"] .hero .tag{color:#ffc766}
+:root[data-theme="light"] .hero button.go{background:linear-gradient(90deg,#ffa51f,#ffc766);color:#1a1000}
+:root[data-theme="light"] main>h1,:root[data-theme="light"] section>h1,:root[data-theme="light"] main>h2,:root[data-theme="light"] section>h2,:root[data-theme="light"] main>.sub,:root[data-theme="light"] section>.sub,:root[data-theme="light"] main>.hint,:root[data-theme="light"] section>.hint,:root[data-theme="light"] main>p,:root[data-theme="light"] section>p,:root[data-theme="light"] main>.ttl,:root[data-theme="light"] section>.ttl,:root[data-theme="light"] main>h3,:root[data-theme="light"] section>h3{background:rgba(255,251,244,.97);color:var(--ink);padding:.45rem .8rem;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.18);width:fit-content;max-width:100%}
+:root[data-theme="light"] main>.sub,:root[data-theme="light"] main>.hint,:root[data-theme="light"] main>p{color:#3e3327}
+:root[data-theme="light"] .top{background:rgba(255,251,244,.98)!important;backdrop-filter:none;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+:root[data-theme="light"] button:not(.go):not(.fab):not(.on):not([class*=tab]){background:rgba(255,251,244,.96);color:var(--ink);border-color:#b9a68c}
+:root[data-theme="light"] #rpghud{background:linear-gradient(180deg,#fffdf8,#f6ecdc);border:1px solid #c9b59a;border-radius:16px;padding:.8rem .9rem;gap:.55rem;box-shadow:0 4px 16px rgba(0,0,0,.22);color:var(--ink)}
+:root[data-theme="light"] #rpghud .rbar b{color:#3a2c1c;font-variant:small-caps;letter-spacing:.04em}
+:root[data-theme="light"] #rpghud .rbar em{font-weight:700;color:#3a2c1c}
+:root[data-theme="light"] #rpghud .meter{height:12px;background:#e3d6c2;box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
+:root[data-theme="light"] #rpghud .meter i{background:linear-gradient(90deg,#2f8f55,#5fcf88)}
+:root[data-theme="light"] #rpghud .meter i.b2{background:linear-gradient(90deg,#3b6fc9,#7db0ff)}
+:root[data-theme="light"] #rpghud .meter i.low{background:linear-gradient(90deg,#b52d2a,#f06a5f)}
+:root[data-theme="light"] #rpghud .rcred{color:#6b3300;font-weight:700;border-top:1px dashed #c9b59a;padding-top:.45rem}
+:root[data-theme="light"] p.rollline{background:rgba(255,251,244,.94);color:#3a2c1c;border-radius:10px;padding:.35rem .6rem}
+:root[data-theme="light"] button.on,:root[data-theme="light"] #fmtrow button{background:#fffbf4!important;color:var(--ink)}
+:root[data-theme="light"] #shelf{box-shadow:0 6px 20px rgba(0,0,0,.35)}
+@media (prefers-color-scheme:light){
+:root:not([data-theme]) #bgshade,:root:not([data-theme]) body[data-v] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.28) 0%,rgba(7,11,20,.06) 30%,rgba(7,11,20,.1) 100%)!important}
+:root:not([data-theme]) body[data-v="lib"] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.2) 0%,rgba(7,11,20,.02) 40%,rgba(7,11,20,.08) 100%)!important}
+:root:not([data-theme]) #bgart{opacity:1}
+:root:not([data-theme]) .hero{color:#fff}
+:root:not([data-theme]) .hero h1,:root:not([data-theme]) .hero p.syn{text-shadow:0 2px 14px rgba(0,0,0,.65)}
+:root:not([data-theme]) .hero .tag{color:#ffc766}
+:root:not([data-theme]) .hero button.go{background:linear-gradient(90deg,#ffa51f,#ffc766);color:#1a1000}
+:root:not([data-theme]) main>h1,:root:not([data-theme]) section>h1,:root:not([data-theme]) main>h2,:root:not([data-theme]) section>h2,:root:not([data-theme]) main>.sub,:root:not([data-theme]) section>.sub,:root:not([data-theme]) main>.hint,:root:not([data-theme]) section>.hint,:root:not([data-theme]) main>p,:root:not([data-theme]) section>p,:root:not([data-theme]) main>.ttl,:root:not([data-theme]) section>.ttl,:root:not([data-theme]) main>h3,:root:not([data-theme]) section>h3{background:rgba(255,251,244,.97);color:var(--ink);padding:.45rem .8rem;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.18);width:fit-content;max-width:100%}
+:root:not([data-theme]) main>.sub,:root:not([data-theme]) main>.hint,:root:not([data-theme]) main>p{color:#3e3327}
+:root:not([data-theme]) .top{background:rgba(255,251,244,.98)!important;backdrop-filter:none;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+:root:not([data-theme]) button:not(.go):not(.fab):not(.on):not([class*=tab]){background:rgba(255,251,244,.96);color:var(--ink);border-color:#b9a68c}
+:root:not([data-theme]) #rpghud{background:linear-gradient(180deg,#fffdf8,#f6ecdc);border:1px solid #c9b59a;border-radius:16px;padding:.8rem .9rem;gap:.55rem;box-shadow:0 4px 16px rgba(0,0,0,.22);color:var(--ink)}
+:root:not([data-theme]) #rpghud .rbar b{color:#3a2c1c;font-variant:small-caps;letter-spacing:.04em}
+:root:not([data-theme]) #rpghud .rbar em{font-weight:700;color:#3a2c1c}
+:root:not([data-theme]) #rpghud .meter{height:12px;background:#e3d6c2;box-shadow:inset 0 1px 3px rgba(0,0,0,.3)}
+:root:not([data-theme]) #rpghud .meter i{background:linear-gradient(90deg,#2f8f55,#5fcf88)}
+:root:not([data-theme]) #rpghud .meter i.b2{background:linear-gradient(90deg,#3b6fc9,#7db0ff)}
+:root:not([data-theme]) #rpghud .meter i.low{background:linear-gradient(90deg,#b52d2a,#f06a5f)}
+:root:not([data-theme]) #rpghud .rcred{color:#6b3300;font-weight:700;border-top:1px dashed #c9b59a;padding-top:.45rem}
+:root:not([data-theme]) p.rollline{background:rgba(255,251,244,.94);color:#3a2c1c;border-radius:10px;padding:.35rem .6rem}
+:root:not([data-theme]) button.on,:root:not([data-theme]) #fmtrow button{background:#fffbf4!important;color:var(--ink)}
+:root:not([data-theme]) #shelf{box-shadow:0 6px 20px rgba(0,0,0,.35)}
+}
 </style>
 </head>
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
 <div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
-<div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
+<div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hldef" hidden>📖 Definición</button><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
 <p class="hint" id="pstat"></p>
@@ -349,6 +407,8 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <div class="row" style="align-items:center;margin-bottom:.5rem"><button class="small" id="back1">← Volver</button></div>
 <div class="row" id="cmode" style="margin-bottom:.6rem"><button class="small" id="cm-s" data-m="simple">Creación simple</button><button class="small" id="cm-a" data-m="adv">Creación avanzada</button></div>
 <p class="hint" id="cmhint" style="margin-top:0"></p>
+<div class="row" id="fmtrow" style="margin:0 0 .6rem"><button class="small on" id="fmt-n">Novela interactiva</button><button class="small" id="fmt-r">⚔ Aventura RPG</button></div>
+<div id="rpgopts" hidden style="margin-bottom:.8rem"><p class="hint" style="margin:.2rem 0">Con dado, riesgo, salud y créditos de destino. Dificultad:</p><div class="row" id="diffrow"><button class="small" data-d="relajado">Relajado</button><button class="small on" data-d="normal">Normal</button><button class="small" data-d="duro">Duro</button></div><p class="hint" style="margin:.6rem 0 .2rem">Recurso que se gasta (Sed, Cordura, Oxígeno, Maná…)</p><input id="b2name" type="text" maxlength="20" placeholder="Energía"></div>
 <button class="small" id="impgo" style="margin:0 0 .8rem">📄 Ya tengo material escrito: importarlo</button>
 <div class="big">
 <h2>¿Cuál es tu aventura?</h2>
@@ -437,6 +497,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <div class="row" style="align-items:center;margin-bottom:.4rem"><button class="small" id="back2">← Mis historias</button></div>
 <h2 id="ptitle" style="margin-top:.4rem"></h2>
 <p class="hint" id="forkinfo" hidden style="margin:.1rem 0 .4rem"></p>
+<div id="rpghud" hidden role="group" aria-label="Estado de la aventura"></div>
 <button class="small qpill" id="qpill" hidden aria-label="Ver mis consultas de IA de hoy"></button>
 <details class="pmenu" id="pmenu"><summary>☰ Menú de la historia</summary>
 <details class="pl" id="set"><summary>Ajustes de la partida</summary><div id="setbody"></div></details>
@@ -457,6 +518,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <p class="hint" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora? <button class="small qpill" id="qpill2" hidden aria-label="Ver mis consultas de IA de hoy" style="margin:0 0 0 .4rem"></button></p>
 <div class="row" id="actors" hidden style="margin-bottom:.6rem;align-items:center"></div>
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
+<div class="row" id="rpgrisk" hidden style="margin-bottom:.6rem;align-items:center"><span class="hint">Riesgo de tu acción:</span><button class="small" data-r="Seguro">🟢 Seguro</button><button class="small on" data-r="Arriesgado">🟠 Arriesgado</button><button class="small" data-r="Temerario">🔴 Temerario</button></div>
 <button id="dict" class="small" hidden style="margin-bottom:.5rem">Dictar con la voz</button>
 <textarea id="own" style="min-height:5.5rem" placeholder="Por ejemplo: Erik se asoma al acantilado y ve una aldea ardiendo a lo lejos"></textarea>
 <button class="go" id="do" style="margin-top:.6rem">Continuar</button>
@@ -818,6 +880,7 @@ function storyMenu(s) {
   sheet(s.title, function (sh) {
     para(sh, (s.scenes || []).length + " escenas · " + (s.fin ? "terminada" : "en curso"));
     var go = el("button", "go", "▶ Continuar"); go.onclick = function () { closeSheet(); openStory(s); }; sh.appendChild(go);
+    if (!s.rpg && !s.sample) { var rp = el("button", null, "⚔ Jugarla también como aventura RPG"); rp.style.cssText = "margin-top:.5rem;width:100%"; rp.onclick = function () { closeSheet(); rpgSetup(s); }; sh.appendChild(rp); }
     var ar = el("button", null, "🕯 Guardar en el Rincón de los olvidados"); ar.style.marginTop = ".5rem"; ar.style.width = "100%";
     ar.onclick = function () { s.arch = Date.now(); save(); closeSheet(); renderLib(); toast("«" + s.title + "» descansa ahora en el Rincón de los olvidados."); }; sh.appendChild(ar);
     para(sh, "No se borra nada: la historia sale de la página principal y puedes rescatarla cuando quieras.");
@@ -883,7 +946,7 @@ function renderLib() {
   LIB.filter(function (x) { return !x.arch; }).sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s); if (s.cover) { cv.classList.add("hasimg"); cd.classList.add("clean"); cv.setAttribute("aria-label", s.title); }
-    if (!s.cover) cd.appendChild(el("span", "chip", (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
+    if (!s.cover) cd.appendChild(el("span", "chip", (s.rpg ? "RPG · " : "") + (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
     cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
     var lpT = 0, lpF = false;
     cv.onpointerdown = function () { lpF = false; clearTimeout(lpT); lpT = setTimeout(function () { lpF = true; storyMenu(s); }, 650); };
@@ -926,7 +989,7 @@ function renderLib() {
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
 var VERSION = "0.10.0";
 var NEWS = [
-  ["0.10.0", "Rincón de los olvidados: aparta una historia (mantén pulsada su portada o toca «⋯ Opciones») y descansa en una estantería con sus lomos; tócala para rescatarla cuando quieras. Subrayar el texto (se guarda) y crear fichas de lore desde lo que seleccionas: nombre, tipo y descripción, que puede redactar El Cronista. Ficha de la historia (PDF o texto) con lore, personajes, relaciones, objetos, plan y cronología, para reutilizarla en otra historia. La voz natural reintenta y junta párrafos para no saltar a la voz del teléfono. Aviso de frases físicamente incoherentes. Voz natural opcional para escuchar tus historias (Ajustes → Lectura → Voz para escuchar): usa tu clave de Gemini, suena más humana y, si falla, vuelve a la voz del teléfono. Importar tu material: en Crear, «Ya tengo material escrito». Carga un PDF, Word, texto o pega tu croquis, fichas o capítulos; El Cronista los estudia, te enseña lo que entendió (personajes, plan, tono) y te pide decidir las contradicciones. Al narrar consulta solo los apartados que hacen falta, en modo fiel o como inspiración. Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
+  ["0.10.0", "Modo Aventura RPG: al crear eliges Novela o RPG (dificultad y recurso que se gasta). El dado lo lanza la app (🟢 Seguro, 🟠 Arriesgado, 🔴 Temerario) y la IA solo narra el resultado; barras de salud y recurso, créditos de destino para levantarte o repetir una tirada, puntos de control. Además, cualquier historia puede jugarse también como RPG en su mismo mundo desde «⋯ Opciones». Al mantener pulsada una palabra se selecciona y aparece una barra con «Definición», «Subrayar», «Crear ficha» y «Copiar» (antes abría directamente la definición). Rincón de los olvidados: aparta una historia (mantén pulsada su portada o toca «⋯ Opciones») y descansa en una estantería con sus lomos; tócala para rescatarla cuando quieras. Subrayar el texto (se guarda) y crear fichas de lore desde lo que seleccionas: nombre, tipo y descripción, que puede redactar El Cronista. Ficha de la historia (PDF o texto) con lore, personajes, relaciones, objetos, plan y cronología, para reutilizarla en otra historia. La voz natural reintenta y junta párrafos para no saltar a la voz del teléfono. Aviso de frases físicamente incoherentes. Voz natural opcional para escuchar tus historias (Ajustes → Lectura → Voz para escuchar): usa tu clave de Gemini, suena más humana y, si falla, vuelve a la voz del teléfono. Importar tu material: en Crear, «Ya tengo material escrito». Carga un PDF, Word, texto o pega tu croquis, fichas o capítulos; El Cronista los estudia, te enseña lo que entendió (personajes, plan, tono) y te pide decidir las contradicciones. Al narrar consulta solo los apartados que hacen falta, en modo fiel o como inspiración. Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
   ["0.9.10", "Botón grande «Leer como un libro» sobre el texto de la historia (antes estaba escondido entre botones pequeños). Al exportar y al guardar cada escena se corrigen la raya de diálogo, las palabras duplicadas y el «¿Qué decides hacer?» final. Nuevas reglas de prosa: menos párrafos que empiezan igual, pausa en las revelaciones."],
   ["0.9.9", "Portadas despejadas en el inicio (el título y el estado van debajo, sin tapar la imagen). El Cronista evita repetir expresiones de las últimas escenas («zumbido sordo» y similares). Guía de Mistral corregida: hay que elegir el plan gratuito Experiment."],
   ["0.9.8", "Respaldos gratuitos: si tu IA principal se agota o se satura, El Cronista pasa solo a Mistral o Groq (opcionales, sin tarjeta). Las tareas cortas automáticas se reparten para gastar menos de tu cupo. Copia de seguridad automática con aviso para activarla y estado visible en el menú. Lectura en páginas, como un libro. Modo claro con fondos. Pantallas grandes y horizontal, y avisos para lectores de pantalla. Textos con la voz de El Cronista."],
@@ -1083,6 +1146,7 @@ $("make").onclick = async function () {
       premise: g.sinopsis + (idea ? " Idea original: " + idea : ""), prot: P.slice(), ten: C.ten, at: Date.now(), bible: (CMODE !== "simple" ? $("bible0").value.trim().slice(0, 1200) : "") || undefined,
       memory: "", last: "", turn: 0, state: {}, scenes: [], opts: [], fin: false, prev: null
     };
+    if (FMT === "rpg") s.rpg = rpgNew(DIFF, ($("b2name").value.trim() || RPG_B2[genres[0]] || "Energía"));
     LIB.push(s); save(); drawSteps(3); busy = false; showCreated(s);
   } catch (e) {
     busy = false;
@@ -1360,6 +1424,10 @@ function impSettings(b) {
   if (S.open && S.open.length) { b.appendChild(el("p", "hint", "Contradicciones sin decidir:")); S.open.forEach(function (x, i) { var d = el("div", "lore"); d.appendChild(document.createTextNode(x + " ")); var ta = el("textarea"); ta.style.minHeight = "3rem"; ta.placeholder = "¿Qué es verdad?"; var ok = el("button", "small", "Fijar esta decisión"); ok.onclick = function () { var v = ta.value.trim(); if (!v) return; cur.rules = (cur.rules || []).concat(["DECISIÓN DEL AUTOR: " + v.slice(0, 300)]).slice(-14); S.open.splice(i, 1); if (!S.open.length) delete S.open; save(); renderSet(); }; d.appendChild(ta); d.appendChild(ok); b.appendChild(d); }); }
 }
 
+function fmtPaint() { $("fmt-n").className = FMT === "nov" ? "small on" : "small"; $("fmt-r").className = FMT === "rpg" ? "small on" : "small"; $("rpgopts").hidden = FMT !== "rpg"; Array.prototype.forEach.call($("diffrow").children, function (b) { b.className = b.getAttribute("data-d") === DIFF ? "small on" : "small"; }); }
+$("fmt-n").onclick = function () { FMT = "nov"; fmtPaint(); }; $("fmt-r").onclick = function () { FMT = "rpg"; fmtPaint(); };
+Array.prototype.forEach.call($("diffrow").children, function (b) { b.onclick = function () { DIFF = b.getAttribute("data-d"); fmtPaint(); }; });
+(function () { var row = $("rpgrisk"); Array.prototype.forEach.call(row.querySelectorAll("button"), function (b) { b.onclick = function () { if (cur && cur.rpg) { cur.rpg.nr = b.getAttribute("data-r"); save(); } Array.prototype.forEach.call(row.querySelectorAll("button"), function (x) { x.className = x === b ? "small on" : "small"; }); }; }); })();
 function showCreated(s) {
   cur = s; view("created");
   $("ccover").style.background = coverBg(s); $("ccover").classList.toggle("hasimg", !!s.cover);
@@ -1460,6 +1528,7 @@ function renderSet() {
   };
   b.appendChild(bg);
   impSettings(b);
+  rpgSettings(b);
   b.appendChild(el("p", "hint", "Plan de la novela (opcional): una lista de hitos que El Cronista seguirá sin cerrar la historia antes de tiempo."));
   var pl = cur.plan = cur.plan || { on: false, pts: [], total: 120 };
   var l5 = el("label", "chk"), i5 = el("input"); i5.type = "checkbox"; i5.checked = !!pl.on; i5.onchange = function () { pl.on = i5.checked; save(); };
@@ -1521,6 +1590,7 @@ function render(keep) {
     var w = el("div", "sc"); w.id = "sc-" + i; if (i === chStartIdx(s, chOf(s, i))) w.classList.add("first");
     var cnum = chOf(s, i); if (i === chStartIdx(s, cnum)) { var ctt = ctitle(s, cnum); w.appendChild(el("div", "ch", "Capítulo " + cnum + (ctt ? " · " + ctt : ""))); }
     if (sc.a) w.appendChild(el("p", "act", sc.a));
+    if (sc.roll) { var rl = el("p", "rollline", "🎲 " + sc.roll.d + " · " + RPG_ICON[sc.roll.risk] + " " + sc.roll.risk + " (" + sc.roll.dc + ") → " + rpgTierName(sc.roll) + (sc.rec ? " · recuperas fuerzas" : "")); rl.setAttribute("aria-label", "Tirada de dado: " + sc.roll.d + ", " + sc.roll.risk + ", " + rpgTierName(sc.roll)); w.appendChild(rl); }
     var fresh = fi === i && RD.type && !reduce;
     sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); else hlApply(pe, sc, i); w.appendChild(pe); });
     if (sc.bm) w.appendChild(el("span", "bmk", "Escena marcada"));
@@ -1536,7 +1606,8 @@ function render(keep) {
   $("rvw").hidden = s.scenes.length < 5;
   $("exp").hidden = !s.scenes.length; $("emsg").hidden = true;
   var o = $("opts"); o.innerHTML = "";
-  s.opts.forEach(function (t) { var b = el("button", null, t); b.onclick = function () { turn(t, t); }; o.appendChild(b); });
+  s.opts.forEach(function (t) { var b = el("button", null, rpgLabel(s, t)); b.onclick = function () { turn(t, t); }; o.appendChild(b); });
+  try { rpgHud(); if (s.rpg && s.opts.length) $("sug").open = true; $("sug").firstChild.textContent = s.rpg ? "Elige tu acción (riesgo y dado)" : "Ver sugerencias (opcional)"; var lr = s.scenes[s.scenes.length - 1]; if (s.rpg) { $("regen").hidden = !(s.prev && s.lastAct && lr && lr.roll && lr.roll.tier !== "pleno") || busy || s.rpg.diff === "duro"; $("regen").textContent = "🎲 Repetir tirada (" + (s.rpg.diff === "relajado" ? "gratis" : "1 crédito") + ")"; $("undo").hidden = $("undo").hidden || s.rpg.diff === "duro"; } else $("regen").textContent = "Otra versión"; var rr = $("rpgrisk"); if (rr) { rr.hidden = !s.rpg; Array.prototype.forEach.call(rr.querySelectorAll("button"), function (x) { x.className = x.getAttribute("data-r") === ((s.rpg && s.rpg.nr) || "Arriesgado") ? "small on" : "small"; }); } } catch (e) {}
   if (!keep) $("own").value = "";
   if (fi >= 0 && fi < s.scenes.length && !busy) {
     var fe = $("sc-" + fi); if (fe && fe.scrollIntoView) fe.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1956,14 +2027,14 @@ function loreTxt(s) { return (s.lore || []).slice().sort(function (a, b) { retur
 
 function build(s, action, note, sp, compact) {
   var aviso = note ? "AVISO: " + note + "\n" : "";
-  if (s.state && s.state.salud <= 0 && s.pmode !== "relajado") aviso += "AVISO: la salud del protagonista es 0. Escribe el desenlace con \"fin\":true.\n";
+  if (s.state && s.state.salud <= 0 && s.pmode !== "relajado" && !s.rpg) aviso += "AVISO: la salud del protagonista es 0. Escribe el desenlace con \"fin\":true.\n";
   var dir = s.director || "Auto", len = s.len || DEF.len, sty = s.sty || DEF.sty, ten = s.ten || DEF.ten, aut = s.aut || "Coautor";
   return RULES + "\n\nGÉNEROS (mézclalos con naturalidad, sin que uno anule al otro): " + gtxt(s) + "\nDIRECTOR NARRATIVO (" + dir + "): " + (compact ? "" : DIR[dir]) +
     (compact ? genreRules(s).slice(0, 700) : genreRules(s)) + "\n" + (compact ? "" : CLICHES) + "\nTIEMPO VERBAL (" + ten + "): " + TEN[ten] + "\nESTILO (" + sty + "): " + STY[sty] + "\nPUNTO DE VISTA (" + (s.pov || "Omnisciente") + "): " + POVS[s.pov || "Omnisciente"] + (s.lens ? "\nMIRADA DEL PROTAGONISTA (condiciona qué nota, con qué compara y qué calla; aparece en observaciones breves y propias, nunca como lección de historia): " + s.lens : "") +
     "\nLONGITUD: párrafos de longitud natural, " + (compact ? "de 250 a 350 palabras en total (sé breve)" : "de " + LEN[len] + " palabras en total") + "." +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s).slice(0, 1800) : loreTxt(s)) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + srcCtx(s, action, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + srcCtx(s, action, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -2275,10 +2346,128 @@ function validateScene(s, d) {
   Object.keys(op).forEach(function (w) { if (ps.length >= 4 && op[w] >= 3) warns.push("Varios párrafos de esta escena empiezan por «" + w + "»: varía los comienzos (pronombres, percepciones, diálogo)."); });
   return { errs: errs, warns: warns };
 }
+/* ---------- v0.10.0: modo Aventura RPG (la app decide los resultados; la IA narra) ---------- */
+var RPG_DC = { Seguro: 6, Arriesgado: 12, Temerario: 16 }, RPG_IX = { Seguro: 0, Arriesgado: 1, Temerario: 2 }, RPG_ICON = { Seguro: "🟢", Arriesgado: "🟠", Temerario: "🔴" };
+var RPG_B2 = { "Ciberpunk": "Sistema", "Ciencia Ficción": "Oxígeno", "Terror": "Cordura", "Misterio": "Cordura", "Fantasía Épica": "Maná", "Fantasía Oscura": "Voluntad", "Western": "Aguante", "Aventura": "Energía" };
+var FMT = "nov", DIFF = "normal";
+function rpgNew(diff, b2n) { return { on: true, diff: diff || "normal", cred: diff === "relajado" ? 99 : diff === "duro" ? 1 : 3, hp: 100, b2: 100, b2n: (b2n || "Energía").slice(0, 20), pr: null, cp: null, nr: "Arriesgado" }; }
+function rpgRnd(n) { try { var a = new Uint32Array(1); crypto.getRandomValues(a); return 1 + (a[0] % n); } catch (e) { return 1 + Math.floor(Math.random() * n); } }
+function rpgTag(t) { var m = /^\s*\[(Seguro|Arriesgado|Temerario)\]\s*/i.exec(String(t || "")); if (!m) return { risk: null, text: String(t || "") }; var k = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase(); return { risk: k, text: String(t).slice(m[0].length) }; }
+function rpgLabel(s, t) { if (!s.rpg) return t; var g = rpgTag(t); return (g.risk ? RPG_ICON[g.risk] + " " + g.risk + " · " : "") + g.text; }
+function rpgPre(s, action, shown) {
+  var a = rpgTag(action), sh = rpgTag(shown).text, r = s.rpg;
+  if (!s.scenes.length || /^\[IDEA PARA LA HISTORIA/.test(a.text)) { r.pr = null; return { action: a.text, shown: sh }; }
+  if (!r.pr || r.pr.a !== a.text) {
+    var risk = a.risk || r.nr || "Arriesgado", d = rpgRnd(20), dc = RPG_DC[risk], tier = d >= dc ? "pleno" : d >= dc - 5 ? "coste" : "fallo";
+    if (d === 20) tier = "pleno"; if (d === 1 && risk !== "Seguro") tier = "fallo";
+    r.pr = { a: a.text, risk: risk, d: d, dc: dc, tier: tier, crit: d === 20, pifia: d === 1 && risk !== "Seguro" };
+  }
+  return { action: a.text, shown: sh };
+}
+function rpgTierName(p) { return p.crit ? "¡Éxito crítico!" : p.pifia ? "¡Pifia!" : p.tier === "pleno" ? "Éxito" : p.tier === "coste" ? "Éxito con coste" : "Fallo"; }
+function rpgCtx(s, compact) {
+  var r = s.rpg; if (!r) return ""; var o = "\nMODO RPG (el juego decide los resultados; tú solo narras): salud del protagonista " + Math.round(r.hp) + "/100, " + r.b2n.toUpperCase() + " " + Math.round(r.b2) + "/100, créditos de destino " + (r.diff === "relajado" ? "ilimitados" : r.cred) + ".";
+  if (r.pr) {
+    var T = { pleno: "ÉXITO: la acción sale como se pretendía" + (r.pr.crit ? " y además obtiene una ventaja inesperada" : "") + ", sin penalización", coste: "ÉXITO CON COSTE: lo consigue, pero con una complicación o pérdida concreta y visible (una herida leve, gastar algo, que alguien se entere…)", fallo: "FALLO: la acción no funciona y hay consecuencias claras (daño, pérdida o peligro mayor)" + (r.pr.pifia ? ", y además de forma desastrosa" : "") + "; la historia continúa" };
+    o += "\nRESULTADO DE LA TIRADA PARA LA ACCIÓN DEL JUGADOR (obligatorio, no lo cambies ni lo suavices): " + T[r.pr.tier] + ". No menciones números ni dados.";
+  }
+  if (r.hp <= 25) o += " La salud es muy baja: el cuerpo del protagonista lo muestra (dolor, temblor, torpeza) y los riesgos pesan más.";
+  if (r.b2 <= 25) o += " " + r.b2n + " está muy bajo: que se note en la escena y en las decisiones.";
+  o += "\nNo cambies salud ni peligro en «estado» (los gestiona el juego) y no escribas el final de la historia por tu cuenta. OPCIONES: exactamente 3, cada una empieza por [Seguro], [Arriesgado] o [Temerario] según el riesgo real para el protagonista (que haya variedad), sin otra etiqueta. En el JSON añade \"rpg\":{\"recupera\":true} SOLO si en esta escena el protagonista descansa, se alimenta, se cura o recarga de verdad.";
+  var pa = r.parent && LIB.filter(function (x) { return x.id === r.parent; })[0];
+  if (pa && pa.memory && !compact) o += "\nCANON DE LA NOVELA (ya escrito; esta partida RPG ocurre en ese mismo mundo, respétalo): " + String(pa.memory).slice(0, 600);
+  return o;
+}
+function rpgSnap(s) {
+  return { ce: s.ce ? s.ce.slice() : null, mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: JSON.parse(JSON.stringify(s.state || {})), now: s.now, opts: (s.opts || []).slice(), fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
+}
+function rpgRestore(s, p) {
+  s.scenes.length = Math.min(s.scenes.length, p.len); s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = JSON.parse(JSON.stringify(p.state)); s.now = p.now; s.opts = p.opts.slice(); s.fin = false; s.ls = p.ls;
+  if (p.ce !== undefined) { if (p.ce) s.ce = p.ce.slice(); else delete s.ce; } if (p.mem) restoreMem(s, p.mem); if (s.lore && p.lore != null) s.lore.length = Math.min(s.lore.length, p.lore); s.prev = null;
+}
+function rpgApply(s, cand, sn) {
+  var r = s.rpg, p = r.pr, mul = r.diff === "relajado" ? 0.6 : r.diff === "duro" ? 1.3 : 1, ix = p ? RPG_IX[p.risk] : 0;
+  if (p) {
+    sn.roll = { d: p.d, dc: p.dc, risk: p.risk, tier: p.tier, crit: p.crit, pifia: p.pifia };
+    if (p.tier === "coste") { r.hp -= [4, 8, 13][ix] * mul; r.b2 -= 5; } else if (p.tier === "fallo") { r.hp -= [8, 18, 30][ix] * mul * (p.pifia ? 1.2 : 1); r.b2 -= 10; } else if (p.crit) { r.hp += 6; r.b2 += 8; }
+  }
+  r.b2 -= 3; if (r.b2 <= 0) { r.b2 = 0; r.hp -= 8 * mul; }
+  if (cand && cand.rpg && cand.rpg.recupera === true) { r.b2 += 30; r.hp += 15; sn.rec = 1; }
+  r.hp = Math.max(0, Math.min(100, r.hp)); r.b2 = Math.max(0, Math.min(100, r.b2)); r.pr = null;
+  s.state = s.state || {}; s.state.salud = Math.round(r.hp);
+  if (s.scenes.length % 12 === 0 && r.cred < 5 && r.diff !== "relajado") { r.cred++; setTimeout(function () { toast("Has ganado 1 crédito de destino"); }, 400); }
+  if (!r.cp || s.scenes.length % 6 === 0) r.cp = rpgSnap(s);
+}
+function rpgHud() {
+  var h = $("rpghud"), s = cur; if (!h) return; h.innerHTML = ""; if (!s || !s.rpg) { h.hidden = true; return; } h.hidden = false; var r = s.rpg;
+  function bar(n, v, cl) { var w = el("div", "rbar"); w.setAttribute("role", "img"); w.setAttribute("aria-label", n + " " + Math.round(v) + " de 100"); w.appendChild(el("b", null, n)); var m = el("span", "meter"), i = el("i", cl); i.style.width = Math.round(v) + "%"; m.appendChild(i); w.appendChild(m); w.appendChild(el("em", null, String(Math.round(v)))); return w; }
+  h.appendChild(bar("Salud", r.hp, r.hp <= 25 ? "low" : "hp")); h.appendChild(bar(r.b2n, r.b2, r.b2 <= 25 ? "low" : "b2"));
+  var c = el("div", "rcred", "🎟 " + (r.diff === "relajado" ? "∞ créditos" : r.cred + (r.cred === 1 ? " crédito" : " créditos")) + " de destino"); h.appendChild(c);
+  if (r.hp <= 0) { var d = el("button", "small", "Has caído: toca para decidir"); d.onclick = function () { rpgDown(s); }; h.appendChild(d); }
+}
+function rpgDown(s) {
+  var r = s.rpg, free = r.diff === "relajado";
+  sheet("Has caído", function (sh) {
+    para(sh, "Tu salud ha llegado a 0.");
+    if (free || r.cred > 0) {
+      var a = el("button", "go", "Levantarte aquí con 40 de salud (" + (free ? "gratis" : "1 crédito") + ")");
+      a.onclick = function () { if (!free) r.cred--; r.hp = 40; r.b2 = Math.max(r.b2, 40); s.state.salud = 40; save(); closeSheet(); render(true); toast("Te levantas, tambaleándote."); }; sh.appendChild(a);
+      if (r.cp && s.scenes.length > r.cp.len) {
+        var b = el("button", null, "Volver al último punto de control (" + (free ? "gratis" : "1 crédito") + ")"); b.style.cssText = "margin-top:.5rem;width:100%";
+        b.onclick = function () { if (!free) r.cred--; rpgRestore(s, r.cp); r.hp = 60; r.b2 = Math.max(60, r.b2); s.state.salud = 60; r.pr = null; save(); closeSheet(); render(); toast("Vuelves al último punto de control."); }; sh.appendChild(b);
+      }
+      para(sh, "Lo que ocurrió en las escenas que deshagas, el destino lo borra.");
+    } else {
+      para(sh, "No te quedan créditos de destino: la aventura termina aquí. Puedes volver a jugarla desde Mis historias («⋯ Opciones» → Jugar en modo RPG).");
+      var f = el("button", "go", "Cerrar la aventura"); f.onclick = function () { s.fin = true; s.opts = []; save(); closeSheet(); render(true); }; sh.appendChild(f);
+    }
+  });
+}
+function rpgReroll(s) {
+  var r = s.rpg; if (busy || !s.prev || !s.lastAct) return;
+  if (r.diff !== "relajado") { if (r.cred <= 0) { toast("No te quedan créditos de destino."); return; } r.cred--; }
+  var lr = s.scenes[s.scenes.length - 1]; if (lr && lr.roll) r.nr = lr.roll.risk; var a = s.lastAct; undoTurn(); r.pr = null; turn(a[0], a[1]);
+}
+function rpgFrom(s, diff, b2n) {
+  var m = JSON.parse(JSON.stringify(ensureMem(s))); m.chap = {}; m.acts = {};
+  var c = { id: String(Date.now()), title: (s.title + " (RPG)").slice(0, 80), syn: s.syn, genre: s.genre, genres: (s.genres || []).slice(), director: s.director, pov: s.pov, aut: s.aut, review: s.review, len: s.len, sty: s.sty, intens: s.intens ? JSON.parse(JSON.stringify(s.intens)) : undefined,
+    lore: JSON.parse(JSON.stringify(s.lore || [])), premise: s.premise, prot: JSON.parse(JSON.stringify(s.prot || [])), ten: s.ten, at: Date.now(), bible: s.bible, rules: s.rules ? s.rules.slice() : undefined, plan: undefined, src: s.src ? JSON.parse(JSON.stringify(s.src)) : undefined,
+    cover: s.cover, memory: s.memory || "", last: "", turn: 0, state: { salud: 100, peligro: 10, objetos: [], relaciones: {}, hilos: [], eventos_pendientes: [], deudas: [], aportes: [] }, scenes: [], opts: [], fin: false, prev: null, mem: m, now: null };
+  Object.keys(c).forEach(function (k) { if (c[k] === undefined) delete c[k]; });
+  c.rpg = rpgNew(diff, b2n); c.rpg.parent = s.id; LIB.push(c); save(); return c;
+}
+function rpgSync(s, apply) {
+  var r = s.rpg, pa = r && r.parent && LIB.filter(function (x) { return x.id === r.parent; })[0]; if (!pa) return -1; var n = 0;
+  (pa.lore || []).forEach(function (c) { if (!(s.lore || []).some(function (x) { return nk(x.nombre) === nk(c.nombre); }) && (s.lore || []).length < 40) { n++; if (apply) { s.lore = s.lore || []; s.lore.push(JSON.parse(JSON.stringify(c))); } } });
+  var pm = ensureMem(pa), sm = ensureMem(s);
+  ["chars", "items", "world"].forEach(function (k) { Object.keys(pm[k] || {}).forEach(function (q) { if (!sm[k][q]) { n++; if (apply) sm[k][q] = JSON.parse(JSON.stringify(pm[k][q])); } }); });
+  if (apply) save(); return n;
+}
+function rpgSetup(s) {
+  var d = "normal", nm = RPG_B2[s.genre] || "Energía";
+  sheet("Jugar «" + s.title + "» como aventura RPG", function (sh) {
+    para(sh, "Crea una partida aparte en el mismo mundo: parte con tus personajes, lugares, reglas y memoria. La novela no se toca.");
+    para(sh, "Dificultad"); var row = el("div", "row"); sh.appendChild(row);
+    [["relajado", "Relajado"], ["normal", "Normal (3 créditos)"], ["duro", "Duro (1 crédito)"]].forEach(function (x) { var b = el("button", x[0] === d ? "small on" : "small", x[1]); b.onclick = function () { d = x[0]; Array.prototype.forEach.call(row.children, function (c) { c.className = c === b ? "small on" : "small"; }); }; row.appendChild(b); });
+    para(sh, "Recurso que se gasta (Sed, Cordura, Oxígeno, Maná…)"); var inp = el("input"); inp.type = "text"; inp.maxLength = 20; inp.value = nm; sh.appendChild(inp);
+    var go = el("button", "go", "⚔ Empezar la aventura"); go.style.marginTop = ".8rem"; go.onclick = function () { var c = rpgFrom(s, d, inp.value.trim() || nm); closeSheet(); openStory(c); }; sh.appendChild(go); closeBtn(sh, "Cancelar");
+  });
+}
+function rpgSettings(b) {
+  var s = cur, r = s.rpg; if (!r) return;
+  b.appendChild(el("p", "hint", "Modo Aventura RPG · dificultad " + r.diff + ". Los resultados los decide el juego con un dado: 🟢 Seguro, 🟠 Arriesgado, 🔴 Temerario. Con 0 de salud pierdes un crédito de destino (también sirven para repetir una tirada). Ganas 1 crédito cada 12 escenas."));
+  var pa = r.parent && LIB.filter(function (x) { return x.id === r.parent; })[0];
+  if (pa) {
+    var n = rpgSync(s, false), bt = el("button", "small", n > 0 ? "Traer novedades de la novela (" + n + " nuevas)" : "La novela no tiene novedades");
+    bt.disabled = n <= 0; bt.onclick = function () { var k = rpgSync(s, true); renderLore(); renderSet(); toast(k + " novedades traídas de la novela."); }; b.appendChild(bt);
+  }
+}
+
 async function turn(action, shown, extra) {
   if (busy || !sample || !cur) return;
   if (!cur.ce) cur.ce = chEnds(cur).slice();
-  var s = cur, note = extra || "", cand = null, sp = s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
+  var s = cur; if (s.rpg) { var _pk = rpgPre(s, action, shown); action = _pk.action; shown = _pk.shown; }
+  var note = extra || "", cand = null, sp = s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
   pending = [action, shown]; busy = true; $("err").hidden = true; stopTalk(); render(true);
   try {
     for (var i = 0; i < 2; i++) {
@@ -2299,7 +2488,7 @@ async function turn(action, shown, extra) {
       break;
     }
     if (!cand) throw new Error("vacío");
-    ensureMem(s); s.prev = { ce: s.ce ? s.ce.slice() : null, mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
+    ensureMem(s); s.prev = { rpg: s.rpg ? { hp: s.rpg.hp, b2: s.rpg.b2 } : null, ce: s.ce ? s.ce.slice() : null, mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
     cand.escena = cleanScene(cand.escena); s.scenes.push({ a: shown || "", t: cand.escena });
     s.last = cand.escena; s.memory = cand.memoria || s.memory;
     var _n = s.scenes.length, _mm = ensureMem(s);
@@ -2321,7 +2510,7 @@ async function turn(action, shown, extra) {
     }
     if (sp) s.ls = s.turn;
     s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3); s.lastAct = [action, shown];
-    var sn = s.scenes[s.scenes.length - 1]; sn.m = cand.mem || null; sn.hn = Array.isArray(cand.hechos_nuevos) ? cand.hechos_nuevos : null; sn.st = cand.estado || null; sn.o = s.opts.slice(); sn.mt = cand.memoria || ""; sn.l = Array.isArray(cand.lore_nuevo) ? cand.lore_nuevo : null;
+    var sn = s.scenes[s.scenes.length - 1]; sn.m = cand.mem || null; sn.hn = Array.isArray(cand.hechos_nuevos) ? cand.hechos_nuevos : null; sn.st = cand.estado || null; sn.o = s.opts.slice(); sn.mt = cand.memoria || ""; sn.l = Array.isArray(cand.lore_nuevo) ? cand.lore_nuevo : null; if (s.rpg) rpgApply(s, cand, sn);
     save(); autoBackup(false); try { bkNudge(); } catch (e) {} try { (function (ss, ix) { setTimeout(function () { spellScene(ss, ix).then(function (n) { if (n && cur === ss) render(true); }).catch(function () {}); }, 300); })(s, s.scenes.length - 1); } catch (e) {} try { $("sr").textContent = ""; setTimeout(function () { $("sr").textContent = "El Cronista ha escrito una nueva escena. " + String(cand.escena || "").replace(/\s+/g, " ").slice(0, 220); }, 60); } catch (e) {} renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
     dg(s, "turns"); delete s.nextTone; if (window.hvToneReset) window.hvToneReset();
     if (s.endIn != null) { s.endIn--; if (s.endIn < -1) s.fin = true; }
@@ -2337,6 +2526,7 @@ async function turn(action, shown, extra) {
     $("err").appendChild(rb); $("err").hidden = false;
   }
   busy = false; render();
+  if (cur === s && s.rpg && s.rpg.hp <= 0 && !s.fin && s.scenes.length) setTimeout(function () { rpgDown(s); }, 350);
 }
 
 [["idea", "Idea para la historia"], ["accion", "Mi personaje hace"]].forEach(function (m) {
@@ -2361,7 +2551,7 @@ $("do").onclick = function () {
 };
 $("undo").onclick = function () { undoTurn(); };
 $("regen").onclick = function () {
-  var s = cur; if (busy || !s || !s.prev || !s.lastAct) return;
+  var s = cur; if (busy || !s || !s.prev || !s.lastAct) return; if (s.rpg) { rpgReroll(s); return; }
   var a = s.lastAct; undoTurn();
   turn(a[0], a[1], "Escribe una versión claramente distinta de la escena anterior (otros detalles, otro enfoque y otras palabras), respetando exactamente la misma acción del jugador y todos los hechos de la memoria.");
 };
@@ -2369,6 +2559,7 @@ function undoTurn() {
   var s = cur, p = s.prev; if (busy || !p) return;
   s.scenes.length = p.len; s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = p.state; s.now = p.now; s.opts = p.opts; s.fin = p.fin; s.ls = p.ls; if (p.ce !== undefined) { if (p.ce) s.ce = p.ce; else delete s.ce; } if (p.mem) restoreMem(s, p.mem);
   if (s.lore && p.lore != null) s.lore.length = Math.min(s.lore.length, p.lore);
+  if (p.rpg && s.rpg) { s.rpg.hp = p.rpg.hp; s.rpg.b2 = p.rpg.b2; s.state.salud = Math.round(s.rpg.hp); s.rpg.pr = null; }
   s.prev = null; save(); renderLore(); render();
 }
 $("new").onclick = function () { startCreate(""); };
@@ -2468,7 +2659,7 @@ function setCMode(m) {
 }
 $("cm-s").onclick = function () { setCMode("simple"); }; $("cm-a").onclick = function () { setCMode("adv"); };
 $("quick").onclick = function () { if (!$("idea").value.trim()) $("idea").value = IDEAS[Math.floor(Math.random() * IDEAS.length)]; $("make").click(); };
-function startCreate(idea) { C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; $("bible0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; themeSel(); setCMode(CMODE); view("create"); }
+function startCreate(idea) { FMT = "nov"; DIFF = "normal"; try { fmtPaint(); } catch (e) {} C = JSON.parse(JSON.stringify(DEF)); P = []; $("idea").value = idea || ""; $("ttl0").value = ""; $("bible0").value = ""; buildForm(); buildPlist(); $("ppick").hidden = true; themeSel(); setCMode(CMODE); view("create"); }
 
 function renderActors() {
   var b = $("actors"); b.innerHTML = ""; var pr = (cur && cur.prot) || [];
@@ -3227,15 +3418,6 @@ function dictSheet(word, ctx) {
     sh.appendChild(ai); closeBtn(sh);
   });
 }
-(function () {
-  var tm = 0, sx = 0, sy = 0, fired = 0;
-  function open(x, y) { var w = wordAt(x, y); if (!w) return false; fired = 1; try { var sel = window.getSelection(); if (sel) sel.removeAllRanges(); } catch (e) {} dictSheet(w.w, w.ctx); return true; }
-  var bk = document.getElementById("book"); if (!bk) return;
-  bk.addEventListener("touchstart", function (e) { var t = e.touches[0]; if (!t || e.touches.length > 1) return; sx = t.clientX; sy = t.clientY; fired = 0; clearTimeout(tm); tm = setTimeout(function () { open(sx, sy); }, 600); }, { passive: true });
-  bk.addEventListener("touchmove", function (e) { var t = e.touches[0]; if (t && (Math.abs(t.clientX - sx) > 10 || Math.abs(t.clientY - sy) > 10)) clearTimeout(tm); }, { passive: true });
-  ["touchend", "touchcancel"].forEach(function (ev) { bk.addEventListener(ev, function () { clearTimeout(tm); }, { passive: true }); });
-  bk.addEventListener("contextmenu", function (e) { if (e.target && e.target.closest && e.target.closest("p")) { if (fired || open(e.clientX, e.clientY)) e.preventDefault(); } });
-})();
 function emsg(t) { var m = $("emsg"); m.textContent = t; m.hidden = false; }
 function fb2Doc(s) {
   var chs = [], bin = "", ic = 0, b64 = function (u) { return String(u).split(",")[1] || ""; };
@@ -3490,7 +3672,9 @@ function hlCheck() {
   var sel = window.getSelection(); if (!sel || sel.isCollapsed || !cur || $("play").hidden) { hlHide(); return; }
   var raw = String(sel.toString()), t = raw.replace(/\s+/g, " ").trim(), wa = scWrap(sel.anchorNode), wb = scWrap(sel.focusNode);
   if (t.length < 2 || t.length > 3000 || !wa || !wb) { hlHide(); return; }
-  var a = Number(wa.id.slice(3)), b = Number(wb.id.slice(3)); HL.sel = { raw: raw, text: t, a: Math.min(a, b), b: Math.max(a, b) }; $("hlbar").hidden = false;
+  var a = Number(wa.id.slice(3)), b = Number(wb.id.slice(3)); var pe = sel.anchorNode && (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentNode), pt = pe && pe.closest ? (pe.closest("p") || pe) : null, ptx = pt ? pt.textContent : "", ix = ptx.indexOf(t.split(" ")[0]);
+  HL.sel = { raw: raw, text: t, a: Math.min(a, b), b: Math.max(a, b), ctx: ptx.slice(Math.max(0, ix - 90), ix + t.length + 90) };
+  $("hldef").hidden = t.length > 40 || t.split(" ").length > 3; $("hlbar").hidden = false;
 }
 document.addEventListener("selectionchange", function () { clearTimeout(HL.t); HL.t = setTimeout(hlCheck, 250); });
 $("hlbar").addEventListener("pointerdown", function (e) { e.preventDefault(); });
@@ -3548,6 +3732,7 @@ function cardSheet(txt, si) {
   });
 }
 $("hlsub").onclick = hlAdd;
+$("hldef").onclick = function () { var h = HL.sel; if (!h) return; var w = h.text.replace(/^[^A-Za-zÀ-ÿñÑ]+|[^A-Za-zÀ-ÿñÑ]+$/g, ""); if (w.length < 2) return; try { window.getSelection().removeAllRanges(); } catch (e) {} hlHide(); dictSheet(w, h.ctx || h.text); };
 $("hlfic").onclick = function () { var h = HL.sel; if (!h) return; var si = h.a; try { window.getSelection().removeAllRanges(); } catch (e) {} hlHide(); cardSheet(h.text, si); };
 $("hlcopy").onclick = function () { var h = HL.sel; if (!h) return; try { navigator.clipboard.writeText(h.text); toast("Copiado"); } catch (e) { toast("Copia el texto con el menú del teléfono."); } };
 

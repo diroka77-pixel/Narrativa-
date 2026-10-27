@@ -1,0 +1,22 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.__q=[];window.claude={use:async k=>k==='sample'?async q=>{window.__q.push(q.slice(0,40));return {text:JSON.stringify({personajes:[{nombre:'Diroka',sabe:[{dato:'Kaelen no sabe nada',tipo:'hecho'}]}]})}}:null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+const o=await p.evaluate(async()=>{
+ const st={id:'q1',title:'N',syn:'s',premise:'p',genre:'Aventura',genres:['Aventura'],scenes:[{t:'Texto viejo.',m:{},o:[],st:{}}],lore:[],mem:null,ce:[],turn:1,state:{},opts:[],pov:'Cercana al protagonista',prot:[{name:'Diroka'}]};
+ LIB.push(st);openStory(st);const m=ensureMem(st);getChar(m,'Kaelen',0);getChar(m,'Marta',0);m.chars['marta'].body='muerta';
+ const r={};
+ r.pov=validateScene(st,{escena:'Kaelen pensó que todo estaba perdido. Diroka avanzó.'}).errs.length;
+ r.dead=validateScene(st,{escena:'Marta respondió con un susurro.'}).errs.length;
+ st.now={espacio:'conducto de medio metro',sostiene:[{quien:'centinela',objeto:'rifle'}]};
+ r.phys=validateScene(st,{escena:'Diroka cargó a Kaelen al hombro por el conducto.'}).errs.length;
+ r.weap=validateScene(st,{escena:'El centinela levantó una pistola y apuntó.'}).warns.length;
+ r.open=validateScene(st,{escena:'Diroka avanzó.\nDiroka miró.\nDiroka tiró.\nOtra cosa.'}).warns.length;
+ r.clean=validateScene(st,{escena:'Diroka caminó despacio. Kaelen la siguió en silencio.'});r.clean=[r.clean.errs.length,r.clean.warns.length];
+ editScene(0);const bt=[...document.querySelectorAll('#gsheet button')].find(b=>/actualizar la memoria/.test(b.textContent));bt.previousSibling;
+ document.querySelector('#gsheet textarea').value='Texto nuevo muy distinto.';bt.click();await new Promise(r=>setTimeout(r,400));
+ r.edit=[st.scenes[0].t,ensureMem(st).chars['diroka']&&ensureMem(st).chars['diroka'].know.length,window.__q.length];
+ return r;});
+console.log(JSON.stringify(o),errs);await b.close()})();

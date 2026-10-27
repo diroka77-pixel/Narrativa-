@@ -1,0 +1,15 @@
+const {chromium}=require('playwright');
+const SP='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
+const errs=[];p.on('pageerror',e=>errs.push(e.message));
+await p.route('**/*',r=>r.request().url().startsWith('file:')?r.continue():r.abort());
+await p.addInitScript(()=>{window.claude={use:async k=>k==='sample'?async q=>{q=String(q);if(q.indexOf('crea la base')>=0)return{text:JSON.stringify({titulo:'Neón RPG',sinopsis:'Una hacker huye de un vampiro.',generos:['Ciberpunk']})};if(q.indexOf('cartas de lore')>=0)return{text:JSON.stringify({cartas:[{tipo:'lugar',nombre:'La Torre',desc:'Sede.'}]})};return{text:JSON.stringify({escena:'Todo empieza en la azotea.',opciones:['[Seguro] Esperar','[Arriesgado] Saltar','[Temerario] Atacar'],memoria:'m',estado:{salud:100},mem:{}})}}:null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(300);
+await p.evaluate(()=>startCreate('un vampiro persigue a una hacker'));await p.click('#fmt-r');await p.click('#diffrow button[data-d="duro"]');
+console.log('opts visible',await p.evaluate(()=>[!document.getElementById('rpgopts').hidden,DIFF,FMT]));
+await p.screenshot({path:SP+'rpg3.png'});
+await p.click('#quick');await p.waitForTimeout(1500);
+console.log('story',await p.evaluate(()=>{const s=LIB[LIB.length-1];return[s.title,s.rpg&&[s.rpg.diff,s.rpg.cred,s.rpg.b2n]]}));
+await p.evaluate(()=>{openStory(LIB[LIB.length-1])});await p.waitForTimeout(1200);await p.evaluate(()=>window.scrollTo(0,0));
+await p.screenshot({path:SP+'rpg4.png'});
+console.log('undo hidden in duro',await p.evaluate(()=>document.getElementById('undo').hidden),'errs',errs);await b.close()})();
