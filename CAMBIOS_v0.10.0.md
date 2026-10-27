@@ -71,3 +71,12 @@
 ## Modo claro rediseñado
 - Los fondos ilustrados se ven igual que en modo oscuro; solo menús, barra superior, títulos, botones y paneles son blancos con letra oscura.
 - Panel RPG (salud/energía/créditos) con barras degradadas, sombra y mejor contraste.
+
+## Vocabulario del autor
+- Atlas → pestaña «Vocabulario»: cambia una palabra por otra (con plurales y femenino) o prohíbela.
+- Se avisa a la IA en cada escena, se corrige solo el texto y las opciones, y una palabra prohibida fuerza reescribir la escena.
+- Botón «Aplicar a las escenas ya escritas». Se copia al clonar la historia (RPG).
+
+## Personajes: deshacer fusión, separar y ficha fija
+- Atlas → Personajes: botón «Deshacer la fusión» (para fusiones hechas con esta versión) y «Separar «X» como personaje distinto» (para fusiones ya hechas antes: crea una ficha nueva vacía).
+- Ficha fija editable por personaje: nombre, sexo/género, edad, pelo, ojos y rasgos. La IA la recibe siempre como dato fijado por el autor.

@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+const r=await p.evaluate(()=>{LIB.push({id:'v1',title:'T',syn:'x',genre:'Fantasía Épica',genres:['Fantasía Épica'],scenes:[{t:'Un vampiro y dos vampiros.',m:{}}],lore:[],turn:1,at:1,state:{},opts:[],premise:'p',prot:[],ce:[]});save();openStory(LIB[LIB.length-1]);ATL.tab='voc';renderAtlas();
+const B=document.getElementById('atlbody'),ins=B.querySelectorAll('input[type=text]');ins[0].value='Vampiro';ins[1].value='tenebrio';
+[...B.querySelectorAll('button')].find(x=>x.textContent==='Añadir').click();
+[...document.getElementById('atlbody').querySelectorAll('button')].find(x=>/Aplicar/.test(x.textContent)).click();
+const s=LIB[LIB.length-1];return [s.vocab,s.scenes[0].t,document.getElementById('atlbody').textContent.includes('vampiro → tenebrio')]});
+console.log(JSON.stringify(r));console.log('errs',errs);await b.close()})();
