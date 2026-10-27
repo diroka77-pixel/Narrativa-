@@ -65,6 +65,12 @@ textarea{min-height:5.5rem;resize:vertical}
 .err{border:1.5px solid var(--acc);border-radius:12px;padding:.8rem 1rem;margin-top:1.2rem}
 .fin{text-align:center;color:var(--mute);margin:2rem 0;font-style:italic}
 .tail{margin-top:2rem;border-top:1px solid var(--line);padding-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+details.pmenu{margin-top:.6rem}
+details.pmenu>summary{display:inline-block;list-style:none;cursor:pointer;font-size:.9rem;padding:.4rem .9rem;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+details.pmenu>summary::-webkit-details-marker{display:none}
+details.pmenu[open]>summary{border-color:var(--acc)}
+details.pmenu>details.pl:first-of-type{margin-top:.6rem}
+#immp.bookbtn{width:auto;font-size:.9rem;padding:.4rem .9rem;border-radius:999px;border:1px solid var(--acc);background:var(--acc);color:var(--accink);margin-right:.4rem}
 details.pl{margin-top:1rem;color:var(--mute);font-size:.95rem}
 details.pl summary{cursor:pointer}
 .lore{border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem;margin:.5rem 0;background:var(--card);color:var(--ink);font-size:.92rem}
@@ -394,12 +400,14 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <h2 id="ptitle" style="margin-top:.4rem"></h2>
 <p class="hint" id="forkinfo" hidden style="margin:.1rem 0 .4rem"></p>
 <button class="small qpill" id="qpill" hidden aria-label="Ver mis consultas de IA de hoy"></button>
+<details class="pmenu" id="pmenu"><summary>☰ Menú de la historia</summary>
 <details class="pl" id="set"><summary>Ajustes de la partida</summary><div id="setbody"></div></details>
 <details class="pl" id="atlbox"><summary>Atlas de la historia</summary><div id="atlbody"></div></details>
 <details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
 <details class="pl" id="imgbox"><summary>Título, portada e imágenes</summary><div id="imgbody"></div></details>
 <details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
-<button id="immp" class="go bookbtn" style="width:100%;margin:.8rem 0 0">📖 Leer como un libro (pasar páginas)</button>
+</details>
+<button id="immp" class="small bookbtn" style="margin:.7rem 0 0">📖 Leer como un libro</button>
 <div class="row" id="rdbar" style="margin:.8rem 0 0"><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="immb" class="small">Pantalla completa</button><button id="bgb" class="small">Cambiar fondo</button></div>
 <button id="imx" class="go" hidden style="width:auto">Salir de la lectura</button>
 <div id="pgbar" role="group" aria-label="Pasar páginas"><button id="pgprev" aria-label="Página anterior">‹</button><span id="pglab" role="status" aria-live="polite">1 / 1</span><button id="pgnext" aria-label="Página siguiente">›</button><button id="pgtog" class="small">Desplazar</button></div>
@@ -830,7 +838,7 @@ function renderLib() {
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
 var VERSION = "0.10.0";
 var NEWS = [
-  ["0.10.0", "Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
+  ["0.10.0", "Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
   ["0.9.10", "Botón grande «Leer como un libro» sobre el texto de la historia (antes estaba escondido entre botones pequeños). Al exportar y al guardar cada escena se corrigen la raya de diálogo, las palabras duplicadas y el «¿Qué decides hacer?» final. Nuevas reglas de prosa: menos párrafos que empiezan igual, pausa en las revelaciones."],
   ["0.9.9", "Portadas despejadas en el inicio (el título y el estado van debajo, sin tapar la imagen). El Cronista evita repetir expresiones de las últimas escenas («zumbido sordo» y similares). Guía de Mistral corregida: hay que elegir el plan gratuito Experiment."],
   ["0.9.8", "Respaldos gratuitos: si tu IA principal se agota o se satura, El Cronista pasa solo a Mistral o Groq (opcionales, sin tarjeta). Las tareas cortas automáticas se reparten para gastar menos de tu cupo. Copia de seguridad automática con aviso para activarla y estado visible en el menú. Lectura en páginas, como un libro. Modo claro con fondos. Pantallas grandes y horizontal, y avisos para lectores de pantalla. Textos con la voz de El Cronista."],
@@ -2699,7 +2707,7 @@ $("tPers").onclick = function () { $("dchars").click(); };
 $("tAjus").onclick = function () { $("menu").click(); };
 $("tMundo").onclick = function () {
   if (!cur || $("play").hidden) { var l = lastStory(); if (!l) { goHome(); return; } openStory(l); }
-  $("atlbox").open = true; renderAtlas(); setTimeout(function () { $("atlbox").scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
+  $("pmenu").open = true; $("atlbox").open = true; renderAtlas(); setTimeout(function () { $("atlbox").scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
 };
 $("imx").onclick = function () { setImm(false); };
 window.hvBack = function () { if (document.body.classList.contains("imm")) { setImm(false); return true; } if (!$("gmodal").hidden) { closeSheet(); return true; } return false; };
@@ -3135,7 +3143,7 @@ var PRIV = [
   ["Dónde están tus historias", "Tus historias, personajes y ajustes se guardan solo en tu móvil. No hay cuentas, ni servidor de la app, ni analítica, ni publicidad. Si desinstalas la app o borras sus datos, se pierden: usa «Copia de seguridad»."],
   ["Qué se envía a la IA", "Para escribir cada escena, la app envía a la IA que tú elijas (Gemini, Groq, Mistral, ChatGPT/OpenAI, Claude/Anthropic, o la que uses en el modo copiar y pegar) el texto de tu historia y de tu acción. Ese proveedor lo trata según sus propias condiciones y su política de privacidad. No escribas datos personales reales en la historia."],
   ["Tu clave de API", "Si usas una clave de API, se guarda cifrada en el almacén seguro de Android, solo en tu móvil, y solo se envía al proveedor al que pertenece. Puedes borrarla en «Conectar mi IA». Usa claves con límites de gasto o de un plan gratuito."],
-  ["Créditos y licencias", "El corrector ortográfico usa el diccionario español de LibreOffice (es_ES, de Santiago Bosio y colaboradores), con licencia triple GPL 3 / LGPL 3 / MPL 1.1; aquí se usa bajo MPL 1.1, convertido a un filtro de palabras (es_dict.js). Más datos en el archivo LICENCIAS_TERCEROS."],
+  ["Créditos y licencias", "El corrector ortográfico usa el diccionario español de LibreOffice (es_ES, de Santiago Bosio y colaboradores), con licencia triple GPL 3 / LGPL 3 / MPL 1.1; aquí se usa bajo MPL 1.1, convertido a un filtro de palabras (es_dict.js). La app incluye JSZip (Stuart Knightley, licencia MIT) y pdf-lib (Andrew Dillon, licencia MIT, con un componente de Microsoft con licencia Apache 2.0). Las portadas y el icono se crearon con ChatGPT (OpenAI). Más datos en el archivo LICENCIAS_TERCEROS."],
   ["Contenido de la IA", "La IA puede equivocarse o producir algo que no te guste. Cada escena tiene «Denunciar contenido» para avisarnos de un resultado inapropiado, y puedes borrarla, editarla o pedir otra versión."],
   ["Derechos", "Eres responsable de lo que escribes y de cómo usas los textos que se generan. Los textos creados con IA pueden tener un régimen de derechos distinto según el país y el proveedor: consulta sus condiciones antes de publicarlos o venderlos."]
 ];

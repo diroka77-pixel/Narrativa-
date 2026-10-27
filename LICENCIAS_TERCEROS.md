@@ -9,7 +9,14 @@
 ## Descartado
 Se descartó una lista de palabras tomada de un repositorio sin licencia que a su vez se obtuvo del sitio de la RAE, por no tener permiso de reutilización claro.
 
-## Pendiente de revisar antes de publicar (no auditado)
-JSZip y pdf-lib (licencias de la versión incluida), tipografías, imágenes de `art/` y el icono (procedencia y derechos).
+## Librerías incluidas
+- JSZip 3.10.1 — © Stuart Knightley y colaboradores. Doble licencia MIT o GPLv3; se usa bajo **MIT**. Incluye pako (MIT). El aviso va en la cabecera de `jszip.min.js`, que se conserva.
+- pdf-lib — © Andrew Dillon, licencia **MIT**; contiene código de Microsoft Corporation bajo **Apache 2.0** (aviso en la cabecera de `pdf-lib.min.js`, que se conserva).
+- Ambas permiten uso comercial; la condición es mantener los avisos de copyright.
+
+## Imágenes e icono
+- Las portadas de `art/` y el icono fueron generados por el autor con ChatGPT (OpenAI). Según las condiciones de OpenAI vigentes al consultarlas, el usuario es dueño del contenido generado y puede usarlo comercialmente, cumpliendo sus políticas de uso. Conviene releer esas condiciones antes de publicar.
+- Aviso: en algunos países (p. ej. EE. UU.) el contenido generado íntegramente por IA puede no ser protegible por derechos de autor, es decir, otros podrían copiarlo. No impide usarlo. No se han pedido imágenes de personajes, marcas ni obras reconocibles (verificar que ninguna lo parezca).
+- Tipografías: no se incluyen ni se descargan; se usan las del dispositivo.
 
 *Nota: esto es un inventario técnico, no asesoramiento legal.*
