@@ -542,11 +542,11 @@
   }
   async function callOne(st, prompt, c, o) {
     var prov = st.prov, p = prompt;
-    if (st.compact) p = (o && o.alt) ? o.alt : cap(prompt, 16000);
+    if (st.compact) p = cap((o && o.alt) ? o.alt : prompt, 15000);
     if (prov === "gemini") return viaGemini(p, c, o && o.quick);
     if (prov === "openai") return viaOpenAI(p, c, o && o.quick);
     if (prov === "anthropic") return viaAnthropic(p, c, o && o.quick);
-    return viaCompat(prov, p, c, { model: st.model, max: o && o.cls === "light" ? 1500 : 2200, quick: o && o.quick });
+    return viaCompat(prov, p, c, { model: st.model, max: o && o.cls === "light" ? 1500 : 2600, quick: o && o.quick });
   }
 
   function viaManual(prompt) {
