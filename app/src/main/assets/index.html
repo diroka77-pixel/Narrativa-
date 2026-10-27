@@ -65,6 +65,21 @@ textarea{min-height:5.5rem;resize:vertical}
 .err{border:1.5px solid var(--acc);border-radius:12px;padding:.8rem 1rem;margin-top:1.2rem}
 .fin{text-align:center;color:var(--mute);margin:2rem 0;font-style:italic}
 .tail{margin-top:2rem;border-top:1px solid var(--line);padding-top:1rem;display:flex;gap:.6rem;flex-wrap:wrap}
+#shelf{background:linear-gradient(180deg,#1b130c,#110b07);border:7px solid #3b2615;border-radius:8px;padding:1rem .8rem .3rem;box-shadow:inset 0 0 30px rgba(0,0,0,.7),0 6px 18px rgba(0,0,0,.4)}
+#shelf .srow{display:flex;align-items:flex-end;gap:5px;min-height:60px;padding:0 .2rem}
+#shelf .plank{height:15px;margin:0 -.8rem 1.1rem;background:linear-gradient(180deg,#6b4526,#4a2e18 60%,#2f1c0e);box-shadow:0 5px 8px rgba(0,0,0,.55);border-top:1px solid #8a5d36}
+.spine{position:relative;flex:none;border:0;border-radius:3px 3px 1px 1px;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:space-between;overflow:hidden;box-shadow:1px 0 2px rgba(0,0,0,.6);transition:transform .15s}
+.spine:hover,.spine:focus-visible{transform:translateY(-7px)}
+.spine span{writing-mode:vertical-rl;font-family:Georgia,"Times New Roman",serif;font-size:.8rem;line-height:1;color:#f3e6c8;text-shadow:0 1px 1px rgba(0,0,0,.6);letter-spacing:.04em;flex:1;display:flex;align-items:center;padding:.2rem 0;white-space:nowrap}
+.spine i.band{display:block;width:100%;height:7px;border-top:1px solid var(--ac);border-bottom:1px solid var(--ac);opacity:.85;margin:7px 0}
+.pullbook{display:flex;gap:.9rem;align-items:flex-start;margin-bottom:.8rem}
+.pcover{flex:none;width:96px;height:140px;border-radius:4px 8px 8px 4px;box-shadow:3px 3px 10px rgba(0,0,0,.5)}
+@media (prefers-reduced-motion:reduce){.spine{transition:none}}
+mark.hl{background:rgba(255,205,70,.38);color:inherit;border-radius:3px;padding:0 .1em;cursor:pointer}
+:root[data-theme="light"] mark.hl{background:rgba(255,190,40,.5)}
+#hlbar{position:fixed;left:50%;transform:translateX(-50%);bottom:5.4rem;z-index:60;display:flex;gap:.35rem;padding:.35rem;background:var(--card);border:1px solid var(--line);border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+#hlbar[hidden]{display:none}
+#hlbar button{white-space:nowrap;margin:0}
 details.pmenu{margin-top:.6rem}
 details.pmenu>summary{display:inline-block;list-style:none;cursor:pointer;font-size:.9rem;padding:.4rem .9rem;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
 details.pmenu>summary::-webkit-details-marker{display:none}
@@ -305,6 +320,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
 <div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
+<div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
 <p class="hint" id="pstat"></p>
@@ -317,8 +333,16 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <div class="sh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z"/></svg><h2>En progreso</h2><button class="more" id="more1" aria-label="Ver todas las historias">Ver todo ›</button></div><div class="car" id="list"></div>
 <div class="sh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6"/><path d="M16 5.5a3 3 0 010 5.5M18 14.5c2 .7 3 2.6 3 5.5"/></svg><h2>Mis personajes</h2></div><div class="car" id="pchars"></div>
 <div class="sh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.4 5.6L20 9.3l-4.3 3.9L17 19l-5-3-5 3 1.3-5.8L4 9.3l5.6-.7z"/></svg><h2>Ideas para empezar</h2></div><div class="car" id="ideasrow"></div>
+<div id="nookrow" hidden style="margin:.8rem 0"><button class="small" id="nookgo">🕯 Rincón de los olvidados (<span id="nookn">0</span>)</button></div>
 <button class="go fab" id="new">+ Crear nuevo</button>
 <p class="hint" id="nosample" hidden>Esta función necesita abrir la página dentro de claude.ai.</p>
+</section>
+
+<section id="nook" hidden>
+<div class="row" style="align-items:center;margin-bottom:.5rem"><button class="small" id="nookback">← Mis historias</button></div>
+<h2 style="margin:.4rem 0">Rincón de los olvidados</h2>
+<p class="hint">Aquí descansan las historias que apartaste. Toca un lomo para sacar el libro y decidir si lo rescatas.</p>
+<div id="shelf"></div>
 </section>
 
 <section id="create" class="simple" hidden>
@@ -439,7 +463,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
 </div>
 <div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="recapb" class="small">Lo escrito hasta ahora</button><button id="exp" class="small">Exportar para leer</button></div>
-<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="fichab" style="flex-basis:100%">📋 Ficha de la historia: lore, personajes y memoria (PDF)</button><button class="small" id="fichat" style="flex-basis:100%">📋 La misma ficha en texto (.txt)</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
@@ -481,8 +505,8 @@ function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c
 function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
 var BK_DIRTY = false;
 function save() { try { BK_DIRTY = true; localStorage.setItem(KEY, JSON.stringify(LIB)); try { achSoon(); } catch (e2) {} return true; } catch (e) { return false; } }
-function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "create", "imp", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
-function setTab(n) { var m = { lib: "tInicio", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
+function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "nook", "create", "imp", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
+function setTab(n) { var m = { lib: "tInicio", nook: "tHist", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
 /* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
 var GTH = {
   "Fantasía Épica": { acc: "#a24a8a", acc2: "#d6709a", p: ["#1f1442", "#6a3a7a", "#f08a3c"], glow: "#ffb868", body: "sun", mot: "castle", fx: "motes" },
@@ -786,7 +810,55 @@ claude.use("sample").then(function (s) {
 }).catch(function () { $("nosample").hidden = false; $("new").disabled = true; });
 
 /* ---------- Inicio ---------- */
-function lastStory() { return LIB.length ? LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); })[0] : null; }
+function lastStory() { var L = LIB.filter(function (x) { return !x.arch; }); return L.length ? L.sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); })[0] : null; }
+/* ---------- v0.10.0: Rincón de los olvidados (estantería de historias archivadas) ---------- */
+function hsh(t) { var h = 0; String(t).split("").forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) % 100003; }); return h; }
+function fdate(t) { try { return new Date(t).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return ""; } }
+function storyMenu(s) {
+  sheet(s.title, function (sh) {
+    para(sh, (s.scenes || []).length + " escenas · " + (s.fin ? "terminada" : "en curso"));
+    var go = el("button", "go", "▶ Continuar"); go.onclick = function () { closeSheet(); openStory(s); }; sh.appendChild(go);
+    var ar = el("button", null, "🕯 Guardar en el Rincón de los olvidados"); ar.style.marginTop = ".5rem"; ar.style.width = "100%";
+    ar.onclick = function () { s.arch = Date.now(); save(); closeSheet(); renderLib(); toast("«" + s.title + "» descansa ahora en el Rincón de los olvidados."); }; sh.appendChild(ar);
+    para(sh, "No se borra nada: la historia sale de la página principal y puedes rescatarla cuando quieras.");
+    var d = el("button", "small", "Borrar historia"); d.style.marginTop = ".6rem";
+    d.onclick = function () { if (d.textContent === "Borrar historia") { d.textContent = "¿Seguro? Se perderá para siempre"; return; } LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); closeSheet(); renderLib(); };
+    sh.appendChild(d); closeBtn(sh);
+  });
+}
+function nookPull(s) {
+  sheet(s.title, function (sh) {
+    var top = el("div", "pullbook"), cv = el("div", "pcover"); cv.style.background = coverBg(s); top.appendChild(cv);
+    var tx = el("div"); tx.appendChild(el("p", null, s.syn || gtxt(s))); tx.appendChild(el("p", "hint", (s.scenes || []).length + " escenas · " + (s.fin ? "terminada" : "en curso") + (s.arch ? " · en el rincón desde el " + fdate(s.arch) : ""))); top.appendChild(tx); sh.appendChild(top);
+    var go = el("button", "go", "✨ Rescatar y seguir escribiendo"); go.onclick = function () { delete s.arch; s.at = Date.now(); save(); closeSheet(); openStory(s); }; sh.appendChild(go);
+    var rs = el("button", null, "Devolver a Mis historias"); rs.style.cssText = "margin-top:.5rem;width:100%"; rs.onclick = function () { delete s.arch; s.at = Date.now(); save(); closeSheet(); renderNook(); toast("«" + s.title + "» vuelve a tus historias."); }; sh.appendChild(rs);
+    var d = el("button", "small", "Borrar para siempre"); d.style.marginTop = ".6rem";
+    d.onclick = function () { if (d.textContent === "Borrar para siempre") { d.textContent = "¿Seguro? No se puede deshacer"; return; } LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); closeSheet(); renderNook(); };
+    sh.appendChild(d); closeBtn(sh);
+  });
+}
+function spineOf(s) {
+  var th = GTH[s.genre] || {}, p = th.p || ["#2a1a3a", "#6a3a5a", "#d09040"], n = (s.scenes || []).length, h0 = hsh(s.id);
+  var h = 150 + Math.min(60, Math.round(n / 3)) + (h0 % 26), w = 34 + Math.min(24, Math.round(n / 8)) + (h0 % 9), ac = th.acc2 || th.acc || "#d9b45a";
+  var t = String(s.title || "Sin título"), mx = Math.floor(h / 8.5); if (t.length > mx) t = t.slice(0, mx - 1).trim() + "…";
+  var b = el("button", "spine"); b.style.height = h + "px"; b.style.width = w + "px"; b.style.setProperty("--ac", ac);
+  b.style.background = "linear-gradient(90deg,rgba(0,0,0,.45),rgba(255,255,255,.1) 28%,rgba(0,0,0,.1) 60%,rgba(0,0,0,.4)),linear-gradient(180deg," + p[1] + "," + p[0] + ")";
+  b.appendChild(el("i", "band")); b.appendChild(el("span", null, t)); b.appendChild(el("i", "band"));
+  b.setAttribute("aria-label", "Sacar «" + s.title + "» de la estantería"); b.onclick = function () { nookPull(s); };
+  return { b: b, w: w };
+}
+function renderNook() {
+  var sh = $("shelf"); sh.innerHTML = ""; var arch = LIB.filter(function (x) { return x.arch; }).sort(function (a, b) { return (a.arch || 0) - (b.arch || 0); });
+  if (!arch.length) { var e = el("p", "hint", "El rincón está vacío. Cuando apartes una historia (mantén pulsada su portada o toca «⋯»), vendrá a descansar aquí."); e.style.padding = "1rem"; sh.appendChild(e); return; }
+  var W = Math.max(240, sh.clientWidth - 28), row = null, used = 0;
+  function newRow() { var r = el("div", "srow"); sh.appendChild(r); var pl = el("div", "plank"); sh.appendChild(pl); row = r; used = 0; }
+  newRow();
+  arch.forEach(function (s) { var sp = spineOf(s); if (used + sp.w + 5 > W && used > 0) newRow(); row.appendChild(sp.b); used += sp.w + 5; });
+}
+$("nookgo").onclick = function () { view("nook"); renderNook(); };
+$("nookback").onclick = function () { goHome(); };
+var NK_T = 0; window.addEventListener("resize", function () { clearTimeout(NK_T); NK_T = setTimeout(function () { if (!$("nook").hidden) renderNook(); }, 250); });
+
 function renderLib() {
   var h = $("hero"); h.innerHTML = ""; h.className = "hero";
   var s0 = lastStory(); if (!$("lib").hidden) applyTheme(s0 ? s0.genre : "Auto", s0 ? storyVar(s0) : 0, s0 ? s0.id : "home");
@@ -805,25 +877,27 @@ function renderLib() {
   }
 
   var box = $("list"); box.innerHTML = "";
+  var nA = LIB.filter(function (x) { return x.arch; }).length; $("nookrow").hidden = !nA; $("nookn").textContent = nA;
   if (!LIB.length) box.appendChild(el("p", "hint", "Aún no tienes historias. Pulsa «Crear nuevo»."));
-  LIB.slice().sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
+  else if (nA === LIB.length) box.appendChild(el("p", "hint", "Todas tus historias descansan en el Rincón de los olvidados. Pulsa «Crear nuevo» o rescata una."));
+  LIB.filter(function (x) { return !x.arch; }).sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s); if (s.cover) { cv.classList.add("hasimg"); cd.classList.add("clean"); cv.setAttribute("aria-label", s.title); }
     if (!s.cover) cd.appendChild(el("span", "chip", (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
     cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
-    cv.onclick = function () { openStory(s); };
+    var lpT = 0, lpF = false;
+    cv.onpointerdown = function () { lpF = false; clearTimeout(lpT); lpT = setTimeout(function () { lpF = true; storyMenu(s); }, 650); };
+    ["pointerup", "pointerleave", "pointercancel", "pointermove"].forEach(function (ev) { cv.addEventListener(ev, function () { clearTimeout(lpT); }); });
+    cv.oncontextmenu = function (e) { e.preventDefault(); clearTimeout(lpT); if ($("gmodal").hidden) storyMenu(s); };
+    cv.onclick = function () { if (lpF) { lpF = false; return; } openStory(s); };
     cd.appendChild(cv); it.appendChild(cd);
     if (s.cover) { var cp = el("div", "capt"); cp.appendChild(el("b", null, s.title)); cp.appendChild(el("small", null, (s.fin ? "Final" : "En curso") + (s.fork ? " · rama" : "") + " · cap. " + chCur(s) + " · " + (s.scenes || []).length + " esc.")); it.appendChild(cp); }
-    var d = el("button", "small", "Borrar");
-    d.onclick = function () {
-      if (d.textContent === "Borrar") { d.textContent = "¿Seguro?"; return; }
-      LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); renderLib();
-    };
+    var d = el("button", "small", "⋯ Opciones"); d.setAttribute("aria-label", "Opciones de " + s.title); d.onclick = function () { storyMenu(s); };
     it.appendChild(d); box.appendChild(it);
   });
 
   $("more1").onclick = function () { var g = box.classList.toggle("grid"); $("more1").textContent = g ? "Ver menos" : "Ver todo ›"; };
-  $("more1").hidden = LIB.length < 3;
+  $("more1").hidden = LIB.length - nA < 3;
   var pc = $("pchars"); pc.innerHTML = "";
   var nw = el("div", "cc pc"), nb = el("button", "pb new"); nb.appendChild(el("span", null, "+")); nb.appendChild(el("small", null, "Nuevo personaje"));
   nb.onclick = function () { openDesigner(null, "lib"); }; nw.appendChild(nb); pc.appendChild(nw);
@@ -852,7 +926,7 @@ function renderLib() {
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
 var VERSION = "0.10.0";
 var NEWS = [
-  ["0.10.0", "Voz natural opcional para escuchar tus historias (Ajustes → Lectura → Voz para escuchar): usa tu clave de Gemini, suena más humana y, si falla, vuelve a la voz del teléfono. Importar tu material: en Crear, «Ya tengo material escrito». Carga un PDF, Word, texto o pega tu croquis, fichas o capítulos; El Cronista los estudia, te enseña lo que entendió (personajes, plan, tono) y te pide decidir las contradicciones. Al narrar consulta solo los apartados que hacen falta, en modo fiel o como inspiración. Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
+  ["0.10.0", "Rincón de los olvidados: aparta una historia (mantén pulsada su portada o toca «⋯ Opciones») y descansa en una estantería con sus lomos; tócala para rescatarla cuando quieras. Subrayar el texto (se guarda) y crear fichas de lore desde lo que seleccionas: nombre, tipo y descripción, que puede redactar El Cronista. Ficha de la historia (PDF o texto) con lore, personajes, relaciones, objetos, plan y cronología, para reutilizarla en otra historia. La voz natural reintenta y junta párrafos para no saltar a la voz del teléfono. Aviso de frases físicamente incoherentes. Voz natural opcional para escuchar tus historias (Ajustes → Lectura → Voz para escuchar): usa tu clave de Gemini, suena más humana y, si falla, vuelve a la voz del teléfono. Importar tu material: en Crear, «Ya tengo material escrito». Carga un PDF, Word, texto o pega tu croquis, fichas o capítulos; El Cronista los estudia, te enseña lo que entendió (personajes, plan, tono) y te pide decidir las contradicciones. Al narrar consulta solo los apartados que hacen falta, en modo fiel o como inspiración. Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
   ["0.9.10", "Botón grande «Leer como un libro» sobre el texto de la historia (antes estaba escondido entre botones pequeños). Al exportar y al guardar cada escena se corrigen la raya de diálogo, las palabras duplicadas y el «¿Qué decides hacer?» final. Nuevas reglas de prosa: menos párrafos que empiezan igual, pausa en las revelaciones."],
   ["0.9.9", "Portadas despejadas en el inicio (el título y el estado van debajo, sin tapar la imagen). El Cronista evita repetir expresiones de las últimas escenas («zumbido sordo» y similares). Guía de Mistral corregida: hay que elegir el plan gratuito Experiment."],
   ["0.9.8", "Respaldos gratuitos: si tu IA principal se agota o se satura, El Cronista pasa solo a Mistral o Groq (opcionales, sin tarjeta). Las tareas cortas automáticas se reparten para gastar menos de tu cupo. Copia de seguridad automática con aviso para activarla y estado visible en el menú. Lectura en páginas, como un libro. Modo claro con fondos. Pantallas grandes y horizontal, y avisos para lectores de pantalla. Textos con la voz de El Cronista."],
@@ -1036,10 +1110,11 @@ function impCmap(t) {
   }
   return { map: map, two: two };
 }
+var IMP_WIN = { 128: "€", 130: "‚", 131: "ƒ", 132: "„", 133: "…", 134: "†", 135: "‡", 136: "ˆ", 137: "‰", 138: "Š", 139: "‹", 140: "Œ", 142: "Ž", 145: "‘", 146: "’", 147: "“", 148: "”", 149: "•", 150: "–", 151: "—", 152: "˜", 153: "™", 154: "š", 155: "›", 156: "œ", 158: "ž", 159: "Ÿ" };
 function impDec(raw, f) {
   var o = "", i;
   if (f && f.cm && f.cm.two) { for (i = 0; i + 1 < raw.length; i += 2) { var c2 = raw.charCodeAt(i) * 256 + raw.charCodeAt(i + 1), v = f.cm.map[c2]; o += v == null ? "" : v; } return o; }
-  for (i = 0; i < raw.length; i++) { var c = raw.charCodeAt(i), w = f && f.cm ? f.cm.map[c] : null; o += w != null ? w : String.fromCharCode(c); }
+  for (i = 0; i < raw.length; i++) { var c = raw.charCodeAt(i), w = f && f.cm ? f.cm.map[c] : null; o += w != null ? w : (c >= 128 && c < 160 && IMP_WIN[c]) ? IMP_WIN[c] : String.fromCharCode(c); }
   return o;
 }
 function impStream(c, fonts) {
@@ -1447,7 +1522,7 @@ function render(keep) {
     var cnum = chOf(s, i); if (i === chStartIdx(s, cnum)) { var ctt = ctitle(s, cnum); w.appendChild(el("div", "ch", "Capítulo " + cnum + (ctt ? " · " + ctt : ""))); }
     if (sc.a) w.appendChild(el("p", "act", sc.a));
     var fresh = fi === i && RD.type && !reduce;
-    sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); w.appendChild(pe); });
+    sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); else hlApply(pe, sc, i); w.appendChild(pe); });
     if (sc.bm) w.appendChild(el("span", "bmk", "Escena marcada"));
     w.appendChild(sceneImg(sc, i));
     book.appendChild(w);
@@ -1493,6 +1568,7 @@ var RULES = [
   "Anota en estado.deudas los favores, traiciones, perdones y promesas, para que vuelvan mucho después.",
   "Intensidad y explicitud son cosas distintas. Adapta el tono a la INTENSIDAD indicada con prosa adulta, clara y sobria, sin vulgaridad gratuita. La violencia y el terror se escriben con peso emocional y consecuencias, sin recrearse en el detalle gráfico. El romance y la sensualidad se escriben con tensión, deseo y elipsis; no escribas escenas sexuales explícitas, sea cual sea el nivel.",
   "Todo personaje implicado en una escena romántica o sensual es adulto. Nunca escribas contenido sexual con menores ni violencia sexual.",
+  "COHERENCIA FÍSICA: antes de dar por buena cada frase de descripción, comprueba que es posible y que el número cuadra: una prenda en singular cubre una parte del cuerpo (nunca «el pecho cubierto por chaquetas»); no mezcles objetos, escalas ni partes del cuerpo; si una imagen no se sostiene, simplifícala.",
   "Si introduces un personaje, lugar, facción u objeto importante que no esté en las cartas de lore, añádelo en lore_nuevo."
 ].join("\n");
 
@@ -1876,7 +1952,7 @@ function redund(s, text) {
 }
 
 function intTxt(s) { var o = s.intens || {}; return AXES.map(function (a) { var v = a in o ? o[a] : 1; return a + " " + v + " (" + LV[v] + ")"; }).join(", "); }
-function loreTxt(s) { return (s.lore || []).slice(0, 30).map(function (c) { return "- " + c.tipo + " " + c.nombre + ": " + c.desc; }).join("\n") || "(ninguna)"; }
+function loreTxt(s) { return (s.lore || []).slice().sort(function (a, b) { return (b.u ? 1 : 0) - (a.u ? 1 : 0); }).slice(0, 30).map(function (c) { return "- " + c.tipo + " " + c.nombre + ": " + c.desc; }).join("\n") || "(ninguna)"; }
 
 function build(s, action, note, sp, compact) {
   var aviso = note ? "AVISO: " + note + "\n" : "";
@@ -2192,6 +2268,8 @@ function validateScene(s, d) {
     var i = t.toLowerCase().indexOf(String(x.quien).toLowerCase()); if (i < 0 || new RegExp("\\b" + reEsc(x.objeto) + "\\b", "i").test(t)) return;
     var near = t.slice(i, i + 90).toLowerCase(); WEAPONS.forEach(function (w) { if (w !== nk(x.objeto) && new RegExp("\\b" + w + "\\b").test(near)) warns.push("Arma: " + x.quien + " sostenía " + x.objeto + " y ahora aparece con " + w + ". Mantén la misma arma o explica el cambio."); });
   });
+  var gm = /(?:pecho|torso|espalda|hombros?|cuerpo|brazos?|piernas?|cabeza)\s+(?:cubiert[oa]s?|vestid[oa]s?|envuelt[oa]s?|protegid[oa]s?|tapad[oa]s?)\s+(?:por|de|con)\s+(?:varias\s+|unas\s+|dos\s+|tres\s+)?(?:chaquetas|abrigos|camisas|camisetas|capas|chalecos|jerséis|gabardinas)/i.exec(t);
+  if (gm) errs.push("Frase físicamente incoherente: «" + gm[0] + "». Una persona viste una sola prenda por parte del cuerpo; reescribe la descripción de forma verosímil.");
   var ps = t.split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean), op = {};
   ps.forEach(function (x) { var w = x.replace(/^[—"«\s]+/, "").split(/\s+/)[0]; if (/^[A-ZÁÉÍÓÚÑ][\wáéíóúñ]+$/.test(w) && !/^(El|La|Los|Las|Un|Una|Y|Pero|Cuando|Si|No|Ya)$/.test(w)) op[w] = (op[w] || 0) + 1; });
   Object.keys(op).forEach(function (w) { if (ps.length >= 4 && op[w] >= 3) warns.push("Varios párrafos de esta escena empiezan por «" + w + "»: varía los comienzos (pronombres, percepciones, diálogo)."); });
@@ -2920,7 +2998,7 @@ function renderRead() {
 var TS = { ch: [], i: 0, on: false, paused: false, ps: [], scene: -1, native: false, poll: 0 };
 function setListen() {
   var b = $("listen");
-  b.textContent = !TS.on ? "Escuchar la última escena" : TS.paused ? "Seguir escuchando" : "Pausa";
+  b.textContent = !TS.on ? "Escuchar la última escena" : TS.prep ? "Preparando la voz…" : TS.paused ? "Seguir escuchando" : "Pausa";
   $("stoplisten").hidden = !TS.on;
 }
 function hilite(k) {
@@ -2942,7 +3020,7 @@ function speakNext() {
   u.onend = u.onerror = function () { if (!TS.on || TS.paused || TS.i !== idx) return; TS.i++; speakNext(); };
   hilite(c.p); speechSynthesis.speak(u);
 }
-var GA = { ctx: null, src: null, gen: 0 };
+var GA = { ctx: null, src: null, gen: 0, cache: {} }, GEM_WAIT = [0, 5000, 20000, 40000];
 function gemStyle() { return "Lee en español de España, con voz de narrador de audiolibro, " + (RD.rate < 1 ? "muy pausada" : RD.rate > 1 ? "algo más ágil" : "pausada y expresiva"); }
 function gemBuf(r) {
   var ctx = GA.ctx, bin = atob(r.data), n = bin.length >> 1, buf = ctx.createBuffer(1, n, r.rate || 24000), ch = buf.getChannelData(0);
@@ -2954,23 +3032,38 @@ function gemPlay(buf, gen) {
 }
 function gemChunks() {
   var q = [], cur = null;
-  TS.ch.forEach(function (c, k) { if (cur && cur.t.length + c.t.length < 650 && TS.ch[cur.from].p === c.p) { cur.t += " " + c.t; } else { cur = { t: c.t, from: k }; q.push(cur); } });
+  TS.ch.forEach(function (c, k) { if (cur && cur.t.length + c.t.length < 1100) { cur.t += (TS.ch[k - 1].p === c.p ? " " : "\n\n") + c.t; } else { cur = { t: c.t, from: k }; q.push(cur); } });
   return q;
 }
 async function gemRun(gen) {
   var q = TS.gq, pre = null;
-  function get(i) { var p = window.hvTTS(q[i].t, RD.gv || "Kore", gemStyle()); p.catch(function () {}); return p; }
+  function get(i) {
+    var key = (RD.gv || "Kore") + "|" + q[i].t, p = (async function () {
+      if (GA.cache[key]) return GA.cache[key];
+      var w = GEM_WAIT, last = null;
+      for (var k = 0; k < w.length; k++) {
+        if (w[k]) await new Promise(function (r) { setTimeout(r, w[k]); });
+        if (gen !== GA.gen) throw { message: "" };
+        try {
+          var r = await window.hvTTS(q[i].t, RD.gv || "Kore", gemStyle());
+          var ks = Object.keys(GA.cache); if (ks.length >= 6) delete GA.cache[ks[0]]; GA.cache[key] = r; return r;
+        } catch (e) { last = e; if (e && (e.code === "bad_key" || e.code === "no_key" || e.code === "bad_model")) throw e; }
+      }
+      throw last;
+    })();
+    p.catch(function () {}); return p;
+  }
   try {
     for (var i = 0; i < q.length; i++) {
       if (gen !== GA.gen) return;
       var cur = pre || get(i); pre = i + 1 < q.length ? get(i + 1) : null;
-      var buf = gemBuf(await cur); if (gen !== GA.gen) return;
+      TS.prep = true; setListen(); var raw = await cur; TS.prep = false; setListen(); var buf = gemBuf(raw); if (gen !== GA.gen) return;
       TS.i = q[i].from; hilite(TS.ch[q[i].from].p); await gemPlay(buf, gen);
     }
     if (gen === GA.gen) stopTalk();
   } catch (e) {
     if (gen !== GA.gen) return;
-    var from = TS.i; stopTalk(); emsg(((e && e.message) || "No pude generar la voz natural.") + " Sigo con la voz del teléfono.");
+    var from = TS.i; stopTalk(); TS.prep = false; emsg(((e && e.message) || "No pude generar la voz natural.") + " Sigo con la voz del teléfono.");
     TS.ch = TS.ch.slice(from); TS.i = 0; TS.on = true; TS.paused = false; TS.native = false; setListen(); speakNext();
   }
 }
@@ -3282,6 +3375,182 @@ function diffSheet(n, back) {
     ok.style.flex = "1"; row.appendChild(ok); row.appendChild(no); sh.appendChild(row);
   });
 }
+/* ---------- v0.10.0: ficha de la historia (lore, tarjetas y memoria) ---------- */
+function fichaRel(v) { v = Number(v) || 0; return v >= 5 ? "muy cercana" : v >= 1 ? "buena" : v <= -5 ? "enemistad abierta" : v <= -1 ? "tensa" : "neutra"; }
+function fichaLines(s) {
+  var L = [], m = ensureMem(s), n = (s.scenes || []).length;
+  function h1(t) { L.push({ k: "h1", t: t }); } function h2(t) { L.push({ k: "h2", t: t }); } function p(t) { if (t) L.push({ k: "p", t: t }); } function li(t) { if (t) L.push({ k: "li", t: t }); }
+  function sc(x) { return typeof x === "number" ? "esc. " + (x + 1) : ""; }
+  L.push({ k: "title", t: s.title || "Historia" });
+  p("Ficha de la historia · " + n + " escenas · generada con Historias vivas el " + new Date().toISOString().slice(0, 10));
+  h1("DATOS GENERALES");
+  li("Géneros: " + ((s.genres && s.genres.length ? s.genres : [s.genre]).filter(Boolean).join(" + ") || "sin definir"));
+  li("Sinopsis: " + (s.syn || s.premise || ""));
+  if (s.premise && s.premise !== s.syn) li("Premisa: " + s.premise);
+  if (s.pov) li("Punto de vista: " + s.pov + (s.ten ? " · Tiempo: " + s.ten : "") + (s.sty ? " · Estilo: " + s.sty : ""));
+  if (s.bible) { h1("BIBLIA, TONO Y REGLAS"); s.bible.split("\n").forEach(function (x) { li(x.trim()); }); }
+  if (s.rules && s.rules.length) { if (!s.bible) h1("BIBLIA, TONO Y REGLAS"); s.rules.forEach(function (x) { li("Regla: " + x); }); }
+  if (s.plan && s.plan.pts && s.plan.pts.length) { h1("PLAN DE LA NOVELA"); var pp = planPoint(s); s.plan.pts.forEach(function (x, i) { li((i + 1) + ". " + x + (pp && pp.i === i ? "  ◄ aquí va la historia" : "")); }); }
+  if (s.src && s.src.open && s.src.open.length) { h1("CONTRADICCIONES SIN DECIDIR"); s.src.open.forEach(function (x) { li(x); }); }
+  if ((s.prot || []).length) { h1("PROTAGONISTAS"); s.prot.forEach(function (c) { h2(c.name); p(charTxt(c)); }); }
+  var chars = Object.keys(m.chars).map(function (k) { return m.chars[k]; }).sort(function (a, b) { return (a.first || 0) - (b.first || 0); });
+  if (chars.length) {
+    h1("PERSONAJES");
+    chars.forEach(function (c) {
+      h2(c.name + ((c.alias || []).length ? "  (también: " + c.alias.join(", ") + ")" : ""));
+      li("Descripción: " + (c.desc || "sin ficha"));
+      var ah = [c.loc && "está en " + c.loc, c.body && "cuerpo: " + c.body, c.mood && "ánimo: " + c.mood].filter(Boolean); if (ah.length) li("Estado actual: " + ah.join("; "));
+      if (c.goal) li("Quiere: " + c.goal);
+      if ((c.objs || []).length) li("Lleva: " + c.objs.join(", "));
+      var rl = Object.keys(c.rel || {}).map(function (k) { var r = c.rel[k]; return r.name + " (" + fichaRel(r.conf) + (r.note ? ": " + r.note : "") + ")"; }); if (rl.length) li("Relaciones: " + rl.join("; "));
+      (c.know || []).slice(-8).forEach(function (x) { li("Sabe/cree (" + x.k + "): " + x.t + (x.sc != null ? " [" + sc(x.sc) + "]" : "")); });
+      if ((c.prom || []).length) li("Promesas y deudas: " + c.prom.slice(-5).join("; "));
+      if (c.last != null) li("Aparece desde la " + sc(c.first || 0) + " hasta la " + sc(c.last));
+    });
+  }
+  var items = Object.keys(m.items).map(function (k) { return m.items[k]; });
+  if (items.length) { h1("OBJETOS"); items.forEach(function (o) { li(o.name + [o.owner && " · de " + o.owner, o.loc && " · en " + o.loc, o.state && " · " + o.state].filter(Boolean).join("")); }); }
+  var wk = Object.keys(m.world).map(function (k) { return m.world[k]; }).sort(function (a, b) { return (a.sc || 0) - (b.sc || 0); });
+  if (wk.length) { h1("MUNDO: HECHOS VIGENTES"); wk.forEach(function (w) { li(w.key + ": " + w.val); }); }
+  if ((s.lore || []).length) {
+    h1("CARTAS DE LORE");
+    var by = {}; s.lore.forEach(function (c) { (by[c.tipo || "otro"] = by[c.tipo || "otro"] || []).push(c); });
+    Object.keys(by).forEach(function (t) { h2(t.charAt(0).toUpperCase() + t.slice(1)); by[t].forEach(function (c) { li(c.nombre + ": " + c.desc); }); });
+  }
+  var op = (m.pend || []).filter(function (x) { return x.open; }), cl = (m.pend || []).filter(function (x) { return !x.open; });
+  if (op.length || cl.length) { h1("HILOS ABIERTOS Y RESUELTOS"); op.forEach(function (x) { li("Abierto: " + x.text + (x.sc ? " [" + sc(x.sc) + "]" : "")); }); cl.slice(-30).forEach(function (x) { li("Resuelto: " + x.text); }); }
+  if ((m.ev || []).length) { h1("CRONOLOGÍA DE SUCESOS"); m.ev.slice(-150).forEach(function (e) { li((e.sc != null ? sc(e.sc) + ": " : "") + e.what + ((e.where || (e.who || []).length) ? " (" + [e.where, (e.who || []).join(", ")].filter(Boolean).join("; ") + ")" : "") + (e.cons ? " → " + e.cons : "")); }); }
+  if (s.memory) { h1("RESUMEN DEL ARCO EN CURSO"); p(s.memory); }
+  var hs = []; (s.scenes || []).forEach(function (x, i) { (x.hl || []).forEach(function (h) { hs.push("Esc. " + (i + 1) + ": «" + h + "»"); }); }); if (hs.length) { h1("SUBRAYADOS DEL AUTOR"); hs.slice(0, 80).forEach(function (x) { li(x); }); }
+  h1("CÓMO REUTILIZAR ESTA FICHA");
+  p("En Historias vivas: Crear → «Ya tengo material escrito» → elige este archivo. El Cronista lo estudiará y podrás empezar una historia nueva con estos personajes, lugares y reglas.");
+  return L;
+}
+function fichaTxt(s) {
+  return fichaLines(s).map(function (x) { return x.k === "title" ? x.t.toUpperCase() + "\n" : x.k === "h1" ? "\n" + x.t + "\n" + "=".repeat(Math.min(40, x.t.length)) : x.k === "h2" ? "\n" + x.t : x.k === "li" ? "- " + x.t : x.t; }).join("\n") + "\n";
+}
+async function fichaPdf(s) {
+  var L = window.PDFLib, doc = await L.PDFDocument.create(), fR = await doc.embedFont(L.StandardFonts.Helvetica), fB = await doc.embedFont(L.StandardFonts.HelveticaBold);
+  var W = 595, H = 842, M = 50, TW = W - 2 * M, page, y;
+  function np() { page = doc.addPage([W, H]); y = H - M; }
+  function wrap(t, font, size, maxw) { var out = []; String(t).split("\n").forEach(function (par) { var line = ""; par.split(/\s+/).filter(Boolean).forEach(function (w) { var tr = line ? line + " " + w : w; if (line && font.widthOfTextAtSize(tr, size) > maxw) { out.push(line); line = w; } else line = tr; }); out.push(line); }); return out; }
+  function put(t, font, size, x, maxw, lh, gapAfter, need) {
+    var ls = wrap(pdfSafe(t), font, size, maxw); if (y - (need || ls.length * lh) < M) np();
+    ls.forEach(function (l) { if (y < M + 4) np(); page.drawText(l, { x: x, y: y, size: size, font: font }); y -= lh; }); y -= gapAfter || 0;
+  }
+  np();
+  fichaLines(s).forEach(function (x) {
+    if (x.k === "title") put(x.t, fB, 22, M, TW, 27, 4);
+    else if (x.k === "h1") { y -= 8; if (y < M + 60) np(); put(x.t, fB, 13, M, TW, 17, 5, 40); page.drawLine({ start: { x: M, y: y + 9 }, end: { x: W - M, y: y + 9 }, thickness: 0.6, color: L.rgb(0.6, 0.6, 0.6) }); }
+    else if (x.k === "h2") { y -= 3; put(x.t, fB, 11, M, TW, 14, 2, 30); }
+    else if (x.k === "li") put("• " + x.t, fR, 10, M + 8, TW - 8, 13, 2);
+    else put(x.t, fR, 10, M, TW, 13, 4);
+  });
+  return await doc.save();
+}
+async function exportFicha(fmt) {
+  var s = cur; if (!s) return; var dl = null;
+  try { dl = await claude.use("downloads"); } catch (e) {}
+  if (!dl) { emsg("Guardar archivos no está disponible en esta vista."); return; }
+  var slug = (s.title || "historia").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "historia";
+  try {
+    var name = slug + "-ficha." + (fmt === "txt" ? "txt" : "pdf"), data;
+    if (fmt === "txt") data = new TextEncoder().encode(fichaTxt(s));
+    else { if (!window.PDFLib) { emsg("No se pudo cargar el generador de PDF."); return; } data = await fichaPdf(s); }
+    await dl.save({ filename: name, data: data });
+    emsg("Listo: " + name + ". Para reutilizarla: Crear → «Ya tengo material escrito».");
+  } catch (e) { emsg(e && e.code === "declined" ? "Descarga cancelada." : "No se pudo crear la ficha."); }
+}
+$("fichab").onclick = function () { exportFicha("pdf"); };
+$("fichat").onclick = function () { exportFicha("txt"); };
+
+/* ---------- v0.10.0: subrayar y crear fichas desde el texto ---------- */
+var HL = { sel: null, t: 0 };
+function hlApply(pe, sc, si) {
+  var hs = sc.hl; if (!hs || !hs.length) return; var t = pe.textContent, sp = [];
+  hs.forEach(function (h) { var i = t.indexOf(h); if (i >= 0) sp.push([i, i + h.length, h]); });
+  if (!sp.length) return; sp.sort(function (a, b) { return a[0] - b[0]; });
+  var f = document.createDocumentFragment(), pos = 0;
+  sp.forEach(function (r) {
+    if (r[0] < pos) return; if (r[0] > pos) f.appendChild(document.createTextNode(t.slice(pos, r[0])));
+    var m = el("mark", "hl", t.slice(r[0], r[1])); m.tabIndex = 0; m.setAttribute("role", "button"); m.setAttribute("aria-label", "Subrayado: " + r[2].slice(0, 60) + ". Pulsa para quitarlo o crear una ficha.");
+    m.onclick = function () { hlTap(si, r[2]); }; m.onkeydown = function (e) { if (e.key === "Enter") hlTap(si, r[2]); }; f.appendChild(m); pos = r[1];
+  });
+  if (pos < t.length) f.appendChild(document.createTextNode(t.slice(pos)));
+  pe.textContent = ""; pe.appendChild(f);
+}
+function hlRefresh(i) {
+  var w = $("sc-" + i), sc = cur && cur.scenes[i]; if (!w || !sc) return;
+  var ps = Array.prototype.filter.call(w.children, function (x) { return x.tagName === "P" && !x.classList.contains("act") && !x.classList.contains("bmk") && !x.classList.contains("fin"); }), src = sc.t.split(/\n\s*\n/);
+  ps.forEach(function (pe, k) { if (src[k] == null) return; pe.textContent = src[k].trim(); hlApply(pe, sc, i); });
+}
+function scWrap(n) { while (n && n !== document) { if (n.nodeType === 1 && n.id && n.id.indexOf("sc-") === 0 && n.classList.contains("sc")) return n; n = n.parentNode; } return null; }
+function hlHide() { $("hlbar").hidden = true; HL.sel = null; }
+function hlCheck() {
+  var sel = window.getSelection(); if (!sel || sel.isCollapsed || !cur || $("play").hidden) { hlHide(); return; }
+  var raw = String(sel.toString()), t = raw.replace(/\s+/g, " ").trim(), wa = scWrap(sel.anchorNode), wb = scWrap(sel.focusNode);
+  if (t.length < 2 || t.length > 3000 || !wa || !wb) { hlHide(); return; }
+  var a = Number(wa.id.slice(3)), b = Number(wb.id.slice(3)); HL.sel = { raw: raw, text: t, a: Math.min(a, b), b: Math.max(a, b) }; $("hlbar").hidden = false;
+}
+document.addEventListener("selectionchange", function () { clearTimeout(HL.t); HL.t = setTimeout(hlCheck, 250); });
+$("hlbar").addEventListener("pointerdown", function (e) { e.preventDefault(); });
+$("hlbar").addEventListener("mousedown", function (e) { e.preventDefault(); });
+function hlAdd() {
+  var h = HL.sel; if (!h || !cur) return; var n = 0;
+  h.raw.split(/\n+/).map(function (x) { return x.replace(/\s+/g, " ").trim(); }).filter(function (x) { return x.length >= 2; }).forEach(function (pc) {
+    pc = pc.slice(0, 400);
+    for (var i = h.a; i <= h.b; i++) { var sc = cur.scenes[i]; if (!sc || sc.t.replace(/\s+/g, " ").indexOf(pc) < 0) continue; var real = sc.t.indexOf(pc) >= 0 ? pc : null; if (!real) continue; sc.hl = sc.hl || []; if (sc.hl.indexOf(real) < 0) { sc.hl.push(real); n++; } hlRefresh(i); break; }
+  });
+  try { window.getSelection().removeAllRanges(); } catch (e) {} hlHide();
+  if (n) { save(); toast("Subrayado guardado"); } else toast("No pude subrayar eso: prueba a seleccionar dentro de un solo párrafo.");
+}
+function hlTap(si, h) {
+  sheet("Subrayado", function (sh) {
+    var q = el("p", null, "«" + h + "»"); q.style.fontStyle = "italic"; sh.appendChild(q);
+    var r = el("div", "row"), f = el("button", "go", "＋ Crear ficha con esto"), d = el("button", null, "Quitar subrayado");
+    f.onclick = function () { closeSheet(); cardSheet(h, si); };
+    d.onclick = function () { var sc = cur.scenes[si]; sc.hl = (sc.hl || []).filter(function (x) { return x !== h; }); if (!sc.hl.length) delete sc.hl; save(); hlRefresh(si); closeSheet(); };
+    r.appendChild(f); r.appendChild(d); sh.appendChild(r); closeBtn(sh);
+  });
+}
+function cardSheet(txt, si) {
+  var s = cur; if (!s) return; var t = String(txt).replace(/\s+/g, " ").trim(), short = t.length <= 40, tipo = short && /^[A-ZÁÉÍÓÚÑ]/.test(t) ? "personaje" : "objeto";
+  var sc = s.scenes[si != null ? si : s.scenes.length - 1] || s.scenes[s.scenes.length - 1], ctxt = sc ? sc.t : "", sent = "";
+  if (short && ctxt) { sentences(ctxt.replace(/\s+/g, " ")).forEach(function (x) { if (!sent && x.indexOf(t) >= 0) sent = x.trim(); }); }
+  sheet("Nueva ficha de lore", function (sh) {
+    para(sh, "Tipo de ficha");
+    var tr = el("div", "row"); sh.appendChild(tr);
+    ["personaje", "lugar", "objeto", "facción", "otro"].forEach(function (k) { var b = el("button", k === tipo ? "small on" : "small", k.charAt(0).toUpperCase() + k.slice(1)); b.onclick = function () { tipo = k; Array.prototype.forEach.call(tr.children, function (c) { c.className = c === b ? "small on" : "small"; }); }; tr.appendChild(b); });
+    para(sh, "Nombre"); var nm = el("input"); nm.type = "text"; nm.maxLength = 60; nm.value = short ? t : ""; nm.setAttribute("aria-label", "Nombre de la ficha"); sh.appendChild(nm);
+    para(sh, "Descripción (lo que ya se sabe; puedes editarla)"); var ds = el("textarea"); ds.maxLength = 500; ds.style.minHeight = "6rem"; ds.value = (short ? sent : t).slice(0, 500); ds.setAttribute("aria-label", "Descripción de la ficha"); sh.appendChild(ds);
+    var gen = el("button", "small", "Que El Cronista la redacte"); gen.style.margin = ".4rem 0";
+    gen.onclick = async function () {
+      if (!sample || busy) return; if (!nm.value.trim()) { msg.textContent = "Escribe primero el nombre."; return; }
+      gen.disabled = true; gen.textContent = "El Cronista piensa…";
+      try {
+        var q = "Eres un editor de novelas. Escribe una ficha de lore (1 o 2 frases concretas, en español) para «" + nm.value.trim() + "» (" + tipo + ") usando SOLO lo que consta en el texto; no inventes datos. Responde solo con la ficha.\nPREMISA: " + s.premise + "\nTEXTO DE LA ESCENA:\n" + ctxt.slice(0, 1800) + "\nFRAGMENTO MARCADO: " + t.slice(0, 300);
+        var r = await ask(q); var x = String(r.text || "").replace(/^["«\s]+|["»\s]+$/g, "").trim().slice(0, 500); if (x) ds.value = x;
+      } catch (e) { msg.textContent = (e && e.message) || "No se pudo redactar."; }
+      gen.disabled = false; gen.textContent = "Que El Cronista la redacte";
+    };
+    sh.appendChild(gen);
+    var msg = el("p", "hint"); msg.setAttribute("role", "status");
+    var ok = el("button", "go", "Guardar en el lore"); ok.style.marginTop = ".4rem";
+    ok.onclick = function () {
+      var name = nm.value.trim(), desc = ds.value.trim(); if (!name) { msg.textContent = "Ponle un nombre a la ficha."; return; }
+      s.lore = s.lore || []; var ex = s.lore.filter(function (c) { return nk(c.nombre) === nk(name); })[0];
+      if (ex) { ex.tipo = tipo; if (desc) ex.desc = desc; ex.u = 1; } else s.lore.push({ tipo: tipo, nombre: name.slice(0, 60), desc: desc, u: 1 });
+      try { var m = ensureMem(s); if (tipo === "personaje") { var ch = getChar(m, name, Math.max(0, s.scenes.length - 1)); if (ch && desc) ch.desc = str(desc, 200); } else if (tipo === "objeto") getItem(m, name); } catch (e) {}
+      save(); try { $("lorecount").textContent = "Cartas de lore (" + s.lore.length + ")"; if ($("atlbox").open) renderAtlas(); } catch (e) {}
+      closeSheet(); toast((ex ? "Ficha actualizada: " : "Ficha guardada: ") + name);
+    };
+    sh.appendChild(ok); sh.appendChild(msg); closeBtn(sh, "Cancelar");
+  });
+}
+$("hlsub").onclick = hlAdd;
+$("hlfic").onclick = function () { var h = HL.sel; if (!h) return; var si = h.a; try { window.getSelection().removeAllRanges(); } catch (e) {} hlHide(); cardSheet(h.text, si); };
+$("hlcopy").onclick = function () { var h = HL.sel; if (!h) return; try { navigator.clipboard.writeText(h.text); toast("Copiado"); } catch (e) { toast("Copia el texto con el menú del teléfono."); } };
+
 async function exportAs(fmt) {
   var s = cur; if (!s || !s.scenes.length) return;
   var dl = null;
