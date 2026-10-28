@@ -276,6 +276,7 @@ body.noanim #fx{display:none}
 .rd.t-noche{background:rgba(8,12,20,.86)}
 main{padding-bottom:9rem}
 .fab{bottom:calc(76px + env(safe-area-inset-bottom,0px))}
+#menu{display:none!important}
 #tabs{align-items:flex-start;position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;gap:.2rem;padding:.35rem .4rem calc(.35rem + env(safe-area-inset-bottom,0px));background:rgba(8,12,20,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,214,150,.25)}
 #tabs button{flex:1 1 0;height:54px;max-height:54px;overflow:hidden;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:.1rem;min-height:54px;padding:.3rem .1rem;border:0;background:none;color:var(--mute);font-size:.68rem;text-align:center;border-radius:12px;justify-content:center}
 #tabs button.tabon{background:linear-gradient(180deg,var(--acc),var(--acc2));color:var(--accink);font-weight:700}
@@ -1749,8 +1750,23 @@ function renderSet() {
 function renderLore() {
   var b = $("lorebody"); b.innerHTML = "";
   $("lorecount").textContent = "Cartas de lore (" + (cur.lore || []).length + ")";
+  var TIPOS = ["protagonista", "antagonista", "personaje", "secundario", "lugar", "objeto", "facción", "concepto", "otro"];
   (cur.lore || []).forEach(function (c) {
-    var d = el("div", "lore"); d.appendChild(el("b", null, c.nombre)); d.appendChild(document.createTextNode(" · " + c.tipo + ". " + c.desc)); b.appendChild(d);
+    var d = el("div", "lore"); d.appendChild(el("b", null, c.nombre)); d.appendChild(document.createTextNode(" · " + c.tipo + ". " + c.desc));
+    var eb = el("button", "small", "Editar"); eb.style.cssText = "display:block;margin-top:.4rem";
+    eb.onclick = function () {
+      var f = el("div"); f.style.cssText = "margin-top:.5rem";
+      var n = el("input"); n.type = "text"; n.value = c.nombre || ""; n.setAttribute("aria-label", "Nombre de la carta"); n.style.cssText = "width:100%;margin:.2rem 0";
+      var t = el("select"); t.setAttribute("aria-label", "Tipo de carta"); t.style.cssText = "width:100%;margin:.2rem 0"; (TIPOS.indexOf(c.tipo) < 0 ? [c.tipo].concat(TIPOS) : TIPOS).forEach(function (x) { var o = el("option", null, x); o.value = x; t.appendChild(o); }); t.value = c.tipo;
+      var ds = el("textarea"); ds.rows = 5; ds.value = c.desc || ""; ds.setAttribute("aria-label", "Descripción de la carta"); ds.style.cssText = "width:100%;margin:.2rem 0";
+      var r = el("div", "row"), sv = el("button", "small on", "Guardar"), dl = el("button", "small", "Borrar carta"), cn = el("button", "small", "Cancelar"), arm = false;
+      sv.onclick = function () { var nm = n.value.trim(); if (!nm) { toast("La carta necesita un nombre."); return; } c.nombre = nm.slice(0, 80); c.tipo = t.value; c.desc = ds.value.trim(); c.u = 1; save(); renderLore(); };
+      dl.onclick = function () { if (!arm) { arm = true; dl.textContent = "¿Seguro? Toca otra vez"; return; } cur.lore = cur.lore.filter(function (x) { return x !== c; }); save(); renderLore(); };
+      cn.onclick = function () { renderLore(); };
+      [sv, cn, dl].forEach(function (x) { r.appendChild(x); }); [n, t, ds, r].forEach(function (x) { f.appendChild(x); });
+      d.innerHTML = ""; d.appendChild(el("b", null, "Editando: " + c.nombre)); d.appendChild(f);
+    };
+    d.appendChild(eb); b.appendChild(d);
   });
 }
 function estadoTxt(v, a, b, c) { return v > 66 ? a : v > 33 ? b : c; }
@@ -2550,6 +2566,19 @@ function vocabApply(s, t) {
   });
   return t;
 }
+var VOC_SKIP = { vocab: 1, id: 1, img: 1, cover: 1, bgid: 1, dg: 1, ver: 1, art: 1, wlsum: 0 };
+function vocabDeep(s, o, depth) {
+  depth = depth || 0; if (!s || !(s.vocab || []).some(function (v) { return v.to; }) || depth > 12 || o == null) return 0;
+  var n = 0;
+  function one(x) { if (typeof x !== "string" || x.length < 3 || x.indexOf("data:") === 0) return x; var y = vocabApply(s, x); if (y !== x) n++; return y; }
+  if (Array.isArray(o)) { for (var i = 0; i < o.length; i++) { if (typeof o[i] === "string") o[i] = one(o[i]); else if (o[i] && typeof o[i] === "object") n += vocabDeep(s, o[i], depth + 1); } return n; }
+  if (typeof o === "object") Object.keys(o).forEach(function (k) { if (VOC_SKIP[k] === 1) return; var v = o[k]; if (typeof v === "string") o[k] = one(v); else if (v && typeof v === "object") n += vocabDeep(s, v, depth + 1); });
+  return n;
+}
+function vocabAll(s) {
+  try { verSnap(s, "Antes de cambiar palabras en toda la historia", true); } catch (e) {}
+  var n = vocabDeep(s, s); try { save(); } catch (e) {} return n;
+}
 function vocabBanned(s, t) {
   var out = [];
   (s && s.vocab || []).forEach(function (v) { if (v.to) return; vocForms(v.from).some(function (w) { return vocRe(w).test(t) ? (out.push(v.from), true) : false; }); });
@@ -2732,6 +2761,7 @@ async function turn(action, shown, extra) {
     }
     if (!cand) throw new Error("vacío");
     ensureMem(s); s.prev = { rpg: s.rpg ? { hp: s.rpg.hp, b2: s.rpg.b2 } : null, ce: s.ce ? s.ce.slice() : null, mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
+    try { vocabDeep(s, cand); } catch (e) {}
     cand.escena = vocabApply(s, cleanScene(cand.escena)); if (Array.isArray(cand.opciones)) cand.opciones = cand.opciones.map(function (o) { return vocabApply(s, o); }); s.scenes.push({ a: shown || "", t: cand.escena });
     s.last = cand.escena; s.memory = cand.memoria || s.memory;
     var _n = s.scenes.length, _mm = ensureMem(s);
@@ -3362,15 +3392,15 @@ function renderAtlas() {
     var ri = el("input"); ri.type = "text"; ri.maxLength = 200; ri.placeholder = "Escribe una regla y pulsa Añadir"; ri.setAttribute("aria-label", "Nueva regla"); box.appendChild(ri);
     var ra = el("button", "small", "Añadir"); ra.style.marginTop = ".4rem"; ra.onclick = function () { var v = ri.value.trim(); if (!v) return; s.rules = (s.rules || []).concat([v.slice(0, 200)]).slice(-20); save(); renderAtlas(); }; box.appendChild(ra);
   } else if (ATL.tab === "voc") {
-    box.appendChild(el("p", "hint", "Cambia o prohíbe palabras en esta historia. Ejemplo: «vampiro» → «tenebrio» (se cambian solos plurales y femenino). Si dejas vacío el cambio, la palabra queda prohibida. Se aplica a cada escena y a las opciones."));
+    box.appendChild(el("p", "hint", "Cambia o prohíbe palabras en esta historia. Ejemplo: «vampiro» → «tenebrio» (se cambian solos plurales y femenino). Si dejas vacío el cambio, la palabra queda prohibida. Se aplica a cada escena nueva y, al añadirlo, también a todo lo ya escrito (escenas, fichas, memoria y lore)."));
     (s.vocab || []).forEach(function (v, i) { var d = el("div", "lore"); d.appendChild(document.createTextNode(v.to ? v.from + " → " + v.to + " " : "Prohibida: " + v.from + " ")); var x = el("button", "small", "Quitar"); x.onclick = function () { s.vocab.splice(i, 1); if (!s.vocab.length) delete s.vocab; save(); renderAtlas(); }; d.appendChild(x); box.appendChild(d); });
     var vf = el("input"); vf.type = "text"; vf.maxLength = 40; vf.placeholder = "Palabra a evitar (ej.: vampiro)"; vf.setAttribute("aria-label", "Palabra a evitar"); box.appendChild(vf);
     var vt = el("input"); vt.type = "text"; vt.maxLength = 40; vt.placeholder = "Usar en su lugar (ej.: tenebrio). Vacío = prohibida"; vt.setAttribute("aria-label", "Palabra sustituta"); vt.style.marginTop = ".4rem"; box.appendChild(vt);
     var vb = el("button", "small", "Añadir"); vb.style.marginTop = ".4rem";
-    vb.onclick = function () { var a = vf.value.trim().toLowerCase(), b = vt.value.trim().toLowerCase(); if (!a || /\s{2,}/.test(a)) return; s.vocab = (s.vocab || []).filter(function (x) { return x.from !== a; }).concat([{ from: a.slice(0, 40), to: b.slice(0, 40) }]).slice(-40); save(); renderAtlas(); };
+    vb.onclick = function () { var a = vf.value.trim().toLowerCase(), b = vt.value.trim().toLowerCase(); if (!a || /\s{2,}/.test(a)) return; s.vocab = (s.vocab || []).filter(function (x) { return x.from !== a; }).concat([{ from: a.slice(0, 40), to: b.slice(0, 40) }]).slice(-40); save(); if (b) { var nn = vocabAll(s); render(true); renderLore(); try { renderWl(); } catch (e) {} if (nn) emsg("«" + a + "» → «" + b + "»: cambiado en " + nn + " textos ya escritos."); } renderAtlas(); };
     box.appendChild(vb);
-    var va = el("button", "small", "Aplicar a las escenas ya escritas"); va.style.marginTop = ".4rem"; va.style.marginLeft = ".4rem";
-    va.onclick = function () { var n = 0; s.scenes.forEach(function (sc) { var t2 = vocabApply(s, sc.t); if (t2 !== sc.t) { sc.t = t2; n++; } }); s.last = vocabApply(s, s.last || ""); save(); render(true); renderAtlas(); emsg(n + " escena" + (n === 1 ? "" : "s") + " actualizada" + (n === 1 ? "" : "s") + "."); };
+    var va = el("button", "small", "Aplicar a todo lo ya escrito (escenas, fichas y memoria)"); va.style.marginTop = ".4rem"; va.style.marginLeft = ".4rem";
+    va.onclick = function () { var n = vocabAll(s); render(true); renderLore(); try { renderWl(); } catch (e) {} renderAtlas(); emsg(n ? "Hecho: " + n + " textos cambiados (escenas, fichas, memoria, lore…). Guardé antes una versión por si quieres deshacerlo." : "No había nada que cambiar."); };
     box.appendChild(va);
   } else if (ATL.tab === "style") {
     var nCh = chCur(s), sel = el("select"); sel.setAttribute("aria-label", "Parte de la historia a revisar");

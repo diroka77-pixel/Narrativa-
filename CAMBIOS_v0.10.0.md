@@ -160,3 +160,11 @@
 - Botón «Que El Cronista lo lea ahora»: lee todas las ideas disponibles en el capítulo actual por trozos de ≤9000 caracteres, resume cada trozo (≤350 palabras) y, si hay varios, los une en un resumen final. Se guarda en `s.wlsum` (máx. 2400 caracteres, editable por el autor) y se envía SIEMPRE en cada escena (2000 caracteres; 700 en modo compacto), además de las ideas relevantes por palabras. Coste: ≈1 consulta por cada 9000 caracteres + 1 de unión.
 - No adelanta spoilers: solo resume ideas con «disponible desde» ≤ capítulo actual al pulsar. Al desbloquearse ideas nuevas conviene pulsar «Volver a leerlo y actualizar el resumen».
 - `wlsum` va en copias, versiones y ramas. Prueba: tests/t70_wl2.js con IA simulada.
+
+## Vocabulario aplicado a TODO, cartas de lore editables, menú duplicado quitado
+- Al añadir un cambio de palabra (ej. vampiro → tenebrio) se aplica enseguida a todo lo ya escrito: escenas, tus acciones, sinopsis, premisa, memoria, fichas de personajes, cartas de lore, ideas del Lore del universo, opciones… (recorrido recursivo `vocabDeep`, salta `vocab`, ids, imágenes). Antes guarda una versión de seguridad («Antes de cambiar palabras en toda la historia») para poder deshacerlo. El botón manual se llama ahora «Aplicar a todo lo ya escrito».
+- Todo lo nuevo que devuelve la IA (memoria, fichas, lore) también pasa por el cambio, no solo la escena.
+- Las palabras solo prohibidas (sin sustituto) siguen forzando reescritura; no se cambian solas.
+- Cartas de lore («Cartas de lore» en el menú de la historia): botón «Editar» (nombre, tipo, descripción) y «Borrar carta» (dos toques).
+- Se oculta el botón ☰ de la cabecera (hacía lo mismo que «Ajustes» de la barra inferior). El menú se abre desde Ajustes.
+- Prueba: tests/t71_vocall.js. No probado en móvil real.

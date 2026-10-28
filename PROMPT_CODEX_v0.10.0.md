@@ -43,3 +43,5 @@ Adjunto `HistoriasVivas-web-v0.10.0.zip`. Cambios solo de web, pero hay UN ARCHI
 5v. Lore del universo (web): en una historia, menú → «Lore del universo»; añade una idea, otra con «Disponible desde el capítulo 2» y una «Siempre presente». Comprueba que se guardan tras cerrar la app, que van en la copia de seguridad y que se restauran.
 
 5w. Lore largo (web): pega un texto de ~10 páginas en Lore del universo → «Dividir y guardar» → «Que El Cronista lo lea ahora». Con IA real comprueba que el resumen es fiel y que no revienta el almacenamiento ni el límite de consultas; revisa que `wlsum` entra en las copias.
+
+5x. Comprueba en el móvil: (a) Vocabulario → añadir «vampiro»→«tenebrio» cambia también fichas, memoria y cartas; recuperar la versión «Antes de cambiar palabras…» lo deshace; (b) Cartas de lore → Editar/Borrar; (c) ya no existe el botón ☰ y Ajustes (barra inferior) abre el menú; no debe quedar ningún hueco en la cabecera. Si algún código nativo hace click en #menu, sigue funcionando (el botón está oculto, no eliminado).
