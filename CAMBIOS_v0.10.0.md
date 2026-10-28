@@ -116,3 +116,10 @@
 - El «Prompt de imagen» de esa escena pide formato 2:3 vertical (y «página de novela gráfica» en página completa) o 3:2 horizontal.
 - Imágenes de escena: tamaño máximo al importar 960×1280 (antes 900×900).
 - Solo web. Prueba: tests/t63_il.js. No probado en móvil real; los exportadores (EPUB/PDF) siguen usando la imagen tal cual, sin distinguir formato.
+
+## Elegir qué escuchar
+- Botón «Elegir qué escuchar» junto a «Escuchar la última escena»: desde el principio, desde donde dejé de leer, solo la última, o una escena concreta (solo esa / desde ahí hasta el final).
+- En «Opciones de la escena»: nuevo «Escuchar desde aquí».
+- Funciona con la voz del teléfono, la nativa y la de Gemini. Con Gemini avisa de cuántas peticiones de voz gastará (≈1 por cada 1000 caracteres).
+- Si la escena inicial no está cargada en pantalla, la app amplía la ventana de escenas antes de leer.
+- Prueba (voz simulada): tests/t64_listen.js. NO probado con voz real ni con la pantalla apagada: Codex debe revisar que el servicio nativo acepta listas largas (novela entera).

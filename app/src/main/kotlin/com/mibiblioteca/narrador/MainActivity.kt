@@ -257,8 +257,19 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun launchNarration(queueJson: String) {
-        val intent = Intent(this, NarrationService::class.java).setAction(NarrationService.ACTION_START).putExtra("queue", queueJson)
-        ContextCompat.startForegroundService(this, intent)
+        try {
+            val dir = File(cacheDir, "narration").also { it.mkdirs() }
+            val now = System.currentTimeMillis()
+            dir.listFiles()?.filter { now - it.lastModified() > 86_400_000L }?.forEach { it.delete() }
+            val queueFile = File.createTempFile("queue-", ".json", dir)
+            queueFile.writeText(queueJson, Charsets.UTF_8)
+            val intent = Intent(this, NarrationService::class.java)
+                .setAction(NarrationService.ACTION_START)
+                .putExtra("queueFile", queueFile.name)
+            ContextCompat.startForegroundService(this, intent)
+        } catch (_: Exception) {
+            toast("No se pudo preparar la lectura. Prueba con menos escenas.")
+        }
     }
 
     private fun startBackgroundNarration(queueJson: String) = runOnUiThread {

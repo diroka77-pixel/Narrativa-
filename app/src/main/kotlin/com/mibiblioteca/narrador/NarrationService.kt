@@ -15,6 +15,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import org.json.JSONArray
 import org.json.JSONObject
+import java.io.File
 import java.util.Locale
 
 /** v0.9: lectura continua con pantalla apagada y controles multimedia. */
@@ -70,12 +71,23 @@ class NarrationService : Service(), TextToSpeech.OnInitListener {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START -> loadQueue(intent.getStringExtra("queue") ?: "[]")
+            ACTION_START -> loadQueue(readQueue(intent))
             ACTION_TOGGLE -> if (paused) resumeReading() else pauseReading()
             ACTION_NEXT -> nextPart()
             ACTION_STOP -> stopReading()
         }
         return START_NOT_STICKY
+    }
+
+    private fun readQueue(intent: Intent): String {
+        val name = intent.getStringExtra("queueFile")
+        if (!name.isNullOrBlank() && name == File(name).name) {
+            val file = File(File(cacheDir, "narration"), name)
+            if (file.isFile && file.length() in 1..33_554_432L) {
+                return try { file.readText(Charsets.UTF_8).also { file.delete() } } catch (_: Exception) { "[]" }
+            }
+        }
+        return intent.getStringExtra("queue") ?: "[]"
     }
 
     private fun loadQueue(raw: String) {
