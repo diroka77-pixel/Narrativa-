@@ -33,3 +33,13 @@ Adjunto `HistoriasVivas-web-v0.10.0.zip`. Cambios solo de web, pero hay UN ARCHI
 5q. Escuchar por rango (web, pero toca el servicio nativo): «Elegir qué escuchar» puede enviar a hvBackgroundSpeech.play() una lista muy larga (novela entera). Comprueba que NarrationService la acepta sin cortarse ni agotar memoria y que la pausa/parar siguen funcionando con la pantalla apagada.
 
 5r. Fondo de inicio (solo web): menú → «Fondo de inicio»; comprueba que alterna entre fondo del género y portada de la última historia, y que la opción se conserva al cerrar y abrir la app.
+
+5s. Corrección del fondo de inicio: cierra la app del todo y reábrela; debe mostrar la portada de la última historia abierta (si el ajuste está activo) o el fondo del género (si no). Comprueba también al volver a Inicio desde una historia.
+
+5t. Portada ampliada (web): en Inicio, tocar una portada la amplía y tocarla otra vez entra. Comprueba en el móvil que el botón Atrás de Android cierra la ampliación en vez de salir de la app; si no, gestiónalo en MainActivity sin cambiar nada más.
+
+5u. Comparar versiones (web): en modo novela pulsa «Otra versión»; en la escena nueva, Opciones → «Comparar con la otra versión». Comprueba que muestra ambos textos y que «Usar la versión anterior» cambia el texto y se guarda tras cerrar la app.
+
+5v. Lore del universo (web): en una historia, menú → «Lore del universo»; añade una idea, otra con «Disponible desde el capítulo 2» y una «Siempre presente». Comprueba que se guardan tras cerrar la app, que van en la copia de seguridad y que se restauran.
+
+5w. Lore largo (web): pega un texto de ~10 páginas en Lore del universo → «Dividir y guardar» → «Que El Cronista lo lea ahora». Con IA real comprueba que el resumen es fiel y que no revienta el almacenamiento ni el límite de consultas; revisa que `wlsum` entra en las copias.

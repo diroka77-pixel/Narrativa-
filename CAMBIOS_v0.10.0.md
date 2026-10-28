@@ -128,3 +128,35 @@
 - Menú (☰ / Ajustes) → «Fondo de inicio: del género / portada de mi última historia». Se guarda en localStorage `hv:homecover` (solo preferencia, no entra en copias).
 - Si está activo, la página de inicio usa la portada de la última historia abierta; si no tiene portada, sigue el fondo del género y avisa. Dentro de la historia no cambia nada.
 - Prueba: tests/t65_homecover.js. No probado en móvil real.
+
+### Corrección: el fondo de inicio no se recordaba
+- Causa 1: al abrir una historia se actualizaba `at` (última abierta) pero no se guardaba hasta otro guardado; si cerrabas la app, «la última historia» era otra. Ahora `openStory` guarda al instante.
+- Causa 2: al volver a Inicio desde una historia el tema se aplicaba con la pantalla aún oculta y se quedaba el fondo de la historia. Ahora `view("lib")` aplica el fondo de inicio (portada o género según el ajuste).
+- Prueba: tests/t66_homepersist.js (abrir, volver, recargar, desactivar). No probado en móvil real.
+
+## Portada ampliada en Inicio
+- Al tocar la portada de una historia en Inicio, se amplía a pantalla casi completa; tocar la portada ampliada entra en la historia; tocar fuera (o Escape) cierra. Pulsación larga sigue abriendo el menú de la historia.
+- Menú → «Ampliar portada al tocarla: sí/no» (localStorage `hv:coverzoom`, por defecto sí). Si es «no», vuelve a entrar directamente.
+- Sin portada se amplía la portada generada con el título.
+- El botón «Continuar» del bloque grande de Inicio sigue entrando directo.
+- Prueba: tests/t67_czoom.js. No probado en móvil real; Codex debe comprobar que el botón Atrás de Android cierra la ampliación (ahora no la gestiona).
+
+## «Otra versión» ahora conserva la anterior y permite compararlas
+- Al pulsar «Otra versión» (modo novela), la escena descartada se guarda en `s.alt`. Mientras sea la última escena, en «Opciones de la escena» aparece «Comparar con la otra versión»: muestra ambos textos y permite «Usar la versión anterior» (y volver a cambiar cuantas veces quieras).
+- Solo se intercambia el texto/datos de la escena; la memoria de la historia (resumen, lore, estado) queda como la dejó la versión nueva. Al escribir la siguiente escena la comparación desaparece.
+- No afecta al modo RPG (tiene su propio «volver a tirar»).
+- Prueba: tests/t68_alt.js (con `turn` simulado). No probado con IA real ni en móvil.
+
+## Lore del universo (libro del mundo ampliable)
+- Menú de la historia → «Lore del universo»: ideas (título + texto) que el autor añade cuando quiera, o pega todo el lore de golpe (se divide por apartados; las líneas cortas sin punto final se toman como títulos).
+- Cada idea: «Disponible desde el capítulo N» (hasta entonces NO se envía a la IA, así no adelanta nada), «Siempre presente» (📌, máx. 3 por escena), pausar, editar, borrar (confirmación en dos toques).
+- En cada escena se envían las fijas y hasta 3 ideas relevantes por palabras (con un stemming simple s/es), con orden de no contradecirlas. Texto máximo por idea enviado: 1100/800/600 (700 si es fija); en modo compacto menos.
+- Campo `s.wl` por historia: va en copias de seguridad, versiones, ramas (fork) y en la exportación de texto («LORE DEL UNIVERSO»). Se oculta en Modo simple.
+- Distinto de las «Cartas de lore» (fichas de personajes/lugares que crea la IA) y de la «biblia» (1200 caracteres).
+- Prueba: tests/t69_wl.js. No probado con IA real ni en móvil. La relevancia es heurística: si una idea importante no sale, márcala «Siempre presente».
+
+### Lore del universo: lectura completa por El Cronista (resumen)
+- «Pegar todo el lore de golpe» no tiene límite de extensión (probado con ~31.000 caracteres ≈ 10 páginas → 30 ideas).
+- Botón «Que El Cronista lo lea ahora»: lee todas las ideas disponibles en el capítulo actual por trozos de ≤9000 caracteres, resume cada trozo (≤350 palabras) y, si hay varios, los une en un resumen final. Se guarda en `s.wlsum` (máx. 2400 caracteres, editable por el autor) y se envía SIEMPRE en cada escena (2000 caracteres; 700 en modo compacto), además de las ideas relevantes por palabras. Coste: ≈1 consulta por cada 9000 caracteres + 1 de unión.
+- No adelanta spoilers: solo resume ideas con «disponible desde» ≤ capítulo actual al pulsar. Al desbloquearse ideas nuevas conviene pulsar «Volver a leerlo y actualizar el resumen».
+- `wlsum` va en copias, versiones y ramas. Prueba: tests/t70_wl2.js con IA simulada.

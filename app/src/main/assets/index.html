@@ -213,6 +213,10 @@ button.round{border-radius:50%;width:42px;height:42px;min-height:42px;padding:0;
 #lib{margin:0 -1.1rem}
 #lib>*:not(#hero){padding-left:1.1rem;padding-right:1.1rem}
 #lib .car{padding-left:1.1rem;padding-right:1.1rem;margin:0}
+#czoom{position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem;animation:czin .22s ease-out}
+#czoom .czbig{width:min(86vw,calc((100vh - 8rem)*2/3));max-width:none;aspect-ratio:2/3;margin:0;box-shadow:0 10px 50px rgba(0,0,0,.7);cursor:pointer}
+#czoom .czhint{color:#e8e2d6;margin:1rem 0 0;font-size:.9rem;text-align:center}
+@keyframes czin{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
 .hero{position:relative;min-height:31rem;margin-top:-1.25rem;display:flex;flex-direction:column;justify-content:flex-end;padding:7rem 1.3rem 1.4rem;color:#fff;background-size:cover!important;background-position:center!important;overflow:hidden}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,11,20,.55) 0%,rgba(7,11,20,0) 28%,rgba(7,11,20,.25) 55%,#070b14 100%);pointer-events:none}
 .hero>*{position:relative;z-index:1}
@@ -296,7 +300,7 @@ body.imm.paged #pgbar{display:flex}
 @media (orientation:landscape) and (min-width:700px) and (max-height:520px){body.imm.paged #book{top:2.6rem;bottom:4.4rem}}
 :root[data-theme="light"] #tabs{background:rgba(255,250,240,.95)}
 body.kb #tabs,body.kb .fab{display:none}
-body.simple #atlbox,body.simple #lorebox,body.simple #imgbox,body.simple #set,body.simple .scm .adv{display:none!important}
+body.simple #wlbox,body.simple #atlbox,body.simple #lorebox,body.simple #imgbox,body.simple #set,body.simple .scm .adv{display:none!important}
 body.hc{--ink:#fff;--mute:#e6e6e6;--line:#777}
 body.hc #bgart,body.hc #bgmist,body.hc #fx{display:none}
 body.hc #bgshade{background:#000}
@@ -391,7 +395,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
-<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><button id="dhcov">Fondo de inicio: del género</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
+<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><button id="dhcov">Fondo de inicio: del género</button><button id="dczoom">Ampliar portada al tocarla: sí</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
 <div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hldef" hidden>📖 Definición</button><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
@@ -518,6 +522,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <details class="pl" id="atlbox"><summary>Atlas de la historia</summary><div id="atlbody"></div></details>
 <details class="pl" id="rdbox"><summary>Lectura</summary><div id="rdbody"></div></details>
 <details class="pl" id="imgbox"><summary>Título, portada e imágenes</summary><div id="imgbody"></div></details>
+<details class="pl" id="wlbox"><summary id="wlcount">Lore del universo</summary><div id="wlbody"></div></details>
 <details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
 </details>
 <button id="immp" class="small bookbtn" style="margin:.7rem 0 0">📖 Leer como un libro</button>
@@ -600,7 +605,7 @@ function save() {
   try { achSoon(); } catch (e2) {}
   return ok;
 }
-function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "nook", "create", "imp", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
+function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "nook", "create", "imp", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); if (n === "lib") { try { var _s0 = lastStory(); applyTheme(_s0 ? _s0.genre : "Auto", _s0 ? storyVar(_s0) : 0, _s0 ? _s0.id : "home"); } catch (e) {} } window.scrollTo(0, 0); }
 function setTab(n) { var m = { lib: "tInicio", nook: "tHist", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
 /* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
 var GTH = {
@@ -981,6 +986,22 @@ $("nookgo").onclick = function () { view("nook"); renderNook(); };
 $("nookback").onclick = function () { goHome(); };
 var NK_T = 0; window.addEventListener("resize", function () { clearTimeout(NK_T); NK_T = setTimeout(function () { if (!$("nook").hidden) renderNook(); }, 250); });
 
+function czOn() { try { return localStorage.getItem("hv:coverzoom") !== "0"; } catch (e) { return true; } }
+function coverZoom(s) {
+  var old = $("czoom"); if (old) old.remove();
+  var ov = el("div"); ov.id = "czoom"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Portada de " + s.title);
+  var big = el("button", "cover czbig" + (s.cover ? " hasimg" : ""));
+  big.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s);
+  if (!s.cover) { big.appendChild(el("span", "ttl", s.title)); big.appendChild(el("small", null, s.syn || gtxt(s))); }
+  big.setAttribute("aria-label", "Entrar en " + s.title);
+  var hint = el("p", "czhint", "Toca la portada para entrar · toca fuera para cerrar");
+  function close() { ov.remove(); document.removeEventListener("keydown", kd); }
+  function kd(e) { if (e.key === "Escape") close(); }
+  big.onclick = function (e) { e.stopPropagation(); close(); openStory(s); };
+  ov.onclick = close; document.addEventListener("keydown", kd);
+  ov.appendChild(big); ov.appendChild(hint); document.body.appendChild(ov);
+  try { big.focus(); } catch (e) {}
+}
 function renderLib() {
   var h = $("hero"); h.innerHTML = ""; h.className = "hero";
   var s0 = lastStory(); if (!$("lib").hidden) applyTheme(s0 ? s0.genre : "Auto", s0 ? storyVar(s0) : 0, s0 ? s0.id : "home");
@@ -1011,7 +1032,7 @@ function renderLib() {
     cv.onpointerdown = function () { lpF = false; clearTimeout(lpT); lpT = setTimeout(function () { lpF = true; storyMenu(s); }, 650); };
     ["pointerup", "pointerleave", "pointercancel", "pointermove"].forEach(function (ev) { cv.addEventListener(ev, function () { clearTimeout(lpT); }); });
     cv.oncontextmenu = function (e) { e.preventDefault(); clearTimeout(lpT); if ($("gmodal").hidden) storyMenu(s); };
-    cv.onclick = function () { if (lpF) { lpF = false; return; } openStory(s); };
+    cv.onclick = function () { if (lpF) { lpF = false; return; } if (czOn()) coverZoom(s); else openStory(s); };
     cd.appendChild(cv); it.appendChild(cd);
     if (s.cover) { var cp = el("div", "capt"); cp.appendChild(el("b", null, s.title)); cp.appendChild(el("small", null, (s.fin ? "Final" : "En curso") + (s.fork ? " · rama" : "") + " · cap. " + chCur(s) + " · " + (s.scenes || []).length + " esc.")); it.appendChild(cp); }
     var d = el("button", "small", "⋯ Opciones"); d.setAttribute("aria-label", "Opciones de " + s.title); d.onclick = function () { storyMenu(s); };
@@ -1473,6 +1494,115 @@ function srcCtx(s, action, compact) {
   if (S.open && S.open.length) o += "\nPUNTOS SIN DECIDIR (el material se contradice; no los cierres ni elijas versión: mantén la ambigüedad hasta que el jugador decida): " + S.open.slice(0, compact ? 2 : 6).join(" | ");
   return o;
 }
+/* ---------- v0.10: Lore del universo (libro del mundo que el autor va ampliando) ---------- */
+var WL_EDIT = null;
+function wlToks(t) { var o = {}; Object.keys(impToks(t)).forEach(function (w) { o[w.length > 4 ? w.replace(/(es|s)$/, "") : w] = 1; }); return o; }
+function wlAvail(s) { var c = chCur(s) || 1; return (s.wl || []).filter(function (e) { return e && e.on !== false && (e.rev || 1) <= c && e.t; }); }
+function wlCtx(s, action, compact) {
+  var L = wlAvail(s), sm = s.wlsum && s.wlsum.t ? "\nRESUMEN DEL UNIVERSO (preparado por el Cronista a partir del lore del autor; es la base fija del mundo, no la contradigas ni la expliques de golpe):\n" + s.wlsum.t.slice(0, compact ? 700 : 2000) : "";
+  if (!L.length) return sm;
+  var sc = s.scenes || [], last = sc.length ? String((sc[sc.length - 1] || {}).t || "").slice(-800) : "";
+  var q = wlToks(String(action || "") + " " + last + " " + String(action || ""));
+  var pins = L.filter(function (e) { return e.pin; }).slice(0, compact ? 1 : 3);
+  var rk = L.filter(function (e) { return !e.pin; }).map(function (e) {
+    var kt = wlToks(e.t), kh = wlToks(e.h), p = 0; Object.keys(q).forEach(function (w) { if (kt[w]) p += 1; if (kh[w]) p += 5; });
+    return { e: e, p: p / (1 + e.t.length / 1500) };
+  }).filter(function (x) { return x.p >= 1.4; }).sort(function (a, b) { return b.p - a.p; }).slice(0, compact ? 1 : 3);
+  var parts = pins.map(function (e) { return "[" + (e.h || "Lore") + "] " + e.t.slice(0, compact ? 400 : 700); });
+  var lim = compact ? [650] : [1100, 800, 600];
+  rk.forEach(function (x, j) { parts.push("[" + (x.e.h || "Lore") + "] " + x.e.t.slice(0, lim[j])); });
+  if (!parts.length) return sm;
+  return sm + "\nLORE DEL UNIVERSO (verdad fija creada por el autor: respétala y no la contradigas; úsala solo cuando venga a cuento en la escena, sin soltar lecciones de historia ni resumirla):\n" + parts.join("\n---\n");
+}
+async function wlDigest(st) {
+  var s = cur; if (!s || busy) return; var L = wlAvail(s);
+  if (!L.length) { st.textContent = "Primero guarda alguna idea que esté disponible en este capítulo."; return; }
+  if (!sample) { st.textContent = "Para esto necesitas tener conectada tu IA."; return; }
+  var blocks = L.map(function (e) { return "[" + e.h + "] " + e.t; }), chunks = [], c = "";
+  blocks.forEach(function (b) { if (c && (c + b).length > 9000) { chunks.push(c); c = ""; } c += (c ? "\n\n" : "") + b; }); if (c) chunks.push(c);
+  var PRE = "Eres un editor de worldbuilding. Resume en español el material siguiente en un máximo de 350 palabras, en párrafos cortos. Conserva todos los nombres propios, razas, épocas, causas, consecuencias y reglas del mundo. No inventes nada ni añadas opiniones. Responde SOLO con el resumen.\n\nMATERIAL:\n";
+  try {
+    var parts = [];
+    for (var i = 0; i < chunks.length; i++) { st.textContent = "El Cronista está leyendo… parte " + (i + 1) + " de " + chunks.length; var r = await ask(PRE + chunks[i]); parts.push(String(r.text || "").trim()); }
+    var out = parts.join("\n\n");
+    if (parts.length > 1) { st.textContent = "Uniendo las partes…"; var r2 = await ask(PRE + out); out = String(r2.text || "").trim() || out; }
+    if (!out) throw { message: "La IA no devolvió nada." };
+    s.wlsum = { t: out.slice(0, 2400), ch: chCur(s) || 1, n: L.length, at: Date.now() }; save(); renderWl(); toast("El Cronista ya ha leído tu lore.");
+  } catch (e) { st.textContent = "No se pudo: " + ((e && e.message) || "error de la IA") + ". Tu lore sigue guardado."; }
+}
+function wlSplit(txt) {
+  var blocks = String(txt || "").replace(/\r/g, "").split(/\n\s*\n/).map(function (b) { return b.trim(); }).filter(Boolean), out = [], head = "", cur = null;
+  blocks.forEach(function (b) {
+    if (b.indexOf("\n") < 0 && b.length <= 70 && !/[.!?…:]$/.test(b)) { head = b.replace(/^#+\s*/, ""); cur = null; return; }
+    if (cur && cur.t.length + b.length < 1400) { cur.t += "\n\n" + b; return; }
+    cur = { h: head || b.split(/\s+/).slice(0, 5).join(" ") + "…", t: b }; out.push(cur);
+  });
+  return out;
+}
+function renderWl() {
+  var s = cur, b = $("wlbody"); if (!s || !b) return; b.innerHTML = ""; if (!s.wl) s.wl = [];
+  $("wlcount").textContent = "Lore del universo" + (s.wl.length ? " (" + s.wl.length + ")" : "");
+  b.appendChild(el("p", "hint", "Aquí guardas la historia de tu mundo: razas, épocas, guerras, secretos… Puedes ir añadiendo ideas según se te ocurran, o pegar de golpe todo el lore. El Cronista consulta solo lo que hace falta en cada escena y nunca contradice lo que escribas. Con «Disponible desde el capítulo» eliges cuándo puede empezar a usarlo (no se lo enseñamos antes, así no adelanta nada)."));
+  var sb = el("div"); sb.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.7rem;margin:.6rem 0";
+  sb.appendChild(el("b", null, "Que El Cronista lo lea y lo aprenda"));
+  sb.appendChild(el("p", "hint", "Pega un texto largo (varias páginas, o diez si hace falta) y pulsa el botón: El Cronista lo lee entero y prepara un resumen fiel que tendrá presente en todas las escenas. Los detalles completos los consulta cuando hacen falta. Solo lee lo disponible en el capítulo actual, así no adelanta nada. Gasta unas pocas consultas de IA."));
+  var dst = el("p", "hint"); dst.setAttribute("role", "status");
+  var dbtn = el("button", "small on", s.wlsum ? "Volver a leerlo y actualizar el resumen" : "Que El Cronista lo lea ahora"); dbtn.onclick = function () { dbtn.disabled = true; wlDigest(dst).then(function () { dbtn.disabled = false; }); };
+  sb.appendChild(dbtn); sb.appendChild(dst);
+  if (s.wlsum) {
+    sb.appendChild(el("p", "hint", "Resumen que usa El Cronista (leído en el capítulo " + s.wlsum.ch + ", " + s.wlsum.n + " ideas). Puedes corregirlo."));
+    var sa = el("textarea"); sa.rows = 8; sa.style.cssText = "width:100%"; sa.value = s.wlsum.t; sb.appendChild(sa);
+    var sr = el("div", "row"), ss = el("button", "small", "Guardar mis correcciones"); ss.onclick = function () { s.wlsum.t = sa.value.trim().slice(0, 2400); if (!s.wlsum.t) delete s.wlsum; save(); renderWl(); toast("Resumen guardado."); };
+    var sx = el("button", "small", "Olvidar el resumen"); sx.onclick = function () { delete s.wlsum; save(); renderWl(); };
+    sr.appendChild(ss); sr.appendChild(sx); sb.appendChild(sr);
+  }
+  b.appendChild(sb);
+  var ed = s.wl.filter(function (e) { return e.id === WL_EDIT; })[0] || null;
+  var f = el("div"); f.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.7rem;margin:.6rem 0";
+  f.appendChild(el("b", null, ed ? "Editando una idea" : "Añadir una idea"));
+  var h = el("input"); h.type = "text"; h.placeholder = "Título (ej.: La caída de las razas antiguas)"; h.style.cssText = "width:100%;margin:.4rem 0"; h.value = ed ? ed.h : "";
+  var t = el("textarea"); t.rows = 6; t.placeholder = "Escribe todo lo que quieras que forme parte del universo…"; t.style.cssText = "width:100%;margin:.2rem 0"; t.value = ed ? ed.t : "";
+  var r1 = el("label", "chk"), rv = el("input"); rv.type = "number"; rv.min = 1; rv.max = 99; rv.value = ed ? (ed.rev || 1) : 1; rv.style.cssText = "width:4rem;margin:0 .4rem"; r1.appendChild(document.createTextNode("Disponible desde el capítulo")); r1.appendChild(rv);
+  var r2 = el("label", "chk"), pn = el("input"); pn.type = "checkbox"; pn.checked = !!(ed && ed.pin); r2.appendChild(pn); r2.appendChild(document.createTextNode("Siempre presente (lo tendrá en cuenta en todas las escenas; úsalo con pocas ideas)")); r2.style.display = "block";
+  f.appendChild(h); f.appendChild(t); f.appendChild(r1); f.appendChild(r2);
+  var row = el("div", "row"), sv = el("button", "small on", ed ? "Guardar cambios" : "Guardar en el lore");
+  sv.onclick = function () {
+    var tt = t.value.trim(); if (!tt) { toast("Escribe el texto de la idea."); return; }
+    var hh = h.value.trim() || tt.split(/\s+/).slice(0, 5).join(" ") + "…", rvn = Math.max(1, Math.min(99, parseInt(rv.value, 10) || 1));
+    if (ed) { ed.h = hh; ed.t = tt; ed.rev = rvn; ed.pin = pn.checked; } else s.wl.push({ id: "w" + Date.now() + Math.floor(Math.random() * 1000), h: hh, t: tt, rev: rvn, pin: pn.checked, on: true });
+    WL_EDIT = null; save(); renderWl(); toast("Guardado en el lore.");
+  };
+  row.appendChild(sv); if (ed) { var cn = el("button", "small", "Cancelar"); cn.onclick = function () { WL_EDIT = null; renderWl(); }; row.appendChild(cn); }
+  f.appendChild(row); b.appendChild(f);
+  if (!ed) {
+    var d = el("details"); if (!s.wl.length) d.open = true; d.appendChild(el("summary", null, "Pegar todo el lore de golpe (sin límite de extensión)"));
+    var pt = el("textarea"); pt.rows = 12; pt.placeholder = "Pega aquí tu texto completo (puede ser muy largo). Se dividirá en ideas por apartados (las líneas cortas sin punto final se toman como títulos)."; pt.style.cssText = "width:100%;margin:.4rem 0";
+    var pr = el("label", "chk"), pv = el("input"); pv.type = "number"; pv.min = 1; pv.max = 99; pv.value = 1; pv.style.cssText = "width:4rem;margin:0 .4rem"; pr.appendChild(document.createTextNode("Disponible desde el capítulo")); pr.appendChild(pv);
+    var pb = el("button", "small", "Dividir y guardar");
+    pb.onclick = function () {
+      var parts = wlSplit(pt.value); if (!parts.length) { toast("No he encontrado texto que guardar."); return; }
+      var rvn = Math.max(1, Math.min(99, parseInt(pv.value, 10) || 1));
+      parts.forEach(function (x, i) { s.wl.push({ id: "w" + Date.now() + i, h: x.h, t: x.t, rev: rvn, pin: false, on: true }); });
+      save(); renderWl(); toast("Se guardaron " + parts.length + " ideas.");
+    };
+    d.appendChild(pt); d.appendChild(pr); d.appendChild(pb); b.appendChild(d);
+  }
+  var tot = s.wl.reduce(function (a, e) { return a + (e.t || "").length; }, 0);
+  if (s.wl.length) b.appendChild(el("p", "hint", s.wl.length + " ideas · " + tot + " caracteres. Ahora estás en el capítulo " + (chCur(s) || 1) + "."));
+  s.wl.forEach(function (e) {
+    var c = el("div"); c.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem;margin:.5rem 0" + (e.on === false ? ";opacity:.55" : "");
+    c.appendChild(el("b", null, (e.pin ? "📌 " : "") + e.h));
+    var meta = el("p", "hint", "Desde el capítulo " + (e.rev || 1) + ((e.rev || 1) > (chCur(s) || 1) ? " (aún no disponible)" : "") + (e.on === false ? " · en pausa" : "")); meta.style.margin = ".1rem 0"; c.appendChild(meta);
+    var pv = el("p", null, e.t.length > 160 ? e.t.slice(0, 160) + "…" : e.t); pv.style.cssText = "margin:.3rem 0;white-space:pre-wrap"; c.appendChild(pv);
+    var rr = el("div", "row");
+    var be = el("button", "small", "Editar"); be.onclick = function () { WL_EDIT = e.id; renderWl(); $("wlbody").scrollIntoView(); }; rr.appendChild(be);
+    var bp = el("button", "small", e.pin ? "Quitar «siempre presente»" : "Siempre presente"); bp.onclick = function () { e.pin = !e.pin; save(); renderWl(); }; rr.appendChild(bp);
+    var bo = el("button", "small", e.on === false ? "Activar" : "Pausar"); bo.onclick = function () { e.on = e.on === false; save(); renderWl(); }; rr.appendChild(bo);
+    var bd = el("button", "small", "Borrar"), arm = false;
+    bd.onclick = function () { if (!arm) { arm = true; bd.textContent = "¿Seguro? Toca otra vez"; setTimeout(function () { arm = false; bd.textContent = "Borrar"; }, 3500); return; } s.wl = s.wl.filter(function (x) { return x !== e; }); save(); renderWl(); };
+    rr.appendChild(bd); c.appendChild(rr); b.appendChild(c);
+  });
+}
 function impSettings(b) {
   var S = cur.src; if (!S) return;
   b.appendChild(el("p", "hint", "Material del autor: " + S.secs.length + " apartados importados. El Cronista consulta los que hacen falta en cada escena."));
@@ -1504,7 +1634,7 @@ $("cback").onclick = function () { renderLib(); view("lib"); };
 function forkNote() { var f = $("forkinfo"); if (!f) return; if (cur && cur.fork) { f.hidden = false; f.textContent = "Rama de «" + cur.fork.from + "» desde la escena " + cur.fork.at + ". La historia original no ha cambiado."; } else f.hidden = true; }
 function openStory(s) {
   if (!s.ce) s.ce = chEnds(s).slice();
-  var _prevAt = s.at || 0; cur = s; s.at = Date.now(); try { forkNote(); usePill(); ambArm(); } catch (e) {} WIN = (s.read != null && s.read < s.scenes.length - 1) ? Math.max(14, s.scenes.length - s.read + 4) : 14; view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); applyTheme(s.genre, storyVar(s), s.id); render(); if ($("atlbox").open) renderAtlas();
+  var _prevAt = s.at || 0; cur = s; s.at = Date.now(); try { save(); } catch (e) {} try { forkNote(); usePill(); ambArm(); } catch (e) {} WIN = (s.read != null && s.read < s.scenes.length - 1) ? Math.max(14, s.scenes.length - s.read + 4) : 14; view("play"); $("ptitle").textContent = s.title; renderSet(); renderLore(); try { renderWl(); } catch (e) {} renderActors(); imgPanel($("imgbody"), true); renderRead(); ensureMem(s); applyTheme(s.genre, storyVar(s), s.id); render(); if ($("atlbox").open) renderAtlas();
   if (!s.scenes.length) turn("Empieza la historia: presenta al protagonista, el lugar y el conflicto inicial.", "");
   else if (s.scenes.length >= 6 && _prevAt && Date.now() - _prevAt > 6 * 3600 * 1000 && !s.sample) setTimeout(function () { recapSheet(s); }, 250);
   else if (s.read != null && s.read > 0 && s.read < s.scenes.length - 1) { setTimeout(function () { var e = $("sc-" + s.read); if (e) { e.scrollIntoView({ block: "start" }); showToEnd(); } }, 80); }
@@ -2113,7 +2243,7 @@ function build(s, action, note, sp, compact) {
     "\nLONGITUD: párrafos de longitud natural, " + (compact ? "de 250 a 350 palabras en total (sé breve)" : "de " + LEN[len] + " palabras en total") + "." +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s).slice(0, 1800) : loreTxt(s)) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + vocabCtx(s, compact) + srcCtx(s, action, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -2544,7 +2674,7 @@ function rpgReroll(s) {
 function rpgFrom(s, diff, b2n) {
   var m = JSON.parse(JSON.stringify(ensureMem(s))); m.chap = {}; m.acts = {};
   var c = { id: String(Date.now()), title: (s.title + " (RPG)").slice(0, 80), syn: s.syn, genre: s.genre, genres: (s.genres || []).slice(), director: s.director, pov: s.pov, aut: s.aut, review: s.review, len: s.len, sty: s.sty, intens: s.intens ? JSON.parse(JSON.stringify(s.intens)) : undefined,
-    lore: JSON.parse(JSON.stringify(s.lore || [])), premise: s.premise, prot: JSON.parse(JSON.stringify(s.prot || [])), ten: s.ten, at: Date.now(), bible: s.bible, rules: s.rules ? s.rules.slice() : undefined, vocab: s.vocab ? JSON.parse(JSON.stringify(s.vocab)) : undefined, plan: undefined, src: s.src ? JSON.parse(JSON.stringify(s.src)) : undefined,
+    lore: JSON.parse(JSON.stringify(s.lore || [])), premise: s.premise, prot: JSON.parse(JSON.stringify(s.prot || [])), ten: s.ten, at: Date.now(), bible: s.bible, rules: s.rules ? s.rules.slice() : undefined, vocab: s.vocab ? JSON.parse(JSON.stringify(s.vocab)) : undefined, plan: undefined, src: s.src ? JSON.parse(JSON.stringify(s.src)) : undefined, wl: s.wl ? JSON.parse(JSON.stringify(s.wl)) : undefined, wlsum: s.wlsum ? JSON.parse(JSON.stringify(s.wlsum)) : undefined,
     cover: s.cover, memory: s.memory || "", last: "", turn: 0, state: { salud: 100, peligro: 10, objetos: [], relaciones: {}, hilos: [], eventos_pendientes: [], deudas: [], aportes: [] }, scenes: [], opts: [], fin: false, prev: null, mem: m, now: null };
   Object.keys(c).forEach(function (k) { if (c[k] === undefined) delete c[k]; });
   c.rpg = rpgNew(diff, b2n); c.rpg.parent = s.id; LIB.push(c); save(); return c;
@@ -2666,7 +2796,8 @@ $("undo").onclick = function () { undoTurn(); };
 $("versb").onclick = function () { if (cur) versSheet(cur); };
 $("regen").onclick = function () {
   var s = cur; if (busy || !s || !s.prev || !s.lastAct) return; if (s.rpg) { rpgReroll(s); return; }
-  var a = s.lastAct; undoTurn();
+  var a = s.lastAct, _old = null; try { var _l = s.scenes[s.scenes.length - 1]; if (_l && _l.t) _old = { i: s.scenes.length - 1, sc: JSON.parse(JSON.stringify(_l)) }; } catch (e) {}
+  undoTurn(); if (_old) { s.alt = _old; try { save(); } catch (e) {} }
   turn(a[0], a[1], "Escribe una versión claramente distinta de la escena anterior (otros detalles, otro enfoque y otras palabras), respetando exactamente la misma acción del jugador y todos los hechos de la memoria.");
 };
 function undoTurn() {
@@ -2920,6 +3051,18 @@ function listenSheet() {
     closeBtn(sh);
   });
 }
+function altOk(s, i) { return !!(s && s.alt && s.alt.sc && s.alt.i === i && i === s.scenes.length - 1 && s.scenes[i] && s.alt.sc.t !== s.scenes[i].t); }
+function altSheet(i) {
+  var s = cur; if (!altOk(s, i)) return;
+  sheet("Comparar versiones", function (sh) {
+    para(sh, "Se conservó la versión que descartaste. Elige con cuál te quedas. Solo cambia el texto de la escena; la memoria de la historia se queda como está.");
+    function blk(t, txt) { var h = el("b", null, t); h.style.cssText = "display:block;margin:.8rem 0 .2rem"; sh.appendChild(h); var d = el("div"); d.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem;max-height:30vh;overflow:auto;white-space:pre-wrap;line-height:1.5"; d.textContent = txt; sh.appendChild(d); }
+    blk("Versión actual", s.scenes[i].t); blk("Versión anterior", s.alt.sc.t);
+    var b = el("button", "go", "Usar la versión anterior"); b.style.marginTop = ".8rem";
+    b.onclick = function () { var cu = s.scenes[i]; s.scenes[i] = s.alt.sc; s.alt = { i: i, sc: cu }; save(); closeSheet(); render(true); toast("Ahora usas la otra versión. Puedes volver a compararlas."); };
+    sh.appendChild(b); closeBtn(sh);
+  });
+}
 function quoteSheet(i) {
   var sc = cur.scenes[i];
   sheet("Elige una frase", function (sh) {
@@ -2947,6 +3090,7 @@ function sceneImg(sc, i) {
   if (!window.Native) r.appendChild(pasteBtn("scene", i));
   var p = el("button", "small", "Prompt de imagen"); p.onclick = function () { makePrompt("scene", i); }; r.appendChild(p);
   r = rr;
+  if (altOk(cur, i)) { var ab = el("button", "small", "Comparar con la otra versión"); ab.onclick = function () { altSheet(i); }; r.appendChild(ab); }
   var ed = el("button", "small", "Editar texto"); ed.onclick = function () { editScene(i); }; r.appendChild(ed);
   var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
   var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
@@ -3612,7 +3756,7 @@ $("tMundo").onclick = function () {
   $("pmenu").open = true; $("atlbox").open = true; renderAtlas(); setTimeout(function () { $("atlbox").scrollIntoView({ behavior: "smooth", block: "start" }); }, 80);
 };
 $("imx").onclick = function () { setImm(false); };
-window.hvBack = function () { if (document.body.classList.contains("imm")) { setImm(false); return true; } if (!$("gmodal").hidden) { closeSheet(); return true; } return false; };
+window.hvBack = function () { var cz = $("czoom"); if (cz) { cz.remove(); return true; } if (document.body.classList.contains("imm")) { setImm(false); return true; } if (!$("gmodal").hidden) { closeSheet(); return true; } return false; };
 $("dict").hidden = !window.hvDictate;
 $("dict").onclick = function () { window.hvDictate(function (t) { if (t) { var o = $("own"); o.value = (o.value ? o.value + " " : "") + t; o.focus(); } }); };
 
@@ -3856,6 +4000,7 @@ function fichaLines(s) {
   li("Sinopsis: " + (s.syn || s.premise || ""));
   if (s.premise && s.premise !== s.syn) li("Premisa: " + s.premise);
   if (s.pov) li("Punto de vista: " + s.pov + (s.ten ? " · Tiempo: " + s.ten : "") + (s.sty ? " · Estilo: " + s.sty : ""));
+  if (s.wl && s.wl.length) { h1("LORE DEL UNIVERSO"); s.wl.forEach(function (e) { li(e.h + (e.rev > 1 ? " (desde el cap. " + e.rev + ")" : "") + ": " + e.t.replace(/\s+/g, " ")); }); }
   if (s.bible) { h1("BIBLIA, TONO Y REGLAS"); s.bible.split("\n").forEach(function (x) { li(x.trim()); }); }
   if (s.rules && s.rules.length) { if (!s.bible) h1("BIBLIA, TONO Y REGLAS"); s.rules.forEach(function (x) { li("Regla: " + x); }); }
   if (s.plan && s.plan.pts && s.plan.pts.length) { h1("PLAN DE LA NOVELA"); var pp = planPoint(s); s.plan.pts.forEach(function (x, i) { li((i + 1) + ". " + x + (pp && pp.i === i ? "  ◄ aquí va la historia" : "")); }); }
@@ -4344,6 +4489,9 @@ var THEMES = ["auto", "light", "dark"], ti = 0, TN = { auto: "automático", ligh
 function hcLabel() { var on = false; try { on = localStorage.getItem("hv:homecover") === "1"; } catch (e) {} $("dhcov").textContent = "Fondo de inicio: " + (on ? "portada de mi última historia" : "del género"); }
 $("dhcov").onclick = function () { var on = false; try { on = localStorage.getItem("hv:homecover") === "1"; localStorage.setItem("hv:homecover", on ? "0" : "1"); } catch (e) {} hcLabel(); if (window.reTheme) reTheme(); if (!on && !(lastStory() || {}).cover) toast("Tu última historia aún no tiene portada. Añádela en «Título, portada e imágenes»."); };
 hcLabel();
+function czLabel() { $("dczoom").textContent = "Ampliar portada al tocarla: " + (czOn() ? "sí" : "no"); }
+$("dczoom").onclick = function () { try { localStorage.setItem("hv:coverzoom", czOn() ? "0" : "1"); } catch (e) {} czLabel(); };
+czLabel();
 $("dtheme").onclick = function () {
   ti = (ti + 1) % 3; var t = THEMES[ti];
   if (t === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", t);
