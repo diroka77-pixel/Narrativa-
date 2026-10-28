@@ -31,3 +31,5 @@ Adjunto `HistoriasVivas-web-v0.10.0.zip`. Cambios solo de web, pero hay UN ARCHI
 5p. Formato de imagen por escena (solo web): en una escena con imagen, Opciones → «Formato» alterna Horizontal/Vertical/Página completa; comprueba que se ve bien en el móvil y que el prompt de imagen cambia de formato.
 
 5q. Escuchar por rango (web, pero toca el servicio nativo): «Elegir qué escuchar» puede enviar a hvBackgroundSpeech.play() una lista muy larga (novela entera). Comprueba que NarrationService la acepta sin cortarse ni agotar memoria y que la pausa/parar siguen funcionando con la pantalla apagada.
+
+5r. Fondo de inicio (solo web): menú → «Fondo de inicio»; comprueba que alterna entre fondo del género y portada de la última historia, y que la opción se conserva al cerrar y abrir la app.

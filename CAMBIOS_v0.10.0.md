@@ -123,3 +123,8 @@
 - Funciona con la voz del teléfono, la nativa y la de Gemini. Con Gemini avisa de cuántas peticiones de voz gastará (≈1 por cada 1000 caracteres).
 - Si la escena inicial no está cargada en pantalla, la app amplía la ventana de escenas antes de leer.
 - Prueba (voz simulada): tests/t64_listen.js. NO probado con voz real ni con la pantalla apagada: Codex debe revisar que el servicio nativo acepta listas largas (novela entera).
+
+## Fondo de inicio con la portada
+- Menú (☰ / Ajustes) → «Fondo de inicio: del género / portada de mi última historia». Se guarda en localStorage `hv:homecover` (solo preferencia, no entra en copias).
+- Si está activo, la página de inicio usa la portada de la última historia abierta; si no tiene portada, sigue el fondo del género y avisa. Dentro de la historia no cambia nada.
+- Prueba: tests/t65_homecover.js. No probado en móvil real.
