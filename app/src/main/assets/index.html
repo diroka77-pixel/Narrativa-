@@ -60,6 +60,8 @@ textarea{min-height:5.5rem;resize:vertical}
 .scene p{margin:0 0 1rem}
 .ch{font-family:"Cormorant Garamond",Georgia,serif;font-variant:small-caps;font-size:1.2rem;color:var(--mute);margin:2rem 0 .8rem;border-top:1px solid var(--line);padding-top:.9rem}
 .act{color:var(--mute);font-style:italic;border-left:3px solid var(--acc);padding-left:.9rem;margin:1.4rem 0 1rem}
+.act[role=button]{cursor:pointer}
+.act.cl{font-size:.8rem;font-style:normal;opacity:.65;margin:.9rem 0 .6rem;padding-top:.1rem;padding-bottom:.1rem}
 .opts{display:grid;gap:.6rem;margin-top:.8rem}
 .status{color:var(--mute);margin:1.5rem 0}
 .err{border:1.5px solid var(--acc);border-radius:12px;padding:.8rem 1rem;margin-top:1.2rem}
@@ -87,9 +89,9 @@ p.rollline{font-size:.82rem;color:var(--mute);margin:.2rem 0 .5rem;letter-spacin
 @media (prefers-reduced-motion:reduce){.spine{transition:none}}
 mark.hl{background:rgba(255,205,70,.38);color:inherit;border-radius:3px;padding:0 .1em;cursor:pointer}
 :root[data-theme="light"] mark.hl{background:rgba(255,190,40,.5)}
-#hlbar{position:fixed;left:50%;transform:translateX(-50%);bottom:5.4rem;z-index:60;display:flex;gap:.35rem;padding:.35rem;background:var(--card);border:1px solid var(--line);border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+#hlbar{position:fixed;left:.5rem;right:.5rem;margin:0 auto;max-width:30rem;bottom:5.4rem;z-index:60;display:flex;flex-wrap:wrap;justify-content:center;gap:.35rem;padding:.4rem;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
 #hlbar[hidden]{display:none}
-#hlbar button{white-space:nowrap;margin:0}
+#hlbar button{white-space:nowrap;margin:0;flex:1 1 auto;min-width:0;padding:.5rem .6rem;font-size:.9rem}
 details.pmenu{margin-top:.6rem}
 details.pmenu>summary{display:inline-block;list-style:none;cursor:pointer;font-size:.9rem;padding:.4rem .9rem;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
 details.pmenu>summary::-webkit-details-marker{display:none}
@@ -325,6 +327,11 @@ button.small,.fb,.lvs button,.sh .more{min-height:44px}
 summary,select,input[type="checkbox"]{min-height:44px}
 [hidden]{display:none!important}
 
+.bggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.4rem 0}
+.bgcell{position:relative;aspect-ratio:2/3;border:2px solid var(--line);border-radius:10px;background-size:cover;background-position:center;padding:0;overflow:hidden;cursor:pointer;min-height:0}
+.bgcell.sel{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+.bgcell.lock{filter:grayscale(.85) brightness(.55)}
+.bgcell .bgcap{position:absolute;left:0;right:0;bottom:0;padding:.25rem .3rem;font:600 .68rem/1.15 system-ui,sans-serif;color:#fff;background:linear-gradient(180deg,transparent,rgba(0,0,0,.85));text-align:center}
 /* v0.10: modo claro: fondos visibles, paneles blancos */
 :root[data-theme="light"] #bgshade,:root[data-theme="light"] body[data-v] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.28) 0%,rgba(7,11,20,.06) 30%,rgba(7,11,20,.1) 100%)!important}
 :root[data-theme="light"] body[data-v="lib"] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.2) 0%,rgba(7,11,20,.02) 40%,rgba(7,11,20,.08) 100%)!important}
@@ -377,7 +384,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
-<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
+<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dhelp">Privacidad y ayuda</button><button id="dtheme">Tema: automático</button><p class="hint" style="margin-top:auto">Historias vivas · v0.9</p></nav></div>
 <div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hldef" hidden>📖 Definición</button><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
@@ -525,7 +532,7 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
 </div>
 <div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="rvw" class="small">Revisar el libro</button><button id="recapb" class="small">Lo escrito hasta ahora</button><button id="exp" class="small">Exportar para leer</button></div>
-<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="fichab" style="flex-basis:100%">📋 Ficha de la historia: lore, personajes y memoria (PDF)</button><button class="small" id="fichat" style="flex-basis:100%">📋 La misma ficha en texto (.txt)</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📋 Ficha de la historia: lore, personajes y memoria (PDF)</button><button class="small" id="fichat" style="flex-basis:100%">📋 La misma ficha en texto (.txt)</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
@@ -564,9 +571,28 @@ var C = JSON.parse(JSON.stringify(DEF));
 var KEY = "narrador:v1", LIB = [], cur = null, sample = null, busy = false, pending = null, MODE = "idea", rows = [];
 var $ = function (id) { return document.getElementById(id); };
 function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
-function load() { try { LIB = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch (e) { LIB = []; } }
+var LOAD_BAD = false;
+function libValid(x) { return Array.isArray(x) && x.every(function (y) { return y && typeof y === "object" && typeof y.id === "string" && Array.isArray(y.scenes); }); }
+function load() {
+  var raw = null; try { raw = localStorage.getItem(KEY); } catch (e) {}
+  try { LIB = JSON.parse(raw || "[]"); if (!libValid(LIB)) throw new Error("estructura"); }
+  catch (e) { LIB = []; LOAD_BAD = true; try { if (raw) localStorage.setItem(KEY + ":corrupt", raw); } catch (e2) {} }
+}
 var BK_DIRTY = false;
-function save() { try { BK_DIRTY = true; localStorage.setItem(KEY, JSON.stringify(LIB)); try { achSoon(); } catch (e2) {} return true; } catch (e) { return false; } }
+var SAVE_ERR_T = 0;
+function saveFail(msg) {
+  try { localStorage.setItem("hv:saveerr", JSON.stringify({ t: Date.now(), m: msg })); } catch (e) {}
+  if (Date.now() - SAVE_ERR_T > 60000) { SAVE_ERR_T = Date.now(); try { toast("⚠ " + msg + " Tu historia está en el almacén de seguridad. Libera espacio o haz una copia."); } catch (e) {} }
+}
+function save() {
+  var js, ok = false; BK_DIRTY = true;
+  try { js = JSON.stringify(LIB); } catch (e) { saveFail("No se pudo preparar el guardado."); return false; }
+  try { localStorage.setItem(KEY, js); ok = true; localStorage.setItem("hv:lastsave", String(Date.now())); }
+  catch (e) { saveFail("El almacenamiento del teléfono está lleno o no responde."); }
+  try { mirrorSoon(js); } catch (e) {}
+  try { achSoon(); } catch (e2) {}
+  return ok;
+}
 function view(n) { try { if (n !== "play") ambStop(); } catch (e) {} ["lib", "nook", "create", "imp", "making", "created", "play", "chars", "chared"].forEach(function (v) { $(v).hidden = v !== n; }); document.body.setAttribute("data-v", n); setTab(n); window.scrollTo(0, 0); }
 function setTab(n) { var m = { lib: "tInicio", nook: "tHist", chars: "tPers", chared: "tPers", play: "tMundo" }[n]; ["tInicio", "tHist", "tPers", "tMundo", "tAjus"].forEach(function (id) { var b = $(id); if (b) b.classList.toggle("tabon", id === m && n !== "play"); }); }
 /* ---------- Temas por género: 30 géneros × 3 variantes de fondo ---------- */
@@ -718,13 +744,36 @@ function artSvg(g, g2, seed, v) {
 }
 var ARTC = {};
 function artUrl(g, g2, seed, v) { var k = g + "|" + seed + "|" + (v || 0); return ARTC[k] || (ARTC[k] = 'url("data:image/svg+xml;utf8,' + encodeURIComponent(artSvg(g, g2, seed, v)) + '")'); }
+var BGLIB = [
+  { id: "bosque", name: "Bosque de las luciérnagas", f: "bosque", n: 0, g: "fantasy" },
+  { id: "ciudadela", name: "Ciudadela al atardecer", f: "ciudadela", n: 0, g: "fantasy" },
+  { id: "molino", name: "Molino del atardecer", f: "molino", n: 0, g: "human" },
+  { id: "caminantes", name: "Los últimos caminantes", f: "caminantes", n: 0, g: "scifi" },
+  { id: "cementerio", name: "Cementerio de la niebla", f: "cementerio", n: 0, g: "dark" },
+  { id: "ciudad-cascadas", name: "Ciudad de las cascadas", f: "ciudad-cascadas", n: 1 },
+  { id: "estandartes", name: "Campo de estandartes", f: "estandartes", n: 2 },
+  { id: "bosque-carmesi", name: "Bosque carmesí", f: "bosque-carmesi", n: 3 },
+  { id: "neon-acero", name: "Neón y acero", f: "neon-acero", n: 4 },
+  { id: "horizonte", name: "Horizonte lejano", f: "horizonte", n: 5 },
+  { id: "castillo-luna", name: "Castillo de la luna roja", f: "castillo-luna", n: 6 },
+  { id: "catedral", name: "Catedral en ruinas", f: "catedral", n: 7 },
+  { id: "fortaleza", name: "Fortaleza de la cascada negra", f: "fortaleza", n: 8 },
+  { id: "lluvia-neon", name: "Lluvia de neón", f: "lluvia-neon", n: 9 },
+  { id: "supervivientes", name: "Noche de supervivientes", f: "supervivientes", n: 10 },
+  { id: "noir", name: "Lluvia y secretos", f: "noir", n: 11 },
+  { id: "pueblos", name: "Los pueblos del reino", f: "pueblos", n: 12 }
+];
+function bgById(id) { for (var i = 0; i < BGLIB.length; i++) if (BGLIB[i].id === id) return BGLIB[i]; return null; }
+function achCount() { try { var g = achGet(); return ACH.filter(function (a) { return g[a[0]]; }).length; } catch (e) { return 0; } }
+function bgUnlocked(b) { return !!b && achCount() >= b.n; }
+function bgPath(b) { return "art/bg/" + b.f + ".webp"; }
 var REAL_ART = {
-  fantasy: ["art/idea-ciudad-nubes.webp", "art/idea-reino-recuerdos.webp", "art/home.webp"],
+  fantasy: ["art/bg/bosque.webp", "art/bg/ciudadela.webp", "art/idea-ciudad-nubes.webp", "art/idea-reino-recuerdos.webp", "art/home.webp"],
   mystery: ["art/idea-detective.webp", "art/idea-faro.webp", "art/idea-pueblo-olvida.webp"],
-  scifi: ["art/idea-nave-dormida.webp", "art/idea-tren-fin-mundo.webp"],
+  scifi: ["art/bg/caminantes.webp", "art/idea-nave-dormida.webp", "art/idea-tren-fin-mundo.webp"],
   magic: ["art/idea-biblioteca.webp", "art/idea-reino-recuerdos.webp", "art/home.webp"],
-  dark: ["art/idea-pueblo-olvida.webp", "art/idea-faro.webp", "art/idea-detective.webp"],
-  human: ["art/idea-detective.webp", "art/idea-pueblo-olvida.webp", "art/idea-biblioteca.webp"]
+  dark: ["art/bg/cementerio.webp", "art/idea-pueblo-olvida.webp", "art/idea-faro.webp", "art/idea-detective.webp"],
+  human: ["art/bg/molino.webp", "art/idea-detective.webp", "art/idea-pueblo-olvida.webp", "art/idea-biblioteca.webp"]
 };
 function realArtGroup(g) {
   g = ALIAS[g] || g || "";
@@ -736,11 +785,12 @@ function realArtGroup(g) {
   return "fantasy";
 }
 function realArtPath(g, seed, v) {
+  if (typeof v === "string" && v.indexOf("bg:") === 0) { var bb = bgById(v.slice(3)); if (bgUnlocked(bb)) return bgPath(bb); v = 0; }
   if (!g || g === "Auto") return "art/home.webp";
   var a = REAL_ART[realArtGroup(g)], n = (hvh(String(seed || g)) + (v || 0)) % a.length;
   return a[n];
 }
-function storyVar(s) { return s.bgv != null ? s.bgv : hvh(s.id) % 3; }
+function storyVar(s) { if (s.bgid && bgUnlocked(bgById(s.bgid))) return "bg:" + s.bgid; return s.bgv != null ? s.bgv : hvh(s.id) % 3; }
 function bg(g, seed, g2, v) { return "linear-gradient(180deg,rgba(7,11,20,0) 32%,rgba(7,11,20,.9)),url(\"" + realArtPath(g, seed, v) + "\") center/cover"; }
 function coverBg(s) {
   if (s.cover) return "linear-gradient(180deg,rgba(7,11,20,0) 40%,rgba(7,11,20,.88)),url(\"" + s.cover + "\") center/cover";
@@ -884,8 +934,9 @@ function storyMenu(s) {
     var ar = el("button", null, "🕯 Guardar en el Rincón de los olvidados"); ar.style.marginTop = ".5rem"; ar.style.width = "100%";
     ar.onclick = function () { s.arch = Date.now(); save(); closeSheet(); renderLib(); toast("«" + s.title + "» descansa ahora en el Rincón de los olvidados."); }; sh.appendChild(ar);
     para(sh, "No se borra nada: la historia sale de la página principal y puedes rescatarla cuando quieras.");
+    var vb = el("button", "small", "🕓 Versiones anteriores"); vb.style.marginTop = ".4rem"; vb.onclick = function () { versSheet(s); }; sh.appendChild(vb);
     var d = el("button", "small", "Borrar historia"); d.style.marginTop = ".6rem";
-    d.onclick = function () { if (d.textContent === "Borrar historia") { d.textContent = "¿Seguro? Se perderá para siempre"; return; } LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); closeSheet(); renderLib(); };
+    d.onclick = function () { if (d.textContent === "Borrar historia") { d.textContent = "¿Seguro? Se podrá recuperar desde el menú ☰ → Recuperación"; return; } verSnap(s, "Antes de borrar la historia", false); LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); closeSheet(); renderLib(); };
     sh.appendChild(d); closeBtn(sh);
   });
 }
@@ -896,7 +947,7 @@ function nookPull(s) {
     var go = el("button", "go", "✨ Rescatar y seguir escribiendo"); go.onclick = function () { delete s.arch; s.at = Date.now(); save(); closeSheet(); openStory(s); }; sh.appendChild(go);
     var rs = el("button", null, "Devolver a Mis historias"); rs.style.cssText = "margin-top:.5rem;width:100%"; rs.onclick = function () { delete s.arch; s.at = Date.now(); save(); closeSheet(); renderNook(); toast("«" + s.title + "» vuelve a tus historias."); }; sh.appendChild(rs);
     var d = el("button", "small", "Borrar para siempre"); d.style.marginTop = ".6rem";
-    d.onclick = function () { if (d.textContent === "Borrar para siempre") { d.textContent = "¿Seguro? No se puede deshacer"; return; } LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); closeSheet(); renderNook(); };
+    d.onclick = function () { if (d.textContent === "Borrar para siempre") { d.textContent = "¿Seguro? Se podrá recuperar desde el menú ☰ → Recuperación"; return; } verSnap(s, "Antes de borrar la historia", false); LIB = LIB.filter(function (x) { return x.id !== s.id; }); save(); closeSheet(); renderNook(); };
     sh.appendChild(d); closeBtn(sh);
   });
 }
@@ -1589,7 +1640,13 @@ function render(keep) {
     if (i < st0) return;
     var w = el("div", "sc"); w.id = "sc-" + i; if (i === chStartIdx(s, chOf(s, i))) w.classList.add("first");
     var cnum = chOf(s, i); if (i === chStartIdx(s, cnum)) { var ctt = ctitle(s, cnum); w.appendChild(el("div", "ch", "Capítulo " + cnum + (ctt ? " · " + ctt : ""))); }
-    if (sc.a) w.appendChild(el("p", "act", sc.a));
+    if (sc.a) {
+      var ap = el("p", "act cl"); ap.tabIndex = 0; ap.setAttribute("role", "button");
+      var setA = function (o) { ap.classList.toggle("cl", !o); ap.textContent = o ? "▾ " + sc.a : "▸ Tu acción (toca para ver)"; ap.setAttribute("aria-expanded", o ? "true" : "false"); ap.setAttribute("aria-label", o ? "Tu acción: " + sc.a + ". Toca para plegar" : "Tu acción, plegada. Toca para ver"); ap._o = o; };
+      setA(false); ap.onclick = function () { if (String(window.getSelection && window.getSelection()).length) return; setA(!ap._o); };
+      ap.onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setA(!ap._o); } };
+      w.appendChild(ap);
+    }
     if (sc.roll) { var rl = el("p", "rollline", "🎲 " + sc.roll.d + " · " + RPG_ICON[sc.roll.risk] + " " + sc.roll.risk + " (" + sc.roll.dc + ") → " + rpgTierName(sc.roll) + (sc.rec ? " · recuperas fuerzas" : "")); rl.setAttribute("aria-label", "Tirada de dado: " + sc.roll.d + ", " + sc.roll.risk + ", " + rpgTierName(sc.roll)); w.appendChild(rl); }
     var fresh = fi === i && RD.type && !reduce;
     sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); else hlApply(pe, sc, i); w.appendChild(pe); });
@@ -2559,7 +2616,7 @@ async function turn(action, shown, extra) {
     if (sp) s.ls = s.turn;
     s.at = Date.now(); s.turn++; s.fin = !!cand.fin; s.opts = s.fin ? [] : (cand.opciones || []).slice(0, 3); s.lastAct = [action, shown];
     var sn = s.scenes[s.scenes.length - 1]; sn.m = cand.mem || null; sn.hn = Array.isArray(cand.hechos_nuevos) ? cand.hechos_nuevos : null; sn.st = cand.estado || null; sn.o = s.opts.slice(); sn.mt = cand.memoria || ""; sn.l = Array.isArray(cand.lore_nuevo) ? cand.lore_nuevo : null; if (s.rpg) rpgApply(s, cand, sn);
-    save(); autoBackup(false); try { bkNudge(); } catch (e) {} try { (function (ss, ix) { setTimeout(function () { spellScene(ss, ix).then(function (n) { if (n && cur === ss) render(true); }).catch(function () {}); }, 300); })(s, s.scenes.length - 1); } catch (e) {} try { $("sr").textContent = ""; setTimeout(function () { $("sr").textContent = "El Cronista ha escrito una nueva escena. " + String(cand.escena || "").replace(/\s+/g, " ").slice(0, 220); }, 60); } catch (e) {} renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
+    save(); autoBackup(false); try { verAuto(s); } catch (e) {} try { bkNudge(); } catch (e) {} try { (function (ss, ix) { setTimeout(function () { spellScene(ss, ix).then(function (n) { if (n && cur === ss) render(true); }).catch(function () {}); }, 300); })(s, s.scenes.length - 1); } catch (e) {} try { $("sr").textContent = ""; setTimeout(function () { $("sr").textContent = "El Cronista ha escrito una nueva escena. " + String(cand.escena || "").replace(/\s+/g, " ").slice(0, 220); }, 60); } catch (e) {} renderLore(); FRESH = s.scenes.length - 1; if ($("atlbox").open) renderAtlas();
     dg(s, "turns"); delete s.nextTone; if (window.hvToneReset) window.hvToneReset();
     if (s.endIn != null) { s.endIn--; if (s.endIn < -1) s.fin = true; }
     if (_close) { if (!s.ce) s.ce = chEnds(s).filter(function (x) { return x < s.scenes.length; }); closeChapterNow(s); }
@@ -2598,6 +2655,7 @@ $("do").onclick = function () {
   turn((MODE === "idea" ? "[IDEA PARA LA HISTORIA, aportada por el jugador] " : "[ACCIÓN DE " + (ACTOR || "SU PERSONAJE").toUpperCase() + "] ") + v, v);
 };
 $("undo").onclick = function () { undoTurn(); };
+$("versb").onclick = function () { if (cur) versSheet(cur); };
 $("regen").onclick = function () {
   var s = cur; if (busy || !s || !s.prev || !s.lastAct) return; if (s.rpg) { rpgReroll(s); return; }
   var a = s.lastAct; undoTurn();
@@ -2605,6 +2663,7 @@ $("regen").onclick = function () {
 };
 function undoTurn() {
   var s = cur, p = s.prev; if (busy || !p) return;
+  try { verSnap(s, "Antes de deshacer el último turno", true); } catch (e) {}
   s.scenes.length = p.len; s.memory = p.memory; s.last = p.last; s.turn = p.turn; s.state = p.state; s.now = p.now; s.opts = p.opts; s.fin = p.fin; s.ls = p.ls; if (p.ce !== undefined) { if (p.ce) s.ce = p.ce; else delete s.ce; } if (p.mem) restoreMem(s, p.mem);
   if (s.lore && p.lore != null) s.lore.length = Math.min(s.lore.length, p.lore);
   if (p.rpg && s.rpg) { s.rpg.hp = p.rpg.hp; s.rpg.b2 = p.rpg.b2; s.state.salud = Math.round(s.rpg.hp); s.rpg.pr = null; }
@@ -2947,9 +3006,10 @@ var ACH_T = 0;
 function achSoon() { clearTimeout(ACH_T); ACH_T = setTimeout(achCheck, 1500); }
 function achCheck() {
   try {
-    var got = achGet(), t = achTest(), nw = [], first = !Object.keys(got).length && !(LIB || []).length;
+    var got = achGet(), t = achTest(), nw = [], first = !Object.keys(got).length && !(LIB || []).length, prevN = achCount();
     ACH.forEach(function (a) { if (t[a[0]] && !got[a[0]]) { got[a[0]] = Date.now(); nw.push(a[1]); } });
-    if (nw.length) { localStorage.setItem("hv:ach", JSON.stringify(got)); toast(nw.length > 3 ? "Has desbloqueado " + nw.length + " logros (Atlas → Logros)" : "Logro: " + nw.join(", ")); if ($("atlbox") && $("atlbox").open && ATL.tab === "ach") renderAtlas(); }
+    if (nw.length) { localStorage.setItem("hv:ach", JSON.stringify(got)); var nb = BGLIB.filter(function (b) { return b.n > prevN && b.n <= prevN + nw.length; }).map(function (b) { return b.name; });
+      toast((nw.length > 3 ? "Has desbloqueado " + nw.length + " logros (Atlas → Logros)" : "Logro: " + nw.join(", ")) + (nb.length ? " · Fondo nuevo: " + (nb.length > 2 ? nb.length + " fondos" : nb.join(", ")) : "")); if ($("atlbox") && $("atlbox").open && ATL.tab === "ach") renderAtlas(); }
   } catch (e) {}
 }
 function renderAtlas() {
@@ -3131,7 +3191,11 @@ function renderAtlas() {
     var op0 = m.pend.filter(function (x) { return x.open; }); if (op0.length) { var pq = el("div", "lore"); pq.appendChild(el("b", null, "Hilos abiertos (" + op0.length + ")")); op0.slice(-6).forEach(function (x) { pq.appendChild(el("p", "hint", "· " + x.text)); }); box.appendChild(pq); }
   } else if (ATL.tab === "ach") {
     var got = achGet(), nGot = ACH.filter(function (a) { return got[a[0]]; }).length;
-    box.appendChild(el("p", "hint", "Logros: " + nGot + " de " + ACH.length + ". Son solo para disfrutar: no dan nada ni tienen monedas."));
+    box.appendChild(el("p", "hint", "Logros: " + nGot + " de " + ACH.length + ". Cada logro te acerca a fondos nuevos para tus historias (sin monedas ni coste)."));
+    var nb2 = BGLIB.filter(function (b) { return b.n > nGot; }).sort(function (a, b) { return a.n - b.n; })[0], bl = el("div", "lore");
+    bl.appendChild(el("b", null, "Fondos: " + BGLIB.filter(bgUnlocked).length + " de " + BGLIB.length + " desbloqueados"));
+    bl.appendChild(el("p", "hint", nb2 ? "Siguiente: «" + nb2.name + "» con " + nb2.n + " logro" + (nb2.n === 1 ? "" : "s") + " (te faltan " + (nb2.n - nGot) + ")." : "Los tienes todos."));
+    var bgo = el("button", "small", "Ver y elegir fondos"); bgo.onclick = function () { bgGallery(); }; bl.appendChild(bgo); box.appendChild(bl);
     ACH.forEach(function (a) { var d = el("div", "lore"); d.appendChild(el("b", null, (got[a[0]] ? "✓ " : "· ") + a[1])); d.appendChild(el("p", "hint", a[2] + (got[a[0]] ? " — conseguido el " + new Date(got[a[0]]).toLocaleDateString("es") : ""))); box.appendChild(d); });
   } else if (ATL.tab === "pend") {
     var ps = m.pend.slice().reverse();
@@ -3404,7 +3468,25 @@ $("pgtog").onclick = function () { PAGED = false; try { localStorage.setItem("hv
   try { new MutationObserver(function () { if (document.body.classList.contains("paged")) pgLabel(); }).observe(b, { childList: true, subtree: true }); } catch (e) {}
 })();
 $("immb").onclick = function () { setImm(true); };
-$("bgb").onclick = function () { if (!cur) return; cur.bgv = (storyVar(cur) + 1) % 3; save(); applyTheme(cur.genre, cur.bgv, cur.id); };
+$("bgb").onclick = function () { if (cur) bgGallery(); };
+function bgGallery() {
+  var s = cur; if (!s) return; var n = achCount();
+  sheet("Fondos", function (sh) {
+    para(sh, "Has desbloqueado " + BGLIB.filter(bgUnlocked).length + " de " + BGLIB.length + " fondos. Los demás se consiguen con logros (Atlas → Logros).");
+    var au = el("button", "small", "Automático (según el género)"); au.style.marginBottom = ".6rem";
+    au.onclick = function () { delete s.bgid; s.bgv = ((typeof storyVar(s) === "number" ? storyVar(s) : 0) + 1) % 3; save(); applyTheme(s.genre, s.bgv, s.id); closeSheet(); };
+    sh.appendChild(au);
+    var grid = el("div", "bggrid"); sh.appendChild(grid);
+    BGLIB.forEach(function (b) {
+      var ok = bgUnlocked(b), x = el("button", "bgcell" + (s.bgid === b.id ? " sel" : "") + (ok ? "" : " lock"));
+      x.style.backgroundImage = "url(\"art/bg/" + b.f + "-t.webp\")"; x.setAttribute("aria-label", b.name + (ok ? "" : ", bloqueado: necesita " + b.n + " logros"));
+      var cap = el("span", "bgcap", ok ? b.name : "🔒 " + b.n + " logro" + (b.n === 1 ? "" : "s")); x.appendChild(cap);
+      x.onclick = function () { if (!ok) { toast("Te faltan " + (b.n - n) + " logro" + (b.n - n === 1 ? "" : "s") + " para «" + b.name + "»."); return; } s.bgid = b.id; save(); applyTheme(s.genre, "bg:" + b.id, s.id); closeSheet(); };
+      grid.appendChild(x);
+    });
+    closeBtn(sh);
+  });
+}
 $("tInicio").onclick = function () { goHome(); };
 $("tHist").onclick = function () { goHome(); setTimeout(function () { $("list").scrollIntoView({ behavior: "smooth", block: "center" }); }, 60); };
 $("tPers").onclick = function () { $("dchars").click(); };
@@ -3964,6 +4046,7 @@ function backupSheet() {
   });
 }
 $("dbackup").onclick = function () { drawer(false); backupSheet(); };
+$("dvers").onclick = function () { drawer(false); recoverSheet(); };
 
 // v0.9: copia no bloqueante al cerrar/ocultar y según el número de escenas.
 async function autoBackup(force) {
@@ -4147,7 +4230,153 @@ $("dtheme").onclick = function () {
 try { var _t = localStorage.getItem("hv:theme"); if (_t && THEMES.indexOf(_t) > 0) { ti = THEMES.indexOf(_t); document.documentElement.setAttribute("data-theme", _t); $("dtheme").textContent = "Tema: " + TN[_t]; } } catch (e) {}
 
 loadChars();
-load(); renderLib(); setListen(); setTab("lib");
+/* ---------- v0.10: almacén de seguridad (IndexedDB), versiones de cada historia y recuperación ---------- */
+var IDBX = null;
+function idbOpen() {
+  if (IDBX) return IDBX;
+  IDBX = new Promise(function (res, rej) {
+    try {
+      var r = indexedDB.open("hv-safe", 1);
+      r.onupgradeneeded = function () { var d = r.result; d.createObjectStore("lib", { keyPath: "k" }); var v = d.createObjectStore("ver", { keyPath: "k" }); v.createIndex("sid", "sid"); };
+      r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); };
+    } catch (e) { rej(e); }
+  });
+  IDBX.catch(function () { IDBX = null; });
+  return IDBX;
+}
+function idbTx(store, mode, fn) {
+  return idbOpen().then(function (d) { return new Promise(function (res, rej) { var t = d.transaction(store, mode), o = t.objectStore(store), out = fn(o, t); t.oncomplete = function () { res(out && out.result !== undefined ? out.result : out); }; t.onerror = t.onabort = function () { rej(t.error); }; }); });
+}
+function idbReq(r) { return new Promise(function (res, rej) { r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error); }; }); }
+var MIR = { t: 0, js: null, prevTs: 0 };
+function mirrorSoon(js) { MIR.js = js; clearTimeout(MIR.t); MIR.t = setTimeout(mirrorNow, 1500); }
+function mirrorNow() {
+  var js = MIR.js; if (!js) return Promise.resolve(); MIR.js = null; clearTimeout(MIR.t);
+  return idbOpen().then(function (d) {
+    return new Promise(function (res) {
+      var t = d.transaction("lib", "readwrite"), o = t.objectStore("lib"), g = o.get("main");
+      g.onsuccess = function () { var old = g.result, now = Date.now(); if (old && now - (old.prevAt || 0) > 600000 && old.js !== js) o.put({ k: "prev", ts: old.ts, js: old.js }); o.put({ k: "main", ts: now, js: js, prevAt: (old && now - (old.prevAt || 0) > 600000) ? now : (old ? old.prevAt : now) }); };
+      t.oncomplete = function () { try { localStorage.setItem("hv:lastmirror", String(Date.now())); } catch (e) {} res(true); }; t.onerror = t.onabort = function () { res(false); };
+    });
+  }).catch(function () { return false; });
+}
+document.addEventListener("visibilitychange", function () { if (document.hidden && MIR.js) mirrorNow(); });
+window.addEventListener("pagehide", function () { if (MIR.js) mirrorNow(); });
+
+var VER_MAX = 10, VER_LAST = {};
+function chSafe(s) { try { return chCur(s); } catch (e) { return 0; } }
+function verSnap(s, reason, auto) {
+  if (!s || !s.id) return Promise.resolve(false);
+  var js; try { js = JSON.stringify(s); } catch (e) { return Promise.resolve(false); }
+  var n = (s.scenes || []).length, now = Date.now(), last = VER_LAST[s.id];
+  if (auto && last && now - last.t < 120000 && last.size === js.length) return Promise.resolve(false);
+  VER_LAST[s.id] = { t: now, size: js.length, n: n };
+  var rec = { k: s.id + ":" + now, sid: s.id, ts: now, scenes: n, ch: chSafe(s), size: js.length, appv: VERSION, reason: reason || "Versión", auto: !!auto, title: s.title || "", js: js };
+  return idbTx("ver", "readwrite", function (o) { o.put(rec); }).then(function () { return verRotate(s.id); }).then(function () { return true; }).catch(function () { return false; });
+}
+function verRotate(sid) {
+  return idbOpen().then(function (d) {
+    return new Promise(function (res) {
+      var t = d.transaction("ver", "readwrite"), o = t.objectStore("ver"), q = o.index("sid").getAll(sid);
+      q.onsuccess = function () { var a = (q.result || []).sort(function (x, y) { return y.ts - x.ts; }); a.slice(VER_MAX).forEach(function (r) { o.delete(r.k); }); };
+      t.oncomplete = function () { res(); }; t.onerror = t.onabort = function () { res(); };
+    });
+  }).catch(function () {});
+}
+function verAuto(s) {
+  if (!s) return; var n = (s.scenes || []).length, last = VER_LAST[s.id];
+  if (n && (n % 5 === 0 || (!last && n > 0) || (last && Date.now() - last.t > 1800000 && n !== last.n))) verSnap(s, n % 5 === 0 ? "Cada 5 escenas (" + n + ")" : "Guardado automático", true);
+}
+function verList(sid) {
+  return idbOpen().then(function (d) { return idbReq(d.transaction("ver").objectStore("ver").index("sid").getAll(sid)); }).then(function (a) { return (a || []).sort(function (x, y) { return y.ts - x.ts; }); });
+}
+function fmtDT(ts) { try { return new Date(ts).toLocaleString("es", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch (e) { return String(ts); } }
+function fmtKB(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB"; }
+function versSheet(s) {
+  sheet("Versiones anteriores · " + s.title, function (sh) {
+    para(sh, "La app guarda sola copias de esta historia (cada 5 escenas y antes de acciones delicadas). Se conservan las últimas " + VER_MAX + ". Restaurar no pierde la versión actual: se guarda antes.");
+    var box = el("div"); sh.appendChild(box);
+    var nb = el("button", "small", "＋ Guardar una versión ahora"); nb.style.marginBottom = ".6rem"; nb.onclick = function () { verSnap(s, "Guardada a mano", false).then(function () { versSheet(s); }); }; sh.insertBefore(nb, box);
+    verList(s.id).then(function (a) {
+      if (!a.length) { box.appendChild(el("p", "hint", "Todavía no hay versiones guardadas. Se crean solas al escribir.")); }
+      var tot = 0; a.forEach(function (r) { tot += r.size; });
+      a.forEach(function (r, i) {
+        var d = el("div", "lore"); d.appendChild(el("b", null, fmtDT(r.ts) + (i === 0 ? " · la más reciente" : "")));
+        d.appendChild(el("p", "hint", r.scenes + " escenas · capítulo " + r.ch + " · " + fmtKB(r.size) + " · v" + r.appv + " · " + r.reason + (r.auto ? " (automática)" : " (manual)")));
+        var row = el("div", "row");
+        var pv = el("button", "small", "Ver"); pv.onclick = function () {
+          var o; try { o = JSON.parse(r.js); } catch (e) { toast("Esta versión no se puede leer."); return; }
+          var last = (o.scenes || [])[o.scenes.length - 1]; var t = last ? String(last.t || "").slice(0, 600) : "(sin escenas)";
+          sheet("Vista previa · " + fmtDT(r.ts), function (s2) { para(s2, r.scenes + " escenas. Última escena:"); var p = el("p", null, t + (t.length >= 600 ? "…" : "")); s2.appendChild(p); var b2 = el("button", "small", "← Volver"); b2.onclick = function () { versSheet(s); }; s2.appendChild(b2); closeBtn(s2); });
+        };
+        var rs = el("button", "small", "Restaurar"); rs.onclick = function () {
+          if (!rs.sure) { rs.sure = 1; rs.textContent = "¿Seguro? Pulsa de nuevo"; return; }
+          var o; try { o = JSON.parse(r.js); } catch (e) { toast("Esta versión no se puede leer."); return; }
+          if (!libValid([o])) { toast("Esta versión está dañada y no se restaura."); return; }
+          verSnap(s, "Antes de restaurar la versión del " + fmtDT(r.ts), false).then(function () {
+            var idx = LIB.findIndex(function (x) { return x.id === s.id; }); if (idx >= 0) LIB[idx] = o; else LIB.push(o);
+            save(); closeSheet(); cur = null; openStory(LIB.filter(function (x) { return x.id === s.id; })[0]); toast("Versión restaurada. La anterior queda guardada.");
+          });
+        };
+        var dl = el("button", "small", "Borrar"); dl.onclick = function () { if (i === 0 && a.length === 1) { toast("Es la única copia: no se borra."); return; } if (!dl.sure) { dl.sure = 1; dl.textContent = "¿Seguro?"; return; } idbTx("ver", "readwrite", function (o) { o.delete(r.k); }).then(function () { versSheet(s); }); };
+        row.appendChild(pv); row.appendChild(rs); row.appendChild(dl); d.appendChild(row); box.appendChild(d);
+      });
+      if (a.length) box.appendChild(el("p", "hint", "Espacio que ocupan las versiones de esta historia: " + fmtKB(tot) + "."));
+    }).catch(function () { box.appendChild(el("p", "hint", "Este dispositivo no permite guardar versiones (almacenamiento no disponible).")); });
+    closeBtn(sh);
+  });
+}
+function recoverSheet() {
+  sheet("Recuperación", function (sh) {
+    para(sh, "Aquí puedes recuperar historias borradas y ver el estado del almacén de seguridad.");
+    var box = el("div"); sh.appendChild(box);
+    idbOpen().then(function (d) { return idbReq(d.transaction("ver").objectStore("ver").getAll()); }).then(function (all) {
+      var by = {}; (all || []).forEach(function (r) { if (!by[r.sid] || by[r.sid].ts < r.ts) by[r.sid] = r; });
+      var gone = Object.keys(by).map(function (k) { return by[k]; }).filter(function (r) { return !LIB.some(function (x) { return x.id === r.sid; }); }).sort(function (a, b) { return b.ts - a.ts; });
+      box.appendChild(el("b", null, "Historias borradas que se pueden recuperar"));
+      if (!gone.length) box.appendChild(el("p", "hint", "Ninguna."));
+      gone.forEach(function (r) {
+        var d = el("div", "lore"); d.appendChild(el("b", null, r.title || "Sin título")); d.appendChild(el("p", "hint", r.scenes + " escenas · última copia " + fmtDT(r.ts) + " · " + fmtKB(r.size)));
+        var b = el("button", "small", "Recuperar"); b.onclick = function () { try { var o = JSON.parse(r.js); if (!libValid([o])) throw 1; LIB.push(o); save(); renderLib(); toast("«" + o.title + "» recuperada."); recoverSheet(); } catch (e) { toast("No se pudo leer esa copia."); } };
+        d.appendChild(b); box.appendChild(d);
+      });
+      var tot = 0; (all || []).forEach(function (r) { tot += r.size; });
+      box.appendChild(el("p", "hint", "Versiones guardadas en total: " + (all || []).length + " · " + fmtKB(tot)));
+      var ls = ""; try { ls = localStorage.getItem("hv:lastsave"); } catch (e) {}
+      var lm = ""; try { lm = localStorage.getItem("hv:lastmirror"); } catch (e) {}
+      box.appendChild(el("p", "hint", "Último guardado: " + (ls ? fmtDT(+ls) : "—") + " · Almacén de seguridad: " + (lm ? fmtDT(+lm) : "—")));
+      var er = null; try { er = JSON.parse(localStorage.getItem("hv:saveerr") || "null"); } catch (e) {}
+      if (er) box.appendChild(el("p", "hint", "Último aviso de guardado: " + fmtDT(er.t) + " · " + er.m));
+    }).catch(function () { box.appendChild(el("p", "hint", "El almacén de seguridad no está disponible en este dispositivo.")); });
+    closeBtn(sh);
+  });
+}
+function recoverCheck() {
+  return idbOpen().then(function (d) { return Promise.all([idbReq(d.transaction("lib").objectStore("lib").get("main")), idbReq(d.transaction("lib").objectStore("lib").get("prev"))]); }).then(function (r) {
+    var mir = null, cand = [r[0], r[1]].filter(Boolean);
+    for (var i = 0; i < cand.length && !mir; i++) { try { var o = JSON.parse(cand[i].js); if (libValid(o)) mir = o; } catch (e) {} }
+    if (!mir || !mir.length) return;
+    if (LOAD_BAD || (!LIB.length && mir.length)) {
+      if (!LIB.length) { LIB = mir; LOAD_BAD = false; save(); renderLib(); toast("Se recuperaron " + mir.length + " historia" + (mir.length === 1 ? "" : "s") + " del almacén de seguridad."); }
+      return;
+    }
+    var better = [];
+    mir.forEach(function (ms) { var ls = LIB.filter(function (x) { return x.id === ms.id; })[0]; if (ls && ms.scenes.length > ls.scenes.length && (ms.at || 0) >= (ls.at || 0) && !localStorage.getItem("hv:rec:" + ms.id + ":" + ms.scenes.length)) better.push([ms, ls]); });
+    if (!better.length) return;
+    sheet("Encontré una copia con más escenas", function (sh) {
+      para(sh, "Puede que el último guardado no se completara. Elige qué hacer con cada historia; si recuperas, la versión actual se guarda antes.");
+      better.forEach(function (bp) {
+        var ms = bp[0], ls = bp[1], d = el("div", "lore"); d.appendChild(el("b", null, ms.title)); d.appendChild(el("p", "hint", "Ahora: " + ls.scenes.length + " escenas · Copia: " + ms.scenes.length + " escenas"));
+        var a = el("button", "small", "Recuperar la copia"); a.onclick = function () { verSnap(ls, "Antes de recuperar tras un fallo", false).then(function () { var i = LIB.indexOf(ls); if (i >= 0) LIB[i] = ms; save(); renderLib(); a.textContent = "Recuperada ✓"; a.disabled = true; }); };
+        var k = el("button", "small", "Mantener la actual"); k.onclick = function () { try { localStorage.setItem("hv:rec:" + ms.id + ":" + ms.scenes.length, "1"); } catch (e) {} d.remove(); };
+        d.appendChild(a); d.appendChild(k); sh.appendChild(d);
+      });
+      closeBtn(sh);
+    });
+  }).catch(function () {});
+}
+
+load(); renderLib(); setListen(); setTab("lib"); setTimeout(function () { recoverCheck(); }, 800);
 document.addEventListener("focusin", function (e) { if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) document.body.classList.add("kb"); });
 document.addEventListener("focusout", function () { setTimeout(function () { var t = document.activeElement; if (!t || !/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) document.body.classList.remove("kb"); }, 150); });
 try { if (!LIB.length && !localStorage.getItem("hv:welcome")) welcomeSheet(); } catch (e) {}

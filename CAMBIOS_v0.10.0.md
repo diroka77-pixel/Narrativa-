@@ -80,3 +80,21 @@
 ## Personajes: deshacer fusión, separar y ficha fija
 - Atlas → Personajes: botón «Deshacer la fusión» (para fusiones hechas con esta versión) y «Separar «X» como personaje distinto» (para fusiones ya hechas antes: crea una ficha nueva vacía).
 - Ficha fija editable por personaje: nombre, sexo/género, edad, pelo, ojos y rasgos. La IA la recibe siempre como dato fijado por el autor.
+
+## Fondos desbloqueables con logros
+- 20 fondos nuevos (carpeta `assets/art/bg/`, ~2,4 MB, WebP + miniaturas). 5 vienen desbloqueados y 15 se consiguen con 1..15 logros.
+- «Cambiar fondo» abre una galería con candados; el aviso de logro menciona el fondo nuevo; en Atlas → Logros se ve el progreso y el siguiente fondo.
+- Los 5 gratuitos también entran en el reparto automático por género.
+
+## Ajuste de fondos
+- Tres fondos con algo de sangre o calaveras (guerrero con lobo, compañía de la luna roja, trono de huesos) se han apartado a `fondos_privados/` (no van en la app pública). Quedan 17 fondos: 5 libres y 12 desbloqueables con 1..12 logros.
+
+## Guardado seguro, versiones y recuperación
+- `save()` comprueba el resultado, avisa si el almacenamiento está lleno y copia siempre la biblioteca a un almacén de seguridad (IndexedDB, mucho más grande). Si falla el guardado normal, la historia no se pierde.
+- Al abrir: si los datos están dañados o vacíos se recuperan del almacén (el dato dañado se conserva aparte); si el almacén tiene más escenas que lo guardado, se ofrece recuperarlas (nunca sin preguntar).
+- Versiones de cada historia (últimas 10, cada 5 escenas y antes de deshacer, borrar o restaurar), pantalla «Versiones anteriores» (ver, restaurar guardando antes la actual, borrar, espacio).
+- Menú ☰ → «Recuperación y versiones»: recuperar historias borradas y ver el estado.
+- Barra de selección (Definición/Subrayar/Crear ficha/Copiar): ahora se ajusta al ancho en dos filas, sin cortar botones.
+
+## Tus acciones, plegadas
+- El texto que escribe el jugador (la acción) aparece plegado como «▸ Tu acción (toca para ver)» y se despliega al tocarlo. Accesible con teclado y lectores de pantalla. La lectura en voz alta ya lo omitía.

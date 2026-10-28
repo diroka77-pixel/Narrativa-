@@ -1,0 +1,13 @@
+const {chromium}=require('playwright');
+const SP='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+await p.evaluate(()=>{LIB.push({id:'s1',title:'T',syn:'x',genre:'Ciberpunk',genres:[],scenes:[{a:'Joder!! Exclamó Diroka con un gruñido. Esta mierda al final hará que me estalle la cabeza.',t:'La sala vibraba.\n\nSora tecleaba sin parar.',m:{}}],lore:[],turn:2,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[]});save();openStory(LIB[0])});
+await p.waitForTimeout(600);
+const a=await p.evaluate(()=>{const e=document.querySelector('p.act');return [e.textContent,e.getAttribute('aria-expanded')]});
+await p.screenshot({path:SP+'act_closed.png'});
+await p.click('p.act');
+const b2=await p.evaluate(()=>{const e=document.querySelector('p.act');return [e.textContent.slice(0,30),e.getAttribute('aria-expanded')]});
+await p.click('p.act');const c=await p.evaluate(()=>document.querySelector('p.act').textContent);
+console.log(JSON.stringify({a,b2,c}),errs);await b.close()})();
