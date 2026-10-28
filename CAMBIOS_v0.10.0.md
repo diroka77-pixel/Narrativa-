@@ -168,3 +168,8 @@
 - Cartas de lore («Cartas de lore» en el menú de la historia): botón «Editar» (nombre, tipo, descripción) y «Borrar carta» (dos toques).
 - Se oculta el botón ☰ de la cabecera (hacía lo mismo que «Ajustes» de la barra inferior). El menú se abre desde Ajustes.
 - Prueba: tests/t71_vocall.js. No probado en móvil real.
+
+## Sinopsis de Inicio: editable y con el vocabulario
+- La sinopsis (texto bajo el título en Inicio y en las tarjetas) ya se cambiaba con «vampiro → tenebrio» al aplicarlo a todo lo escrito; además ahora SIEMPRE se muestra con el vocabulario aplicado, aunque no se haya pulsado nada.
+- Nuevo: «Título, portada e imágenes» → «Sinopsis» editable («Guardar sinopsis»).
+- Prueba: tests/t72_syn.js.

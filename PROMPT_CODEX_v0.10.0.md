@@ -45,3 +45,5 @@ Adjunto `HistoriasVivas-web-v0.10.0.zip`. Cambios solo de web, pero hay UN ARCHI
 5w. Lore largo (web): pega un texto de ~10 páginas en Lore del universo → «Dividir y guardar» → «Que El Cronista lo lea ahora». Con IA real comprueba que el resumen es fiel y que no revienta el almacenamiento ni el límite de consultas; revisa que `wlsum` entra en las copias.
 
 5x. Comprueba en el móvil: (a) Vocabulario → añadir «vampiro»→«tenebrio» cambia también fichas, memoria y cartas; recuperar la versión «Antes de cambiar palabras…» lo deshace; (b) Cartas de lore → Editar/Borrar; (c) ya no existe el botón ☰ y Ajustes (barra inferior) abre el menú; no debe quedar ningún hueco en la cabecera. Si algún código nativo hace click en #menu, sigue funcionando (el botón está oculto, no eliminado).
+
+5y. Sinopsis: comprueba en el móvil que «Título, portada e imágenes» permite editar la sinopsis y que el cambio de vocabulario se ve en la sinopsis de Inicio.

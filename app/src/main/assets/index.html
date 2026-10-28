@@ -1009,7 +1009,7 @@ function renderLib() {
   if (s0) {
     h.appendChild(el("span", "tag", "CONTINÚA TU AVENTURA"));
     h.appendChild(el("h1", null, s0.title));
-    h.appendChild(el("p", "syn", s0.syn || (gtxt(s0) + " · capítulo " + chCur(s0))));
+    h.appendChild(el("p", "syn", vocabApply(s0, s0.syn) || (gtxt(s0) + " · capítulo " + chCur(s0))));
     var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 120 * 100)) + "%"; pr.appendChild(bar); h.appendChild(pr);
     var gb = el("button", "go", ""); gb.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg>'; gb.appendChild(document.createTextNode(s0.fin ? "Releer" : "Continuar"));
     gb.onclick = function () { openStory(s0); }; h.appendChild(gb);
@@ -1028,7 +1028,7 @@ function renderLib() {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s); if (s.cover) { cv.classList.add("hasimg"); cd.classList.add("clean"); cv.setAttribute("aria-label", s.title); }
     if (!s.cover) cd.appendChild(el("span", "chip", (s.rpg ? "RPG · " : "") + (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
-    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, s.syn || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
+    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, vocabApply(s, s.syn) || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
     var lpT = 0, lpF = false;
     cv.onpointerdown = function () { lpF = false; clearTimeout(lpT); lpT = setTimeout(function () { lpF = true; storyMenu(s); }, 650); };
     ["pointerup", "pointerleave", "pointercancel", "pointermove"].forEach(function (ev) { cv.addEventListener(ev, function () { clearTimeout(lpT); }); });
@@ -3021,6 +3021,11 @@ function imgPanel(box, withTitle) {
       s.title = v.slice(0, 80); save(); $("ptitle").textContent = s.title; $("ctitle").textContent = s.title; tb.textContent = "Guardado ✓";
     };
     tr.appendChild(ti); tr.appendChild(tb); box.appendChild(tr);
+    box.appendChild(el("p", "hint", "Sinopsis (sale en la página de inicio)"));
+    var sy = el("textarea"); sy.rows = 4; sy.value = s.syn || ""; sy.setAttribute("aria-label", "Sinopsis de la historia"); sy.style.cssText = "width:100%";
+    var sb = el("button", "small", "Guardar sinopsis"); sb.style.marginTop = ".3rem";
+    sb.onclick = function () { s.syn = sy.value.trim().slice(0, 600); save(); renderLib(); sb.textContent = "Guardado ✓"; };
+    box.appendChild(sy); box.appendChild(sb);
   }
   box.appendChild(el("p", "hint", "Sube tu propia portada, o genera un prompt para crearla con la IA de imágenes que uses fuera. Cada escena tiene su hueco «+ Imagen» debajo del texto."));
   var r = el("div", "row");
