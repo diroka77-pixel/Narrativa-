@@ -109,3 +109,10 @@
 - Heurístico: puede dar falsos positivos. Prueba: tests/t62_rep.js.
 - Solo web; no toca código nativo.
 - También: en modo claro, los menús desplegados (Menú de la historia, Lectura, Atlas) tienen panel blanco.
+
+## Formato de imagen por escena
+- Opciones de la escena → «Formato: Horizontal / Vertical / Página completa» (botón que alterna). Guarda `sc.il` (`v`, `p`; horizontal = sin campo).
+- Vertical: imagen alta centrada. Página completa: marco oscuro que ocupa casi toda la pantalla, estilo novela gráfica.
+- El «Prompt de imagen» de esa escena pide formato 2:3 vertical (y «página de novela gráfica» en página completa) o 3:2 horizontal.
+- Imágenes de escena: tamaño máximo al importar 960×1280 (antes 900×900).
+- Solo web. Prueba: tests/t63_il.js. No probado en móvil real; los exportadores (EPUB/PDF) siguen usando la imagen tal cual, sin distinguir formato.

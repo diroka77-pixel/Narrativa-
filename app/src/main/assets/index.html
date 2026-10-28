@@ -140,6 +140,9 @@ label.f{display:block;margin:1rem 0 .4rem;font-weight:600;font-size:.95rem}
 h3{font-size:1.1rem;margin:1.5rem 0 .3rem;color:var(--acc);font-family:"Cormorant Garamond",Georgia,serif;font-variant:small-caps}
 .simg{margin:.2rem 0 1rem}
 .simg img,.pv{display:block;max-width:100%;border-radius:12px;margin:.4rem 0}
+.simg.v img{width:auto;max-height:78vh;margin:.4rem auto}
+.simg.p{margin:1.4rem 0;padding:.5rem;background:#0b0b0e;border-radius:14px;text-align:center}
+.simg.p img{width:100%;height:calc(100vh - 10rem);min-height:22rem;object-fit:contain;margin:0;border-radius:8px}
 .pv{max-height:14rem;margin:.6rem 0}
 #pmodal,#gmodal{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;background:rgba(0,0,0,.55)}
 .psheet{width:100%;max-width:36rem;margin:0 auto;background:var(--card);border-radius:18px 18px 0 0;padding:1rem 1.1rem calc(1rem + env(safe-area-inset-bottom,0px));max-height:85vh;overflow:auto}
@@ -2804,7 +2807,7 @@ function imgMsg(t) {
   var m = !$("play").hidden ? $("emsg") : $("cmsg"); m.textContent = t; m.hidden = false;
 }
 function takeImage(f, kind, idx) {
-  shrink(f, kind === "cover" ? 800 : 900, kind === "cover" ? 1200 : 900, function (u) {
+  shrink(f, kind === "cover" ? 800 : 960, kind === "cover" ? 1200 : 1280, function (u) {
     if (!u) { imgMsg("No pude leer esa imagen. Prueba con un JPG o PNG."); return; }
     var s = cur, old;
     if (kind === "cover") { old = s.cover; s.cover = u; } else { old = s.scenes[idx].img; s.scenes[idx].img = u; }
@@ -2905,7 +2908,7 @@ function quoteSheet(i) {
 }
 var OPEN_SC = -1;
 function sceneImg(sc, i) {
-  var d = el("div", "simg");
+  var d = el("div", "simg" + (sc.il === "v" ? " v" : sc.il === "p" ? " p" : ""));
   if (sc.img) { var im = el("img"); im.src = sc.img; im.alt = "Ilustración de la escena"; d.appendChild(im); }
   var r0 = el("div", "row"), tg = el("button", "small", "Opciones de la escena");
   tg.setAttribute("aria-expanded", OPEN_SC === i ? "true" : "false");
@@ -2915,6 +2918,9 @@ function sceneImg(sc, i) {
   var advw = el("span"); advw.className = "adv"; advw.style.display = "contents"; r.appendChild(advw); var rr = r; r = advw;
   r.appendChild(fileBtn(sc.img ? "Cambiar imagen" : "Añadir imagen", "scene", i));
   if (sc.img) { var q = el("button", "small", "Quitar imagen"); q.onclick = function () { delete sc.img; save(); refreshImages(true); }; r.appendChild(q); }
+  var IL = { h: "Horizontal", v: "Vertical", p: "Página completa" }, ilb = el("button", "small", "Formato: " + IL[sc.il || "h"]);
+  ilb.onclick = function () { var n = { h: "v", v: "p", p: "h" }[sc.il || "h"]; if (n === "h") delete sc.il; else sc.il = n; save(); refreshImages(true); };
+  r.appendChild(ilb);
   if (!window.Native) r.appendChild(pasteBtn("scene", i));
   var p = el("button", "small", "Prompt de imagen"); p.onclick = function () { makePrompt("scene", i); }; r.appendChild(p);
   r = rr;
@@ -2944,7 +2950,7 @@ function localPrompt(s, kind, idx) {
   var base = "Historia: " + (s.syn || s.title) + " Género: " + gtxt(s) + ". Protagonista(s): " + protTxt(s) + ".";
   if (kind === "cover") return "Ilustración de portada de novela. " + base + " Composición cinematográfica centrada en el protagonista, atmósfera y paleta propias del género, ilustración digital detallada." + coverClose(s);
   var t = s.scenes[idx].t.replace(/\s+/g, " ").slice(0, 450);
-  return "Ilustración de una escena de novela, formato horizontal 3:2, sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
+  var fm = cur && cur.scenes[idx] && cur.scenes[idx].il; var ft = fm === "p" ? "formato vertical 2:3, a página completa como una página de novela gráfica, composición dramática" : fm === "v" ? "formato vertical 2:3" : "formato horizontal 3:2"; return "Ilustración de una escena de novela, " + ft + ", sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
 }
 async function makePrompt(kind, idx) {
   var s = cur; if (!s) return;
@@ -2953,7 +2959,7 @@ async function makePrompt(kind, idx) {
   if (!sample) { $("pstat").textContent = "Versión básica (sin IA)."; return; }
   $("pstat").textContent = "Preparando un prompt más visual…"; $("pcopy").disabled = true;
   try {
-    var q = "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). " + (kind === "cover" ? "Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final." : "Formato horizontal 3:2, sin texto ni letras en la imagen.") + " Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local;
+    var q = "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). " + (kind === "cover" ? "Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final." : ((s.scenes[idx].il === "p" || s.scenes[idx].il === "v") ? "Formato vertical 2:3" + (s.scenes[idx].il === "p" ? ", a página completa como una página de novela gráfica" : "") + ", sin texto ni letras en la imagen." : "Formato horizontal 3:2, sin texto ni letras en la imagen.")) + " Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local;
     var r = await ask(q), t = String(r.text || "").trim();
     if (t) { $("ptxt").value = kind === "cover" ? t + coverClose(s) : t; $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; }
   } catch (e) { $("pstat").textContent = "No pude mejorarlo con IA; te dejo la versión básica."; }
