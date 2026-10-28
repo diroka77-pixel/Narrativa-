@@ -354,6 +354,8 @@ summary,select,input[type="checkbox"]{min-height:44px}
 :root[data-theme="light"] #rpghud .rcred{color:#6b3300;font-weight:700;border-top:1px dashed #c9b59a;padding-top:.45rem}
 :root[data-theme="light"] p.rollline{background:rgba(255,251,244,.94);color:#3a2c1c;border-radius:10px;padding:.35rem .6rem}
 :root[data-theme="light"] button.on,:root[data-theme="light"] #fmtrow button{background:#fffbf4!important;color:var(--ink)}
+:root[data-theme="light"] details.pmenu[open],:root[data-theme="light"] details.pl[open],:root[data-theme="light"] #atlbox[open]{background:rgba(255,251,244,.97);color:var(--ink);border-radius:14px;padding:.6rem .8rem;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+:root[data-theme="light"] details.pmenu[open] .hint,:root[data-theme="light"] details.pl[open] .hint,:root[data-theme="light"] details.pmenu[open] label,:root[data-theme="light"] details.pl[open] label{color:#3e3327}
 :root[data-theme="light"] #shelf{box-shadow:0 6px 20px rgba(0,0,0,.35)}
 @media (prefers-color-scheme:light){
 :root:not([data-theme]) #bgshade,:root:not([data-theme]) body[data-v] #bgshade{background:linear-gradient(180deg,rgba(7,11,20,.28) 0%,rgba(7,11,20,.06) 30%,rgba(7,11,20,.1) 100%)!important}
@@ -377,6 +379,8 @@ summary,select,input[type="checkbox"]{min-height:44px}
 :root:not([data-theme]) #rpghud .rcred{color:#6b3300;font-weight:700;border-top:1px dashed #c9b59a;padding-top:.45rem}
 :root:not([data-theme]) p.rollline{background:rgba(255,251,244,.94);color:#3a2c1c;border-radius:10px;padding:.35rem .6rem}
 :root:not([data-theme]) button.on,:root:not([data-theme]) #fmtrow button{background:#fffbf4!important;color:var(--ink)}
+:root:not([data-theme]) details.pmenu[open],:root:not([data-theme]) details.pl[open],:root:not([data-theme]) #atlbox[open]{background:rgba(255,251,244,.97);color:var(--ink);border-radius:14px;padding:.6rem .8rem;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+:root:not([data-theme]) details.pmenu[open] .hint,:root:not([data-theme]) details.pl[open] .hint,:root:not([data-theme]) details.pmenu[open] label,:root:not([data-theme]) details.pl[open] label{color:#3e3327}
 :root:not([data-theme]) #shelf{box-shadow:0 6px 20px rgba(0,0,0,.35)}
 }
 </style>
@@ -1674,7 +1678,7 @@ function render(keep) {
 
 var RULES = [
   "Eres un novelista que escribe ficción interactiva en español actual, correcto y natural.",
-  "PROSA: escribe como una novela contemporánea bien editada. Frases claras y de longitud variada, vocabulario cotidiano, verbos concretos y pocos adjetivos. Nada de pedantería, arcaísmos ni florituras: máximo una comparación o metáfora por escena y solo si aporta algo. Prohibidos los tópicos («un escalofrío le recorrió la espalda», «el silencio era ensordecedor», «el aire se podía cortar», «el corazón le latía con fuerza», «sus ojos brillaron»). Muestra con hechos, gestos y diálogo; no expliques lo que se siente cuando ya se ve. La narración avanza con acontecimientos, descubrimientos y decisiones, no con descripciones.",
+  "PROSA: escribe como una novela contemporánea bien editada. Frases claras y de longitud variada, vocabulario cotidiano, verbos concretos y pocos adjetivos. Nada de pedantería, arcaísmos ni florituras: máximo una comparación o metáfora por escena y solo si aporta algo. Prohibidos los tópicos («un escalofrío le recorrió la espalda», «el silencio era ensordecedor», «el aire se podía cortar», «el corazón le latía con fuerza», «sus ojos brillaron»). Máximo un gerundio por frase y no encadenes tres incisos o subordinadas antes del verbo principal: en las escenas de acción, frases cortas. No repitas el mismo adjetivo o verbo de ambiente en frases cercanas (p. ej. «parpadeantes» dos veces en un párrafo). Cada pareja de personajes mantiene siempre el mismo trato (tú, usted o vosotros) y no cambia sin motivo. Muestra con hechos, gestos y diálogo; no expliques lo que se siente cuando ya se ve. La narración avanza con acontecimientos, descubrimientos y decisiones, no con descripciones.",
   "Narra usando el nombre de los personajes y nunca «tú» (salvo que el PUNTO DE VISTA sea primera persona). Sigue el PUNTO DE VISTA, el TIEMPO VERBAL, el ESTILO y la LONGITUD indicados. INICIO: no presentes más de dos nombres propios nuevos en el primer párrafo; reparte lugares, facciones y datos del mundo a lo largo de la escena y de las siguientes, cuando hagan falta.",
   "DIÁLOGOS: se escriben con raya (—Hola —dijo Marta—.). Integra en la prosa lo que dice y hace el jugador, conservando sus palabras y el orden de sus acciones; no lo repitas como anotación ni lo vuelvas a decir después. Cada réplica responde a la anterior: nadie vuelve a preguntar lo ya contestado ni repite lo que ya sabe.",
   "MEMORIA ESTRUCTURADA: la MEMORIA ESTRUCTURADA (mundo vigente, personajes, objetos, pendientes, cronología y capítulos anteriores) es la verdad de la historia y manda sobre tu imaginación. Nombres, lugares, objetos, heridas, promesas, deudas y reglas del mundo no pueden contradecirse ni olvidarse, ni siquiera cuando ocurrieron hace muchos capítulos. Un objeto solo está donde indica su ficha; los muertos no actúan; las heridas duran hasta que haya una recuperación justificada.",
@@ -3012,9 +3016,70 @@ function achCheck() {
       toast((nw.length > 3 ? "Has desbloqueado " + nw.length + " logros (Atlas → Logros)" : "Logro: " + nw.join(", ")) + (nb.length ? " · Fondo nuevo: " + (nb.length > 2 ? nb.length + " fondos" : nb.join(", ")) : "")); if ($("atlbox") && $("atlbox").open && ATL.tab === "ach") renderAtlas(); }
   } catch (e) {}
 }
+/* ---------- v0.10: detector local de repeticiones y muletillas (no modifica nada) ---------- */
+var REP_STOP = {}; "que como pero para porque cuando donde desde hasta entre sobre sin con por una uno unos unas los las del al este esta esto estos estas ese esa eso esos esas aquel aquella más muy ya aún todo toda todos todas otro otra otros otras cada tanto tan solo sólo mismo misma después antes entonces mientras aunque también ahora aquí allí así cual cuales quien quienes donde había hacia según durante tras ante bajo contra sino sido siendo estaba estaban estar estaba tenía tenían tiene tienen hacer hizo hace dijo dice decía fue era eran son ser está están había haber hay habría pudo puede podía poder".split(" ").forEach(function (w) { REP_STOP[w] = 1; });
+function repStem(w) {
+  w = w.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  if (w.length > 5) w = w.replace(/(es|s)$/, "").replace(/[ao]$/, "");
+  return w;
+}
+function repTok(t) { var o = [], re = /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+/g, m, prevEnd = true; while ((m = re.exec(t))) { var before = t.slice(Math.max(0, m.index - 2), m.index), sent = !before.trim() || /[.!?¿¡—:]\s*$/.test(before) || m.index === 0; o.push({ w: m[0], i: m.index, cap: /^[A-ZÁÉÍÓÚÑ]/.test(m[0]) && !sent }); } return o; }
+function repCtx(t, i, len) { var a = Math.max(0, i - 30), b = Math.min(t.length, i + len + 30); return (a > 0 ? "…" : "") + t.slice(a, b).replace(/\s+/g, " ") + (b < t.length ? "…" : ""); }
+function repScan(s, from, to) {
+  var F = {};
+  function add(kind, key, label, fix, sceneIdx, ex) { var k = kind + "|" + key, f = F[k] || (F[k] = { kind: kind, label: label, fix: fix, count: 0, scenes: [], ex: ex }); f.count++; if (f.scenes.indexOf(sceneIdx) < 0) f.scenes.push(sceneIdx); }
+  var tri = {}, open2 = {}, names = {}, midCap = {};
+  var capN = {}, lowN = {};
+  for (var i0 = from; i0 < to; i0++) { var s0 = s.scenes[i0]; if (s0 && s0.t) repTok(String(s0.t)).forEach(function (x) { var lw = x.w.toLowerCase(); if (x.cap) midCap[lw] = 1; if (/^[A-ZÁÉÍÓÚÑ]/.test(x.w)) capN[lw] = (capN[lw] || 0) + 1; else lowN[lw] = (lowN[lw] || 0) + 1; }); }
+  Object.keys(capN).forEach(function (w) { if (capN[w] >= 2 && !lowN[w]) midCap[w] = 1; });
+  for (var i = from; i < to; i++) {
+    var sc = s.scenes[i]; if (!sc || !sc.t) continue; var t = String(sc.t), tk = repTok(t), n = tk.length;
+    // 1. palabras repetidas muy cerca
+    var pos = {}; tk.forEach(function (x, j) { if (x.cap || x.w.length < 5) return; var lw = x.w.toLowerCase(); if (REP_STOP[lw] || midCap[lw]) return; var st = repStem(lw); (pos[st] = pos[st] || []).push({ j: j, x: x }); });
+    Object.keys(pos).forEach(function (st) { var a = pos[st]; for (var k = 1; k < a.length; k++) if (a[k].j - a[k - 1].j <= 40) { add("close", st, "Palabra repetida muy cerca: «" + a[k].x.w.toLowerCase() + "»", "Cambia una por un sinónimo, un pronombre o quítala.", i, repCtx(t, a[k].x.i, a[k].x.w.length)); } });
+    // 2. grupos de 3 palabras que vuelven (muletillas, gestos, descripciones)
+    var low = tk.map(function (x) { return x.w.toLowerCase(); });
+    for (var j = 0; j + 2 < n; j++) { var g = [low[j], low[j + 1], low[j + 2]]; if (tk[j].cap || tk[j + 1].cap || tk[j + 2].cap || midCap[low[j]] || midCap[low[j + 1]] || midCap[low[j + 2]]) continue; if (g.every(function (w) { return REP_STOP[w] || w.length <= 3; })) continue; var key = g.map(repStem).join(" "); (tri[key] = tri[key] || { c: 0, sc: [], t: g.join(" "), ex: repCtx(t, tk[j].i, tk[j + 2].i + tk[j + 2].w.length - tk[j].i) }); tri[key].c++; if (tri[key].sc.indexOf(i) < 0) tri[key].sc.push(i); }
+    // 3. comienzos de párrafo
+    var pf = {}; t.split(/\n\s*\n/).forEach(function (p) { p = p.trim(); if (!p || p.charAt(0) === "—") return; var m = p.match(/^[^\s,.;:!?]+/); if (m) { var w = m[0].toLowerCase(); pf[w] = (pf[w] || 0) + 1; var m2 = p.match(/^[^\s,.;:!?]+\s+[^\s,.;:!?]+/); if (m2) { var k2 = m2[0].toLowerCase(); (open2[k2] = open2[k2] || []).push(i); } } });
+    Object.keys(pf).forEach(function (w) { if (pf[w] >= 3 && !REP_STOP[w] ) add("open", w, "Muchos párrafos empiezan por «" + w + "»", "Varía el arranque de los párrafos.", i, null); });
+    // 4. adverbios en -mente
+    var adv = (t.match(/\b[a-záéíóúñ]{4,}mente\b/gi) || []); if (adv.length >= 4) add("adv", "x", "Exceso de adverbios en -mente", "Sustituye algunos por un verbo o un gesto más concreto.", i, adv.slice(0, 5).join(", "));
+    // 5. frases con muchos gerundios o muy largas
+    t.split(/(?<=[.!?…])\s+/).forEach(function (se) {
+      var ger = (se.match(/\b[a-záéíóúñ]{3,}(ando|iendo|yendo)\b/gi) || []).length, words = se.split(/\s+/).length;
+      if (ger >= 3) add("ger", "x", "Frases con tres o más gerundios", "Divide la frase o deja un solo gerundio.", i, se.slice(0, 160));
+      if (words > 45 && se.charAt(0) !== "—") add("long", "x", "Frases muy largas (más de 45 palabras)", "Divídelas en dos o tres.", i, se.slice(0, 160) + "…");
+    });
+    // 6. nombres propios muy repetidos en una escena
+    var nc = {}; tk.forEach(function (x) { if ((x.cap || midCap[x.w.toLowerCase()]) && x.w.length > 2) nc[x.w] = (nc[x.w] || 0) + 1; });
+    Object.keys(nc).forEach(function (w) { if (nc[w] >= 8) add("name", w, "Nombre repetido muchas veces: «" + w + "»", "Alterna con pronombres o con otro modo de referirte.", i, nc[w] + " veces en la escena"); });
+    // 7. tópicos conocidos
+    [/escalofr[ií]o (le )?recorr[a-záéíóúñ]*/i, /contuvo el aliento/i, /el tiempo pareci[oó] detenerse/i, /el aire (estaba )?(cargado|denso)/i, /el coraz[oó]n le lat[ií]a/i, /sus ojos brillaron/i, /voz apenas audible/i, /un zumbido sordo/i, /un golpe seco/i].forEach(function (re) { var m = t.match(re); if (m) add("cliche", m[0].toLowerCase(), "Tópico: «" + m[0] + "»", "Cambia por un detalle concreto de esta escena.", i, repCtx(t, m.index, m[0].length)); });
+  }
+  var lastT = null;
+  Object.keys(tri).forEach(function (k) {
+    var o = tri[k]; if (!(o.c >= 3 && o.sc.length >= 2)) { return; }
+    var ws = o.t.split(" ");
+    if (lastT && lastT.count === o.c && lastT.scenes.join() === o.sc.join() && lastT.t.split(" ").slice(-2).join(" ") === ws.slice(0, 2).join(" ")) { lastT.t += " " + ws[2]; lastT.f.label = "Expresión que se repite: «" + lastT.t + "»"; return; }
+    var f = F["tri|" + k] = { kind: "tri", label: "Expresión que se repite: «" + o.t + "»", fix: "Varía la expresión o elimina las repeticiones.", count: o.c, scenes: o.sc, ex: o.ex };
+    lastT = { t: o.t, count: o.c, scenes: o.sc, f: f };
+  });
+  Object.keys(open2).forEach(function (k) { var a = open2[k]; if (a.length >= 4 && !REP_STOP[k.split(" ")[0]]) F["open2|" + k] = { kind: "open2", label: "Párrafos que empiezan igual: «" + k + "»", fix: "Cambia algunos comienzos.", count: a.length, scenes: a.filter(function (x, y, z) { return z.indexOf(x) === y; }), ex: null }; });
+  var out = Object.keys(F).map(function (k) { return F[k]; });
+  out.forEach(function (f) { f.scenes.sort(function (a, b) { return a - b; }); });
+  // las repeticiones cercanas de una misma palabra solo molestan si son varias
+  out = out.filter(function (f) { return f.kind !== "close" || f.count >= 2; });
+  return out.sort(function (a, b) { return b.count - a.count; });
+}
+function repReport(s, c) {
+  var from, to, n = s.scenes.length;
+  if (c === 0) { from = 0; to = n; } else { var e = chEnds(s); from = chStartIdx(s, c); to = Math.min(n, e[c - 1] || n); }
+  return { from: from, to: to, f: repScan(s, from, to) };
+}
 function renderAtlas() {
   var b = $("atlbody"), s = cur; if (!b) return; b.innerHTML = ""; if (!s) return;
-  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["places", "Lugares"], ["pend", "Pendientes"], ["thread", "Hilo"], ["ach", "Logros"], ["ev", "Cronología"], ["rules", "Reglas"], ["voc", "Vocabulario"], ["rel", "Relaciones"], ["stats", "Estadísticas"], ["marks", "Marcas"], ["search", "Buscar"]];
+  var m = ensureMem(s), tabs = [["chars", "Personajes"], ["items", "Objetos"], ["world", "Mundo"], ["places", "Lugares"], ["pend", "Pendientes"], ["thread", "Hilo"], ["ach", "Logros"], ["ev", "Cronología"], ["rules", "Reglas"], ["voc", "Vocabulario"], ["style", "Estilo"], ["rel", "Relaciones"], ["stats", "Estadísticas"], ["marks", "Marcas"], ["search", "Buscar"]];
   var r = el("div", "row"); b.appendChild(r);
   tabs.forEach(function (t) { var x = el("button", ATL.tab === t[0] ? "small on" : "small", t[1]); x.onclick = function () { ATL.tab = t[0]; renderAtlas(); }; r.appendChild(x); });
   var l = el("label", "chk"), i = el("input"); i.type = "checkbox"; i.checked = ATL.sec;
@@ -3133,6 +3198,24 @@ function renderAtlas() {
     var va = el("button", "small", "Aplicar a las escenas ya escritas"); va.style.marginTop = ".4rem"; va.style.marginLeft = ".4rem";
     va.onclick = function () { var n = 0; s.scenes.forEach(function (sc) { var t2 = vocabApply(s, sc.t); if (t2 !== sc.t) { sc.t = t2; n++; } }); s.last = vocabApply(s, s.last || ""); save(); render(true); renderAtlas(); emsg(n + " escena" + (n === 1 ? "" : "s") + " actualizada" + (n === 1 ? "" : "s") + "."); };
     box.appendChild(va);
+  } else if (ATL.tab === "style") {
+    var nCh = chCur(s), sel = el("select"); sel.setAttribute("aria-label", "Parte de la historia a revisar");
+    for (var ci = nCh; ci >= 1; ci--) { var op = el("option", null, "Capítulo " + ci + (ci === nCh ? " (actual)" : "")); op.value = String(ci); sel.appendChild(op); }
+    var oa = el("option", null, "Toda la historia"); oa.value = "0"; sel.appendChild(oa);
+    if (ATL.sc == null) ATL.sc = String(nCh); sel.value = ATL.sc; sel.onchange = function () { ATL.sc = sel.value; renderAtlas(); };
+    box.appendChild(el("p", "hint", "Revisión local (sin IA, sin gastar consultas): repeticiones, muletillas, tópicos y frases pesadas. Solo señala; no cambia tu texto."));
+    box.appendChild(sel);
+    var rp = repReport(s, Number(ATL.sc)), tot = rp.f.length;
+    box.appendChild(el("p", "hint", tot ? "Se han encontrado " + tot + " tipo" + (tot === 1 ? "" : "s") + " de repetición en " + (rp.to - rp.from) + " escena" + (rp.to - rp.from === 1 ? "" : "s") + "." : "No se ha encontrado nada que corregir en esta parte. " + (rp.to - rp.from < 2 ? "Hay muy poco texto." : "")));
+    rp.f.slice(0, 40).forEach(function (f) {
+      var d = el("div", "lore"); d.appendChild(el("b", null, f.label));
+      d.appendChild(el("p", "hint", f.count + " vez" + (f.count === 1 ? "" : "es") + " · " + (f.scenes.length > 1 ? "escenas " : "escena ") + f.scenes.slice(0, 8).map(function (x) { return x + 1; }).join(", ") + (f.scenes.length > 8 ? "…" : "")));
+      if (f.ex) { var ep = el("p", "hint", "Ejemplo: " + f.ex); ep.style.fontStyle = "italic"; d.appendChild(ep); }
+      d.appendChild(el("p", "hint", "Idea: " + f.fix));
+      var gb = el("button", "small", "Ir a la escena " + (f.scenes[0] + 1)); gb.onclick = function () { $("atlbox").open = false; gotoScene(f.scenes[0]); }; d.appendChild(gb);
+      box.appendChild(d);
+    });
+    if (tot) { var cb = el("button", "small", "Copiar el informe"); cb.style.marginTop = ".5rem"; cb.onclick = function () { var tx = "INFORME DE REPETICIONES · " + s.title + "\n" + rp.f.map(function (f) { return "- " + f.label + " (" + f.count + " veces, escenas " + f.scenes.map(function (x) { return x + 1; }).join(", ") + "). Idea: " + f.fix; }).join("\n"); try { navigator.clipboard.writeText(tx).then(function () { toast("Informe copiado"); }, function () { toast("No se pudo copiar"); }); } catch (e) { toast("No se pudo copiar"); } }; box.appendChild(cb); }
   } else if (ATL.tab === "stats") {
     var mi = (m.miss || []).filter(function (n) { return n <= s.scenes.length; }), hb = el("div", "lore");
     hb.appendChild(el("b", null, "Salud de la memoria: ")); hb.appendChild(document.createTextNode(mi.length ? mi.length + " escena" + (mi.length === 1 ? "" : "s") + " sin registrar (" + mi.slice(-8).join(", ") + ")." : "todas las escenas están registradas."));
@@ -3512,7 +3595,11 @@ function coverSvg(s) {
 function xhtml(title, body) { return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="es" lang="es"><head><meta charset="utf-8"/><title>' + xe(title) + '</title><link rel="stylesheet" type="text/css" href="style.css"/></head><body>' + body + '</body></html>'; }
 function cleanScene(t) {
   t = String(t == null ? "" : t);
-  t = t.replace(/(^|\n)[ \t]*[-–][ \t]+(?=[¡¿A-ZÁÉÍÓÚÑa-záéíóúñ])/g, "$1—");
+  t = t.replace(/(^|\n)[ \t]*[-–][ \t]*(?=[¡¿A-ZÁÉÍÓÚÑa-záéíóúñ])/g, "$1—");
+  t = t.split("\n").map(function (ln) {
+    if (ln.charAt(0) !== "—") return ln;
+    return ln.replace(/ [-–](?=[a-záéíóúñ])/g, " —").replace(/([a-záéíóúñ,;:])[-–](?=[ .,;:]|$)/gi, "$1—").replace(/—[ \t]+(?=[¡¿A-ZÁÉÍÓÚÑa-záéíóúñ])/g, "—");
+  }).join("\n");
   t = t.replace(/\b(por|de|la|el|en|con|los|las|un|una|del|al|que) \1\b/gi, "$1");
   t = t.replace(/\s*\n*\s*¿(?:Qué|Y qué|Cómo|Qué vas a|Qué quieres)[^?¿\n]{0,40}(?:decides|haces|harás|quieres hacer|hacer a continuación)[^?¿\n]{0,25}\?\s*$/i, "");
   return t.replace(/\s+$/, "");

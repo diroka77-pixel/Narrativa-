@@ -98,3 +98,14 @@
 
 ## Tus acciones, plegadas
 - El texto que escribe el jugador (la acción) aparece plegado como «▸ Tu acción (toca para ver)» y se despliega al tocarlo. Accesible con teclado y lectores de pantalla. La lectura en voz alta ya lo omitía.
+
+## Revisión de estilo (a partir del informe de Gemini)
+- Diálogos: las rayas escritas como guion («-Hola», «-dijo Marta-.») se corrigen a raya (—) en las escenas, también dentro de los incisos.
+- Reglas de prosa para la IA: máximo un gerundio por frase, sin encadenar incisos, sin repetir adjetivos de ambiente en frases cercanas y trato (tú/usted/vosotros) constante entre cada pareja de personajes.
+
+## Detector local de repeticiones (Atlas → Estilo)
+- Revisión sin IA y sin gastar consultas: palabras repetidas cerca, frases que se repiten, comienzos de párrafo iguales, adverbios en -mente, gerundios, frases muy largas, nombres repetidos y tópicos.
+- Solo señala (con botón «Ir a la escena»); nunca modifica el texto.
+- Heurístico: puede dar falsos positivos. Prueba: tests/t62_rep.js.
+- Solo web; no toca código nativo.
+- También: en modo claro, los menús desplegados (Menú de la historia, Lectura, Atlas) tienen panel blanco.
