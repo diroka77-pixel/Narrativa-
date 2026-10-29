@@ -31,6 +31,17 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.content.DialogInterface
+import android.text.InputType
+import android.view.KeyEvent
+import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -67,6 +78,7 @@ class MainActivity : ComponentActivity() {
     private var pendingStoryId: String? = null
     private lateinit var connectivity: ConnectivityManager
     private val networkRegistered = AtomicBoolean(false)
+    private var accessGranted = false
 
     // Solo estas webs pueden recibir peticiones de IA o abrirse desde la app
     private val apiHosts = setOf(
@@ -122,9 +134,87 @@ class MainActivity : ComponentActivity() {
         override fun onLost(network: Network) { js("window.__onlineChanged&&window.__onlineChanged(${online()})") }
     }
 
-    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        window.statusBarColor = Color.BLACK
+        window.navigationBarColor = Color.BLACK
+        setContentView(LinearLayout(this).apply { setBackgroundColor(Color.BLACK) })
+        showAccessGate(savedInstanceState)
+    }
+
+    private fun showAccessGate(savedInstanceState: Bundle?) {
+        val density = resources.displayMetrics.density
+        val panel = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding((24 * density).toInt(), (22 * density).toInt(), (24 * density).toInt(), (12 * density).toInt())
+            setBackgroundColor(Color.BLACK)
+        }
+        val title = TextView(this).apply {
+            text = "Acceso protegido"
+            setTextColor(Color.WHITE)
+            textSize = 22f
+            setPadding(0, 0, 0, (10 * density).toInt())
+        }
+        val message = TextView(this).apply {
+            text = "Introduce la contraseña para abrir Historias Vivas."
+            setTextColor(Color.LTGRAY)
+            textSize = 16f
+            setPadding(0, 0, 0, (16 * density).toInt())
+        }
+        val input = EditText(this).apply {
+            hint = "Contraseña"
+            setHintTextColor(Color.GRAY)
+            setTextColor(Color.WHITE)
+            textSize = 18f
+            setSingleLine(true)
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            backgroundTintList = ColorStateList.valueOf(Color.rgb(120, 200, 190))
+        }
+        panel.addView(title)
+        panel.addView(message)
+        panel.addView(input)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(panel)
+            .setPositiveButton("Entrar", null)
+            .create()
+        dialog.setCancelable(false)
+        dialog.setCanceledOnTouchOutside(false)
+        dialog.setOnShowListener {
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+            dialog.getButton(DialogInterface.BUTTON_POSITIVE).apply {
+                setTextColor(Color.rgb(120, 220, 205))
+                setOnClickListener {
+                    if (input.text.toString() == "MATRIX") {
+                        dialog.dismiss()
+                        openApp(savedInstanceState)
+                    } else {
+                        dialog.dismiss()
+                        finishAffinity()
+                    }
+                }
+            }
+            input.requestFocus()
+            dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
+        }
+        input.setOnEditorActionListener { _, actionId, event ->
+            val enter = event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN
+            if (actionId == EditorInfo.IME_ACTION_DONE || enter) {
+                dialog.getButton(DialogInterface.BUTTON_POSITIVE)?.performClick()
+                true
+            } else {
+                false
+            }
+        }
+        dialog.show()
+    }
+
+    @SuppressLint("SetJavaScriptEnabled", "AddJavascriptInterface")
+    private fun openApp(savedInstanceState: Bundle?) {
+        if (accessGranted) return
+        accessGranted = true
         backupManager = BackupManager(this)
         usageTracker = UsageTracker(this)
         connectivity = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
