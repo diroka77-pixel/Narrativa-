@@ -47,3 +47,11 @@ Adjunto `HistoriasVivas-web-v0.10.0.zip`. Cambios solo de web, pero hay UN ARCHI
 5x. Comprueba en el móvil: (a) Vocabulario → añadir «vampiro»→«tenebrio» cambia también fichas, memoria y cartas; recuperar la versión «Antes de cambiar palabras…» lo deshace; (b) Cartas de lore → Editar/Borrar; (c) ya no existe el botón ☰ y Ajustes (barra inferior) abre el menú; no debe quedar ningún hueco en la cabecera. Si algún código nativo hace click en #menu, sigue funcionando (el botón está oculto, no eliminado).
 
 5y. Sinopsis: comprueba en el móvil que «Título, portada e imágenes» permite editar la sinopsis y que el cambio de vocabulario se ve en la sinopsis de Inicio.
+
+5z. Registro de creación (web, ver CAMBIOS «Registro de creación»). Comprueba en el móvil real:
+ (a) Ajustes → «Mi biblioteca y registro de creación»: guardar nombre de autor, exportar EPUB (el archivo se guarda con claude.use("downloads") → comprueba que `dl.save` acepta Uint8Array y que el nombre es titulo-vN.epub), generar la Ficha PDF y descargarla/compartirla.
+ (b) Abre el EPUB en 2-3 lectores (Google Play Libros, Lithium, Moon+…) y, si puedes, pásalo por epubcheck: debe abrir sin error y mostrar el autor y el título; los metadatos `hv:*` con `prefix` no deben dar error.
+ (c) Comprueba que la huella SHA-256 que muestra la app coincide con `sha256sum` del archivo exportado.
+ (d) «Comprobar un archivo EPUB»: elegir un EPUB exportado debe decir «Coincide». Verifica que el selector de archivos del WebView funciona (FileChooser).
+ (e) Las copias de seguridad deben incluir `s.reg` (UUID y registro de huellas) y restaurarse sin cambiar el UUID. El perfil de autor está en localStorage `hv:author`: confirma que sobrevive a una actualización de la app y decide si entra en la copia (no contiene secretos).
+ (f) Importante: no se ha implementado ningún sellado externo ni firma; la ficha NO debe presentarse en ningún texto nativo como «certificado» ni como prueba legal.

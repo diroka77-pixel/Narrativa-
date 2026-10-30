@@ -173,3 +173,16 @@
 - La sinopsis (texto bajo el título en Inicio y en las tarjetas) ya se cambiaba con «vampiro → tenebrio» al aplicarlo a todo lo escrito; además ahora SIEMPRE se muestra con el vocabulario aplicado, aunque no se haya pulsado nada.
 - Nuevo: «Título, portada e imágenes» → «Sinopsis» editable («Guardar sinopsis»).
 - Prueba: tests/t72_syn.js.
+
+## Registro de creación (fases 1 y 2): Mi biblioteca, autor, UUID, huella SHA-256 y Ficha de registro
+Menú de Ajustes → «Mi biblioteca y registro de creación».
+- **Autor:** nombre real o seudónimo (vacío por defecto) y casillas «poner mi nombre en los EPUB/ficha» e «incluir mi identificador de autor». Identificador de autor = UUID aleatorio generado una vez (`localStorage hv:author`) y copiado a cada obra (`s.reg.aid`), así sobrevive en las copias.
+- **UUID por obra:** `s.reg.uid`, campo nuevo; NO se toca el `id` antiguo, así que las historias ya guardadas funcionan sin migración. Estable entre exportaciones y versiones. Las ramas (fork) reciben un UUID propio.
+- **EPUB:** `dc:identifier = urn:uuid:<uid>`, `dc:creator` = nombre de autor (o «Historias vivas»), `dc:contributor` = «Historias vivas (con asistencia de IA)», y metadatos propios (`hv:work-id`, `hv:author-id`, `hv:export-date`, `hv:version`, `hv:ai-assisted`) con prefijo estándar en `<package prefix=…>`. Sin ocultación ni marcas dentro del texto. Nombre de archivo: `titulo-vN.epub`. Todo EPUB exportado (también desde el menú de exportar de siempre) se registra.
+- **Huella SHA-256** de cada EPUB: usa `crypto.subtle` y, si no existe en el WebView, una implementación propia en JS (comprobada con vectores oficiales y contra `crypto.subtle`). Registro por obra: versión, fecha, huella, tamaño, nº de escenas (`s.reg.ex`, máx. 50). La huella no puede ir dentro del EPUB (sería circular): va en el registro y en la ficha.
+- **Comprobar un archivo:** elige un EPUB y dice si es idéntico a alguno exportado desde este móvil. Si se reabre y se guarda con otro programa, la huella cambia.
+- **Ficha de registro de creación (PDF):** nombre, título, UUID, fechas (creación registrada, última vez abierta/modificada, exportación, emisión), versión, huella, resumen del proceso (escenas, con acción del autor, editadas a mano, cartas, ideas de lore), párrafo FIJO de asistencia de IA y aviso legal (no es registro oficial, fechas del reloj del dispositivo sin verificar por terceros, no impide la copia). Nunca se llama «certificado».
+- **Fechas de proceso:** desde ahora cada escena nueva guarda `d` (fecha) y cada edición manual `ed`. Las escenas antiguas no tienen fecha y la ficha lo dice.
+- **Biblioteca:** lista todas las obras con portada, estado (en desarrollo/finalizada), fechas, UUID (copiable), nº de exportaciones, «Exportar EPUB», «Ficha (PDF)» (elige versión si hay varias) y «Versiones guardadas» (ya existente).
+- Pruebas: tests/t73_reg.js (SHA, EPUB, PDF, verificación). XML del EPUB bien formado, `mimetype` primero y sin comprimir. NO se ha podido ejecutar epubcheck ni abrir en lectores reales.
+- NO hecho (fases 3-4): sellado externo (OpenTimestamps), firma digital, sincronización en la nube, expediente exportable completo. Sin servidor.
