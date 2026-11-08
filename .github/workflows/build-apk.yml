@@ -1,4 +1,6 @@
 name: Compilar APK
+permissions:
+  contents: write
 on:
   push:
     branches: [main]
@@ -46,3 +48,12 @@ jobs:
         with:
           name: historias-vivas-apk
           path: app/build/outputs/apk/debug/*.apk
+      - name: Publicar APK como versión de prueba (enlace de descarga directo)
+        if: github.ref != 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="prueba-v0.10.0-c37"
+          cp app/build/outputs/apk/debug/*.apk HistoriasVivas-v0.10.0-c37.apk
+          gh release delete "$TAG" --yes --cleanup-tag || true
+          gh release create "$TAG" HistoriasVivas-v0.10.0-c37.apk --prerelease --target "$GITHUB_SHA" --title "Versión de prueba v0.10.0 (c37)" --notes "APK de depuración para probar en el móvil. Generado automáticamente."
