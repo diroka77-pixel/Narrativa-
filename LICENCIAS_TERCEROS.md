@@ -17,6 +17,15 @@ Se descartó una lista de palabras tomada de un repositorio sin licencia que a s
 ## Imágenes e icono
 - Las portadas de `art/` y el icono fueron generados por el autor con ChatGPT (OpenAI). Según las condiciones de OpenAI vigentes al consultarlas, el usuario es dueño del contenido generado y puede usarlo comercialmente, cumpliendo sus políticas de uso. Conviene releer esas condiciones antes de publicar.
 - Aviso: en algunos países (p. ej. EE. UU.) el contenido generado íntegramente por IA puede no ser protegible por derechos de autor, es decir, otros podrían copiarlo. No impide usarlo. No se han pedido imágenes de personajes, marcas ni obras reconocibles (verificar que ninguna lo parezca).
-- Tipografías: no se incluyen ni se descargan; se usan las del dispositivo.
+- Tipografías: ver la sección siguiente.
+
+## Tipografías incluidas (maquetación del libro)
+Se incluyen **sin modificar** (archivos TTF originales, codificados en base64 dentro de `assets/fonts/f-*.js`) y se incrustan en los PDF y EPUB que genera la app. Todas bajo **SIL Open Font License 1.1**, que permite uso comercial, incrustarlas en documentos y redistribuirlas con software siempre que no se vendan por separado y se conserve el aviso. Los textos completos están en `licencias/` y en la app («Ajustes → Licencias de terceros», archivo `assets/licencias.js`).
+- Crimson Pro (© 2018 Los autores del proyecto Crimson Pro) — `licencias/CrimsonPro-OFL.txt`
+- Lora (© 2011 Los autores del proyecto Lora, Cyreal; nombre reservado «Lora») — `licencias/Lora-OFL.txt`
+- IBM Plex Serif (© 2017 IBM Corp.; nombre reservado «Plex») — `licencias/IBMPlex-OFL.txt`
+- Liberation Serif (© 2012 Red Hat, Inc.; © 2010 Google; nombre reservado «Liberation») — `licencias/LiberationSerif-OFL.txt`
+- Importante: como algunas tienen «nombre reservado», **no se deben recortar (subset) ni modificar** los archivos de fuente y seguir llamándolos igual. Insertar la fuente completa en un PDF no es modificarla. Si algún día se quiere reducir el tamaño recortando glifos, hay que cambiarles el nombre o confirmarlo con la licencia.
+- Para añadir otra fuente libre (p. ej. EB Garamond, Literata): copiar su `.ttf` original y su `OFL.txt`, generar `fonts/f-<id>.js` con el mismo formato y añadir una entrada a `BK_FONTS` (y su licencia a `licencias.js` y a `licSheet`).
 
 *Nota: esto es un inventario técnico, no asesoramiento legal.*

@@ -55,3 +55,69 @@ Adjunto `HistoriasVivas-web-v0.10.0.zip`. Cambios solo de web, pero hay UN ARCHI
  (d) «Comprobar un archivo EPUB»: elegir un EPUB exportado debe decir «Coincide». Verifica que el selector de archivos del WebView funciona (FileChooser).
  (e) Las copias de seguridad deben incluir `s.reg` (UUID y registro de huellas) y restaurarse sin cambiar el UUID. El perfil de autor está en localStorage `hv:author`: confirma que sobrevive a una actualización de la app y decide si entra en la copia (no contiene secretos).
  (f) Importante: no se ha implementado ningún sellado externo ni firma; la ficha NO debe presentarse en ningún texto nativo como «certificado» ni como prueba legal.
+
+5aa. Galería del libro (web): en Cartas de lore, edita una carta → añade imagen desde la galería del móvil (FileChooser) y márcala. Exporta EPUB y PDF y comprueba que aparece «Galería de personajes y mundo» con la imagen. Revisa en un lector EPUB real que las tarjetas se ven bien y que el almacenamiento aguanta ~20 imágenes de carta (localStorage/IndexedDB).
+
+5ab. Hojas de personaje (web): en una carta de lore sube una hoja grande (~1536×1024) y comprueba que se guarda, sale en el EPUB/PDF a página completa y que la lectura permite ampliarla. IMPORTANTE (almacenamiento): cada hoja pesa ~0,4 MB dentro de localStorage; prueba con 5-8 hojas + portada + imágenes de escenas y dime si el WebView aguanta o si hay que mover las imágenes a IndexedDB/archivos (propuesta para v0.11, con migración y sin perder copias de seguridad).
+
+5ac. Conexión con Gemini: usa `assets/shim.js` nuevo tal cual. Comprueba que `N.http` permite el host `generativelanguage.googleapis.com` con método POST, que el tiempo de espera nativo no sea menor de 70 s y que el AndroidManifest tenga INTERNET y `usesCleartextTraffic` no sea necesario. No cambies la lógica de reintentos. Prueba en móvil real: con datos, con wifi y en modo avión (debe mostrar «Sin conexión…» y recuperarse al volver la red).
+5ad. Menú lateral: `assets/index.html` incluye el CSS nuevo de `.dnav button`; no lo sobrescribas.
+
+5ae. Capítulos controlados por el escritor: `assets/index.html` incluye el ajuste `cmode`, el panel de comienzo de capítulo y el botón «Ver mi texto original». No requiere cambios nativos; solo no sobrescribas el archivo. Prueba en móvil: activar el ajuste, cerrar un capítulo, escribir un comienzo y comparar con el original.
+
+5af. Voz por personaje, relaciones y «Esto no cuadra»: todo está en `assets/index.html` (nuevo botón `#nocuadra`, campos `voz`/`ej` en cartas, `s.rel`). Sin cambios nativos; no sobrescribas el archivo. Prueba en móvil: añadir voz a un personaje, crear una relación y usar «Esto no cuadra» en la última escena.
+
+5ag. «Qué recuerda ahora», pendientes olvidados y «Sorpréndeme»: todo en `assets/index.html` (botones `#memnow` y `#twist`). Sin cambios nativos; no sobrescribas el archivo. Prueba en móvil: abrir «Qué recuerda ahora», clavar un hecho, y pedir «Sorpréndeme» con tu IA real.
+
+5ah. Preparar el libro (EPUB/PDF): todo en `assets/index.html` (botón `#prepb`, `s.lay`). Sin cambios nativos; no sobrescribas el archivo. Comprueba que la vista previa (iframe con `srcdoc` y `sandbox`) se ve en el WebView y que el PDF/EPUB exportado abre bien en un lector real tras cambiar tamaños y saltos de página.
+
+5ai. Maquetación para papel: todo en `assets/index.html` (`bookLayout`, `pdfDoc`, `bkPreviewSheet`, `bkDesignSheet`). Usa `assets/pdf-lib.min.js` ya incluido; no hace falta nada nativo. No sobrescribas el archivo. Prueba en móvil real: abrir «Ver como libro de papel» en una historia larga (200+ escenas con imágenes), comprobar que no se congela, exportar el PDF y abrirlo en un lector de PDF: tamaño de página, capítulos en página impar, márgenes y numeración.
+
+5aj. Maquetación entrega 2: todo en `assets/index.html`. Sin cambios nativos; no sobrescribas el archivo. Prueba en móvil: cambiar letra, papel, marco, adorno, capital y fondo, ver el libro y exportar el PDF; tocar una imagen en la vista y cambiarla.
+   OPCIONAL (solo si tienes acceso a npm): letra Garamond incrustada. Añade `@pdf-lib/fontkit` (MIT, `dist/fontkit.umd.min.js`) y las fuentes EB Garamond regular/bold/italic en formato TTF (licencia SIL OFL 1.1; incluye el archivo OFL.txt y el aviso de copyright en la pantalla de créditos). Regístralo con `doc.registerFontkit(fontkit)` en `bookFonts` y añade `garamond` a `BK_FONTS` (la métrica de `widthOfTextAtSize` vale para el diseño). Solo debe usarse si las fuentes cargan; si no, caer en Times. Comprueba que el tamaño del APK sigue razonable y que `pdfSafe` no recorta caracteres.
+
+5ak. Menú «Más» e índice/buscador: todo en `assets/index.html`. Sin cambios nativos; no sobrescribas el archivo. Prueba en móvil: abrir «⋯ Más», buscar una palabra en una historia larga (200+ escenas), tocar un resultado antiguo y comprobar que salta bien y no se congela.
+
+5al. Almacenamiento: index.html abre IndexedDB `hv-safe` en versión 2 (nuevo almacén `img`) y añade «Espacio y almacenamiento». Comprueba en el APK que arranca con datos antiguos, que Restaurar/Recuperar versiones funciona y que reducir imágenes no corrompe historias. No cambies el almacenamiento principal.
+
+5am. Historial de turnos: las escenas llevan un campo `pv` (máx. 40) y «⋯ Más → Volver a una escena» restaura memoria/estado. Comprueba que el botón se ve en el menú «Más» y que tras volver se puede seguir jugando y guardar sin errores.
+
+5an. Plantillas de inicio: botón «📚 Plantillas» en la pantalla de crear. Comprueba que se ve bien en móvil y que la historia creada desde una plantilla arranca normal.
+
+5ao. Tutorial y ayuda: botón «?» en la cabecera y «Ajustes → Tutorial y ayuda». Comprueba que el «?» no se solapa con nada en pantallas pequeñas y que la hoja de ayuda se puede desplazar y cerrar.
+
+5ap. Pulido y calidad de impresión: (a) `confirm()` ya no se usa (hoja propia `askYes`), no hace falta `onJsConfirm`; (b) copias de seguridad v3 con campo `imgs` (el nativo solo guarda/lee el texto JSON, comprueba que no lo trunca); (c) ejecuta `bash tests/run_all.sh` y confirma que todo da OK; (d) **IMPORTANTE para imprenta: el PDF usa las tipografías estándar sin incrustar. Si es posible en el CI, instala `@pdf-lib/fontkit` y una fuente libre (OFL, p. ej. EB Garamond o Libre Baskerville), inclúyela en assets/ e incrústala en el PDF (`doc.registerFontkit`, `embedFont(bytes, {subset:true})`) para que cualquier imprenta lo acepte; mantén las estándar como plan B si falla**; (e) no cambies la resolución ni la compresión de las imágenes al exportar.
+
+5aq. **Maquetación (nuevo, grande).** Archivos nuevos que deben entrar en `app/src/main/assets/` **con su carpeta**: `fonts/f-crimson.js`, `fonts/f-lora.js`, `fonts/f-plex.js`, `fonts/f-liberation.js` (≈4 MB en total, se cargan a demanda con `<script>`, igual que `es_dict.js`) y `licencias.js`. `index.html` actualizado. Comprueba: (a) que el APK incluye la carpeta `fonts/` y que el WebView carga `fonts/f-lora.js` (si tu cargador de assets solo sirve ciertos archivos, añade `fonts/*` y `licencias.js`); (b) abre «⋯ Más → 🎨 Maquetación del libro»: la vista previa debe mostrar dos páginas con la letra elegida; (c) exporta un PDF con cada una de las 4 letras y ábrelo en el móvil: el texto debe verse nítido y poder seleccionarse; en un ordenador, `pdffonts archivo.pdf` debe decir `emb yes` para todas las fuentes; (d) exporta un EPUB y valídalo con EPUBCheck (hay `fonts/*.ttf` declarados como `font/ttf` en el manifiesto); (e) memoria: `f-liberation.js` pesa 2 MB, comprueba que no da problemas en móviles modestos; (f) **no recortes ni renombres las fuentes** (nombres reservados OFL); (g) ya NO hace falta el apartado d de 5ap (fuentes incrustadas): está resuelto aquí; (h) no tocar `HVTTF`, `bookLayout`, `pdfDoc` salvo error probado. Pruebas de escritorio: `bash tests/run_all.sh` (nuevas: t94_font, t95_layout, t96_perf).
+
+5ar. Solo CSS en `index.html`: menú de Ajustes desplazable con botones más grandes y botón «+ Crear nuevo» centrado en horizontal. Comprueba en el APK, con el móvil girado, que el botón no queda bajo la barra de navegación ni tapado por la barra del sistema, y que el menú de Ajustes se desplaza hasta «Historias vivas · v0.10».
+
+### 5as. Texto web ampliado por el sistema
+No hay que tocar nada nativo: `MainActivity` aplica `textZoom` según el tamaño de letra del sistema (accesibilidad) y se mantiene. La vista previa de Maquetación compensa ese zoom en JS (`hvTextZoom`). Al probar el APK con letra grande del sistema, comprobar que el texto de la vista previa no se pisa.
+
+### 5at. Animaciones
+Solo cambios web (CSS/JS en index.html). No hay que tocar nada nativo. Al probar el APK, comprobar que las hojas suben con fluidez, que el dado del modo RPG se ve al elegir una acción y que «Reducir movimiento» (Ajustes → Lectura) lo apaga todo.
+
+### 5au. Secretos de la historia
+Solo web (index.html): `sxPanel`, `sxCtx`, `sxLeak`, campo `s.sx` de cada historia. Nada nativo. Comprobar que se guarda y que entra en las copias de seguridad (va dentro de la historia).
+
+### 5av. Lore con archivo y discreción
+Solo web (index.html): `wlSplit` (corta bloques largos), subida de archivo en el panel de lore (usa `impFile`), campo `open` en las ideas, reglas «DISCRECIÓN DEL LORE» en `wlCtx`. Comprobar que el selector de archivos del WebView funciona con PDF y Word (ya lo usa «Ya tengo material escrito»).
+
+### 5aw. Menos repetición entre escenas
+Solo web (index.html): `dialogLines`, `dupDialog`, `dupParas`, ampliación de `redund` y bloque «DIÁLOGOS RECIENTES» en `build`. Nada nativo.
+
+### 5ax. Más lore y cartas importadas
+Solo web (index.html): `impAddMore`, `cardsSheet/cardsSplit/cardParse/cardsAdd`, `loreTxt(s, focus)`, selectores de archivo múltiples. Comprobar en el APK que el selector permite elegir varios archivos y que se puede volver a elegir el mismo.
+
+### 5ay. Botón «Leer como un libro» al final
+Solo web (index.html, `sceneImg`). Nada nativo.
+
+### 5az. Revisar esta escena
+Solo web (index.html): `rvLocal`, `rvAI`, `reviewScene`, botón en `sceneImg`. Usa el diccionario `es_dict.js` ya existente. Nada nativo.
+
+### 5ba. Escena larga
+Cambios en index.html (casilla `#longsc`, `LONGNEXT/LONGCUR`, `build`) y en shim.js (`viaGemini`, `viaAnthropic`, `callOne`: parámetro `long` que sube el límite de tokens de salida). Revisar que el tiempo de espera de red del APK admita respuestas de hasta ~2 minutos; si hay un timeout de HTTP más corto, subirlo a 120 s para las peticiones de generación.
+
+### 5bb. Borrar y reescribir una escena
+Solo web (index.html): `rewriteSheet`, botón en `sceneImg`. Nada nativo.

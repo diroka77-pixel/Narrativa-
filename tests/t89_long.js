@@ -1,0 +1,20 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{try{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')}catch(e){}});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(700);
+const r=await p.evaluate(async()=>{const o=[];const w=ms=>new Promise(r=>setTimeout(r,ms));const T=(n,f)=>{const t=performance.now();const v=f();o.push(n,Math.round(performance.now()-t)+'ms');return v};
+const cv=document.createElement('canvas');cv.width=640;cv.height=400;const g=cv.getContext('2d');for(let i=0;i<400;i++){g.fillStyle='hsl('+(i*7%360)+',60%,50%)';g.fillRect((i*37)%640,(i*53)%400,60,40)}const img=cv.toDataURL('image/jpeg',0.8);
+const para='El viento golpeaba los postigos mientras Marta repasaba, una vez más, las cartas que nadie se atrevía a leer en voz alta. '.repeat(6);
+const sc=[];for(let i=0;i<300;i++)sc.push({a:'Acción '+i,t:para+' Escena '+i,d:Date.now(),img:i%10===0?img:undefined,pv:{memory:'m'.repeat(3000),state:{},len:i,lore:0}});
+const s={id:'L1',title:'Larga',syn:'x',genre:'M',genres:['M'],scenes:sc,lore:[],turn:300,at:1,state:{},opts:[],premise:'p',ce:[],memory:'m'.repeat(4000)};
+LIB.length=0;LIB.push(s);
+o.push('jsonMB',(JSON.stringify(LIB).length/1048576).toFixed(2));
+T('save',()=>save());
+T('openStory',()=>openStory(s));await w(300);
+T('render',()=>render());
+T('idxSheet',()=>idxSheet());await w(200);closeSheet();
+T('rewindSheet',()=>rewindSheet());await w(200);closeSheet();
+T('renderLib',()=>renderLib());
+const t=performance.now();await mirrorNow();o.push('mirrorNow',Math.round(performance.now()-t)+'ms');
+o.push('sceneDom',document.querySelectorAll('#book .sc').length);return o});
+console.log(JSON.stringify(r),errs);await b.close()})()

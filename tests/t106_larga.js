@@ -1,0 +1,21 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:390,height:844}})).newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(500);
+const fail=m=>{console.log('FALLA',m,errs);process.exit(1)};
+const r=await p.evaluate(async()=>{const s={id:'l',title:'T',syn:'x',genre:'Misterio',genres:[],scenes:[{t:'Llegas al faro.',m:{}}],lore:[],turn:1,at:1,state:{},opts:[],premise:'p',prot:[],ce:[]};LIB.length=0;LIB.push(s);openStory(s);
+ sample=async()=>({text:'{}'});const calls=[];window.ask=async(p,k,a)=>{calls.push({k:k,long:!!LONGCUR,hasLong:/ESCENA LARGA/.test(p),altLong:/ESCENA LARGA/.test(a||'')});return {text:'{"escena":"Texto."}'}};
+ const big=('Lira baja las escaleras del faro y encuentra la puerta abierta. ').repeat(40);
+ const o={};const own=document.getElementById('own');own.value=big;own.dispatchEvent(new Event('input'));
+ o.auto=document.getElementById('longsc').checked;o.hint=!document.getElementById('longh').hidden;
+ document.getElementById('do').click();await new Promise(r=>setTimeout(r,500));
+ o.reset=!document.getElementById('longsc').checked;o.calls=calls.slice(0,2);o.lastLong=s.lastLong;
+ own.value='Lira abre la puerta.';own.dispatchEvent(new Event('input'));o.shortOff=!document.getElementById('longsc').checked;
+ return o});
+console.log(JSON.stringify(r));
+if(!r.auto||!r.hint)fail('auto');if(!r.reset)fail('reset');
+if(!r.calls.length||!r.calls[0].hasLong||!r.calls[0].altLong||!r.calls[0].long)fail('prompt largo '+JSON.stringify(r.calls));
+if(!r.shortOff)fail('corto');
+const sh=require('fs').readFileSync('/home/claude/v091/assets/shim.js','utf8');
+if(!/lg \? 9000/.test(sh)||!/lg \? 8000/.test(sh)||!/o\.long \? 6500/.test(sh))fail('shim');
+if(errs.length)fail('err');console.log('OK larga');await b.close()})()

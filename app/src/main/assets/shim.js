@@ -431,8 +431,8 @@
     var n = PROV[c.mode].name.split(" (")[0];
     if (!KEYS[c.mode]) return { s: "none", t: "Falta la clave de " + n + ". Toca para añadirla" };
     if (ST.s === "checking") return { s: "checking", t: "Comprobando conexión con " + n + "…" };
-    if (ST.s === "ok") return { s: "ok", t: "Conectada: " + n };
-    if (ST.s === "fail") return { s: "fail", t: "Sin conexión con " + n + (ST.msg ? ": " + ST.msg : "") };
+    if (ST.s === "ok") return { s: "ok", t: "Conectada: " + n + (ST.msg ? " · " + ST.msg : "") };
+    if (ST.s === "fail") return { s: "fail", t: "Sin conexión con " + n + (ST.msg ? ": " + ST.msg : "") + " · toca para reintentar" };
     return { s: "checking", t: "Comprobando conexión con " + n + "…" };
   }
   var COL = { none: "#9a9a9a", manual: "#4a90d9", checking: "#e0a030", ok: "#2e9e5b", fail: "#d04040" };
@@ -443,32 +443,66 @@
     var m = document.getElementById("hvmenu");
     if (m) m.textContent = "Conectar mi IA · " + (l.s === "ok" ? "conectada" : l.s === "fail" ? "sin conexión" : l.s === "manual" ? "copiar y pegar" : l.s === "checking" ? "comprobando…" : "sin conectar");
   }
-  function setStatus(s, msg) { ST = { s: s, msg: msg || "" }; paintStatus(); }
+  function firstSentence(m) { m = String(m || "").replace(/\s+/g, " ").trim(); var i = m.search(/[.!?](\s|$)/); return (i > 0 ? m.slice(0, i + 1) : m).slice(0, 110); }
+  function setStatus(s, msg) { ST = { s: s, msg: s === "fail" ? firstSentence(msg) : (msg || "") }; paintStatus(); }
   async function checkNow() {
     var c = cfg();
     if (!c.mode || c.mode === "manual") { setStatus(c.mode ? "manual" : "none"); return true; }
     if (!KEYS[c.mode]) { setStatus("none"); return false; }
     setStatus("checking");
     try {
+      if (c.mode === "gemini") {
+        // Comprobación ligera: countTokens no gasta una generación de tu límite diario.
+        var model = (c.models && c.models.gemini) || PROV.gemini.model;
+        var r = await http("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":countTokens", { "Content-Type": "application/json", "x-goog-api-key": c.keys.gemini }, { contents: [{ role: "user", parts: [{ text: "hola" }] }] }, true);
+        if (r.status === 200) { clearRetry(); setStatus("ok"); return true; }
+        if (r.status === 429) { clearRetry(); setStatus("ok", "límite de uso alcanzado por ahora"); return true; }
+        if (r.status === 0 || r.status === 500 || r.status === 503) { var er = fail(r, "Gemini", model); setStatus("fail", er.message.slice(0, 90)); scheduleRetry(); return false; }
+        if (r.status === 401 || r.status === 403 || (r.status === 400 && /api key|API_KEY/i.test(r.text || ""))) { var eb = fail(r, "Gemini", model); setStatus("fail", eb.message.slice(0, 90)); return false; }
+        // Cualquier otra respuesta (p. ej. 404 en countTokens): se comprueba con una petición normal.
+      }
       var f = c.mode === "gemini" ? viaGemini : c.mode === "openai" ? viaOpenAI : viaAnthropic;
       await f("Responde solo con la palabra: listo", c, true);
-      setStatus("ok"); return true;
-    } catch (e) { setStatus("fail", (e && e.message ? e.message : "no se pudo conectar").slice(0, 90)); return false; }
+      clearRetry(); setStatus("ok"); return true;
+    } catch (e) {
+      if (e && e.code === "rate_limited") { clearRetry(); setStatus("ok", "límite de uso alcanzado por ahora"); return true; }
+      setStatus("fail", (e && e.message ? e.message : "no se pudo conectar").slice(0, 90));
+      if (e && (e.code === "network" || e.code === "busy")) scheduleRetry();
+      return false;
+    }
   }
+  var RETRY = { t: 0, n: 0 };
+  function clearRetry() { if (RETRY.t) { clearTimeout(RETRY.t); RETRY.t = 0; } RETRY.n = 0; }
+  function scheduleRetry() {
+    if (RETRY.t || RETRY.n >= 3) return;
+    var d = [8000, 20000, 45000][RETRY.n++];
+    RETRY.t = setTimeout(function () { RETRY.t = 0; if (ST.s === "fail") checkNow(); }, d);
+  }
+  window.addEventListener("online", function () { RETRY.n = 0; if (ST.s === "fail") checkNow(); });
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && ST.s === "fail") { RETRY.n = 0; checkNow(); } });
 
   /* ---------- HTTP nativo (con reintentos ante límites o saturación) ---------- */
   var waits = {}, hid = 0;
   window.__httpDone = function (id, status, text) { var w = waits[id]; delete waits[id]; if (w) w(status, text); };
-  function http1(url, headers, body) {
+  function http1(url, headers, body, limit) {
     return new Promise(function (res) {
-      var id = "h" + (++hid); waits[id] = function (s, t) { res({ status: s, text: t }); };
-      N.http(id, url, JSON.stringify(headers), JSON.stringify(body));
+      var id = "h" + (++hid), done = false, tm = setTimeout(function () { if (done) return; done = true; delete waits[id]; res({ status: 0, text: "tiempo de espera agotado" }); }, limit || 70000);
+      waits[id] = function (s, t) { if (done) return; done = true; clearTimeout(tm); res({ status: s, text: t }); };
+      try { N.http(id, url, JSON.stringify(headers), JSON.stringify(body)); } catch (e) { if (!done) { done = true; clearTimeout(tm); delete waits[id]; res({ status: 0, text: String(e && e.message || e) }); } }
     });
   }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  // v0.10.1: tiempo límite y reintentos también ante fallos de red (status 0). El proveedor principal tenía quick=true cuando hay respaldos y no reintentaba nada.
   async function http(url, headers, body, quick) {
-    var waitsMs = quick ? [] : [6000, 15000], r = await http1(url, headers, body), i = 0;
-    while ((r.status === 429 || r.status === 503 || r.status === 500) && i < waitsMs.length) { await sleep(waitsMs[i++]); r = await http1(url, headers, body); }
+    var lim = quick ? 25000 : 70000, r = await http1(url, headers, body, lim), i = 0;
+    for (;;) {
+      var net = r.status === 0, srv = r.status === 500 || r.status === 503, lim429 = r.status === 429, w = 0;
+      if (quick) w = (i < 1 && (net || srv)) ? 1800 : 0;
+      else w = net ? [1500, 4000][i] : (srv || lim429) ? [6000, 15000][i] : 0;
+      if (net && i >= 1 && /tiempo/.test(r.text || "")) w = 0;
+      if (!w) break;
+      await sleep(w); i++; r = await http1(url, headers, body, lim);
+    }
     return r;
   }
   function fail(r, who, model) {
@@ -479,14 +513,14 @@
     if (r.status === 401 || r.status === 403 || (r.status === 400 && /api key|API_KEY/i.test(m))) return { code: "bad_key", message: "La clave de " + who + " no es válida o no tiene permiso. Revísala en «Conectar mi IA». " + m };
     if (r.status === 404) return { code: "bad_model", message: "El modelo «" + model + "» no está disponible para tu clave. Elige otro en «Conectar mi IA». " + m };
     if (r.status === 503 || r.status === 500) return { code: "busy", message: who + " está saturado en este momento. Reinténtalo en unos segundos." };
-    if (r.status === 0) return { code: "network", message: "No hay conexión a internet. " + r.text };
+    if (r.status === 0) return { code: "network", message: "No se pudo contactar con " + who + ": sin internet, poca señal o el servidor tarda demasiado. Reinténtalo en unos segundos." + (r.text ? " (" + String(r.text).slice(0, 60) + ")" : "") };
     return { code: "error", message: who + " respondió con error " + r.status + ". " + m };
   }
-  async function viaGemini(prompt, c, quick) {
+  async function viaGemini(prompt, c, quick, lg) {
     var model = (c.models && c.models.gemini) || PROV.gemini.model;
     var r = await http("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent",
       { "Content-Type": "application/json", "x-goog-api-key": c.keys.gemini },
-      { contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9, maxOutputTokens: 6000 } }, quick);
+      { contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9, maxOutputTokens: lg ? 9000 : 6000 } }, quick);
     if (r.status !== 200) throw fail(r, "Gemini", model);
     var j = JSON.parse(r.text), cd = (j.candidates || [])[0] || {}, p = (cd.content || {}).parts || [];
     var t = p.map(function (x) { return x.text || ""; }).join("");
@@ -507,11 +541,11 @@
     if (!t) throw { code: "blocked", message: "OpenAI no ha devuelto texto. Prueba a reformular la acción." };
     return t;
   }
-  async function viaAnthropic(prompt, c, quick) {
+  async function viaAnthropic(prompt, c, quick, lg) {
     var model = (c.models && c.models.anthropic) || PROV.anthropic.model;
     var r = await http("https://api.anthropic.com/v1/messages",
       { "Content-Type": "application/json", "x-api-key": c.keys.anthropic, "anthropic-version": "2023-06-01" },
-      { model: model, max_tokens: 4096, messages: [{ role: "user", content: prompt }] }, quick);
+      { model: model, max_tokens: lg ? 8000 : 4096, messages: [{ role: "user", content: prompt }] }, quick);
     if (r.status !== 200) throw fail(r, "Anthropic", model);
     var j = JSON.parse(r.text);
     var t = (j.content || []).map(function (x) { return x.text || ""; }).join("");
@@ -543,10 +577,10 @@
   async function callOne(st, prompt, c, o) {
     var prov = st.prov, p = prompt;
     if (st.compact) p = cap((o && o.alt) ? o.alt : prompt, 15000);
-    if (prov === "gemini") return viaGemini(p, c, o && o.quick);
+    if (prov === "gemini") return viaGemini(p, c, o && o.quick, o && o.long);
     if (prov === "openai") return viaOpenAI(p, c, o && o.quick);
-    if (prov === "anthropic") return viaAnthropic(p, c, o && o.quick);
-    return viaCompat(prov, p, c, { model: st.model, max: o && o.cls === "light" ? 1500 : 2600, quick: o && o.quick });
+    if (prov === "anthropic") return viaAnthropic(p, c, o && o.quick, o && o.long);
+    return viaCompat(prov, p, c, { model: st.model, max: o && o.cls === "light" ? 1500 : (o && o.long ? 6500 : 2600), quick: o && o.quick });
   }
 
   function viaManual(prompt) {
@@ -586,7 +620,7 @@
     for (var i = 0; i < live.length; i++) {
       var st = live[i];
       try {
-        var t = await callOne(st, prompt, c, { alt: opts.alt, cls: cls, quick: i < live.length - 1 });
+        var t = await callOne(st, prompt, c, { alt: opts.alt, cls: cls, quick: i < live.length - 1, long: !!opts.long });
         if (st.prov === c.mode) setStatus("ok");
         var fb = st.prov !== c.mode && cls !== "light";
         if (fb && tried.length) { try { N.toast("Respondió " + PROV[st.prov].name + " (respaldo)."); } catch (e) {} }
@@ -723,7 +757,7 @@
     var lib = document.getElementById("lib"), hero = document.getElementById("hero");
     if (lib && hero) {
       var st = mk("button", "small"); st.id = "hvstat"; st.style.cssText = "width:100%;text-align:left;margin:.2rem 0 .8rem";
-      st.onclick = function () { var c = cfg(); if (!c.mode || (c.mode !== "manual" && !KEYS[c.mode])) wiz({}); else openSettings(); };
+      st.onclick = function () { var c = cfg(); if (!c.mode || (c.mode !== "manual" && !KEYS[c.mode])) wiz({}); else if (ST.s === "fail") { RETRY.n = 0; N.toast("Reintentando la conexión…"); checkNow().then(function (okc) { if (!okc) N.toast("Sigue sin conectar. Si persiste, abre «Conectar mi IA»."); }); } else openSettings(); };
       lib.insertBefore(st, hero);
     }
     paintStatus();

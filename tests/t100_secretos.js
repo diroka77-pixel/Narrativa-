@@ -1,0 +1,30 @@
+const {chromium}=require('playwright');
+(async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:390,height:844}})).newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(500);
+const fail=m=>{console.log('FALLA',m,errs);process.exit(1)};
+const r=await p.evaluate(()=>{
+ const s={id:'q',title:'Faro',syn:'x',genre:'Misterio',genres:[],scenes:[{t:'Llegas al faro.',m:{}}],lore:[],turn:1,at:1,state:{},opts:[],premise:'p',prot:[],ce:[]};
+ LIB.length=0;LIB.push(s);openStory(s);
+ s.sx=[{id:'x1',t:'La guardiana Lena abrió la puerta del faro durante la tormenta',who:'Lena',rev:0,on:true},{id:'x2',t:'El diario escondido contiene el mapa de la isla subterránea',who:'',rev:3,on:true}];
+ const o={};
+ o.ctx=sxCtx(s,false);
+ o.leak1=sxLeak(s,'Entonces comprendiste que la guardiana Lena abrió la puerta del faro en la tormenta.').length;
+ o.leak0=sxLeak(s,'La tormenta golpeaba el faro y Lena preparaba té.').length;
+ o.val=validateScene(s,{escena:'Supiste que la guardiana Lena abrió la puerta del faro durante la tormenta.'}).errs.length;
+ o.ready0=sxReady(s).length;
+ s.sx[0].out=true;o.hidAfterOut=sxHidden(s).length;
+ s.scenes=[1,2,3,4,5,6,7,8].map(i=>({t:'x'+i,m:{}}));s.ce=[2,4,6,8];
+ o.ch=chCur(s);o.ready=sxReady(s).length;
+ o.build=build(s,'miro','',false).indexOf('SECRETOS DEL AUTOR')>=0 || build(s,'miro','',false).indexOf('SECRETOS YA REVELABLES')>=0;
+ renderWl&&renderWl();
+ o.ui=!!document.getElementById('wlbody')&&/Secretos de la historia/.test(document.getElementById('wlbody').textContent);
+ return o});
+console.log(JSON.stringify(r));
+if(!/SECRETOS DEL AUTOR/.test(r.ctx)||/Lena abrió/.test(r.ctx)===false)fail('ctx');
+if(r.leak1!==1||r.leak0!==0)fail('fuga');
+if(r.val<1)fail('validate');
+if(r.ready0!==0||r.hidAfterOut!==1)fail('estados');
+if(!r.build)fail('build');
+if(errs.length)fail('errores');
+console.log('OK secretos');await b.close()})()

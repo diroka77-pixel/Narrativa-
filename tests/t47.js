@@ -1,4 +1,4 @@
-const {chromium}=require('playwright');const fs=require('fs');const path=require('path');
+const {chromium}=require('playwright');const fs=require('fs');
 const SP='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});
 const errs=[];p.on('pageerror',e=>errs.push(e.message));
@@ -7,7 +7,7 @@ await p.addInitScript(()=>{window.__calls=[];window.claude={use:async k=>k==='sa
 await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
 await p.evaluate(()=>{document.getElementById('new').click()});await p.waitForTimeout(200);
 await p.click('#impgo');
-await p.setInputFiles('#impfile',path.join(__dirname,'fixtures','import_sample.pdf'));await p.waitForTimeout(1500);
+await p.setInputFiles('#impfile','/mnt/user-data/attachments/5b267948-f4e1-5644-878a-b683b3903646/811a0f6b-LA_ODISEA_DE_LOS_70.pdf');await p.waitForTimeout(1500);
 console.log('info:',await p.textContent('#impinfo'),'len',(await p.inputValue('#imptxt')).length);
 await p.click('#impstudy');await p.waitForTimeout(1200);
 console.log('calls',await p.evaluate(()=>window.__calls));
@@ -23,6 +23,6 @@ return out});
 console.log(JSON.stringify(r,null,1));
 // docx
 await p.evaluate(()=>{startCreate('')});await p.click('#impgo');
-await p.setInputFiles('#impfile',path.join(__dirname,'fixtures','import_sample.docx'));await p.waitForTimeout(600);
+await p.setInputFiles('#impfile',SP+'t.docx');await p.waitForTimeout(600);
 console.log('docx:',(await p.inputValue('#imptxt')).slice(0,160).replace(/\n/g,' / '));
 console.log('errs',errs);await b.close()})();

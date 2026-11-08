@@ -1,10 +1,7 @@
 const {chromium}=require('playwright');
-const path=require('path');
-const {pathToFileURL}=require('url');
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
 await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
-const appUrl=pathToFileURL(path.join(__dirname,'..','app','src','main','assets','index.html')).href;
-await p.goto(appUrl);await p.waitForTimeout(400);
+await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
 const r=await p.evaluate(async()=>{
 LIB.length=0;const s={id:'v9',title:'T',syn:'Un vampiro y dos vampiras.',genre:'Fantasía Épica',genres:[],scenes:[{t:'El vampiro miró. Los vampiros callaron.',m:{},a:'ataco al vampiro'},{t:'Otra.',m:{}}],lore:[{tipo:'protagonista',nombre:'Diroka',desc:'Diroka es un vampiro de sexo masculino.'}],turn:2,at:1,state:{},opts:['Hablar con el vampiro'],premise:'Premisa vampiro',prot:[],ce:[],memory:'Un vampiro fundador',wl:[{id:'a',h:'Vampiros',t:'Los vampiros eran antiguos.',rev:1,pin:false,on:true}]};
 s.mem={chars:{diroka:{name:'Diroka',desc:'vampiro fundador',want:'matar al vampiro',alias:[],first:0,last:1}},pend:[],facts:[]};
