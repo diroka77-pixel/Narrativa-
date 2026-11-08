@@ -1,7 +1,10 @@
 const {chromium}=require('playwright');
+const path=require('path');
+const {pathToFileURL}=require('url');
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
 await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
-await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(400);
+const appUrl=pathToFileURL(path.join(__dirname,'..','app','src','main','assets','index.html')).href;
+await p.goto(appUrl);await p.waitForTimeout(400);
 const r=await p.evaluate(async()=>{
 LIB.length=0;const s={id:'a1',title:'T',syn:'x',genre:'Ciberpunk',genres:[],scenes:[{t:'Uno.',m:{}},{t:'Versión ORIGINAL.',m:{}}],lore:[],turn:2,at:1,state:{},opts:[],premise:'p',prot:[],ce:[],lastAct:['Abro la puerta',''],prev:{len:1,memory:'',last:'',turn:1,state:{},now:'',opts:[],fin:false}};LIB.push(s);save();openStory(s);
 const o=[];const wait=ms=>new Promise(r=>setTimeout(r,ms));
