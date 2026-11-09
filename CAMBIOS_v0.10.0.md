@@ -365,3 +365,13 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Salud, segundo recurso y créditos visibles junto a las acciones; opciones con franja de color según el riesgo.
 - Modo claro: los textos sueltos sobre el fondo (Tono, Escena larga, sugerencias, títulos) ya son legibles.
 - Prueba nueva: tests/t108_vinetas.js.
+
+**v0.10.2 — Pantalla de juego más limpia y meta de escritura**
+- Los botones de lectura van en una sola fila deslizable; «Menú» y «Consultas» comparten línea. El texto empieza antes.
+- Las opciones de cada escena son un «⋯» discreto (mismas funciones) y la acción plegada es una línea fina.
+- «Tono y longitud (opcional)» recoge los tonos y la casilla de escena larga; el título muestra lo elegido.
+- RPG: las acciones con dado van antes del cuadro de escritura.
+- Viñetas: imagen de la escena como fondo de la primera viñeta; color según el tono (se guarda en la escena como `tn`).
+- Meta de escritura en Inicio: palabras nuevas de hoy, meta diaria y racha. Se guarda en `hv:goal` (solo en el dispositivo, no va en las copias).
+- Modo claro: títulos de las portadas legibles; colores de riesgo visibles.
+- Prueba nueva: tests/t109_limpia.js.

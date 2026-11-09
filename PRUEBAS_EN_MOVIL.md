@@ -65,3 +65,11 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 4. Junto a las acciones debe verse la salud, el segundo recurso y los créditos; las opciones llevan una franja verde, naranja o roja.
 5. «Leer como un libro» y las exportaciones siguen mostrando el texto normal.
 6. Con el móvil en modo claro: «Tono:», «Escena larga…» y «Ver sugerencias» deben leerse bien.
+
+## 27. Pantalla de juego más limpia y meta de escritura — v0.10.2
+1. Abre una historia: «Menú» y «Consultas» van en una línea y debajo hay una sola fila de botones que se desliza con el dedo (Leer como un libro, Escuchar…). El texto debe empezar antes que en la versión anterior.
+2. Entre escenas: en lugar del botón grande hay un «⋯» a la derecha (ábrelo: deben salir las mismas opciones) y una línea fina «Tu acción (toca para ver)».
+3. Al escribir: «Tono y longitud (opcional)» despliega el tono y la casilla de escena larga; al elegir algo, el título lo indica.
+4. En RPG: las acciones con dado aparecen antes del cuadro de escribir.
+5. Viñetas: si la escena tiene imagen, se ve de fondo en la primera viñeta; con tono elegido, la viñeta cambia de color.
+6. Inicio: tarjeta «Hoy: X palabras». Tócala, fija una meta, escribe una escena y comprueba que suma.
