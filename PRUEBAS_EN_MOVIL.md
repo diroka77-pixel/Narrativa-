@@ -73,3 +73,4 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 4. En RPG: las acciones con dado aparecen antes del cuadro de escribir.
 5. Viñetas: si la escena tiene imagen, se ve de fondo en la primera viñeta; con tono elegido, la viñeta cambia de color.
 6. Inicio: tarjeta «Hoy: X palabras». Tócala, fija una meta, escribe una escena y comprueba que suma.
+7. Ajustes → «Meta de escritura: visible» → tócalo: la tarjeta de Inicio debe desaparecer; tócalo otra vez y vuelve. (v0.10.3)

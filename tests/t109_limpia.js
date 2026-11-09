@@ -15,6 +15,7 @@ const r=await p.evaluate(async()=>{const o={};
  gc.click();const inp=document.querySelector('#gsheet input[type=number]');o.gs=!!inp;inp.value='3';[].slice.call(document.querySelectorAll('#gsheet button')).filter(x=>x.textContent==='Guardar meta')[0].click();
  o.g2=/Hoy: 4 \/ 3 palabras/.test(gc.textContent)&&/1 día seguido/.test(gc.textContent);
  const g=goalGet();const d=new Date();d.setDate(d.getDate()-1);g.days[goalKey(d)]=10;d.setDate(d.getDate()-1);g.days[goalKey(d)]=2;goalSet(g);o.streak=goalStreak(goalGet());
+ $('dgoal').click();o.h1=gc.hidden&&/oculta/.test($('dgoal').textContent);const bef=goalGet().days[goalKey()];goalAdd('uno dos');o.h2=goalGet().days[goalKey()]===bef;$('dgoal').click();o.h3=!gc.hidden&&/visible/.test($('dgoal').textContent);
  o.cover=getComputedStyle(document.querySelector('#lib button.cover')).color;
  sample=async()=>({text:'{}'});
  // novela
@@ -35,6 +36,7 @@ const r=await p.evaluate(async()=>{const o={};
  return o});
 console.log(JSON.stringify(r));
 if(!r.g0||!r.g1||!r.gs||!r.g2)fail('meta');if(r.streak!==2)fail('racha '+r.streak);
+if(!r.h1||!r.h2||!r.h3)fail('ocultar meta');
 if(r.cover!=='rgb(255, 255, 255)')fail('cover '+r.cover);
 if(!r.novOrder||r.q!=='¿Qué ocurre ahora?')fail('orden novela');
 if(!r.wopts||r.lab0!=='Tono y longitud (opcional)'||r.lab1!=='Opciones: Tono: Calma · Escena larga'||r.tone!=='Calma')fail('wopts '+r.lab1);

@@ -375,3 +375,6 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Meta de escritura en Inicio: palabras nuevas de hoy, meta diaria y racha. Se guarda en `hv:goal` (solo en el dispositivo, no va en las copias).
 - Modo claro: títulos de las portadas legibles; colores de riesgo visibles.
 - Prueba nueva: tests/t109_limpia.js.
+
+**v0.10.3**
+- Ajustes: «Meta de escritura: visible / oculta» (`hv:goalhide`). Oculta, la tarjeta no aparece y no se cuentan palabras.
