@@ -419,6 +419,43 @@ summary,select,input[type="checkbox"]{min-height:44px}
 :root:not([data-theme]) #shelf{box-shadow:0 6px 20px rgba(0,0,0,.35)}
 }
 @media (orientation:landscape) and (max-height:520px){.fab{left:0!important;right:0!important;margin:0 auto!important;width:max-content!important;transform:none!important;bottom:calc(72px + .9rem + env(safe-area-inset-bottom,0px))!important;padding:.65rem 1.3rem}.dnav{width:60%;max-width:22rem}}
+.chip{font-size:.76rem}
+#lib button.small{min-height:44px}
+/* v0.10.1: modo viñetas */
+#cmxbar button.on{background:var(--acc);color:var(--accink);border-color:transparent}
+.comic{display:grid;gap:.7rem;margin:.2rem 0 .6rem}
+.cpanel{position:relative;border:3px solid #eef1f8;border-radius:8px;padding:.65rem .6rem;background:radial-gradient(120% 90% at 85% 0%,rgba(53,224,255,.16),transparent 55%),radial-gradient(110% 90% at 0% 100%,rgba(255,63,164,.14),transparent 55%),#0d1528;box-shadow:0 6px 18px rgba(0,0,0,.55);display:grid;gap:.55rem;overflow:hidden}
+.cpanel:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.4px);background-size:7px 7px;pointer-events:none}
+.cpanel>*{position:relative}
+.cpanel.pop{animation:hvPop .45s ease-out both}.cpanel.pop:nth-child(2){animation-delay:.12s}.cpanel.pop:nth-child(3){animation-delay:.24s}.cpanel.pop:nth-child(n+4){animation-delay:.36s}
+.scene .comic p.ccap{margin:0;padding:.5rem .7rem;background:rgba(6,10,20,.88);border-left:4px solid #35e0ff;border-radius:3px;color:#eef1f8;font-style:italic;font-size:.94em;line-height:1.5}
+.crow{display:flex;align-items:flex-start;gap:.55rem}.crow.me{flex-direction:row-reverse}
+.cface{flex:0 0 auto;width:4.4rem;height:4.4rem;min-height:0;padding:0;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 3px var(--c),0 4px 10px rgba(0,0,0,.6);overflow:hidden;color:#fff;font:700 1.7rem/1 system-ui,sans-serif;display:flex;align-items:center;justify-content:center}
+.cface img{width:100%;height:100%;object-fit:cover;display:block}.cface:disabled{opacity:1}
+.ccol{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start}.crow.me .ccol{align-items:flex-end}
+.cname{font:700 .7rem/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--c);margin:0 .4rem .25rem;text-shadow:0 1px 3px #000}
+.scene .comic p.cbub{position:relative;margin:0;background:#fff;color:#10131c;border-radius:16px;padding:.5rem .8rem;font:600 .95em/1.38 system-ui,sans-serif;box-shadow:0 3px 0 rgba(0,0,0,.45);max-width:100%}
+.cbub:before{content:"";position:absolute;left:-8px;top:1.1rem;border:8px solid transparent;border-right-color:#fff;border-left:0}
+.crow.me .cbub:before{left:auto;right:-8px;border:8px solid transparent;border-left-color:#fff;border-right:0}
+.scene .comic p.cinc{margin:.3rem .5rem 0;font:italic .8em/1.35 Georgia,serif;color:#c9d2e8}
+.cstamp{position:absolute!important;right:.4rem;top:.35rem;z-index:2;display:flex;align-items:center;gap:.35rem;transform:rotate(4deg);font:900 .78rem/1 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:rgba(6,10,20,.9);border:2px solid var(--k);border-radius:10px;padding:.2rem .5rem .2rem .2rem}
+.cstamp b{display:inline-flex;width:1.9rem;height:1.9rem;align-items:center;justify-content:center;background:var(--k);color:#06121a;clip-path:polygon(50% 0,96% 25%,96% 75%,50% 100%,4% 75%,4% 25%);font-size:.9rem}
+.cstamp.ok{--k:#3fd07a}.cstamp.mid{--k:#ffa63d}.cstamp.bad{--k:#ff4d5e}
+.scene .comic .cstamp+p.ccap,.cstamp+.crow{margin-top:2.3rem}
+#book.cmx p.rollline{display:none}
+.opts button.ropt{text-align:left;border-left:6px solid var(--line)}.opts button.ropt.r0{border-left-color:#3fd07a}.opts button.ropt.r1{border-left-color:#ffa63d}.opts button.ropt.r2{border-left-color:#ff4d5e}
+#rpgmini{display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center;margin:.7rem 0 0;padding:.45rem .7rem;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:.82rem}
+#rpgmini .mini{display:inline-flex;align-items:center;gap:.4rem}#rpgmini .meter{display:inline-block;width:3.6rem;height:.45rem;border-radius:9px;background:rgba(127,127,127,.3);overflow:hidden}#rpgmini .meter i{display:block;height:100%;background:#3fb86a}#rpgmini .meter i.b2{background:#4f86e0}#rpgmini .meter i.low{background:#e0464f}
+@media (prefers-reduced-motion:reduce){.cpanel.pop{animation:none}}
+/* v0.10.1: modo claro, texto suelto legible sobre el fondo */
+:root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+:root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
+:root[data-theme="light"] .loose,:root[data-theme="light"] #lib .sh,:root[data-theme="light"] #play>h2,:root[data-theme="light"] #play>.hint,:root[data-theme="light"] section>h2,:root[data-theme="light"] section>.hint,:root[data-theme="light"] section>p.hint,:root[data-theme="light"] #play>details.pmenu:not([open])>summary,:root[data-theme="light"] #play>details.pl:not([open]){color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.9)}
+@media (prefers-color-scheme:light){
+:root:not([data-theme]) #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+:root:not([data-theme]) #ctrl details.pl:not([open]){color:#3e3327}
+:root:not([data-theme]) .loose,:root:not([data-theme]) #lib .sh,:root:not([data-theme]) #play>h2,:root:not([data-theme]) #play>.hint,:root:not([data-theme]) section>h2,:root:not([data-theme]) section>.hint,:root:not([data-theme]) section>p.hint,:root:not([data-theme]) #play>details.pmenu:not([open])>summary,:root:not([data-theme]) #play>details.pl:not([open]){color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.9)}
+}
 </style>
 </head>
 <body data-v="lib">
@@ -560,10 +597,12 @@ summary,select,input[type="checkbox"]{min-height:44px}
 <button id="imx" class="go" hidden style="width:auto">Salir de la lectura</button>
 <div id="pgbar" role="group" aria-label="Pasar páginas"><button id="pgprev" aria-label="Página anterior">‹</button><span id="pglab" role="status" aria-live="polite">1 / 1</span><button id="pgnext" aria-label="Página siguiente">›</button><button id="pgtog" class="small">Desplazar</button></div>
 <div id="sr" class="sronly" role="status" aria-live="polite"></div>
+<div class="row" id="cmxbar" hidden role="group" aria-label="Cómo ver las escenas" style="margin:.6rem 0 0"></div>
 <div class="scene rd" id="book"></div>
 <p class="status" id="status" role="status" hidden>El narrador está escribiendo…</p>
 <div class="err" id="err" role="alert" hidden></div>
 <div id="ctrl" hidden>
+<div id="rpgmini" hidden role="group" aria-label="Estado de la aventura"></div>
 <p class="hint" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora? <button class="small qpill" id="qpill2" hidden aria-label="Ver mis consultas de IA de hoy" style="margin:0 0 0 .4rem"></button></p>
 <div class="row" id="actors" hidden style="margin-bottom:.6rem;align-items:center"></div>
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
@@ -1100,8 +1139,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.10.0";
+var VERSION = "0.10.1";
 var NEWS = [
+  ["0.10.1", "Modo viñetas en las aventuras RPG: las escenas se ven como un cómic, con bocadillos y la cara de cada personaje (toca el círculo para ponerle una imagen). Puedes volver al texto normal con el botón «Texto». La salud y los créditos se ven junto a las acciones, y las opciones llevan el color de su riesgo. En modo claro ya se leen bien los textos sobre el fondo."],
   ["0.10.0", "Modo Aventura RPG: al crear eliges Novela o RPG (dificultad y recurso que se gasta). El dado lo lanza la app (🟢 Seguro, 🟠 Arriesgado, 🔴 Temerario) y la IA solo narra el resultado; barras de salud y recurso, créditos de destino para levantarte o repetir una tirada, puntos de control. Además, cualquier historia puede jugarse también como RPG en su mismo mundo desde «⋯ Opciones». Al mantener pulsada una palabra se selecciona y aparece una barra con «Definición», «Subrayar», «Crear ficha» y «Copiar» (antes abría directamente la definición). Rincón de los olvidados: aparta una historia (mantén pulsada su portada o toca «⋯ Opciones») y descansa en una estantería con sus lomos; tócala para rescatarla cuando quieras. Subrayar el texto (se guarda) y crear fichas de lore desde lo que seleccionas: nombre, tipo y descripción, que puede redactar El Cronista. Ficha de la historia (PDF o texto) con lore, personajes, relaciones, objetos, plan y cronología, para reutilizarla en otra historia. La voz natural reintenta y junta párrafos para no saltar a la voz del teléfono. Aviso de frases físicamente incoherentes. Voz natural opcional para escuchar tus historias (Ajustes → Lectura → Voz para escuchar): usa tu clave de Gemini, suena más humana y, si falla, vuelve a la voz del teléfono. Importar tu material: en Crear, «Ya tengo material escrito». Carga un PDF, Word, texto o pega tu croquis, fichas o capítulos; El Cronista los estudia, te enseña lo que entendió (personajes, plan, tono) y te pide decidir las contradicciones. Al narrar consulta solo los apartados que hacen falta, en modo fiel o como inspiración. Pantalla de la historia más limpia: Ajustes, Atlas, Lectura, Imágenes y Cartas de lore van recogidos en un solo botón «Menú de la historia», y «Leer como un libro» es un botón más pequeño. Memoria y prosa: el estado de la historia se fusiona en vez de sustituirse y nada se descarta en silencio. Estado inmediato de la escena (lugar, medidas, qué sostiene cada uno), objetos con alias y creencias que se desmienten. Punto de vista elegible (cercano al protagonista por defecto) y mirada del protagonista. Escenas más largas. Validador local con reescritura automática. Corrector ortográfico con diccionario español incluido (también en Revisar la ortografía antes de exportar). Al editar una escena puedes actualizar la memoria. El informe de prueba indica qué IA respondió."],
   ["0.9.10", "Botón grande «Leer como un libro» sobre el texto de la historia (antes estaba escondido entre botones pequeños). Al exportar y al guardar cada escena se corrigen la raya de diálogo, las palabras duplicadas y el «¿Qué decides hacer?» final. Nuevas reglas de prosa: menos párrafos que empiezan igual, pausa en las revelaciones."],
   ["0.9.9", "Portadas despejadas en el inicio (el título y el estado van debajo, sin tapar la imagen). El Cronista evita repetir expresiones de las últimas escenas («zumbido sordo» y similares). Guía de Mistral corregida: hay que elegir el plan gratuito Experiment."],
@@ -2049,10 +2089,96 @@ function startTyper() {
     if (n >= TOK.length) stopTyper(true);
   }, 30);
 }
+/* v0.10.1: modo viñetas (RPG). Solo cambia cómo se presenta el texto de la escena: no usa IA ni modifica la historia. */
+function comicOn(s) { return !!(s && s.rpg && s.comic !== false && !document.body.classList.contains("imm")); }
+function comicCast(s) {
+  var out = [];
+  function keysOf(a) { a = String(a || "").trim(); var r = []; if (a.length >= 3) { r.push(a.toLowerCase()); var f = a.split(/\s+/)[0]; if (f.length >= 3 && f !== a) r.push(f.toLowerCase()); } return r; }
+  function add(name, img, me, alias) {
+    name = String(name || "").trim(); if (!name) return; var ks = keysOf(name), c = null;
+    out.forEach(function (x) { if (!c && ks.some(function (k) { return x.keys.indexOf(k) >= 0; })) c = x; });
+    if (!c) { c = { name: name, img: "", me: false, keys: [] }; out.push(c); }
+    if (img && !c.img) c.img = img; if (me) c.me = true;
+    ks.concat.apply(ks, (alias || []).map(keysOf)).forEach(function (k) { if (c.keys.indexOf(k) < 0) c.keys.push(k); });
+  }
+  (s.prot || []).forEach(function (c) { add(c.name, c.img, true); });
+  (s.lore || []).forEach(function (c) { if (c && (c.tipo === "personaje" || c.tipo === "protagonista")) add(c.nombre, c.img, c.tipo === "protagonista"); });
+  try { if (s.mem && s.mem.chars) Object.keys(s.mem.chars).forEach(function (k) { var m = s.mem.chars[k]; if (m && m.name) add(m.name, "", false, m.alias); }); } catch (e) {}
+  return out;
+}
+function comicWho(cast, txt) {
+  var best = null, bp = 1e9, low = " " + String(txt || "").toLowerCase() + " ";
+  cast.forEach(function (c) { c.keys.forEach(function (k) { var p = low.indexOf(k); while (p >= 0) { var a = low.charAt(p - 1), b = low.charAt(p + k.length); if (!/[a-záéíóúüñ0-9]/.test(a) && !/[a-záéíóúüñ0-9]/.test(b)) { if (p < bp) { bp = p; best = c; } break; } p = low.indexOf(k, p + 1); } }); });
+  return best;
+}
+function comicParse(s, text) {
+  var cast = comicCast(s), items = [], hist = [], hint = null;
+  cleanScene(text).split(/\n\s*\n/).forEach(function (p) {
+    p = p.trim(); if (!p) return;
+    if (!/^[—–]|^-\s?[A-ZÁÉÍÓÚÑ¿¡«"]/.test(p)) { items.push({ k: "n", t: p }); hint = /:\s*$/.test(p) ? comicWho(cast, p.split(/[.!?]\s+/).pop()) : null; return; }
+    var tk = p.replace(/^[—–-]\s*/, "").split(/\s*[—–]\s*/), sp = [], inc = [];
+    tk.forEach(function (x, i) { x = x.trim(); if (!x) return; if (i % 2) inc.push(x); else { var pm = i ? /^([.,;:…]+)\s*/.exec(x) : null; if (pm && sp.length && !/[.,;:…!?]$/.test(sp[sp.length - 1])) sp[sp.length - 1] += pm[1]; sp.push(pm ? x.slice(pm[0].length) : x); } });
+    sp = sp.filter(function (x) { return x; });
+    var who = comicWho(cast, inc.join(" ")) || hint; hint = null;
+    if (!who && hist.length >= 2 && hist[hist.length - 1] !== hist[hist.length - 2]) who = hist[hist.length - 2];
+    if (who) hist.push(who);
+    if (!sp.length) { items.push({ k: "n", t: p }); return; }
+    items.push({ k: "d", who: who, t: sp.join(" "), inc: inc.join(" · ") });
+  });
+  return items;
+}
+function comicFace(c) {
+  var b = el("button", "cface"); b.type = "button";
+  if (c && c.img) { var im = el("img"); im.src = c.img; im.alt = ""; b.appendChild(im); }
+  else { b.textContent = c ? c.name.charAt(0).toUpperCase() : "…"; b.style.background = c ? avBg(c.name) : "#2a3350"; }
+  if (c) { b.setAttribute("aria-label", (c.img ? "Cambiar la cara de " : "Poner cara a ") + c.name); b.onclick = function () { faceSheet(c.name); }; } else { b.disabled = true; b.setAttribute("aria-hidden", "true"); }
+  return b;
+}
+function comicEl(s, sc, i, pop) {
+  var box = el("div", "comic"), items = comicParse(s, sc.t), pan = null, nb = 0, nn = 0, first = true;
+  function open() { pan = el("div", "cpanel" + (pop ? " pop" : "")); nb = 0; nn = 0; box.appendChild(pan);
+    if (first && sc.roll) { var t = sc.roll.crit || sc.roll.tier === "pleno" ? "ok" : sc.roll.tier === "coste" ? "mid" : "bad"; var st = el("div", "cstamp " + t); st.setAttribute("aria-hidden", "true"); st.appendChild(el("b", null, String(sc.roll.d))); st.appendChild(el("span", null, rpgTierName(sc.roll).replace(/[¡!]/g, ""))); pan.appendChild(st); }
+    first = false; }
+  items.forEach(function (it) {
+    if (it.k === "n") { if (!pan || nb > 0 || nn >= 2) open(); pan.appendChild(el("p", "ccap", it.t)); nn++; return; }
+    if (!pan || nb >= 3) open();
+    var row = el("div", "crow" + (it.who && it.who.me ? " me" : "")), col = el("div", "ccol");
+    row.style.setProperty("--c", it.who ? "hsl(" + (function (n) { var h = 0; for (var j = 0; j < n.length; j++) h = (h * 31 + n.charCodeAt(j)) % 360; return h; })(it.who.name) + ",80%,62%)" : "#9aa6c2");
+    row.appendChild(comicFace(it.who));
+    if (it.who) col.appendChild(el("span", "cname", it.who.name));
+    col.appendChild(el("p", "cbub", it.t)); if (it.inc) col.appendChild(el("p", "cinc", it.inc));
+    row.appendChild(col); pan.appendChild(row); nb++;
+  });
+  return box;
+}
+function faceSheet(name) {
+  var s = cur; if (!s) return;
+  function card() { var k = String(name).toLowerCase(), r = null; (s.lore || []).forEach(function (c) { if (!r && c && (c.tipo === "personaje" || c.tipo === "protagonista") && String(c.nombre).toLowerCase() === k) r = c; }); return r; }
+  sheet("Cara de " + name, function (sh) {
+    var c = card();
+    para(sh, "Elige una imagen para " + name + ". Aparecerá en sus diálogos del modo viñetas y se guarda en su carta de lore, solo en este dispositivo.");
+    if (c && c.img) { var im = el("img"); im.src = c.img; im.alt = "Cara actual de " + name; im.style.cssText = "display:block;width:8rem;height:8rem;object-fit:cover;border-radius:50%;margin:.4rem auto;border:3px solid var(--line)"; sh.appendChild(im); }
+    var fi = el("input"); fi.type = "file"; fi.accept = "image/*"; fi.setAttribute("aria-label", "Imagen para " + name); fi.style.cssText = "display:block;width:100%;margin:.5rem 0";
+    fi.onchange = function () { var f0 = fi.files && fi.files[0]; if (!f0) return; shrink(f0, 480, 480, function (u) {
+      if (!u) { toast("No pude leer esa imagen. Prueba con un JPG o PNG."); return; }
+      var cc = card(), made = false, old; if (!cc) { s.lore = s.lore || []; var me = (s.prot || []).some(function (p) { return String(p.name).toLowerCase() === String(name).toLowerCase(); }); cc = { tipo: me ? "protagonista" : "personaje", nombre: name, desc: "", u: 1, inb: false }; s.lore.push(cc); made = true; }
+      old = cc.img; cc.img = u;
+      if (!save()) { if (made) s.lore.pop(); else cc.img = old; toast("No hay espacio para guardar la imagen. Quita alguna imagen o usa una más pequeña."); return; }
+      closeSheet(); render(true); toast("Cara de " + name + " guardada.");
+    }); };
+    sh.appendChild(fi);
+    if (c && c.img) { var q = el("button", "small", "Quitar la cara"); q.onclick = function () { delete c.img; save(); closeSheet(); render(true); }; sh.appendChild(q); }
+    closeBtn(sh);
+  });
+}
+function comicBar(s) {
+  var b = $("cmxbar"); if (!b) return; b.innerHTML = ""; b.hidden = !(s && s.rpg) || document.body.classList.contains("imm"); if (b.hidden) return;
+  [["Viñetas", true], ["Texto", false]].forEach(function (o) { var x = el("button", "small" + ((s.comic !== false) === o[1] ? " on" : ""), o[0]); x.setAttribute("aria-pressed", (s.comic !== false) === o[1] ? "true" : "false"); x.onclick = function () { s.comic = o[1]; save(); render(true); }; b.appendChild(x); });
+}
 function render(keep) {
   var fi = FRESH; FRESH = -1; stopTyper(true);
   var s = cur, book = $("book"); book.innerHTML = "";
-  var reduce = reduced();
+  var reduce = reduced(), cmx = comicOn(s); try { comicBar(s); book.classList.toggle("cmx", cmx); } catch (e) {}
   var st0 = Math.max(0, s.scenes.length - WIN);
   if (st0 > 0) { var mb = el("button", "small", "Cargar escenas anteriores (" + st0 + ")"); mb.style.margin = ".6rem 0"; mb.onclick = function () { WIN += 20; render(true); }; book.appendChild(mb); }
   s.scenes.forEach(function (sc, i) {
@@ -2068,7 +2194,8 @@ function render(keep) {
     }
     if (sc.roll) { var rl = el("p", fi === i ? "rollline pop" : "rollline", "🎲 " + sc.roll.d + " · " + RPG_ICON[sc.roll.risk] + " " + sc.roll.risk + " (" + sc.roll.dc + ") → " + rpgTierName(sc.roll) + (sc.rec ? " · recuperas fuerzas" : "")); rl.setAttribute("aria-label", "Tirada de dado: " + sc.roll.d + ", " + sc.roll.risk + ", " + rpgTierName(sc.roll)); w.appendChild(rl); }
     var fresh = fi === i && RD.type && !reduce;
-    sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); else hlApply(pe, sc, i); w.appendChild(pe); });
+    if (cmx) { try { w.appendChild(comicEl(s, sc, i, fi === i && !reduce)); } catch (e) { cmx = false; } }
+    if (!cmx) sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); else hlApply(pe, sc, i); w.appendChild(pe); });
     if (sc.bm) w.appendChild(el("span", "bmk", "Escena marcada"));
     if (sc.orig) { var ob = el("button", "small", "Ver mi texto original"); ob.style.margin = ".4rem 0"; (function (ii) { ob.onclick = function () { origSheet(ii); }; })(i); w.appendChild(ob); }
     w.appendChild(sceneImg(sc, i));
@@ -2085,7 +2212,7 @@ function render(keep) {
   $("rvw").hidden = s.scenes.length < 5; $("nocuadra").hidden = !s.scenes.length || busy; $("twist").hidden = !s.scenes.length || busy || s.fin; $("memnow").hidden = !s.scenes.length;
   $("exp").hidden = !s.scenes.length; $("emsg").hidden = true;
   var o = $("opts"); o.innerHTML = "";
-  s.opts.forEach(function (t) { var b = el("button", null, rpgLabel(s, t)); b.onclick = function () { turn(t, t); }; o.appendChild(b); });
+  s.opts.forEach(function (t) { var b = el("button", null, rpgLabel(s, t)); if (s.rpg) { var _rk = rpgTag(t).risk; b.className = "ropt" + (_rk ? " r" + RPG_IX[_rk] : ""); } b.onclick = function () { turn(t, t); }; o.appendChild(b); });
   try { rpgHud(); if (s.rpg && s.opts.length) $("sug").open = true; $("sug").firstChild.textContent = s.rpg ? "Elige tu acción (riesgo y dado)" : "Ver sugerencias (opcional)"; var lr = s.scenes[s.scenes.length - 1]; if (s.rpg) { $("regen").hidden = !(s.prev && s.lastAct && lr && lr.roll && lr.roll.tier !== "pleno") || busy || s.rpg.diff === "duro"; $("regen").textContent = "🎲 Repetir tirada (" + (s.rpg.diff === "relajado" ? "gratis" : "1 crédito") + ")"; $("undo").hidden = $("undo").hidden || s.rpg.diff === "duro"; } else $("regen").textContent = "Otra versión"; var rr = $("rpgrisk"); if (rr) { rr.hidden = !s.rpg; Array.prototype.forEach.call(rr.querySelectorAll("button"), function (x) { x.className = x.getAttribute("data-r") === ((s.rpg && s.rpg.nr) || "Arriesgado") ? "small on" : "small"; }); } } catch (e) {}
   if (!keep) $("own").value = "";
   if (fi >= 0 && fi < s.scenes.length && !busy) {
@@ -3094,7 +3221,8 @@ function rpgApply(s, cand, sn) {
   if (!r.cp || s.scenes.length % 6 === 0) r.cp = rpgSnap(s);
 }
 function rpgHud() {
-  var h = $("rpghud"), s = cur; if (!h) return; h.innerHTML = ""; if (!s || !s.rpg) { h.hidden = true; return; } h.hidden = false; var r = s.rpg;
+  var h = $("rpghud"), s = cur, mn = $("rpgmini"); if (!h) return; h.innerHTML = ""; if (mn) { mn.innerHTML = ""; mn.hidden = !(s && s.rpg); } if (!s || !s.rpg) { h.hidden = true; return; } h.hidden = false; var r = s.rpg;
+  if (mn) { [["❤ Salud", r.hp, r.hp <= 25 ? "low" : "hp"], [r.b2n, r.b2, r.b2 <= 25 ? "low" : "b2"]].forEach(function (x) { var w = el("span", "mini"); w.appendChild(el("b", null, x[0] + " " + Math.round(x[1]))); var m = el("span", "meter"), ii = el("i", x[2]); ii.style.width = Math.round(x[1]) + "%"; m.appendChild(ii); w.appendChild(m); mn.appendChild(w); }); mn.appendChild(el("span", "mini", "🎟 " + (r.diff === "relajado" ? "∞" : r.cred))); }
   function bar(n, v, cl) { var w = el("div", "rbar"); w.setAttribute("role", "img"); w.setAttribute("aria-label", n + " " + Math.round(v) + " de 100"); w.appendChild(el("b", null, n)); var m = el("span", "meter"), i = el("i", cl); i.style.width = Math.round(v) + "%"; m.appendChild(i); w.appendChild(m); w.appendChild(el("em", null, String(Math.round(v)))); return w; }
   h.appendChild(bar("Salud", r.hp, r.hp <= 25 ? "low" : "hp")); h.appendChild(bar(r.b2n, r.b2, r.b2 <= 25 ? "low" : "b2"));
   var c = el("div", "rcred", "🎟 " + (r.diff === "relajado" ? "∞ créditos" : r.cred + (r.cred === 1 ? " crédito" : " créditos")) + " de destino"); h.appendChild(c);
@@ -4419,7 +4547,7 @@ $("listenpick").onclick = listenSheet;
 
 /* ---------- Lectura inmersiva, dictado ---------- */
 var PAGED = false; try { PAGED = localStorage.getItem("hv:paged") === "1"; } catch (e) {}
-function setImm(v) { document.body.classList.toggle("imm", v); document.body.classList.toggle("paged", !!(v && PAGED)); $("imx").hidden = !v; window.scrollTo(0, 0); if (v && PAGED) setTimeout(pgStart, 60); else { $("pgbar").classList.remove("hid"); } }
+function setImm(v) { var _w = document.body.classList.contains("imm"); document.body.classList.toggle("imm", v); if (_w !== !!v && cur && cur.rpg && cur.comic !== false) { try { render(true); } catch (e) {} } document.body.classList.toggle("paged", !!(v && PAGED)); $("imx").hidden = !v; window.scrollTo(0, 0); if (v && PAGED) setTimeout(pgStart, 60); else { $("pgbar").classList.remove("hid"); } }
 function pgStep() { return $("book").clientWidth; }
 function pgInfo() { var b = $("book"), st = pgStep(), n = Math.max(1, Math.round(b.scrollWidth / st)), i = Math.min(n - 1, Math.round(b.scrollLeft / st)); return { n: n, i: i, st: st }; }
 function pgLabel() { var f = pgInfo(); $("pglab").textContent = (f.i + 1) + " / " + f.n; }

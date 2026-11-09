@@ -57,3 +57,11 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 1. En una escena que no te guste: «Borrar y reescribir» → escribe qué cambiarías (opcional) → confirma.
 2. La escena debe sustituirse por otra nueva, sin versión paralela. Si había escenas posteriores, se borran.
 3. En «Versiones» debe aparecer la copia anterior por si quieres recuperarla.
+
+## 26. Modo viñetas (aventuras RPG) — v0.10.1
+1. Abre una aventura RPG: las escenas deben verse como viñetas, con bocadillos y un círculo por personaje.
+2. Toca el círculo de un personaje → elige una imagen → debe aparecer su cara en todos sus diálogos.
+3. Pulsa «Texto» (encima de las escenas): vuelve el texto normal. «Viñetas» lo recupera.
+4. Junto a las acciones debe verse la salud, el segundo recurso y los créditos; las opciones llevan una franja verde, naranja o roja.
+5. «Leer como un libro» y las exportaciones siguen mostrando el texto normal.
+6. Con el móvil en modo claro: «Tono:», «Escena larga…» y «Ver sugerencias» deben leerse bien.

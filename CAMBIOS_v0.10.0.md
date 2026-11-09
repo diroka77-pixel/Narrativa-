@@ -356,3 +356,12 @@ Aviso: gasta una consulta como las demás, pero la respuesta tarda más y los mo
 
 ## Borrar y reescribir una escena
 Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra esa escena (y las posteriores, avisando de cuántas) y El Cronista la escribe de nuevo entera a partir de la misma acción, sin dejar ninguna versión paralela ni comparación. Se puede indicar qué no gustó. La versión borrada queda en «Versiones» como copia de seguridad. «Otra versión» sigue existiendo para quien quiera comparar dos versiones.
+
+**v0.10.1 — Modo viñetas y modo claro**
+- Aventuras RPG: las escenas se muestran como viñetas de cómic (narración en cajas, diálogos en bocadillos con la cara del personaje). Es solo presentación: no usa IA, no cambia el texto guardado ni las exportaciones. Botón «Viñetas / Texto» por historia.
+- Cara de personaje: se toca el círculo y se elige una imagen; se guarda en su carta de lore (solo en el dispositivo). Sin imagen se muestra la inicial.
+- El hablante se deduce del inciso («—dijo Sora—»), de la frase anterior acabada en dos puntos o por alternancia; si no se puede saber, el bocadillo sale sin nombre.
+- Sello con el dado y el resultado en la primera viñeta de cada escena con tirada.
+- Salud, segundo recurso y créditos visibles junto a las acciones; opciones con franja de color según el riesgo.
+- Modo claro: los textos sueltos sobre el fondo (Tono, Escena larga, sugerencias, títulos) ya son legibles.
+- Prueba nueva: tests/t108_vinetas.js.
