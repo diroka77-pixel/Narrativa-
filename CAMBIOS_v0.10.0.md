@@ -405,3 +405,12 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Filtros en listas largas (`hvFilter`): cartas de lore (≥4), ideas del lore del universo (≥4, busca en el texto completo), documentos (≥4), mis personajes (≥5), historias en Inicio (≥6). Lo escrito se conserva al repintar.
 - El «Índice y buscador» de escenas ya existente acepta un término inicial.
 - Prueba nueva: tests/t112_buscar.js.
+
+**v0.14.0 — Portada, glosario, contraportada, misiones, dinero y vibración**
+- Modo libro: página de portada (`.bkcover`) al principio; entrar con «Leer como un libro» abre en ella.
+- Glosario (`s.glo`, máx. 80): va al prompt (`gloCtx`) y se marca en el texto al leer (`gloMark`, no en viñetas).
+- Contraportada (`s.blurb`): una consulta; se puede usar como sinopsis.
+- RPG: misiones (`rpg.ms`, máx. 4 abiertas; claves `mision_nueva`, `mision_cumplida`, `mision_fallida`), dinero (`rpg.gold`, `rpg.coin`; clave `dinero`; +15 por combate, +20 por misión) y tienda (`rpg.shop`; curación fija sin consulta; objetos del lugar con una consulta). Todo entra en los puntos de vuelta atrás.
+- Vibración (`hv:buzz`) con permiso VIBRATE nuevo en el manifiesto (permiso normal, sin aviso al usuario).
+- El dictado por voz ya existía en el cuadro de escritura; ahora hay botón «🎤 Dictar» también en entrevistas, documentos, glosario y buscador.
+- Prueba nueva: tests/t113_v014.js.

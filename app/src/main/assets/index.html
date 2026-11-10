@@ -519,6 +519,14 @@ details.docit{margin:.5rem 0;padding:.2rem 0}details.docit>summary{font-weight:6
 #findfab{position:fixed;right:.8rem;bottom:calc(5.6rem + env(safe-area-inset-bottom,0px));z-index:7;width:48px;height:48px;min-height:0;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--ink);border:1.5px solid var(--acc);box-shadow:0 4px 14px rgba(0,0,0,.45);opacity:.88;transition:bottom .28s ease,opacity .2s}
 body.imm #findfab,body.hidebars #findfab{bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
 #play:has(textarea:focus) #findfab,#play:has(input[type=text]:focus) #findfab{opacity:0;pointer-events:none}
+/* v0.14.0 */
+.scene .glo{border-bottom:1.5px dotted var(--acc);cursor:help}
+.gloit{display:flex;align-items:flex-start;gap:.4rem;margin:.4rem 0;padding:.5rem .6rem;border:1px solid var(--line);border-radius:12px}.gloit>div{flex:1;min-width:0}.gloit b{display:block}.gloit span{font-size:.9rem;color:var(--mute);overflow-wrap:anywhere}
+.bkcover{display:none}
+body.imm.paged #book .bkcover{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;height:100%;box-sizing:border-box;break-after:column;break-inside:avoid;text-align:center}
+.bkcover .bkart{flex:1;min-height:0;width:100%;max-width:26rem;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1.4rem;box-sizing:border-box;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.bkcover .bkt{font:italic 700 2rem/1.15 Georgia,"Times New Roman",serif}.bkcover .bkg{font:600 .75rem/1 system-ui,sans-serif;letter-spacing:.25em;text-transform:uppercase;opacity:.85}
+.bkcover .bkcap{margin:0;font:italic 700 1.2rem/1.2 Georgia,serif}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -533,7 +541,7 @@ body.imm #findfab,body.hidebars #findfab{bottom:calc(1rem + env(safe-area-inset-
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="hq" aria-label="Ayuda de esta pantalla">?</button><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
-<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><p class="dgrp">Historias</p><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dlib">Mi biblioteca y registro de creación</button><p class="dgrp">Apariencia</p><button id="dtheme">Tema: automático</button><button id="dacc">Color de acento: del género</button><button id="dhcov">Fondo de inicio: del género</button><button id="dczoom">Ampliar portada al tocarla: sí</button><button id="dbars">Ocultar barras al leer: sí</button><button id="dgoal">Meta de escritura: visible</button><p class="dgrp">Copias y datos</p><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dstor">Espacio y almacenamiento</button><p class="dgrp">Ayuda</p><button id="dtut">Tutorial y ayuda</button><button id="dhelp">Privacidad y ayuda</button><button id="dlic">Licencias de terceros</button><p class="hint" style="margin-top:auto">Historias vivas · v0.10</p></nav></div>
+<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><p class="dgrp">Historias</p><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dlib">Mi biblioteca y registro de creación</button><p class="dgrp">Apariencia</p><button id="dtheme">Tema: automático</button><button id="dacc">Color de acento: del género</button><button id="dhcov">Fondo de inicio: del género</button><button id="dczoom">Ampliar portada al tocarla: sí</button><button id="dbars">Ocultar barras al leer: sí</button><button id="dbuzz">Vibración: sí</button><button id="dgoal">Meta de escritura: visible</button><p class="dgrp">Copias y datos</p><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dstor">Espacio y almacenamiento</button><p class="dgrp">Ayuda</p><button id="dtut">Tutorial y ayuda</button><button id="dhelp">Privacidad y ayuda</button><button id="dlic">Licencias de terceros</button><p class="hint" style="margin-top:auto">Historias vivas · v0.10</p></nav></div>
 <div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hldef" hidden>📖 Definición</button><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
@@ -1217,8 +1225,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.13.0";
+var VERSION = "0.14.0";
 var NEWS = [
+  ["0.14.0", "«Leer como un libro» empieza ahora por la portada. Nuevo glosario de tu mundo (las palabras salen subrayadas al leer) y texto de contraportada, ambos en Cartas de lore. RPG: misiones, dinero y tienda en la ficha. Vibración al tirar el dado, recibir daño o vencer (se quita en Ajustes). Botón de dictado en entrevistas, documentos, glosario y buscador."],
   ["0.13.0", "Buscadores: una lupa flotante mientras lees o juegas busca a la vez en cartas de lore, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa y escenas, y te lleva al resultado. Las listas largas (cartas, ideas de lore, documentos, personajes e historias) tienen ahora su propio cuadro de búsqueda."],
   ["0.12.0", "Ajustes ordenados por apartados, con color de acento a elegir. Al leer, las barras se esconden solas. Capítulos con cabecera más vistosa. En las viñetas puedes tocar un nombre para corregir quién habla. RPG: compañeros que te ayudan (+3 al dado). Nuevos en Cartas de lore: «Mapa de lugares» y «Documentos del mundo» (cartas, noticias, diarios). En cada escena, «Otro punto de vista» la cuenta desde otro personaje. La meta de escritura ya entra en las copias de seguridad."],
   ["0.11.0", "Aventuras RPG más completas: ficha con cuatro atributos que suman al dado, inventario de objetos que puedes usar (+2) y combates con un enemigo cuya barra de aguante ves bajar. Además, entrevista a tus personajes: toca su cara en las viñetas o su carta y pregúntales lo que quieras sin cambiar la historia."],
@@ -2114,6 +2123,8 @@ function renderLore() {
   var rb0 = el("button", "small", "Relaciones entre personajes" + ((cur.rel || []).length ? " (" + cur.rel.length + ")" : "")); rb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; rb0.onclick = function () { relSheet(); }; b.appendChild(rb0);
   var mb0 = el("button", "small", "Mapa de lugares"); mb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; mb0.onclick = function () { mapSheet(); }; b.appendChild(mb0);
   var db0 = el("button", "small", "Documentos del mundo" + ((cur.docs || []).length ? " (" + cur.docs.length + ")" : "")); db0.style.cssText = "margin:.2rem 0 .6rem .4rem"; db0.onclick = function () { docsSheet(); }; b.appendChild(db0);
+  var gb0 = el("button", "small", "Glosario" + ((cur.glo || []).length ? " (" + cur.glo.length + ")" : "")); gb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; gb0.onclick = function () { gloSheet(); }; b.appendChild(gb0);
+  var bb0 = el("button", "small", "Contraportada"); bb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; bb0.onclick = function () { blurbSheet(); }; b.appendChild(bb0);
   (cur.lore || []).forEach(function (c) {
     var d = el("div", "lore"); d.dataset.q = sfold(c.nombre + " " + c.tipo + " " + (c.desc || ""));
     if (c.img) { var th = el("img", "lorethumb"); th.src = c.img; th.alt = c.nombre; d.appendChild(th); }
@@ -2181,7 +2192,7 @@ function startTyper() {
 function goalKey(d) { d = d || new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 function goalGet() { var g = null; try { g = JSON.parse(localStorage.getItem("hv:goal") || "null"); } catch (e) {} if (!g || typeof g !== "object") g = {}; if (!g.days || typeof g.days !== "object") g.days = {}; g.goal = Math.max(0, Math.min(20000, Math.round(Number(g.goal) || 0))); return g; }
 function goalSet(g) { var ks = Object.keys(g.days).sort(); while (ks.length > 90) delete g.days[ks.shift()]; try { localStorage.setItem("hv:goal", JSON.stringify(g)); } catch (e) {} }
-function goalAdd(txt) { if (typeof goalOff === "function" && goalOff()) return; var n = String(txt || "").trim().split(/\s+/).filter(function (x) { return x; }).length; if (!n) return; var g = goalGet(), k = goalKey(), b = g.days[k] || 0; g.days[k] = b + n; goalSet(g); if (g.goal > 0 && b < g.goal && b + n >= g.goal) setTimeout(function () { toast("Meta de hoy cumplida: " + (b + n) + " palabras."); }, 1200); }
+function goalAdd(txt) { if (typeof goalOff === "function" && goalOff()) return; var n = String(txt || "").trim().split(/\s+/).filter(function (x) { return x; }).length; if (!n) return; var g = goalGet(), k = goalKey(), b = g.days[k] || 0; g.days[k] = b + n; goalSet(g); if (g.goal > 0 && b < g.goal && b + n >= g.goal) setTimeout(function () { toast("Meta de hoy cumplida: " + (b + n) + " palabras."); hvBuzz([40, 40, 120]); }, 1200); }
 function goalStreak(g) { var n = 0, d = new Date(), need = g.goal > 0 ? g.goal : 1; if ((g.days[goalKey(d)] || 0) < need) d.setDate(d.getDate() - 1); while ((g.days[goalKey(d)] || 0) >= need && n < 400) { n++; d.setDate(d.getDate() - 1); } return n; }
 function goalCard() {
   var c = $("goalcard"); if (!c) return; var g = goalGet(), t = g.days[goalKey()] || 0, st = goalStreak(g); c.innerHTML = "";
@@ -2202,6 +2213,76 @@ function goalSheet() {
   });
 }
 function woptsLabel() { var d = $("wopts"); if (!d) return; var a = []; if (cur && cur.nextTone) a.push("Tono: " + cur.nextTone); if ($("longsc") && $("longsc").checked) a.push("Escena larga"); d.firstElementChild.textContent = a.length ? "Opciones: " + a.join(" · ") : "Tono y longitud (opcional)"; }
+/* v0.14.0: vibración, micrófono, glosario, contraportada, portada en modo libro */
+function buzzOn() { try { return localStorage.getItem("hv:buzz") !== "0"; } catch (e) { return true; } }
+function hvBuzz(p) { try { if (buzzOn() && navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
+function hvMic(target) { if (!window.hvDictate) return null; var b = el("button", "small", "🎤 Dictar"); b.type = "button"; b.setAttribute("aria-label", "Dictar con la voz"); b.onclick = function () { window.hvDictate(function (t) { if (t) { target.value = (target.value ? target.value + " " : "") + t; try { target.dispatchEvent(new Event("input")); target.focus(); } catch (e) {} } }); }; return b; }
+function gloList(s) { return (s.glo || []).filter(function (g) { return g && g.w && String(g.w).trim().length >= 2; }); }
+function gloCtx(s, compact) { var g = gloList(s); if (!g.length) return ""; return "\nGLOSARIO DEL MUNDO (términos propios de esta historia: úsalos con este sentido exacto, sin explicarlos al lector cada vez): " + g.slice(0, compact ? 12 : 40).map(function (x) { return x.w + " = " + String(x.d || "").replace(/\s+/g, " ").slice(0, 110); }).join("; ") + "."; }
+function gloMark(root, s) {
+  var g = gloList(s).filter(function (x) { return x.d; }); if (!g.length || !root) return; var rx;
+  try { rx = new RegExp("(^|[^\\p{L}\\p{N}])(" + g.map(function (x) { return String(x.w).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }).sort(function (a, b) { return b.length - a.length; }).join("|") + ")(?![\\p{L}\\p{N}])", "giu"); } catch (e) { return; }
+  var def = {}; g.forEach(function (x) { def[sfold(String(x.w).trim())] = x; });
+  [].forEach.call(root.querySelectorAll(".sc p"), function (p) {
+    if (p.dataset.full || p.classList.contains("act") || p.classList.contains("rollline")) return;
+    var tw = document.createTreeWalker(p, NodeFilter.SHOW_TEXT, null), nodes = [], n; while ((n = tw.nextNode())) { if (!(n.parentNode.classList && n.parentNode.classList.contains("glo"))) nodes.push(n); }
+    nodes.forEach(function (node) {
+      var tx = node.nodeValue, m, last = 0, frag = null; rx.lastIndex = 0;
+      while ((m = rx.exec(tx))) { var st = m.index + m[1].length; frag = frag || document.createDocumentFragment(); frag.appendChild(document.createTextNode(tx.slice(last, st))); var sp = el("span", "glo", m[2]), d = def[sfold(m[2])]; sp.setAttribute("role", "button"); sp.tabIndex = 0; sp.setAttribute("aria-label", m[2] + ": término del glosario"); (function (d, w) { var show = function (ev) { ev.stopPropagation(); toast((d ? d.w : w) + ": " + (d ? d.d : "")); }; sp.onclick = show; sp.onkeydown = function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); show(ev); } }; })(d, m[2]); frag.appendChild(sp); last = st + m[2].length; }
+      if (frag) { frag.appendChild(document.createTextNode(tx.slice(last))); node.parentNode.replaceChild(frag, node); }
+    });
+  });
+}
+function gloSheet() {
+  var s = cur; if (!s) return; s.glo = s.glo || [];
+  sheet("Glosario del mundo", function (sh) {
+    para(sh, "Palabras propias de tu mundo y lo que significan. El Cronista las usará con ese sentido y, al leer, aparecerán subrayadas: tócalas para ver su significado.");
+    var w = el("input"); w.type = "text"; w.maxLength = 40; w.placeholder = "Palabra o expresión"; w.setAttribute("aria-label", "Palabra del glosario"); w.style.cssText = "width:100%;margin:.3rem 0"; sh.appendChild(w);
+    var d = el("textarea"); d.maxLength = 300; d.placeholder = "Qué significa en tu mundo"; d.setAttribute("aria-label", "Significado"); d.style.cssText = "width:100%;margin:.3rem 0;min-height:4.2rem;height:4.2rem"; sh.appendChild(d);
+    var row = el("div", "row"), ad = el("button", "small on", "Añadir término"); row.appendChild(ad); var mc = hvMic(d); if (mc) row.appendChild(mc); sh.appendChild(row);
+    ad.onclick = function () { var a = w.value.trim(), b = d.value.trim(); if (a.length < 2 || !b) { toast("Escribe la palabra y su significado."); return; } if (s.glo.length >= 80) { toast("El glosario admite hasta 80 términos."); return; } s.glo = s.glo.filter(function (x) { return sfold(x.w) !== sfold(a); }); s.glo.push({ w: a, d: b }); s.glo.sort(function (x, y) { return sfold(x.w) < sfold(y.w) ? -1 : 1; }); save(); closeSheet(); try { render(true); } catch (e) {} gloSheet(); };
+    if (!s.glo.length) para(sh, "Aún no hay términos.");
+    var first = null;
+    s.glo.forEach(function (g) { var r = el("div", "gloit"); r.dataset.q = sfold(g.w + " " + g.d); var tx = el("div"); tx.appendChild(el("b", null, g.w)); tx.appendChild(el("span", null, g.d)); r.appendChild(tx); var e = el("button", "small", "Editar"); e.setAttribute("aria-label", "Editar " + g.w); e.onclick = function () { w.value = g.w; d.value = g.d; try { w.scrollIntoView({ block: "center" }); d.focus(); } catch (x) {} }; var q = el("button", "small", "Quitar"); q.setAttribute("aria-label", "Quitar " + g.w); q.onclick = function () { s.glo = s.glo.filter(function (x) { return x !== g; }); save(); closeSheet(); try { render(true); } catch (x) {} gloSheet(); }; r.appendChild(e); r.appendChild(q); sh.appendChild(r); first = first || r; });
+    try { if (first) hvFilter("glo", sh, first, sh.querySelectorAll(".gloit"), "Buscar en el glosario", 6); } catch (e) {}
+    closeBtn(sh);
+  });
+}
+function blurbSheet() {
+  var s = cur; if (!s) return;
+  sheet("Texto de contraportada", function (sh) {
+    para(sh, "La sinopsis que iría en la parte de atrás del libro: engancha sin destripar el final. Puedes pedírsela al Cronista (gasta una consulta) y retocarla.");
+    var ta = el("textarea"); ta.value = s.blurb || ""; ta.maxLength = 1500; ta.placeholder = "Aquí aparecerá el texto de contraportada"; ta.setAttribute("aria-label", "Texto de contraportada"); ta.style.cssText = "width:100%;min-height:12rem;margin:.4rem 0;font-family:Georgia,serif;line-height:1.5"; sh.appendChild(ta);
+    var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
+    var row = el("div", "row"), go = el("button", "small on", s.blurb ? "Pedir otra versión" : "Que la escriba El Cronista"), sv = el("button", "small", "Guardar texto"), cp = el("button", "small", "Copiar texto"), us = el("button", "small", "Usar como sinopsis"); [go, sv, cp, us].forEach(function (x) { row.appendChild(x); }); sh.appendChild(row);
+    go.onclick = async function () {
+      if (go.disabled) return; go.disabled = true; st.hidden = false; st.textContent = "El Cronista está escribiendo la contraportada…";
+      var hid = ""; try { hid = sxHidden(s).map(function (e) { return "- " + e.t; }).join("\n").slice(0, 700); } catch (e) {}
+      var p = "Escribe el TEXTO DE CONTRAPORTADA de la novela «" + s.title + "» (" + (gtxt(s) || s.genre || "ficción") + "). Español, entre 90 y 150 palabras, en tercera persona y presente, tono editorial. Presenta al protagonista, su mundo y el conflicto que lo pone todo en juego, y termina con una pregunta o una frase que deje con ganas de leer. NO cuentes el desenlace ni giros de la segunda mitad. No uses frases hechas como «nada volverá a ser igual». Sin contenido sexual explícito." +
+        (s.syn ? "\nSINOPSIS DE TRABAJO: " + String(s.syn).slice(0, 500) : "") + (s.premise ? "\nPREMISA: " + String(s.premise).slice(0, 600) : "") + ((s.prot || []).length ? "\nPROTAGONISTA: " + s.prot.map(function (c) { return c.name + (c.desc ? " (" + String(c.desc).slice(0, 160) + ")" : ""); }).join("; ") : "") + (s.memory ? "\nLO OCURRIDO HASTA AHORA (úsalo solo para acertar el tono y el arranque): " + String(s.memory).slice(0, 1400) : "") +
+        (hid ? "\nSECRETOS DEL AUTOR (no los menciones ni los insinúes):\n" + hid : "") + "\nResponde solo con el texto de contraportada.";
+      try { var r = await ask(p), tx = String((r && r.text) || "").trim(); if (!tx) throw new Error("vacío"); ta.value = tx.slice(0, 1500); s.blurb = ta.value; save(); st.hidden = true; go.textContent = "Pedir otra versión"; }
+      catch (e) { st.textContent = e && e.code === "rate_limited" ? "Has llegado al límite de consultas por ahora. Prueba más tarde." : "No he podido escribirla. Revisa la conexión o tu clave y vuelve a intentarlo."; }
+      go.disabled = false;
+    };
+    sv.onclick = function () { s.blurb = ta.value.trim(); save(); toast("Contraportada guardada."); };
+    cp.onclick = function () { hvCopy(ta.value); };
+    us.onclick = function () { var t = ta.value.trim(); if (!t) { toast("Primero escribe o genera el texto."); return; } s.blurb = t; s.syn = t.length > 400 ? t.slice(0, 397).replace(/\s+\S*$/, "") + "…" : t; save(); toast("Sinopsis de la historia actualizada."); };
+    closeBtn(sh);
+  });
+}
+var COVER_FIRST = false;
+function bkCover() {
+  var b = $("book"); if (!b) return; var old = b.querySelector(".bkcover"); if (old) old.remove();
+  if (!cur || !document.body.classList.contains("paged")) return; var s = cur;
+  var c = el("div", "bkcover"); c.setAttribute("role", "img"); c.setAttribute("aria-label", "Portada de " + s.title);
+  var art = el("div", "bkart" + (s.cover ? " hasimg" : "")); art.style.background = s.cover ? "url(" + JSON.stringify(String(s.cover)) + ") center/cover no-repeat" : coverBg(s);
+  if (!s.cover) { art.appendChild(el("span", "bkt", s.title)); art.appendChild(el("span", "bkg", gtxt(s) || "")); }
+  c.appendChild(art);
+  if (s.cover) c.appendChild(el("p", "bkcap", s.title));
+  var go = el("button", "small on", "Seguir por donde ibas"); go.onclick = function (ev) { ev.stopPropagation(); COVER_FIRST = false; pgStart(); }; c.appendChild(go);
+  b.insertBefore(c, b.firstChild);
+}
 /* v0.13.0: buscadores. FILT guarda lo escrito en cada filtro para que no se pierda al repintar. */
 var FILT = {};
 function hvFilter(key, host, before, items, label, min) {
@@ -2220,6 +2301,8 @@ function findAll(s, raw) {
   (s.wl || []).forEach(function (e) { if (e) add("Lore del universo", e.h || "Idea", String(e.t || "").replace(/\s+/g, " "), function () { FILT.wl = ""; findOpen("wlbox"); renderWl(); setTimeout(function () { hvFlash($("wlbody").querySelector('.wlit[data-id="' + e.id + '"]')); }, 80); }); });
   (s.sx || []).forEach(function (e) { if (e && e.t) add("Secretos", "Secreto del autor", String(e.t).replace(/\s+/g, " "), function () { findOpen("wlbox"); renderWl(); setTimeout(function () { var hit = null; [].forEach.call($("wlbody").querySelectorAll("p,b,textarea,div"), function (x) { if (!hit && !x.children.length && sfold(x.value || x.textContent).indexOf(sfold(e.t).slice(0, 40)) >= 0) hit = x; }); hvFlash(hit || $("wlbox")); }, 80); }); });
   (s.docs || []).forEach(function (d) { if (d) add("Documentos del mundo", d.tipo + " · " + d.titulo, String(d.t || "").replace(/\s+/g, " "), function () { closeSheet(); docsSheet(d.id); }); });
+  (s.glo || []).forEach(function (g) { if (g && g.w) add("Glosario", g.w, String(g.d || ""), function () { closeSheet(); FILT.glo = g.w; gloSheet(); }); });
+  if (s.rpg && s.rpg.ms) s.rpg.ms.forEach(function (m) { add("Misiones", m.st === "open" ? "Abierta" : m.st === "done" ? "Cumplida" : "Fallida", m.t, function () { closeSheet(); rpgSheet(s); }); });
   (s.prot || []).forEach(function (c) { if (c) add("Protagonistas", c.name, [c.desc, (c.traits || []).join(", "), c.goal, c.flaw, c.voice].filter(function (x) { return x; }).join(" · "), null); });
   try { if (s.mem && s.mem.chars) Object.keys(s.mem.chars).forEach(function (k) { var m = s.mem.chars[k]; if (m && m.name) { var tx = Object.keys(m).filter(function (x) { return x !== "name" && m[x] && typeof m[x] !== "object"; }).map(function (x) { return String(m[x]); }).join(" · "); add("Lo que recuerda El Cronista", m.name, tx, null, (m.alias || []).join(" ")); } }); } catch (e) {}
   (s.rel || []).forEach(function (r) { if (r) { var tx = [r.a, r.b, r.t || r.tipo, r.n || r.nota || r.d].filter(function (x) { return x; }).join(" · "); add("Relaciones", (r.a || "") + " ↔ " + (r.b || ""), tx, function () { closeSheet(); relSheet(); }); } });
@@ -2232,6 +2315,7 @@ function findSheet(q0) {
   var s = cur; if (!s) return;
   sheet("Buscar en tu mundo", function (sh) {
     var q = el("input"); q.type = "search"; q.placeholder = "Un nombre, un lugar, una palabra…"; q.setAttribute("aria-label", "Buscar en cartas, lore, personajes, documentos y escenas"); q.className = "findq"; q.value = q0 || FILT.find || ""; sh.appendChild(q);
+    try { var _m3 = hvMic(q); if (_m3) { _m3.style.margin = ".4rem 0 0"; sh.appendChild(_m3); } } catch (e) {}
     var st = el("p", "hint"); st.setAttribute("role", "status"); sh.appendChild(st); var res = el("div", "findres"); sh.appendChild(res);
     function run() {
       res.innerHTML = ""; FILT.find = q.value; var raw = q.value.trim(); if (raw.length < 2) { st.textContent = raw.length ? "Escribe al menos 2 letras." : "Busca a la vez en las cartas de lore, el lore del universo, los secretos, los documentos, los personajes, las relaciones, las entrevistas, el mapa y las escenas."; return; }
@@ -2264,7 +2348,7 @@ function docsSheet(openId) {
     var sel = el("select"); sel.setAttribute("aria-label", "Tipo de documento"); DOC_T.forEach(function (x) { if (x !== "Otro punto de vista") { var o = el("option", null, x); o.value = x; sel.appendChild(o); } }); sel.style.cssText = "width:100%;margin:.3rem 0"; sh.appendChild(sel);
     var ta = el("textarea"); ta.maxLength = 500; ta.placeholder = "Quién lo escribe y sobre qué. Por ejemplo: carta de Sora a su hermano la noche antes del asalto"; ta.setAttribute("aria-label", "Encargo para el documento"); ta.style.cssText = "width:100%;margin:.3rem 0;min-height:4.6rem;height:4.6rem"; sh.appendChild(ta);
     var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
-    var row = el("div", "row"), go = el("button", "small on", "Que lo escriba El Cronista"), me = el("button", "small", "Escribirlo yo"); row.appendChild(go); row.appendChild(me); sh.appendChild(row);
+    var row = el("div", "row"), go = el("button", "small on", "Que lo escriba El Cronista"), me = el("button", "small", "Escribirlo yo"); row.appendChild(go); row.appendChild(me); try { var _m2 = hvMic(ta); if (_m2) row.appendChild(_m2); } catch (e) {} sh.appendChild(row);
     go.onclick = async function () {
       if (go.disabled) return; go.disabled = true; st.hidden = false; st.textContent = "El Cronista está escribiendo el documento…";
       try { var r = await ask(docPrompt(s, sel.value, ta.value.trim())), tx = String((r && r.text) || "").trim(); if (!tx) throw new Error("vacío");
@@ -2416,7 +2500,7 @@ function comicEl(s, sc, i, pop) {
     col.appendChild(el("p", "cbub", it.t)); if (it.inc) col.appendChild(el("p", "cinc", it.inc));
     row.appendChild(col); pan.appendChild(row); nb++;
   });
-  try { var ex = rpgExtra(sc); if (ex) { var vs = el("div", "cvs"); if (sc.cb && !sc.cb.end) { vs.appendChild(el("b", null, "⚔ " + sc.cb.n)); var mm = el("span", "meter"), ii = el("i"); ii.style.width = Math.round(sc.cb.hp * 100 / sc.cb.mx) + "%"; mm.appendChild(ii); vs.appendChild(mm); vs.appendChild(el("em", null, sc.cb.hp + "/" + sc.cb.mx)); var rest = rpgExtra({ ig: sc.ig, il: sc.il, cj: sc.cj, cl: sc.cl, cod: sc.cod }); if (rest) vs.appendChild(el("span", null, rest.replace(/^ · /, ""))); } else vs.appendChild(el("span", null, ex.replace(/^ · /, ""))); vs.setAttribute("aria-hidden", "true"); box.appendChild(vs); } } catch (e) {}
+  try { var ex = rpgExtra(sc); if (ex) { var vs = el("div", "cvs"); if (sc.cb && !sc.cb.end) { vs.appendChild(el("b", null, "⚔ " + sc.cb.n)); var mm = el("span", "meter"), ii = el("i"); ii.style.width = Math.round(sc.cb.hp * 100 / sc.cb.mx) + "%"; mm.appendChild(ii); vs.appendChild(mm); vs.appendChild(el("em", null, sc.cb.hp + "/" + sc.cb.mx)); var rest = rpgExtra({ ig: sc.ig, il: sc.il, cj: sc.cj, cl: sc.cl, cod: sc.cod, gd: sc.gd, mq: sc.mq, md: sc.md, mf: sc.mf }); if (rest) vs.appendChild(el("span", null, rest.replace(/^ · /, ""))); } else vs.appendChild(el("span", null, ex.replace(/^ · /, ""))); vs.setAttribute("aria-hidden", "true"); box.appendChild(vs); } } catch (e) {}
   return box;
 }
 function faceSheet(name) {
@@ -3080,7 +3164,7 @@ function build(s, action, note, sp, compact) {
     (LONGCUR ? "\nLONGITUD: ESCENA LARGA. Escribe de 1500 a 2000 palabras en total (unos 3 o 4 folios), en muchos párrafos y varios momentos, sin resumir ni acortar: no cierres la escena hasta llegar a esa extensión. DESARROLLA TODO lo que el jugador ha escrito, en el orden en que lo escribió, sin saltarte ni condensar nada; trátalo como guion de lo que ocurre y despliégalo con acción, diálogos, gestos y detalles del entorno. Conserva sus frases y diálogos clave cuando estén bien escritos y añade lo que haga falta para enlazarlos. No inventes un final cerrado ni avances más allá de lo que el jugador cuenta." : "\nLONGITUD: párrafos de longitud natural, " + (compact ? "de 250 a 350 palabras en total (sé breve)" : "de " + LEN[len] + " palabras en total") + ".") +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s, recentFocus(s, action)).slice(0, 1800) : loreTxt(s, recentFocus(s, action))) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sxCtx(s, compact) + docCtx(s, compact) + mapCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sxCtx(s, compact) + gloCtx(s, compact) + docCtx(s, compact) + mapCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -3443,13 +3527,37 @@ function validateScene(s, d) {
 var RPG_DC = { Seguro: 6, Arriesgado: 12, Temerario: 16 }, RPG_IX = { Seguro: 0, Arriesgado: 1, Temerario: 2 }, RPG_ICON = { Seguro: "🟢", Arriesgado: "🟠", Temerario: "🔴" };
 var RPG_B2 = { "Ciberpunk": "Sistema", "Ciencia Ficción": "Oxígeno", "Terror": "Cordura", "Misterio": "Cordura", "Fantasía Épica": "Maná", "Fantasía Oscura": "Voluntad", "Western": "Aguante", "Aventura": "Energía" };
 var FMT = "nov", DIFF = "normal";
+/* v0.14.0: misiones, dinero y tienda (RPG) */
+function rpgMsFind(r, t, st) { var k = sfold(rpgItem(t)), ix = -1; if (k.length < 3) return -1; r.ms.forEach(function (m, i) { var y = sfold(m.t); if (ix < 0 && (!st || m.st === st) && (y === k || y.indexOf(k) >= 0 || k.indexOf(y) >= 0)) ix = i; }); return ix; }
+function rpgShopPrompt(s) { var r = s.rpg, last = s.scenes.length ? String(s.scenes[s.scenes.length - 1].t).slice(-700) : ""; return "Historia «" + s.title + "» (" + (gtxt(s) || s.genre || "") + "). El protagonista quiere comprar. Propón 5 objetos que tendría sentido encontrar a la venta en el lugar y la época de la última escena: útiles para una aventura, concretos, sin magia ni tecnología que no encaje con el mundo. Precios en " + r.coin + ", entre 5 y 120 (el protagonista tiene " + r.gold + "). Ninguno que ya lleve: " + (r.inv.join(", ") || "nada") + "." + (s.memory ? "\nCONTEXTO: " + String(s.memory).slice(0, 700) : "") + (last ? "\nÚLTIMA ESCENA: " + last : "") + "\nResponde SOLO con JSON: {\"tienda\":[{\"nombre\":\"…\",\"precio\":25,\"para\":\"para qué sirve, en pocas palabras\"}]}"; }
+function rpgShopParse(tx) { var o = null; try { var m = String(tx || "").match(/\{[\s\S]*\}/); o = JSON.parse(m ? m[0] : tx); } catch (e) { return []; } var a = o && Array.isArray(o.tienda) ? o.tienda : []; return a.map(function (x) { return { n: rpgItem(x && x.nombre), p: Math.max(1, Math.min(500, Math.round(Number(x && x.precio) || 0))), f: String((x && x.para) || "").replace(/\s+/g, " ").slice(0, 80) }; }).filter(function (x) { return x.n && x.p; }).slice(0, 6); }
+function rpgShopSheet(s) {
+  var r = rpgFix(s.rpg);
+  sheet("Tienda", function (sh) {
+    var head = para(sh, "Tienes " + r.gold + " " + r.coin + ".");
+    sh.appendChild(el("h3", null, "Siempre disponible"));
+    var row0 = el("div", "atrow"); row0.appendChild(el("b", null, "Curarte (+25 de salud) · 20 " + r.coin)); var hb = el("button", "small", "Comprar"); hb.setAttribute("aria-label", "Comprar curación por 20 " + r.coin); hb.disabled = r.gold < 20 || r.hp >= 100; hb.onclick = function () { if (r.gold < 20 || r.hp >= 100) return; r.gold -= 20; r.hp = Math.min(100, r.hp + 25); s.state.salud = Math.round(r.hp); save(); rpgHud(); closeSheet(); rpgShopSheet(s); toast("Recuperas 25 de salud."); }; row0.appendChild(hb); sh.appendChild(row0);
+    sh.appendChild(el("h3", null, "A la venta aquí"));
+    var fresh = r.shop && r.shop.at === s.scenes.length && r.shop.it && r.shop.it.length;
+    if (!fresh) para(sh, r.shop && r.shop.it && r.shop.it.length ? "Lo que viste a la venta era de otra escena. Pregunta de nuevo para ver qué hay ahora." : "Pregunta al Cronista qué se vende en este lugar. Gasta una consulta.");
+    else r.shop.it.forEach(function (it, ix) { var row = el("div", "atrow"), tx = el("b"); tx.appendChild(document.createTextNode(it.n + " · " + it.p + " " + r.coin)); if (it.f) { var sm = el("small", null, it.f); sm.style.cssText = "display:block;font-weight:400;color:var(--mute)"; tx.appendChild(sm); } row.appendChild(tx); var b = el("button", "small", "Comprar"); b.setAttribute("aria-label", "Comprar " + it.n + " por " + it.p + " " + r.coin); b.disabled = r.gold < it.p || r.inv.length >= 12; b.onclick = function () { if (r.gold < it.p || r.inv.length >= 12) return; r.gold -= it.p; if (rpgHas(r, it.n) < 0) r.inv.push(it.n); r.shop.it.splice(ix, 1); save(); rpgHud(); closeSheet(); rpgShopSheet(s); toast("Compras «" + it.n + "»."); }; row.appendChild(b); sh.appendChild(row); });
+    var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
+    var ask2 = el("button", "small on", fresh ? "Preguntar otra vez qué hay" : "Ver qué se vende aquí"); sh.appendChild(ask2);
+    ask2.onclick = async function () { if (ask2.disabled) return; ask2.disabled = true; st.hidden = false; st.textContent = "El Cronista mira los puestos…";
+      try { var rr = await ask(rpgShopPrompt(s)), it = rpgShopParse(rr && rr.text); if (!it.length) throw new Error("vacío"); r.shop = { at: s.scenes.length, it: it }; save(); closeSheet(); rpgShopSheet(s); }
+      catch (e) { ask2.disabled = false; st.textContent = e && e.code === "rate_limited" ? "Has llegado al límite de consultas por ahora. Prueba más tarde." : "No he podido ver la tienda. Revisa la conexión o tu clave y vuelve a intentarlo."; } };
+    if (r.inv.length >= 12) para(sh, "Tu inventario está lleno (12 objetos).");
+    var bk = el("button", "small", "Volver a la ficha"); bk.style.marginTop = ".5rem"; bk.onclick = function () { closeSheet(); rpgSheet(s); }; sh.appendChild(bk);
+    closeBtn(sh);
+  });
+}
 /* v0.11.0: ficha RPG (atributos, inventario, combate). El juego decide; El Cronista solo narra. */
 var RPG_AT = { Fuerza: "f", Agilidad: "a", Ingenio: "i", Carisma: "c" };
 var RPG_ATK = [["Fuerza", /(^|[^a-záéíóúñ])(golpe|empuj|romp|forz|fuerz|luch|pele|atac|derrib|levant|arranc|aplast|agarr|patad|puñet)/i], ["Agilidad", /(^|[^a-záéíóúñ])(corr|salt|esquiv|trep|escond|sigil|huy|huir|dispar|lanz|rued|desliz|escap|escabull)/i], ["Carisma", /(^|[^a-záéíóúñ])(convenc|habl|persuad|negoci|mient|mentir|seduc|intimid|pregunt|calm|ruego|rogar|amenaz|engañ|pact)/i], ["Ingenio", /(^|[^a-záéíóúñ])(piens|pensar|analiz|hack|descifr|busc|investig|repar|examin|plane|estudi|observ|deduc|improvis|manipul)/i]];
 function rpgGuess(t) { for (var i = 0; i < RPG_ATK.length; i++) if (RPG_ATK[i][1].test(String(t || ""))) return RPG_ATK[i][0]; return null; }
-function rpgFix(r) { if (!r) return r; if (!r.at) { r.at = { f: 0, a: 0, i: 0, c: 0 }; if (r.pts == null) r.pts = 4; } if (r.pts == null) r.pts = 0; if (!Array.isArray(r.inv)) r.inv = []; if (!Array.isArray(r.co)) r.co = []; return r; }
-function rpgState(r) { rpgFix(r); return { hp: r.hp, b2: r.b2, inv: r.inv.slice(), en: r.en ? JSON.parse(JSON.stringify(r.en)) : null, at: JSON.parse(JSON.stringify(r.at)), pts: r.pts, co: JSON.parse(JSON.stringify(r.co)) }; }
-function rpgStateBack(r, p) { r.hp = p.hp; r.b2 = p.b2; if (p.inv) r.inv = p.inv.slice(); if (p.at) { r.at = JSON.parse(JSON.stringify(p.at)); r.pts = p.pts || 0; } if ("en" in p) { if (p.en) r.en = JSON.parse(JSON.stringify(p.en)); else delete r.en; } if (p.co) r.co = JSON.parse(JSON.stringify(p.co)); delete r.use; delete r.help; r.pr = null; }
+function rpgFix(r) { if (!r) return r; if (!r.at) { r.at = { f: 0, a: 0, i: 0, c: 0 }; if (r.pts == null) r.pts = 4; } if (r.pts == null) r.pts = 0; if (!Array.isArray(r.inv)) r.inv = []; if (!Array.isArray(r.co)) r.co = []; if (!Array.isArray(r.ms)) r.ms = []; if (r.gold == null) r.gold = 30; if (!r.coin) r.coin = "monedas"; return r; }
+function rpgState(r) { rpgFix(r); return { hp: r.hp, b2: r.b2, inv: r.inv.slice(), en: r.en ? JSON.parse(JSON.stringify(r.en)) : null, at: JSON.parse(JSON.stringify(r.at)), pts: r.pts, co: JSON.parse(JSON.stringify(r.co)), ms: JSON.parse(JSON.stringify(r.ms)), gold: r.gold }; }
+function rpgStateBack(r, p) { r.hp = p.hp; r.b2 = p.b2; if (p.inv) r.inv = p.inv.slice(); if (p.at) { r.at = JSON.parse(JSON.stringify(p.at)); r.pts = p.pts || 0; } if ("en" in p) { if (p.en) r.en = JSON.parse(JSON.stringify(p.en)); else delete r.en; } if (p.co) r.co = JSON.parse(JSON.stringify(p.co)); if (p.ms) r.ms = JSON.parse(JSON.stringify(p.ms)); if (p.gold != null) r.gold = p.gold; delete r.use; delete r.help; r.pr = null; }
 function rpgItem(x) { return String(x == null ? "" : x).replace(/\s+/g, " ").trim().slice(0, 40); }
 function rpgHas(r, n) { var k = rpgItem(n).toLowerCase(), ix = -1; if (!k) return -1; r.inv.forEach(function (x, i) { var y = x.toLowerCase(); if (ix < 0 && (y === k || y.indexOf(k) >= 0 || k.indexOf(y) >= 0)) ix = i; }); return ix; }
 function rpgSheet(s) {
@@ -3471,6 +3579,17 @@ function rpgSheet(s) {
     });
     var inp = el("input"); inp.type = "text"; inp.maxLength = 40; inp.placeholder = "Por ejemplo: ganzúa"; inp.setAttribute("aria-label", "Nombre del objeto"); inp.style.cssText = "width:100%;margin:.5rem 0 .4rem"; sh.appendChild(inp);
     var ad = el("button", "small", "Añadir objeto"); ad.onclick = function () { var n = rpgItem(inp.value); if (!n) return; if (r.inv.length >= 12) { toast("El inventario está lleno (12 objetos)."); return; } if (rpgHas(r, n) < 0) r.inv.push(n); redo(); }; sh.appendChild(ad);
+    sh.appendChild(el("h3", null, "Dinero"));
+    var mrow = el("div", "atrow"); mrow.appendChild(el("b", null, "🪙 " + r.gold + " " + r.coin)); var tb = el("button", "small on", "Tienda"); tb.onclick = function () { closeSheet(); rpgShopSheet(s); }; mrow.appendChild(tb); sh.appendChild(mrow);
+    var cn = el("input"); cn.type = "text"; cn.maxLength = 20; cn.value = r.coin; cn.setAttribute("aria-label", "Nombre de la moneda de tu mundo"); cn.style.cssText = "width:100%;margin:.2rem 0 .4rem"; cn.onchange = function () { var v = rpgItem(cn.value).slice(0, 20).toLowerCase(); if (v) { r.coin = v; save(); rpgHud(); } }; sh.appendChild(cn);
+    para(sh, "Ganas dinero al vencer combates (+15), cumplir misiones (+20) y cuando la historia te lo dé. Arriba puedes cambiar el nombre de la moneda.");
+    sh.appendChild(el("h3", null, "Misiones"));
+    var om = r.ms.filter(function (m) { return m.st === "open"; }), dm2 = r.ms.filter(function (m) { return m.st !== "open"; });
+    if (!om.length) para(sh, "No hay misiones abiertas. El Cronista las propone cuando surge un objetivo; también puedes añadirlas tú.");
+    om.forEach(function (m) { var row = el("div", "atrow"); row.appendChild(el("b", null, "📜 " + m.t)); var ok = el("button", "small", "Cumplida"); ok.setAttribute("aria-label", "Marcar como cumplida: " + m.t); ok.onclick = function () { m.st = "done"; r.gold += 20; redo(); toast("Misión cumplida. +20 " + r.coin + "."); }; var q = el("button", "small", "Quitar"); q.setAttribute("aria-label", "Quitar misión: " + m.t); q.onclick = function () { r.ms = r.ms.filter(function (x) { return x !== m; }); redo(); }; row.appendChild(ok); row.appendChild(q); sh.appendChild(row); });
+    var mi = el("input"); mi.type = "text"; mi.maxLength = 80; mi.placeholder = "Por ejemplo: encontrar al hermano de Sora"; mi.setAttribute("aria-label", "Nueva misión"); mi.style.cssText = "width:100%;margin:.4rem 0"; sh.appendChild(mi);
+    var ma = el("button", "small", "Añadir misión"); ma.onclick = function () { var v = mi.value.replace(/\s+/g, " ").trim().slice(0, 80); if (v.length < 4) return; if (om.length >= 4) { toast("Como mucho 4 misiones abiertas a la vez."); return; } r.ms.push({ t: v, st: "open" }); redo(); }; sh.appendChild(ma);
+    if (dm2.length) { var dd = el("details", "pl"); dd.appendChild(el("summary", null, "Misiones terminadas (" + dm2.length + ")")); dm2.slice().reverse().forEach(function (m) { dd.appendChild(el("p", "hint", (m.st === "done" ? "✔ " : "✘ ") + m.t)); }); sh.appendChild(dd); }
     sh.appendChild(el("h3", null, "Compañeros"));
     if (!r.co.length) para(sh, "Nadie te acompaña. Puedes llevar hasta dos compañeros: su ayuda suma +3 al dado, pero si la acción sale mal, el golpe se lo llevan en parte ellos.");
     r.co.forEach(function (c, ix) {
@@ -3511,7 +3630,7 @@ function interviewSheet(name) {
     paint();
     var ta = el("textarea"); ta.rows = 2; ta.maxLength = 400; ta.placeholder = "Por ejemplo: ¿qué es lo que más temes?"; ta.setAttribute("aria-label", "Pregunta para " + name); ta.style.cssText = "width:100%;margin:.5rem 0;min-height:4.6rem;height:4.6rem"; sh.appendChild(ta);
     var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
-    var go = el("button", "go", "Preguntar"); sh.appendChild(go);
+    var go = el("button", "go", "Preguntar"); sh.appendChild(go); try { var _m1 = hvMic(ta); if (_m1) { _m1.style.marginLeft = ".4rem"; sh.appendChild(_m1); } } catch (e) {}
     go.onclick = async function () {
       var q = ta.value.trim(); if (!q || go.disabled) return; go.disabled = true; st.hidden = false; st.textContent = name + " está pensando…";
       try { var r = await ask(ivPrompt(s, name, q, H)); var a = String((r && r.text) || "").trim().replace(/^["«“]|["»”]$/g, "").slice(0, 1500); if (!a) throw new Error("vacío");
@@ -3540,7 +3659,7 @@ function rpgPre(s, action, shown) {
   }
   return { action: a.text, shown: sh };
 }
-function rpgExtra(sc) { var o = ""; if (sc.cb) o += sc.cb.end === "victoria" ? " · ⚔ Vences a " + sc.cb.n : sc.cb.end === "huida" ? " · ⚔ Sales del combate" : " · ⚔ " + sc.cb.n + " " + sc.cb.hp + "/" + sc.cb.mx; if (sc.ig) o += " · 🎒 +" + sc.ig.join(", +"); if (sc.il) o += " · 🎒 −" + sc.il.join(", −"); if (sc.cj) o += " · 🤝 " + sc.cj + " se une"; if (sc.cl) o += " · 🤝 " + sc.cl + " se va"; if (sc.cod) o += " · 🤝 " + sc.cod + " cae"; return o; }
+function rpgExtra(sc) { var o = ""; if (sc.cb) o += sc.cb.end === "victoria" ? " · ⚔ Vences a " + sc.cb.n : sc.cb.end === "huida" ? " · ⚔ Sales del combate" : " · ⚔ " + sc.cb.n + " " + sc.cb.hp + "/" + sc.cb.mx; if (sc.ig) o += " · 🎒 +" + sc.ig.join(", +"); if (sc.il) o += " · 🎒 −" + sc.il.join(", −"); if (sc.cj) o += " · 🤝 " + sc.cj + " se une"; if (sc.cl) o += " · 🤝 " + sc.cl + " se va"; if (sc.cod) o += " · 🤝 " + sc.cod + " cae"; if (sc.gd) o += " · 🪙 " + (sc.gd > 0 ? "+" : "−") + Math.abs(sc.gd); if (sc.mq) o += " · 📜 Nueva misión: " + sc.mq; if (sc.md) o += " · 📜 Cumplida: " + sc.md; if (sc.mf) o += " · 📜 Fallida: " + sc.mf; return o; }
 function rpgTierName(p) { return p.crit ? "¡Éxito crítico!" : p.pifia ? "¡Pifia!" : p.tier === "pleno" ? "Éxito" : p.tier === "coste" ? "Éxito con coste" : "Fallo"; }
 function rpgCtx(s, compact) {
   var r = rpgFix(s.rpg); if (!r) return ""; var o = "\nMODO RPG (el juego decide los resultados; tú solo narras): salud del protagonista " + Math.round(r.hp) + "/100, " + r.b2n.toUpperCase() + " " + Math.round(r.b2) + "/100, créditos de destino " + (r.diff === "relajado" ? "ilimitados" : r.cred) + ".";
@@ -3551,6 +3670,8 @@ function rpgCtx(s, compact) {
   o += "\nATRIBUTOS DEL PROTAGONISTA (de 0 a 4): " + Object.keys(RPG_AT).map(function (n) { return n + " " + r.at[RPG_AT[n]]; }).join(", ") + ". Que lo que hace bien o mal sea coherente con ellos.";
   o += "\nINVENTARIO (lo único que lleva encima; no le des por hecho objetos que no estén aquí): " + (r.inv.length ? r.inv.join(", ") : "nada") + ".";
   if (r.pr && r.pr.use) o += " En esta acción usa «" + r.pr.use + "»: que se note en la escena.";
+  o += "\nDINERO: " + r.gold + " " + r.coin + ". No puede pagar más de lo que tiene.";
+  var _om = r.ms.filter(function (m) { return m.st === "open"; }); if (_om.length) o += "\nMISIONES ABIERTAS (objetivos del protagonista; tenlos presentes sin forzarlos): " + _om.map(function (m) { return "«" + m.t + "»"; }).join("; ") + ".";
   if (r.co.length) { o += "\nCOMPAÑEROS que van con el protagonista (tenlos presentes en la escena): " + r.co.map(function (c) { return c.n + (c.hp <= 0 ? " (fuera de combate: herido o agotado, no puede actuar hasta descansar)" : c.hp <= 35 ? " (malherido)" : ""); }).join(", ") + "."; if (r.pr && r.pr.help) o += " En esta acción " + r.pr.help + " ayuda activamente al protagonista" + (r.pr.tier !== "pleno" ? " y sale mal parado por ello" : "") + ": que se vea."; }
   if (r.en) { o += "\nCOMBATE EN CURSO contra " + r.en.n + " (aguante " + Math.round(r.en.hp) + " de " + r.en.mx + ").";
     if (r.pr && r.pr.flee) o += " El protagonista consigue salir del enfrentamiento en esta escena: nárralo.";
@@ -3558,7 +3679,7 @@ function rpgCtx(s, compact) {
     else o += " Al final de esta escena " + r.en.n + " SIGUE EN PIE y el enfrentamiento continúa: no lo derrotes, no lo hagas huir ni rendirse todavía" + (r.pr && r.pr.eh != null && r.pr.eh < r.en.hp ? ", aunque acusa el golpe" : "") + ". Las 3 opciones deben ser maneras de seguir el enfrentamiento o de salir de él."; }
   if (r.hp <= 25) o += " La salud es muy baja: el cuerpo del protagonista lo muestra (dolor, temblor, torpeza) y los riesgos pesan más.";
   if (r.b2 <= 25) o += " " + r.b2n + " está muy bajo: que se note en la escena y en las decisiones.";
-  o += "\nNo cambies salud ni peligro en «estado» (los gestiona el juego) y no escribas el final de la historia por tu cuenta. OPCIONES: exactamente 3, cada una empieza por [Seguro], [Arriesgado] o [Temerario] según el riesgo real para el protagonista (que haya variedad), seguido de [Fuerza], [Agilidad], [Ingenio] o [Carisma] según lo que más pese en esa acción (ejemplo: «[Arriesgado][Ingenio] Forzar la cerradura»), sin otra etiqueta. En el JSON puedes añadir \"rpg\":{...} con estas claves, solo cuando ocurra de verdad en la escena: \"recupera\":true si el protagonista descansa, se alimenta, se cura o recarga; \"gana\":[\"objeto\"] si consigue un objeto útil y concreto (nombre corto); \"pierde\":[\"objeto\"] si gasta, rompe o pierde uno de su inventario; \"se_une\":\"Nombre\" si un personaje decide acompañar al protagonista de forma estable; \"se_va\":\"Nombre\" si un compañero se separa de él" + (r.en ? "" : "; \"enemigo\":{\"nombre\":\"…\",\"fuerza\":1} (fuerza 1, 2 o 3) si en esta escena EMPIEZA un enfrentamiento directo con alguien o algo (pelea, duelo, persecución) que no se resuelve aún") + ".";
+  o += "\nNo cambies salud ni peligro en «estado» (los gestiona el juego) y no escribas el final de la historia por tu cuenta. OPCIONES: exactamente 3, cada una empieza por [Seguro], [Arriesgado] o [Temerario] según el riesgo real para el protagonista (que haya variedad), seguido de [Fuerza], [Agilidad], [Ingenio] o [Carisma] según lo que más pese en esa acción (ejemplo: «[Arriesgado][Ingenio] Forzar la cerradura»), sin otra etiqueta. En el JSON puedes añadir \"rpg\":{...} con estas claves, solo cuando ocurra de verdad en la escena: \"recupera\":true si el protagonista descansa, se alimenta, se cura o recarga; \"gana\":[\"objeto\"] si consigue un objeto útil y concreto (nombre corto); \"pierde\":[\"objeto\"] si gasta, rompe o pierde uno de su inventario; \"se_une\":\"Nombre\" si un personaje decide acompañar al protagonista de forma estable; \"se_va\":\"Nombre\" si un compañero se separa de él; \"dinero\":N (positivo si cobra, encuentra o le pagan; negativo si paga, pierde o le roban; en " + r.coin + ")" + (_om.length < 4 ? "; \"mision_nueva\":\"objetivo claro y concreto en pocas palabras\" si surge un encargo u objetivo nuevo de verdad" : "") + (_om.length ? "; \"mision_cumplida\":\"texto de la misión\" o \"mision_fallida\":\"texto de la misión\" si una de las abiertas se resuelve en esta escena" : "") + (r.en ? "" : "; \"enemigo\":{\"nombre\":\"…\",\"fuerza\":1} (fuerza 1, 2 o 3) si en esta escena EMPIEZA un enfrentamiento directo con alguien o algo (pelea, duelo, persecución) que no se resuelve aún") + ".";
   var pa = r.parent && LIB.filter(function (x) { return x.id === r.parent; })[0];
   if (pa && pa.memory && !compact) o += "\nCANON DE LA NOVELA (ya escrito; esta partida RPG ocurre en ese mismo mundo, respétalo): " + String(pa.memory).slice(0, 600);
   return o;
@@ -3572,7 +3693,7 @@ function rpgRestore(s, p) {
   if (p.rs && s.rpg) { var _h = s.rpg.hp, _b = s.rpg.b2; rpgStateBack(s.rpg, p.rs); s.rpg.hp = _h; s.rpg.b2 = _b; }
 }
 function rpgApply(s, cand, sn) {
-  var r = rpgFix(s.rpg), p = r.pr, mul = r.diff === "relajado" ? 0.6 : r.diff === "duro" ? 1.3 : 1, ix = p ? RPG_IX[p.risk] : 0, won = false, hm = p && p.hb ? 0.5 : 1;
+  var r = rpgFix(s.rpg), p = r.pr, mul = r.diff === "relajado" ? 0.6 : r.diff === "duro" ? 1.3 : 1, ix = p ? RPG_IX[p.risk] : 0, won = false, hm = p && p.hb ? 0.5 : 1, _hp0 = r.hp;
   if (r.en) mul *= [0.8, 1, 1.3][(r.en.f || 2) - 1];
   if (p) {
     sn.roll = { d: p.d, dc: p.dc, risk: p.risk, tier: p.tier, crit: p.crit, pifia: p.pifia };
@@ -3584,7 +3705,7 @@ function rpgApply(s, cand, sn) {
   if (cand && cand.rpg && cand.rpg.recupera === true) { r.b2 += 30; r.hp += 15; sn.rec = 1; r.co.forEach(function (c) { c.hp = Math.min(100, c.hp + 40); }); }
   if (r.en && p) {
     if (p.flee) { sn.cb = { n: r.en.n, end: "huida" }; delete r.en; }
-    else { if (p.eh != null) r.en.hp = p.eh; if (r.en.hp <= 0) { sn.cb = { n: r.en.n, end: "victoria" }; won = true; var _nm = r.en.n; delete r.en; var _tot = r.pts + r.at.f + r.at.a + r.at.i + r.at.c; if (_tot < 14) { r.pts++; sn.cb.pt = 1; } setTimeout(function () { toast("Has vencido a " + _nm + "." + (sn.cb.pt ? " Ganas 1 punto de atributo." : "")); }, 500); } else sn.cb = { n: r.en.n, hp: Math.round(r.en.hp), mx: r.en.mx }; }
+    else { if (p.eh != null) r.en.hp = p.eh; if (r.en.hp <= 0) { sn.cb = { n: r.en.n, end: "victoria" }; won = true; r.gold += 15; sn.gd = (sn.gd || 0) + 15; var _nm = r.en.n; delete r.en; var _tot = r.pts + r.at.f + r.at.a + r.at.i + r.at.c; if (_tot < 14) { r.pts++; sn.cb.pt = 1; } setTimeout(function () { toast("Has vencido a " + _nm + "." + (sn.cb.pt ? " Ganas 1 punto de atributo." : "")); }, 500); } else sn.cb = { n: r.en.n, hp: Math.round(r.en.hp), mx: r.en.mx }; }
   }
   var g = cand && cand.rpg;
   if (g) {
@@ -3592,11 +3713,16 @@ function rpgApply(s, cand, sn) {
     (Array.isArray(g.pierde) ? g.pierde : []).slice(0, 3).forEach(function (x) { var k = rpgHas(r, x); if (k >= 0) { li.push(r.inv[k]); if (r.use === r.inv[k]) delete r.use; r.inv.splice(k, 1); } });
     (Array.isArray(g.gana) ? g.gana : []).slice(0, 3).forEach(function (x) { x = rpgItem(x); if (x && r.inv.length < 12 && rpgHas(r, x) < 0) { r.inv.push(x); gi.push(x); } });
     if (gi.length) sn.ig = gi; if (li.length) sn.il = li;
+    var dn = Math.round(Number(g.dinero) || 0); if (dn) { dn = Math.max(-200, Math.min(200, dn)); var g0 = r.gold; r.gold = Math.max(0, Math.min(9999, r.gold + dn)); if (r.gold !== g0) sn.gd = (sn.gd || 0) + (r.gold - g0); }
+    var mdn = rpgMsFind(r, g.mision_cumplida, "open"); if (mdn >= 0) { r.ms[mdn].st = "done"; sn.md = r.ms[mdn].t; r.gold += 20; sn.gd = (sn.gd || 0) + 20; (function (x) { setTimeout(function () { toast("Misión cumplida: " + x + ". +20 " + r.coin + "."); hvBuzz([40, 40, 120]); }, 900); })(r.ms[mdn].t); }
+    var mfl = rpgMsFind(r, g.mision_fallida, "open"); if (mfl >= 0 && mfl !== mdn) { r.ms[mfl].st = "fail"; sn.mf = r.ms[mfl].t; }
+    var mnw = String(g.mision_nueva || "").replace(/\s+/g, " ").trim().slice(0, 80); if (mnw && mnw.length >= 4 && rpgMsFind(r, mnw) < 0 && r.ms.filter(function (m) { return m.st === "open"; }).length < 4) { r.ms.push({ t: mnw, st: "open" }); sn.mq = mnw; }
     var ju = rpgItem(g.se_une), lv = rpgItem(g.se_va); if (lv) { var _n0 = r.co.length; r.co = r.co.filter(function (c) { return c.n.toLowerCase() !== lv.toLowerCase(); }); if (r.co.length < _n0) sn.cl = lv; }
     if (ju && r.co.length < 2 && !r.co.some(function (c) { return c.n.toLowerCase() === ju.toLowerCase(); })) { r.co.push({ n: ju, hp: 100 }); sn.cj = ju; }
     if (!r.en && !won && !(sn.cb && sn.cb.end) && g.enemigo && typeof g.enemigo === "object") { var en = rpgItem(g.enemigo.nombre); if (en) { var ef = Math.max(1, Math.min(3, Math.round(Number(g.enemigo.fuerza) || 2))), mx = [40, 70, 100][ef - 1]; r.en = { n: en, f: ef, hp: mx, mx: mx }; sn.cb = { n: en, hp: mx, mx: mx, start: 1 }; } }
   }
-  delete r.use; delete r.help;
+  delete r.use; delete r.help; while (r.ms.length > 30) r.ms.shift();
+  if (r.hp < _hp0 - 0.5) hvBuzz([70, 50, 70]); if (won) hvBuzz([40, 40, 40, 40, 160]);
   r.hp = Math.max(0, Math.min(100, r.hp)); r.b2 = Math.max(0, Math.min(100, r.b2)); r.pr = null;
   s.state = s.state || {}; s.state.salud = Math.round(r.hp);
   if (s.scenes.length % 12 === 0 && r.cred < 5 && r.diff !== "relajado") { r.cred++; setTimeout(function () { toast("Has ganado 1 crédito de destino"); }, 400); }
@@ -3606,6 +3732,7 @@ function rpgHud() {
   var h = $("rpghud"), s = cur, mn = $("rpgmini"); if (!h) return; h.innerHTML = ""; if (mn) { mn.innerHTML = ""; mn.hidden = !(s && s.rpg); } if (!s || !s.rpg) { h.hidden = true; return; } h.hidden = false; var r = s.rpg;
   if (mn) { [["❤ Salud", r.hp, r.hp <= 25 ? "low" : "hp"], [r.b2n, r.b2, r.b2 <= 25 ? "low" : "b2"]].forEach(function (x) { var w = el("span", "mini"); w.appendChild(el("b", null, x[0] + " " + Math.round(x[1]))); var m = el("span", "meter"), ii = el("i", x[2]); ii.style.width = Math.round(x[1]) + "%"; m.appendChild(ii); w.appendChild(m); mn.appendChild(w); }); mn.appendChild(el("span", "mini", "🎟 " + (r.diff === "relajado" ? "∞" : r.cred)));
     rpgFix(r); var fb = el("button", "small", "🎒 Ficha" + (r.pts > 0 ? " (+" + r.pts + ")" : "")); fb.id = "rpgficha"; fb.setAttribute("aria-label", "Ficha de aventura: atributos e inventario" + (r.pts > 0 ? ". Tienes " + r.pts + " puntos por repartir" : "")); fb.onclick = function () { rpgSheet(s); }; mn.appendChild(fb);
+    var _go = el("span", "mini", "🪙 " + r.gold); _go.setAttribute("role", "img"); _go.setAttribute("aria-label", r.gold + " " + r.coin); mn.insertBefore(_go, fb); var _no = r.ms.filter(function (m) { return m.st === "open"; }).length; if (_no) { var _mq = el("span", "mini", "📜 " + _no); _mq.setAttribute("role", "img"); _mq.setAttribute("aria-label", _no + (_no === 1 ? " misión abierta" : " misiones abiertas")); mn.insertBefore(_mq, fb); }
     if (r.use) mn.appendChild(el("span", "mini use", "Usando: " + r.use));
     r.co.forEach(function (c) { var w = el("span", "mini co" + (c.hp <= 0 ? " out" : ""), "🤝 " + c.n + " " + Math.round(c.hp) + (r.help === c.n ? " · ayuda" : "")); w.setAttribute("role", "img"); w.setAttribute("aria-label", "Compañero " + c.n + ", salud " + Math.round(c.hp) + (r.help === c.n ? ", te ayudará en la próxima acción" : "")); mn.appendChild(w); });
     if (r.en) { var ew = el("span", "mini en"); ew.setAttribute("role", "img"); ew.setAttribute("aria-label", "Enemigo " + r.en.n + ", aguante " + Math.round(r.en.hp) + " de " + r.en.mx); ew.appendChild(el("b", null, "⚔ " + r.en.n + " " + Math.round(r.en.hp) + "/" + r.en.mx)); var em = el("span", "meter"), ei = el("i", "low"); ei.style.width = Math.round(r.en.hp * 100 / r.en.mx) + "%"; em.appendChild(ei); ew.appendChild(em); mn.appendChild(ew); } }
@@ -3672,7 +3799,7 @@ function rpgSettings(b) {
   }
 }
 
-function hvDie(p) {
+function hvDie(p) { hvBuzz(25);
   try {
     var old = document.getElementById("hvdie"); if (old) old.remove();
     if (!p || reduced()) return;
@@ -3957,6 +4084,7 @@ function undoTurn() {
   if (p.rpg && s.rpg) { rpgStateBack(s.rpg, p.rpg); s.state.salud = Math.round(s.rpg.hp); }
   s.prev = null; save(); renderLore(); render();
 }
+(function () { var _r0 = render; render = function (k) { var x = _r0(k); try { bkCover(); } catch (e) {} try { if (cur && !comicOn(cur)) gloMark($("book"), cur); } catch (e) {} return x; }; })();
 $("new").onclick = function () { startCreate(""); };
 try { $("findfab").onclick = function () { findSheet(); }; } catch (e) {}
 try { $("goalcard").onclick = goalSheet; $("goalcard").onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goalSheet(); } }; } catch (e) {}
@@ -4937,7 +5065,7 @@ $("listenpick").onclick = listenSheet;
 
 /* ---------- Lectura inmersiva, dictado ---------- */
 var PAGED = false; try { PAGED = localStorage.getItem("hv:paged") === "1"; } catch (e) {}
-function setImm(v) { var _w = document.body.classList.contains("imm"); document.body.classList.toggle("imm", v); if (_w !== !!v && cur && cur.rpg && cur.comic !== false) { try { render(true); } catch (e) {} } document.body.classList.toggle("paged", !!(v && PAGED)); $("imx").hidden = !v; window.scrollTo(0, 0); if (v && PAGED) setTimeout(pgStart, 60); else { $("pgbar").classList.remove("hid"); } }
+function setImm(v) { var _w = document.body.classList.contains("imm"); document.body.classList.toggle("imm", v); if (_w !== !!v && cur && cur.rpg && cur.comic !== false) { try { render(true); } catch (e) {} } document.body.classList.toggle("paged", !!(v && PAGED)); try { bkCover(); } catch (e) {} if (!v) COVER_FIRST = false; $("imx").hidden = !v; window.scrollTo(0, 0); if (v && PAGED) setTimeout(pgStart, 60); else { $("pgbar").classList.remove("hid"); } }
 function pgStep() { return $("book").clientWidth; }
 function pgInfo() { var b = $("book"), st = pgStep(), n = Math.max(1, Math.round(b.scrollWidth / st)), i = Math.min(n - 1, Math.round(b.scrollLeft / st)); return { n: n, i: i, st: st }; }
 function pgLabel() { var f = pgInfo(); $("pglab").textContent = (f.i + 1) + " / " + f.n; }
@@ -4945,11 +5073,12 @@ function pgGo(i, noSave) { var b = $("book"), f = pgInfo(); i = Math.max(0, Math
 function pgStart() {
   if (!document.body.classList.contains("paged") || !cur) return;
   var b = $("book"), f = pgInfo(), i;
+  if (COVER_FIRST && b.querySelector(".bkcover")) { pgGo(0, true); return; }
   if (cur.pgf != null && cur.read !== cur.scenes.length - 1 && cur.pgf > 0) i = Math.round(cur.pgf * b.scrollWidth / f.st);
   else { var e = b.lastElementChild; if (e) { var x = e.getBoundingClientRect().left - b.getBoundingClientRect().left + b.scrollLeft; i = Math.floor(Math.max(0, x) / f.st); } else i = 0; }
   pgGo(i, true);
 }
-$("immp").onclick = function () { PAGED = true; try { localStorage.setItem("hv:paged", "1"); } catch (e) {} setImm(true); };
+$("immp").onclick = function () { COVER_FIRST = true; PAGED = true; try { localStorage.setItem("hv:paged", "1"); } catch (e) {} setImm(true); };
 $("pgprev").onclick = function () { pgGo(pgInfo().i - 1); };
 $("pgnext").onclick = function () { pgGo(pgInfo().i + 1); };
 $("pgtog").onclick = function () { PAGED = false; try { localStorage.setItem("hv:paged", "0"); } catch (e) {} document.body.classList.remove("paged"); toast("Lectura con desplazamiento."); };
@@ -6420,6 +6549,7 @@ var GUIDE = {
     ["🕯 Rincón de los olvidados", "Historias que dejaste de jugar. Desde ahí puedes retomarlas."],
     ["Meta de escritura", "Bajo la portada: las palabras nuevas de hoy, tu meta diaria y los días seguidos que llevas. Tócala para fijar o quitar la meta. «Guardar meta» la aplica. En Ajustes, «Meta de escritura: visible / oculta» la esconde del todo y deja de contar palabras."],
     ["Color de acento: del género", "En Ajustes: cambia el color de botones y detalles (ámbar, azul, verde, rosa o violeta) o lo deja según el género de cada historia."],
+    ["Vibración: sí", "En Ajustes: activa o quita la vibración al tirar el dado, recibir daño, vencer o cumplir la meta."],
     ["Ocultar barras al leer: sí", "En Ajustes: al bajar por una historia se esconden la cabecera y el menú de abajo, y vuelven al subir."],
     ["+ Crear nuevo", "Empieza una historia nueva."],
     ["Barra de abajo", "Inicio, Historias, Personajes, Mundo (tu historia actual) y Ajustes (menú de la aplicación: copias de seguridad, versiones, espacio, tutorial…)."],
@@ -6459,6 +6589,12 @@ var GUIDE = {
     ["Pedir ayuda", "En la ficha RPG: un compañero te ayuda en la próxima acción (+3 al dado). «Ayudando» lo cancela. «Añadir compañero» suma a un personaje a tu grupo."],
     ["¿quién?", "En las viñetas, toca el nombre sobre un bocadillo para corregir quién habla. «Nadie en concreto» lo deja sin nombre y «Volver a deducirlo solo» quita tu corrección."],
     ["Lupa (buscar en tu mundo)", "El botón redondo con una lupa, abajo a la derecha mientras lees o juegas, busca a la vez en cartas de lore, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa y escenas. Toca un resultado para ir a él. «Ver las escenas en el índice» abre el buscador de escenas. Además, las listas largas (cartas, ideas de lore, documentos, personajes, historias) tienen su propio cuadro de búsqueda."],
+    ["Glosario", "En Cartas de lore: palabras propias de tu mundo y su significado. El Cronista las respeta y al leer salen subrayadas; tócalas para ver qué significan. «Añadir término» guarda la palabra."],
+    ["Contraportada", "En Cartas de lore: el texto de la parte de atrás del libro. «Que la escriba El Cronista» o «Pedir otra versión» lo generan, «Guardar texto» conserva tus retoques y «Usar como sinopsis» lo pone como sinopsis de la historia."],
+    ["Tienda", "En la ficha RPG: gasta tu dinero. «Comprar» adquiere el objeto o la curación; «Ver qué se vende aquí» y «Preguntar otra vez qué hay» piden al Cronista los objetos del lugar (gasta una consulta); «Volver a la ficha» regresa."],
+    ["Añadir misión", "En la ficha RPG: apunta un objetivo. «Cumplida» lo cierra y te da 20 monedas. El Cronista también abre y cierra misiones."],
+    ["🎤 Dictar", "Solo en la app instalada: dicta con la voz en lugar de escribir."],
+    ["Seguir por donde ibas", "En la portada del modo libro: salta a la página donde dejaste la lectura."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
@@ -6650,6 +6786,9 @@ try { goalLabel(); } catch (e) {}
 function accLabel() { $("dacc").textContent = "Color de acento: " + ACCN[accGet()]; }
 $("dacc").onclick = function () { var ks = Object.keys(ACCN), k = ks[(ks.indexOf(accGet()) + 1) % ks.length]; try { if (k) localStorage.setItem("hv:accent", k); else localStorage.removeItem("hv:accent"); } catch (e) {} accLabel(); try { reTheme(); } catch (e) {} };
 try { accLabel(); } catch (e) {}
+function buzzLabel() { $("dbuzz").textContent = "Vibración: " + (buzzOn() ? "sí" : "no"); }
+$("dbuzz").onclick = function () { try { localStorage.setItem("hv:buzz", buzzOn() ? "0" : "1"); } catch (e) {} buzzLabel(); hvBuzz(40); };
+try { buzzLabel(); } catch (e) {}
 function barsOn() { try { return localStorage.getItem("hv:autobars") !== "0"; } catch (e) { return true; } }
 function barsLabel() { $("dbars").textContent = "Ocultar barras al leer: " + (barsOn() ? "sí" : "no"); }
 $("dbars").onclick = function () { try { localStorage.setItem("hv:autobars", barsOn() ? "0" : "1"); } catch (e) {} barsLabel(); document.body.classList.remove("hidebars"); };

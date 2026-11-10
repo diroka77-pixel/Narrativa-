@@ -101,3 +101,13 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 3. Dentro de Cartas de lore y de Lore del universo (con 4 o más entradas) hay un cuadro «Buscar…» que filtra la lista mientras escribes.
 4. Con 6 o más historias, Inicio muestra «Buscar entre tus historias». Con 5 o más personajes, «Mis personajes» también tiene buscador.
 5. La lupa no debe tapar el botón Continuar ni verse mientras escribes en el cuadro de texto. Comprueba que no molesta al leer.
+
+## 31. Portada, glosario, contraportada, misiones, dinero y vibración — v0.14.0
+1. «Leer como un libro»: la primera página debe ser la portada (tu imagen, o una generada con el título). «Seguir por donde ibas» salta a donde dejaste la lectura; pasar página lleva al principio.
+2. Cartas de lore → «Glosario»: añade una palabra de tu mundo. Al leer debe salir subrayada con puntos; al tocarla, su significado.
+3. Cartas de lore → «Contraportada»: pídesela al Cronista, retócala y guárdala.
+4. RPG → Ficha: debe verse «Dinero» (30 monedas al empezar), «Tienda» y «Misiones». Cambia el nombre de la moneda. Añade una misión y márcala cumplida (+20).
+5. Tienda: «Curarte» funciona sin consulta. «Ver qué se vende aquí» gasta una consulta y debe listar 5 objetos acordes al lugar; compra uno y comprueba que aparece en el inventario.
+6. Jugando, comprueba si El Cronista abre misiones, las cierra y da o quita dinero (aparece en la línea del dado: 🪙 +12, 📜 Nueva misión…).
+7. Vibración: al tirar el dado, al recibir daño y al vencer. Se quita en Ajustes → «Vibración».
+8. Dictado: el botón «🎤 Dictar» debe aparecer en entrevistas, documentos, glosario y en el buscador de la lupa.

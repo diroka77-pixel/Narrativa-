@@ -56,8 +56,8 @@ const r=await p.evaluate(async()=>{const o={};const wait=ms=>new Promise(r=>setT
  localStorage.setItem('hv:goal',JSON.stringify({goal:300,days:{'2026-11-01':500}}));const bk=backupData();o.bk=!!bk.data['hv:goal'];o.bkkeys=Object.keys(bk.data).filter(k=>/key|clave|api/i.test(k)).length;
  return o});
 console.log(JSON.stringify(r,null,1));
-if(r.grp!=='Historias|Apariencia|Copias y datos|Ayuda'||r.dbtn!==15)fail('ajustes');
-if(r.order.indexOf('dgrp,dhome,dchars,dlib,dgrp,dtheme,dacc,dhcov,dczoom,dbars,dgoal,dgrp,dbackup,dvers,dstor,dgrp,dtut,dhelp,dlic')!==0)fail('orden '+r.order);
+if(r.grp!=='Historias|Apariencia|Copias y datos|Ayuda'||r.dbtn!==16)fail('ajustes');
+if(r.order.indexOf('dgrp,dhome,dchars,dlib,dgrp,dtheme,dacc,dhcov,dczoom,dbars,dbuzz,dgoal,dgrp,dbackup,dvers,dstor,dgrp,dtut,dhelp,dlic')!==0)fail('orden '+r.order);
 if(r.acc1!=='Color de acento: ámbar|#f6b93b'||!/^Color de acento: del género\|true\|null$/.test(r.acc2))fail('acento '+r.acc1+' '+r.acc2);
 if(r.ch!=='Capítulo 1|ch chx chimg|true|none')fail('capitulo '+r.ch);
 if(r.bars0!=='Ocultar barras al leer: sí'||!r.hide||!r.show||r.bars1!=='Ocultar barras al leer: no|false'||!r.off)fail('barras');
