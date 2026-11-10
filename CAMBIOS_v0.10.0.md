@@ -387,3 +387,15 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Entrevista a personajes (`s.iv`): consulta ligera con ficha, memoria y secretos del autor protegidos; no añade escenas.
 - La «papelera» no se ha añadido: borrar una historia ya crea una copia recuperable en Ajustes → Recuperación y versiones.
 - Prueba nueva: tests/t110_ficha.js.
+
+**v0.12.0 — Diez mejoras**
+- Ajustes por apartados; `hv:accent` (color de acento: del género, ámbar, azul, verde, rosa, violeta); `hv:autobars` (ocultar barras al leer).
+- Cabecera de capítulo nueva (mismo texto), con la imagen de la primera escena si existe.
+- Viñetas: corrección manual del hablante por bocadillo (`sc.sp`).
+- RPG: compañeros (`rpg.co`, máx. 2). «Pedir ayuda» = +3 al dado; si la acción no es éxito pleno, el jugador recibe la mitad del daño y el compañero pierde 10 o 25. El Cronista puede proponer `"se_une"` / `"se_va"`. Entran en los puntos de vuelta atrás.
+- Mapa de lugares (`s.map`): cartas de tipo lugar, posiciones y conexiones; las conexiones van al prompt.
+- Documentos del mundo (`s.docs`): los 3 más recientes marcados van al prompt (no en modo compacto).
+- «Otro punto de vista» por escena: no toca la historia; se puede guardar como documento.
+- La meta de escritura (`hv:goal`) entra en las copias y se fusiona al restaurar.
+- No añadido por existir ya: letra «Legible (más espaciada)» en Lectura.
+- Prueba nueva: tests/t111_v012.js.

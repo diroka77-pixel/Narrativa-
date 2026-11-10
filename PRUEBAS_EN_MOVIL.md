@@ -83,3 +83,14 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 5. Comprueba si El Cronista añade o quita objetos del inventario cuando la escena lo pide (🎒 +objeto / −objeto).
 6. «Deshacer» o «Borrar y reescribir» tras un combate: salud, inventario y enemigo deben volver a como estaban.
 7. Entrevista: toca la cara de un personaje (viñetas) o «🎙 Entrevistar» en su carta de lore, hazle una pregunta y comprueba que responde con su voz y que la historia no cambia.
+
+## 29. Diez mejoras — v0.12.0
+1. Ajustes: cuatro apartados (Historias, Apariencia, Copias y datos, Ayuda). «Color de acento» cambia el color de los botones; «del género» lo deja como antes.
+2. Al bajar leyendo una historia, la cabecera y el menú de abajo se esconden; al subir o llegar al final, vuelven. Se desactiva en Ajustes.
+3. Inicio de capítulo: «CAPÍTULO N» centrado con el título debajo; si la primera escena tiene imagen, sale de cabecera.
+4. Viñetas: toca el nombre sobre un bocadillo (o «¿quién?») y elige el personaje correcto.
+5. RPG → Ficha → Compañeros: añade uno, pulsa «Pedir ayuda» y juega: el dado debe mostrar «+3 ayuda de …». Si sale mal, el compañero pierde salud.
+6. Cartas de lore → «Mapa de lugares» (necesita dos cartas de tipo lugar): arrastra, conecta y comprueba que se guarda.
+7. Cartas de lore → «Documentos del mundo»: pide una carta al Cronista, edítala y guárdala.
+8. «⋯» de una escena → «Otro punto de vista»: elige personaje; la escena original no debe cambiar.
+9. Haz una copia de seguridad y restáurala en limpio: la meta de escritura y la racha deben volver.

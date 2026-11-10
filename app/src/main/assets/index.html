@@ -489,6 +489,26 @@ button.cover .tag{color:#ffd596!important}
 .ivlog{display:grid;gap:.4rem;margin:.4rem 0}.ivlog p{margin:0;padding:.5rem .7rem;border-radius:12px;line-height:1.45}
 .ivlog .ivq{background:var(--card);border:1px solid var(--line);justify-self:end;max-width:90%;font-size:.9rem}
 .ivlog .iva{background:rgba(127,127,127,.14);border-left:4px solid var(--acc);font-family:Georgia,serif}
+/* v0.12.0 */
+.dnav .dgrp{flex:0 0 auto;margin:.9rem 0 -.2rem;font:700 .72rem/1 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--acc)}.dnav .dgrp:first-child{margin-top:0}
+header.top,#tabs{transition:transform .28s ease}
+body.hidebars header.top{transform:translateY(-130%)}body.hidebars #tabs{transform:translateY(130%)}
+@media (prefers-reduced-motion:reduce){header.top,#tabs{transition:none}}
+.scene .ch.chx{display:flex;flex-direction:column;align-items:center;gap:.35rem;text-align:center;margin:2.2rem 0 1.6rem;padding:0;border:0;text-transform:none;letter-spacing:0}
+.scene .ch.chx .chn{font:700 .78rem/1 system-ui,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:var(--acc)}
+.scene .ch.chx .chn::after{content:"";display:block;width:2.6rem;height:2px;background:var(--acc);margin:.7rem auto 0;opacity:.8}
+.scene .ch.chx .chs{display:none}
+.scene .ch.chx .cht{font:italic 700 1.55rem/1.2 Georgia,"Times New Roman",serif;color:inherit;letter-spacing:0;text-transform:none}
+.scene .ch.chx.chimg{justify-content:flex-end;min-height:11rem;padding:1rem;border-radius:12px;background-size:cover;background-position:center 30%;position:relative;overflow:hidden;color:#fff}
+.scene .ch.chx.chimg::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,10,20,.1),rgba(6,10,20,.85))}
+.scene .ch.chx.chimg>*{position:relative}.scene .ch.chx.chimg .chn{color:#ffd596}.scene .ch.chx.chimg .chn::after{background:#ffd596}
+.haschimg .simg>img{display:none}
+button.cname{background:none!important;border:0!important;box-shadow:none!important;min-height:0!important;padding:.15rem .2rem!important;border-radius:6px;color:var(--c)!important;font:700 .7rem/1 system-ui,sans-serif!important;letter-spacing:.08em;text-transform:uppercase;margin:0 .3rem .2rem!important;text-shadow:0 1px 3px #000}
+#rpgmini .mini.co{font-weight:600}#rpgmini .mini.co.out{opacity:.55;text-decoration:line-through}
+.mapsvg{display:block;width:100%;max-width:26rem;margin:.4rem auto;border:1px solid var(--line);border-radius:12px;background:radial-gradient(circle at 30% 20%,rgba(127,127,127,.12),transparent 60%),var(--card);touch-action:none}
+.mapsvg .mlink{stroke:var(--acc);stroke-width:2;stroke-dasharray:5 4;opacity:.8}.mapsvg .mlbl{font:600 9px system-ui,sans-serif;fill:var(--mute)}
+.mapsvg .mnode{cursor:grab}.mapsvg .mnode circle{fill:var(--card);stroke:var(--acc);stroke-width:3}.mapsvg .mnode.here circle{fill:var(--acc)}.mapsvg .mnode text{font:600 10px system-ui,sans-serif;fill:var(--ink)}.mapsvg .mnode .mhere{fill:var(--accink);font-size:12px}
+details.docit{margin:.5rem 0;padding:.2rem 0}details.docit>summary{font-weight:600}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -503,7 +523,7 @@ button.cover .tag{color:#ffd596!important}
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="hq" aria-label="Ayuda de esta pantalla">?</button><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
-<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dstor">Espacio y almacenamiento</button><button id="dtut">Tutorial y ayuda</button><button id="dhelp">Privacidad y ayuda</button><button id="dlic">Licencias de terceros</button><button id="dtheme">Tema: automático</button><button id="dhcov">Fondo de inicio: del género</button><button id="dlib">Mi biblioteca y registro de creación</button><button id="dczoom">Ampliar portada al tocarla: sí</button><button id="dgoal">Meta de escritura: visible</button><p class="hint" style="margin-top:auto">Historias vivas · v0.10</p></nav></div>
+<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><p class="dgrp">Historias</p><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dlib">Mi biblioteca y registro de creación</button><p class="dgrp">Apariencia</p><button id="dtheme">Tema: automático</button><button id="dacc">Color de acento: del género</button><button id="dhcov">Fondo de inicio: del género</button><button id="dczoom">Ampliar portada al tocarla: sí</button><button id="dbars">Ocultar barras al leer: sí</button><button id="dgoal">Meta de escritura: visible</button><p class="dgrp">Copias y datos</p><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dstor">Espacio y almacenamiento</button><p class="dgrp">Ayuda</p><button id="dtut">Tutorial y ayuda</button><button id="dhelp">Privacidad y ayuda</button><button id="dlic">Licencias de terceros</button><p class="hint" style="margin-top:auto">Historias vivas · v0.10</p></nav></div>
 <div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hldef" hidden>📖 Definición</button><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
@@ -954,12 +974,15 @@ function fxApply() {
   var on = fxOn(); document.body.classList.toggle("noanim", !on);
   if (on && FX.ps.length) FX.raf = requestAnimationFrame(fxLoop);
 }
+var ACCS = { ambar: [["#f6b93b", "#ffd45e"], ["#8b4100", "#b85c00"]], azul: [["#4aa3ff", "#7cc4ff"], ["#0b4f9e", "#1769c4"]], verde: [["#3fd07a", "#7be3a4"], ["#0f6a37", "#178a49"]], rosa: [["#ff5fa8", "#ff93c5"], ["#a01256", "#c2206f"]], violeta: [["#a78bfa", "#c7b5ff"], ["#5b2bb5", "#7443d6"]] }, ACCN = { "": "del género", ambar: "ámbar", azul: "azul", verde: "verde", rosa: "rosa", violeta: "violeta" };
+function accGet() { try { var a = localStorage.getItem("hv:accent") || ""; return ACCS[a] ? a : ""; } catch (e) { return ""; } }
 function applyTheme(g, v, seed) {
   CUR_TH = { g: g, v: v || 0, seed: seed || "home" };
   var t = GT(g), rt = document.documentElement, light = rt.getAttribute("data-theme") === "light";
   var _hc = null; try { if (localStorage.getItem("hv:homecover") === "1" && !$("lib").hidden) { var _ls = lastStory(); if (_ls && _ls.cover) _hc = _ls.cover; } } catch (e) {}
   $("bgart").style.backgroundImage = "url(\"" + (_hc || realArtPath(g, CUR_TH.seed, CUR_TH.v)) + "\")";
-  if (light) { ["--acc", "--acc2", "--accink"].forEach(function (n) { rt.style.removeProperty(n); }); }
+  var _ac = accGet(); if (_ac && ACCS[_ac]) { var _lt = light || (!rt.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme:light)").matches), _c = ACCS[_ac][_lt ? 1 : 0]; rt.style.setProperty("--acc", _c[0]); rt.style.setProperty("--acc2", _c[1]); rt.style.setProperty("--accink", lum(_c[0]) > .55 ? "#1a1000" : "#ffffff"); }
+  else if (light) { ["--acc", "--acc2", "--accink"].forEach(function (n) { rt.style.removeProperty(n); }); }
   else { rt.style.setProperty("--acc", t.acc); rt.style.setProperty("--acc2", t.acc2); rt.style.setProperty("--accink", lum(t.acc) > .55 ? "#1a1000" : "#ffffff"); }
   FX.t = t.fx; if (!FX.W) { FX.W = window.innerWidth; FX.H = window.innerHeight; } fxInit(t.fx); fxApply();
 }
@@ -1182,8 +1205,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.11.0";
+var VERSION = "0.12.0";
 var NEWS = [
+  ["0.12.0", "Ajustes ordenados por apartados, con color de acento a elegir. Al leer, las barras se esconden solas. Capítulos con cabecera más vistosa. En las viñetas puedes tocar un nombre para corregir quién habla. RPG: compañeros que te ayudan (+3 al dado). Nuevos en Cartas de lore: «Mapa de lugares» y «Documentos del mundo» (cartas, noticias, diarios). En cada escena, «Otro punto de vista» la cuenta desde otro personaje. La meta de escritura ya entra en las copias de seguridad."],
   ["0.11.0", "Aventuras RPG más completas: ficha con cuatro atributos que suman al dado, inventario de objetos que puedes usar (+2) y combates con un enemigo cuya barra de aguante ves bajar. Además, entrevista a tus personajes: toca su cara en las viñetas o su carta y pregúntales lo que quieras sin cambiar la historia."],
   ["0.10.3", "La meta de escritura se puede ocultar del todo desde Ajustes («Meta de escritura: visible / oculta»). Oculta, no cuenta palabras."],
   ["0.10.2", "Pantalla de juego más limpia: los botones de lectura van en una sola fila deslizable y el texto empieza antes. En RPG las acciones con dado aparecen primero. El tono y la escena larga se recogen en «Tono y longitud». Las opciones de cada escena son ahora un «⋯» discreto. Las viñetas usan la imagen de la escena como fondo y cambian de color según el tono. Nueva meta de escritura en Inicio: palabras de hoy, meta diaria y racha."],
@@ -2074,6 +2098,8 @@ function renderLore() {
   b.appendChild(nb);
   var ib = el("button", "small", "Importar cartas (archivo o texto)"); ib.style.cssText = "margin:.2rem 0 .6rem .4rem"; ib.onclick = function () { cardsSheet(); }; b.appendChild(ib);
   var rb0 = el("button", "small", "Relaciones entre personajes" + ((cur.rel || []).length ? " (" + cur.rel.length + ")" : "")); rb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; rb0.onclick = function () { relSheet(); }; b.appendChild(rb0);
+  var mb0 = el("button", "small", "Mapa de lugares"); mb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; mb0.onclick = function () { mapSheet(); }; b.appendChild(mb0);
+  var db0 = el("button", "small", "Documentos del mundo" + ((cur.docs || []).length ? " (" + cur.docs.length + ")" : "")); db0.style.cssText = "margin:.2rem 0 .6rem .4rem"; db0.onclick = function () { docsSheet(); }; b.appendChild(db0);
   (cur.lore || []).forEach(function (c) {
     var d = el("div", "lore");
     if (c.img) { var th = el("img", "lorethumb"); th.src = c.img; th.alt = c.nombre; d.appendChild(th); }
@@ -2161,6 +2187,112 @@ function goalSheet() {
   });
 }
 function woptsLabel() { var d = $("wopts"); if (!d) return; var a = []; if (cur && cur.nextTone) a.push("Tono: " + cur.nextTone); if ($("longsc") && $("longsc").checked) a.push("Escena larga"); d.firstElementChild.textContent = a.length ? "Opciones: " + a.join(" · ") : "Tono y longitud (opcional)"; }
+/* v0.12.0: documentos del mundo, otro punto de vista, mapa de lugares, compañeros */
+function hvCopy(txt) { try { navigator.clipboard.writeText(txt).then(function () { toast("Copiado."); }, function () { toast("No se pudo copiar."); }); } catch (e) { toast("No se pudo copiar."); } }
+var DOC_T = ["Carta", "Noticia", "Página de diario", "Informe", "Leyenda", "Otro punto de vista", "Otro"];
+function docCtx(s, compact) { var d = (s.docs || []).filter(function (x) { return x && x.on !== false && x.t && x.tipo !== "Otro punto de vista"; }).slice(-3); if (!d.length || compact) return ""; return "\nDOCUMENTOS DEL MUNDO (textos que existen dentro de la historia; son canon, pero los personajes solo los conocen si los han leído):\n" + d.map(function (x) { return "- " + x.tipo + " «" + x.titulo + "»: " + String(x.t).replace(/\s+/g, " ").slice(0, 300); }).join("\n"); }
+function docPrompt(s, tipo, idea) {
+  var hid = ""; try { hid = sxHidden(s).map(function (e) { return "- " + e.t; }).join("\n").slice(0, 700); } catch (e) {}
+  return "Escribe un documento que existe DENTRO del mundo de la historia «" + s.title + "»: " + tipo.toLowerCase() + ". Español, entre 120 y 280 palabras, con la voz, el formato y la época propios de ese tipo de texto (encabezado, firma o fecha inventada si encaja). Debe respetar lo ya establecido y no resolver la trama. Sin contenido sexual explícito." +
+    (s.syn ? "\nSINOPSIS: " + String(s.syn).slice(0, 400) : "") + (s.memory ? "\nRESUMEN HASTA AHORA: " + String(s.memory).slice(0, 1200) : "") + "\nLORE: " + String(loreTxt(s, idea) || "").slice(0, 1500) +
+    (hid ? "\nSECRETOS DEL AUTOR (no los reveles; como mucho, una pista muy indirecta):\n" + hid : "") +
+    "\nENCARGO DEL AUTOR (quién lo escribe, a quién, sobre qué): " + (idea || "decide tú algo que enriquezca el mundo") + "\nResponde así: primera línea, un título corto sin comillas; después una línea en blanco y el texto del documento. Nada más.";
+}
+function docsSheet() {
+  var s = cur; if (!s) return; s.docs = s.docs || [];
+  sheet("Documentos del mundo", function (sh) {
+    para(sh, "Cartas, noticias, diarios o leyendas que existen dentro de tu historia. Se guardan aparte de las escenas.");
+    var sel = el("select"); sel.setAttribute("aria-label", "Tipo de documento"); DOC_T.forEach(function (x) { if (x !== "Otro punto de vista") { var o = el("option", null, x); o.value = x; sel.appendChild(o); } }); sel.style.cssText = "width:100%;margin:.3rem 0"; sh.appendChild(sel);
+    var ta = el("textarea"); ta.maxLength = 500; ta.placeholder = "Quién lo escribe y sobre qué. Por ejemplo: carta de Sora a su hermano la noche antes del asalto"; ta.setAttribute("aria-label", "Encargo para el documento"); ta.style.cssText = "width:100%;margin:.3rem 0;min-height:4.6rem;height:4.6rem"; sh.appendChild(ta);
+    var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
+    var row = el("div", "row"), go = el("button", "small on", "Que lo escriba El Cronista"), me = el("button", "small", "Escribirlo yo"); row.appendChild(go); row.appendChild(me); sh.appendChild(row);
+    go.onclick = async function () {
+      if (go.disabled) return; go.disabled = true; st.hidden = false; st.textContent = "El Cronista está escribiendo el documento…";
+      try { var r = await ask(docPrompt(s, sel.value, ta.value.trim())), tx = String((r && r.text) || "").trim(); if (!tx) throw new Error("vacío");
+        var ls = tx.split("\n"), ti = ls.shift().replace(/^[#*\s«"]+|[*»"\s]+$/g, "").slice(0, 80) || sel.value; s.docs.push({ id: "d" + Date.now(), tipo: sel.value, titulo: ti, t: ls.join("\n").trim() || tx, d: Date.now() }); save(); closeSheet(); docsSheet(); }
+      catch (e) { go.disabled = false; st.textContent = e && e.code === "rate_limited" ? "Has llegado al límite de consultas por ahora. Prueba más tarde." : "No he podido escribirlo. Revisa la conexión o tu clave y vuelve a intentarlo."; }
+    };
+    me.onclick = function () { s.docs.push({ id: "d" + Date.now(), tipo: sel.value, titulo: sel.value + " sin título", t: ta.value.trim(), d: Date.now() }); save(); closeSheet(); docsSheet(); };
+    if (!s.docs.length) para(sh, "Aún no hay documentos.");
+    s.docs.slice().reverse().forEach(function (d) {
+      var box = el("details", "pl docit"); box.appendChild(el("summary", null, d.tipo + " · " + d.titulo));
+      var ti = el("input"); ti.type = "text"; ti.maxLength = 80; ti.value = d.titulo; ti.setAttribute("aria-label", "Título del documento"); ti.style.cssText = "width:100%;margin:.4rem 0"; box.appendChild(ti);
+      var tx = el("textarea"); tx.value = d.t; tx.setAttribute("aria-label", "Texto del documento"); tx.style.cssText = "width:100%;min-height:11rem;font-family:Georgia,serif;line-height:1.5"; box.appendChild(tx);
+      if (d.tipo !== "Otro punto de vista") { var lb = el("label", "chk"), ck = el("input"); ck.type = "checkbox"; ck.checked = d.on !== false; ck.onchange = function () { d.on = ck.checked; save(); }; lb.appendChild(ck); lb.appendChild(document.createTextNode(" El Cronista lo tiene en cuenta (los 3 más recientes)")); lb.style.cssText = "display:block;margin:.4rem 0"; box.appendChild(lb); }
+      var r2 = el("div", "row"), sv = el("button", "small", "Guardar cambios"), cp = el("button", "small", "Copiar texto"), del = el("button", "small", "Borrar documento");
+      sv.onclick = function () { d.titulo = ti.value.trim().slice(0, 80) || d.tipo; d.t = tx.value; save(); box.firstChild.textContent = d.tipo + " · " + d.titulo; toast("Documento guardado."); };
+      cp.onclick = function () { hvCopy(d.titulo + "\n\n" + tx.value); };
+      del.onclick = function () { if (del.textContent === "Borrar documento") { del.textContent = "¿Seguro? Toca otra vez"; return; } s.docs = s.docs.filter(function (x) { return x !== d; }); save(); closeSheet(); docsSheet(); };
+      r2.appendChild(sv); r2.appendChild(cp); r2.appendChild(del); box.appendChild(r2); sh.appendChild(box);
+    });
+    closeBtn(sh);
+  });
+}
+function povSheet(i) {
+  var s = cur, sc = s && s.scenes[i]; if (!sc) return; var names = comicCast(s).map(function (c) { return c.name; });
+  sheet("Otro punto de vista", function (sh) {
+    para(sh, "El Cronista vuelve a contar esta escena desde los ojos de otro personaje: mismos hechos, otra mirada. La escena original no cambia. Gasta una consulta.");
+    if (!names.length) { para(sh, "Todavía no hay personajes con nombre en esta historia."); closeBtn(sh); return; }
+    var sel = el("select"); sel.setAttribute("aria-label", "Personaje"); names.forEach(function (n) { var o = el("option", null, n); o.value = n; sel.appendChild(o); }); sel.style.cssText = "width:100%;margin:.3rem 0"; sh.appendChild(sel);
+    var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
+    var go = el("button", "go", "Reescribir desde su mirada"); sh.appendChild(go);
+    var out = el("textarea"); out.hidden = true; out.setAttribute("aria-label", "Escena desde otro punto de vista"); out.style.cssText = "width:100%;min-height:14rem;margin:.6rem 0;font-family:Georgia,serif;line-height:1.5"; sh.appendChild(out);
+    var row = el("div", "row"); row.hidden = true; var kp = el("button", "small on", "Guardar en Documentos"), cp = el("button", "small", "Copiar texto"); row.appendChild(kp); row.appendChild(cp); sh.appendChild(row);
+    go.onclick = async function () {
+      if (go.disabled) return; go.disabled = true; st.hidden = false; st.textContent = "El Cronista está reescribiendo la escena…"; var n = sel.value;
+      var hid = ""; try { hid = sxHidden(s).map(function (e) { return "- " + e.t; }).join("\n").slice(0, 700); } catch (e) {}
+      var p = "Reescribe la ESCENA de abajo desde el punto de vista de " + n + " (tercera persona muy cercana a " + n + ", o primera si encaja mejor con su voz). Mismos hechos, mismo orden y mismos diálogos esenciales: no inventes sucesos nuevos ni cambies el resultado. Lo que cambia es lo que " + n + " percibe, piensa, calla y malinterpreta; no puede saber lo que piensan los demás. Longitud parecida a la original. Español. Sin contenido sexual explícito." + ivCtx(s, n) +
+        (hid ? "\nSECRETOS DEL AUTOR (no los reveles salvo que " + n + " ya los conozca):\n" + hid : "") + "\nESCENA ORIGINAL:\n" + String(sc.t).slice(0, 9000) + "\nResponde solo con la escena reescrita.";
+      try { var r = await ask(p), tx = String((r && r.text) || "").trim(); if (!tx) throw new Error("vacío"); out.value = tx; out.hidden = false; row.hidden = false; st.hidden = true; go.textContent = "Probar otra vez"; }
+      catch (e) { st.textContent = e && e.code === "rate_limited" ? "Has llegado al límite de consultas por ahora. Prueba más tarde." : "No he podido reescribirla. Revisa la conexión o tu clave y vuelve a intentarlo."; }
+      go.disabled = false;
+    };
+    kp.onclick = function () { s.docs = s.docs || []; s.docs.push({ id: "d" + Date.now(), tipo: "Otro punto de vista", titulo: "Escena " + (i + 1) + " según " + sel.value, t: out.value, d: Date.now(), on: false }); save(); closeSheet(); toast("Guardado en Documentos del mundo."); };
+    cp.onclick = function () { hvCopy(out.value); };
+    closeBtn(sh);
+  });
+}
+/* mapa de lugares */
+function mapPlaces(s) { return (s.lore || []).filter(function (c) { return c && c.tipo === "lugar" && c.nombre; }); }
+function mapCtx(s, compact) { var m = s.map; if (!m || !m.links || !m.links.length || compact) return ""; var ok = {}; mapPlaces(s).forEach(function (c) { ok[c.nombre] = 1; }); var l = m.links.filter(function (x) { return ok[x[0]] && ok[x[1]]; }).slice(0, 14); if (!l.length) return ""; return "\nGEOGRAFÍA FIJADA POR EL AUTOR (conexiones entre lugares; respétalas en trayectos y distancias): " + l.map(function (x) { return x[0] + " ↔ " + x[1] + (x[2] ? " (" + x[2] + ")" : ""); }).join("; ") + "."; }
+function mapSheet() {
+  var s = cur; if (!s) return; var P = mapPlaces(s); s.map = s.map || { pos: {}, links: [] }; var M = s.map; M.pos = M.pos || {}; M.links = M.links || [];
+  sheet("Mapa de lugares", function (sh) {
+    if (P.length < 2) { para(sh, "El mapa se dibuja con tus cartas de lore de tipo «lugar». Ahora hay " + P.length + ". Crea al menos dos lugares en Cartas de lore y vuelve aquí."); closeBtn(sh); return; }
+    para(sh, "Arrastra los lugares para colocarlos y conéctalos abajo. El Cronista respeta las conexiones.");
+    var W = 320, H = 300, NS = "http://www.w3.org/2000/svg", svg = document.createElementNS(NS, "svg"); svg.setAttribute("viewBox", "0 0 " + W + " " + H); svg.setAttribute("class", "mapsvg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", "Mapa con " + P.length + " lugares y " + M.links.length + " conexiones"); sh.appendChild(svg);
+    P.forEach(function (c, k) { if (!M.pos[c.nombre]) { var a = Math.PI * 2 * k / P.length - Math.PI / 2; M.pos[c.nombre] = [Math.round(W / 2 + Math.cos(a) * W * .34), Math.round(H / 2 + Math.sin(a) * H * .34)]; } });
+    var last = s.scenes.length ? String(s.scenes[s.scenes.length - 1].t).toLowerCase() : "", here = null; P.forEach(function (c) { if (last.indexOf(c.nombre.toLowerCase()) >= 0) here = c.nombre; });
+    function S(tag, at, txt) { var e = document.createElementNS(NS, tag); Object.keys(at).forEach(function (k) { e.setAttribute(k, at[k]); }); if (txt != null) e.textContent = txt; return e; }
+    function draw() {
+      while (svg.firstChild) svg.removeChild(svg.firstChild); var ok = {}; P.forEach(function (c) { ok[c.nombre] = 1; });
+      M.links.forEach(function (l) { if (!ok[l[0]] || !ok[l[1]]) return; var a = M.pos[l[0]], b = M.pos[l[1]]; svg.appendChild(S("line", { x1: a[0], y1: a[1], x2: b[0], y2: b[1], "class": "mlink" })); if (l[2]) svg.appendChild(S("text", { x: (a[0] + b[0]) / 2, y: (a[1] + b[1]) / 2 - 4, "class": "mlbl", "text-anchor": "middle" }, String(l[2]).slice(0, 22))); });
+      P.forEach(function (c) { var p = M.pos[c.nombre], g = S("g", { "class": "mnode" + (here === c.nombre ? " here" : ""), transform: "translate(" + p[0] + "," + p[1] + ")" }); g.appendChild(S("circle", { r: 13 })); g.appendChild(S("text", { y: 27, "text-anchor": "middle" }, c.nombre.length > 18 ? c.nombre.slice(0, 17) + "…" : c.nombre)); if (here === c.nombre) g.appendChild(S("text", { y: 4, "text-anchor": "middle", "class": "mhere" }, "★"));
+        g.addEventListener("pointerdown", function (ev) { ev.preventDefault(); var mv = function (e2) { var r = svg.getBoundingClientRect(); p[0] = Math.max(16, Math.min(W - 16, Math.round((e2.clientX - r.left) * W / r.width))); p[1] = Math.max(16, Math.min(H - 30, Math.round((e2.clientY - r.top) * H / r.height))); draw(); }, up = function () { window.removeEventListener("pointermove", mv); window.removeEventListener("pointerup", up); save(); }; window.addEventListener("pointermove", mv); window.addEventListener("pointerup", up); });
+        svg.appendChild(g); });
+    }
+    draw();
+    if (here) para(sh, "★ " + here + " aparece en la última escena.");
+    function pick(lbl) { var e = el("select"); e.setAttribute("aria-label", lbl); P.forEach(function (c) { var o = el("option", null, c.nombre); o.value = c.nombre; e.appendChild(o); }); e.style.cssText = "flex:1;min-width:0"; return e; }
+    var r1 = el("div", "row"), A = pick("Lugar de origen"), B = pick("Lugar de destino"); B.selectedIndex = 1; r1.appendChild(A); r1.appendChild(B); sh.appendChild(r1);
+    var note = el("input"); note.type = "text"; note.maxLength = 30; note.placeholder = "Opcional: «dos días a pie», «túnel»…"; note.setAttribute("aria-label", "Nota de la conexión"); note.style.cssText = "width:100%;margin:.4rem 0"; sh.appendChild(note);
+    var cn = el("button", "small on", "Conectar lugares"); cn.onclick = function () { if (A.value === B.value) { toast("Elige dos lugares distintos."); return; } M.links = M.links.filter(function (l) { return !((l[0] === A.value && l[1] === B.value) || (l[0] === B.value && l[1] === A.value)); }); M.links.push([A.value, B.value, note.value.trim()]); save(); closeSheet(); mapSheet(); }; sh.appendChild(cn);
+    M.links.forEach(function (l) { var row = el("div", "atrow"); row.appendChild(el("b", null, l[0] + " ↔ " + l[1] + (l[2] ? " · " + l[2] : ""))); var q = el("button", "small", "Quitar"); q.setAttribute("aria-label", "Quitar conexión " + l[0] + " con " + l[1]); q.onclick = function () { M.links = M.links.filter(function (x) { return x !== l; }); save(); closeSheet(); mapSheet(); }; row.appendChild(q); sh.appendChild(row); });
+    closeBtn(sh);
+  });
+}
+/* corregir quién habla en una viñeta */
+function whoSheet(i, di) {
+  var s = cur, sc = s && s.scenes[i]; if (!sc) return;
+  sheet("¿Quién dice esto?", function (sh) {
+    para(sh, "Elige al personaje correcto para este bocadillo. Solo cambia cómo se ve la viñeta.");
+    function set(v) { sc.sp = sc.sp || {}; if (v == null) delete sc.sp[di]; else sc.sp[di] = v; if (!Object.keys(sc.sp).length) delete sc.sp; save(); closeSheet(); render(true); }
+    comicCast(s).forEach(function (c) { var b = el("button", "small", c.name); b.style.cssText = "display:block;width:100%;margin:.3rem 0;text-align:left"; b.onclick = function () { set(c.name); }; sh.appendChild(b); });
+    var nb = el("button", "small", "Nadie en concreto"); nb.style.cssText = "display:block;width:100%;margin:.3rem 0;text-align:left"; nb.onclick = function () { set("-"); }; sh.appendChild(nb);
+    if (sc.sp && sc.sp[di] != null) { var au = el("button", "small", "Volver a deducirlo solo"); au.style.cssText = "display:block;width:100%;margin:.3rem 0;text-align:left"; au.onclick = function () { set(null); }; sh.appendChild(au); }
+    closeBtn(sh);
+  });
+}
 /* v0.10.1: modo viñetas (RPG). Solo cambia cómo se presenta el texto de la escena: no usa IA ni modifica la historia. */
 function comicOn(s) { return !!(s && s.rpg && s.comic !== false && !document.body.classList.contains("imm")); }
 function comicCast(s) {
@@ -2183,8 +2315,8 @@ function comicWho(cast, txt) {
   cast.forEach(function (c) { c.keys.forEach(function (k) { var p = low.indexOf(k); while (p >= 0) { var a = low.charAt(p - 1), b = low.charAt(p + k.length); if (!/[a-záéíóúüñ0-9]/.test(a) && !/[a-záéíóúüñ0-9]/.test(b)) { if (p < bp) { bp = p; best = c; } break; } p = low.indexOf(k, p + 1); } }); });
   return best;
 }
-function comicParse(s, text) {
-  var cast = comicCast(s), items = [], hist = [], hint = null;
+function comicParse(s, text, ov) {
+  var cast = comicCast(s), items = [], hist = [], hint = null, dn = 0;
   cleanScene(text).split(/\n\s*\n/).forEach(function (p) {
     p = p.trim(); if (!p) return;
     if (!/^[—–]|^-\s?[A-ZÁÉÍÓÚÑ¿¡«"]/.test(p)) { items.push({ k: "n", t: p }); hint = /:\s*$/.test(p) ? comicWho(cast, p.split(/[.!?]\s+/).pop()) : null; return; }
@@ -2193,9 +2325,10 @@ function comicParse(s, text) {
     sp = sp.filter(function (x) { return x; });
     var who = comicWho(cast, inc.join(" ")) || hint; hint = null;
     if (!who && hist.length >= 2 && hist[hist.length - 1] !== hist[hist.length - 2]) who = hist[hist.length - 2];
-    if (who) hist.push(who);
     if (!sp.length) { items.push({ k: "n", t: p }); return; }
-    items.push({ k: "d", who: who, t: sp.join(" "), inc: inc.join(" · ") });
+    var di = dn++; if (ov && ov[di] != null) { who = null; if (ov[di] !== "-") cast.forEach(function (c) { if (!who && c.name === ov[di]) who = c; }); }
+    if (who) hist.push(who);
+    items.push({ k: "d", who: who, t: sp.join(" "), inc: inc.join(" · "), di: di });
   });
   return items;
 }
@@ -2207,7 +2340,7 @@ function comicFace(c) {
   return b;
 }
 function comicEl(s, sc, i, pop) {
-  var box = el("div", "comic"), items = comicParse(s, sc.t), pan = null, nb = 0, nn = 0, first = true;
+  var box = el("div", "comic"), items = comicParse(s, sc.t, sc.sp), pan = null, nb = 0, nn = 0, first = true;
   var TN = { "Tensión": "t1", "Calma": "t2", "Humor": "t3", "Emoción": "t4", "Misterio": "t5" };
   function open() { pan = el("div", "cpanel" + (pop ? " pop" : "") + (sc.tn && TN[sc.tn] ? " " + TN[sc.tn] : "")); nb = 0; nn = 0; box.appendChild(pan);
     if (first && sc.img) { pan.classList.add("cimg"); var bgd = el("div", "cbg"); bgd.style.backgroundImage = "url(" + JSON.stringify(String(sc.img)) + ")"; bgd.setAttribute("aria-hidden", "true"); pan.appendChild(bgd); }
@@ -2219,11 +2352,11 @@ function comicEl(s, sc, i, pop) {
     var row = el("div", "crow" + (it.who && it.who.me ? " me" : "")), col = el("div", "ccol");
     row.style.setProperty("--c", it.who ? "hsl(" + (function (n) { var h = 0; for (var j = 0; j < n.length; j++) h = (h * 31 + n.charCodeAt(j)) % 360; return h; })(it.who.name) + ",80%,62%)" : "#9aa6c2");
     row.appendChild(comicFace(it.who));
-    if (it.who) col.appendChild(el("span", "cname", it.who.name));
+    var nm = el("button", "cname", it.who ? it.who.name : "¿quién?"); nm.type = "button"; nm.setAttribute("aria-label", (it.who ? "Habla " + it.who.name : "Hablante sin identificar") + ". Tocar para cambiarlo"); (function (d) { nm.onclick = function () { whoSheet(i, d); }; })(it.di); col.appendChild(nm);
     col.appendChild(el("p", "cbub", it.t)); if (it.inc) col.appendChild(el("p", "cinc", it.inc));
     row.appendChild(col); pan.appendChild(row); nb++;
   });
-  try { var ex = rpgExtra(sc); if (ex) { var vs = el("div", "cvs"); if (sc.cb && !sc.cb.end) { vs.appendChild(el("b", null, "⚔ " + sc.cb.n)); var mm = el("span", "meter"), ii = el("i"); ii.style.width = Math.round(sc.cb.hp * 100 / sc.cb.mx) + "%"; mm.appendChild(ii); vs.appendChild(mm); vs.appendChild(el("em", null, sc.cb.hp + "/" + sc.cb.mx)); var rest = rpgExtra({ ig: sc.ig, il: sc.il }); if (rest) vs.appendChild(el("span", null, rest.replace(/^ · /, ""))); } else vs.appendChild(el("span", null, ex.replace(/^ · /, ""))); vs.setAttribute("aria-hidden", "true"); box.appendChild(vs); } } catch (e) {}
+  try { var ex = rpgExtra(sc); if (ex) { var vs = el("div", "cvs"); if (sc.cb && !sc.cb.end) { vs.appendChild(el("b", null, "⚔ " + sc.cb.n)); var mm = el("span", "meter"), ii = el("i"); ii.style.width = Math.round(sc.cb.hp * 100 / sc.cb.mx) + "%"; mm.appendChild(ii); vs.appendChild(mm); vs.appendChild(el("em", null, sc.cb.hp + "/" + sc.cb.mx)); var rest = rpgExtra({ ig: sc.ig, il: sc.il, cj: sc.cj, cl: sc.cl, cod: sc.cod }); if (rest) vs.appendChild(el("span", null, rest.replace(/^ · /, ""))); } else vs.appendChild(el("span", null, ex.replace(/^ · /, ""))); vs.setAttribute("aria-hidden", "true"); box.appendChild(vs); } } catch (e) {}
   return box;
 }
 function faceSheet(name) {
@@ -2260,7 +2393,7 @@ function render(keep) {
   s.scenes.forEach(function (sc, i) {
     if (i < st0) return;
     var w = el("div", "sc"); w.id = "sc-" + i; if (i === chStartIdx(s, chOf(s, i))) w.classList.add("first");
-    var cnum = chOf(s, i); if (i === chStartIdx(s, cnum)) { var ctt = ctitle(s, cnum); w.appendChild(el("div", "ch", "Capítulo " + cnum + (ctt ? " · " + ctt : ""))); }
+    var cnum = chOf(s, i); if (i === chStartIdx(s, cnum)) { var ctt = ctitle(s, cnum), chd = el("div", "ch chx"); chd.appendChild(el("span", "chn", "Capítulo " + cnum)); if (ctt) { chd.appendChild(el("span", "chs", " · ")); chd.appendChild(el("span", "cht", ctt)); } if (sc.img && !cmx) { chd.classList.add("chimg"); chd.style.backgroundImage = "url(" + JSON.stringify(String(sc.img)) + ")"; w.classList.add("haschimg"); } w.appendChild(chd); }
     if (sc.a) {
       var ap = el("p", "act cl"); ap.tabIndex = 0; ap.setAttribute("role", "button");
       var setA = function (o) { ap.classList.toggle("cl", !o); ap.textContent = o ? "▾ " + sc.a : "▸ Tu acción (toca para ver)"; ap.classList.toggle("op", !!o); ap.setAttribute("aria-expanded", o ? "true" : "false"); ap.setAttribute("aria-label", o ? "Tu acción: " + sc.a + ". Toca para plegar" : "Tu acción, plegada. Toca para ver"); ap._o = o; };
@@ -2269,7 +2402,7 @@ function render(keep) {
       w.appendChild(ap);
     }
     if (!sc.roll && s.rpg && rpgExtra(sc)) { w.appendChild(el("p", "rollline", rpgExtra(sc).replace(/^ · /, ""))); }
-    if (sc.roll) { var rl = el("p", fi === i ? "rollline pop" : "rollline", "🎲 " + sc.roll.d + (sc.roll.mod ? " +" + sc.roll.mod + " " + sc.roll.at : "") + (sc.roll.ub ? " +" + sc.roll.ub + " " + sc.roll.use : "") + " · " + RPG_ICON[sc.roll.risk] + " " + sc.roll.risk + " (" + sc.roll.dc + ") → " + rpgTierName(sc.roll) + (sc.rec ? " · recuperas fuerzas" : "") + rpgExtra(sc)); rl.setAttribute("aria-label", "Tirada de dado: " + sc.roll.d + ", " + sc.roll.risk + ", " + rpgTierName(sc.roll)); w.appendChild(rl); }
+    if (sc.roll) { var rl = el("p", fi === i ? "rollline pop" : "rollline", "🎲 " + sc.roll.d + (sc.roll.mod ? " +" + sc.roll.mod + " " + sc.roll.at : "") + (sc.roll.ub ? " +" + sc.roll.ub + " " + sc.roll.use : "") + (sc.roll.hb ? " +" + sc.roll.hb + " ayuda de " + sc.roll.help : "") + " · " + RPG_ICON[sc.roll.risk] + " " + sc.roll.risk + " (" + sc.roll.dc + ") → " + rpgTierName(sc.roll) + (sc.rec ? " · recuperas fuerzas" : "") + rpgExtra(sc)); rl.setAttribute("aria-label", "Tirada de dado: " + sc.roll.d + ", " + sc.roll.risk + ", " + rpgTierName(sc.roll)); w.appendChild(rl); }
     var fresh = fi === i && RD.type && !reduce;
     if (cmx) { try { w.appendChild(comicEl(s, sc, i, fi === i && !reduce)); } catch (e) { cmx = false; } }
     if (!cmx) sc.t.split(/\n\s*\n/).forEach(function (p) { var pe = el("p", null, fresh ? "" : p.trim()); if (fresh) pe.dataset.full = p.trim(); else hlApply(pe, sc, i); w.appendChild(pe); });
@@ -2887,7 +3020,7 @@ function build(s, action, note, sp, compact) {
     (LONGCUR ? "\nLONGITUD: ESCENA LARGA. Escribe de 1500 a 2000 palabras en total (unos 3 o 4 folios), en muchos párrafos y varios momentos, sin resumir ni acortar: no cierres la escena hasta llegar a esa extensión. DESARROLLA TODO lo que el jugador ha escrito, en el orden en que lo escribió, sin saltarte ni condensar nada; trátalo como guion de lo que ocurre y despliégalo con acción, diálogos, gestos y detalles del entorno. Conserva sus frases y diálogos clave cuando estén bien escritos y añade lo que haga falta para enlazarlos. No inventes un final cerrado ni avances más allá de lo que el jugador cuenta." : "\nLONGITUD: párrafos de longitud natural, " + (compact ? "de 250 a 350 palabras en total (sé breve)" : "de " + LEN[len] + " palabras en total") + ".") +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s, recentFocus(s, action)).slice(0, 1800) : loreTxt(s, recentFocus(s, action))) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sxCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sxCtx(s, compact) + docCtx(s, compact) + mapCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -3254,9 +3387,9 @@ var FMT = "nov", DIFF = "normal";
 var RPG_AT = { Fuerza: "f", Agilidad: "a", Ingenio: "i", Carisma: "c" };
 var RPG_ATK = [["Fuerza", /(^|[^a-záéíóúñ])(golpe|empuj|romp|forz|fuerz|luch|pele|atac|derrib|levant|arranc|aplast|agarr|patad|puñet)/i], ["Agilidad", /(^|[^a-záéíóúñ])(corr|salt|esquiv|trep|escond|sigil|huy|huir|dispar|lanz|rued|desliz|escap|escabull)/i], ["Carisma", /(^|[^a-záéíóúñ])(convenc|habl|persuad|negoci|mient|mentir|seduc|intimid|pregunt|calm|ruego|rogar|amenaz|engañ|pact)/i], ["Ingenio", /(^|[^a-záéíóúñ])(piens|pensar|analiz|hack|descifr|busc|investig|repar|examin|plane|estudi|observ|deduc|improvis|manipul)/i]];
 function rpgGuess(t) { for (var i = 0; i < RPG_ATK.length; i++) if (RPG_ATK[i][1].test(String(t || ""))) return RPG_ATK[i][0]; return null; }
-function rpgFix(r) { if (!r) return r; if (!r.at) { r.at = { f: 0, a: 0, i: 0, c: 0 }; if (r.pts == null) r.pts = 4; } if (r.pts == null) r.pts = 0; if (!Array.isArray(r.inv)) r.inv = []; return r; }
-function rpgState(r) { rpgFix(r); return { hp: r.hp, b2: r.b2, inv: r.inv.slice(), en: r.en ? JSON.parse(JSON.stringify(r.en)) : null, at: JSON.parse(JSON.stringify(r.at)), pts: r.pts }; }
-function rpgStateBack(r, p) { r.hp = p.hp; r.b2 = p.b2; if (p.inv) r.inv = p.inv.slice(); if (p.at) { r.at = JSON.parse(JSON.stringify(p.at)); r.pts = p.pts || 0; } if ("en" in p) { if (p.en) r.en = JSON.parse(JSON.stringify(p.en)); else delete r.en; } delete r.use; r.pr = null; }
+function rpgFix(r) { if (!r) return r; if (!r.at) { r.at = { f: 0, a: 0, i: 0, c: 0 }; if (r.pts == null) r.pts = 4; } if (r.pts == null) r.pts = 0; if (!Array.isArray(r.inv)) r.inv = []; if (!Array.isArray(r.co)) r.co = []; return r; }
+function rpgState(r) { rpgFix(r); return { hp: r.hp, b2: r.b2, inv: r.inv.slice(), en: r.en ? JSON.parse(JSON.stringify(r.en)) : null, at: JSON.parse(JSON.stringify(r.at)), pts: r.pts, co: JSON.parse(JSON.stringify(r.co)) }; }
+function rpgStateBack(r, p) { r.hp = p.hp; r.b2 = p.b2; if (p.inv) r.inv = p.inv.slice(); if (p.at) { r.at = JSON.parse(JSON.stringify(p.at)); r.pts = p.pts || 0; } if ("en" in p) { if (p.en) r.en = JSON.parse(JSON.stringify(p.en)); else delete r.en; } if (p.co) r.co = JSON.parse(JSON.stringify(p.co)); delete r.use; delete r.help; r.pr = null; }
 function rpgItem(x) { return String(x == null ? "" : x).replace(/\s+/g, " ").trim().slice(0, 40); }
 function rpgHas(r, n) { var k = rpgItem(n).toLowerCase(), ix = -1; if (!k) return -1; r.inv.forEach(function (x, i) { var y = x.toLowerCase(); if (ix < 0 && (y === k || y.indexOf(k) >= 0 || k.indexOf(y) >= 0)) ix = i; }); return ix; }
 function rpgSheet(s) {
@@ -3278,6 +3411,16 @@ function rpgSheet(s) {
     });
     var inp = el("input"); inp.type = "text"; inp.maxLength = 40; inp.placeholder = "Por ejemplo: ganzúa"; inp.setAttribute("aria-label", "Nombre del objeto"); inp.style.cssText = "width:100%;margin:.5rem 0 .4rem"; sh.appendChild(inp);
     var ad = el("button", "small", "Añadir objeto"); ad.onclick = function () { var n = rpgItem(inp.value); if (!n) return; if (r.inv.length >= 12) { toast("El inventario está lleno (12 objetos)."); return; } if (rpgHas(r, n) < 0) r.inv.push(n); redo(); }; sh.appendChild(ad);
+    sh.appendChild(el("h3", null, "Compañeros"));
+    if (!r.co.length) para(sh, "Nadie te acompaña. Puedes llevar hasta dos compañeros: su ayuda suma +3 al dado, pero si la acción sale mal, el golpe se lo llevan en parte ellos.");
+    r.co.forEach(function (c, ix) {
+      var row = el("div", "atrow"); row.appendChild(el("b", null, c.n + " · salud " + Math.round(c.hp)));
+      var hbn = el("button", "small" + (r.help === c.n ? " on" : ""), r.help === c.n ? "Ayudando" : "Pedir ayuda"); hbn.disabled = c.hp <= 0; hbn.setAttribute("aria-label", (r.help === c.n ? "Cancelar la ayuda de " : "Pedir ayuda a ") + c.n); hbn.onclick = function () { if (r.help === c.n) delete r.help; else r.help = c.n; save(); rpgHud(); closeSheet(); if (r.help) toast(c.n + " te ayudará en tu próxima acción: +3 al dado."); }; row.appendChild(hbn);
+      var q = el("button", "small", "Quitar"); q.setAttribute("aria-label", "Quitar a " + c.n + " de tus compañeros"); q.onclick = function () { r.co.splice(ix, 1); if (r.help === c.n) delete r.help; redo(); }; row.appendChild(q); sh.appendChild(row);
+    });
+    if (r.co.length < 2) { var cand2 = comicCast(s).filter(function (c) { return !c.me && !r.co.some(function (x) { return x.n === c.name; }); });
+      if (cand2.length) { var cs = el("select"); cs.setAttribute("aria-label", "Personaje que te acompaña"); cand2.forEach(function (c) { var o = el("option", null, c.name); o.value = c.name; cs.appendChild(o); }); cs.style.cssText = "width:100%;margin:.4rem 0"; sh.appendChild(cs); var ac = el("button", "small", "Añadir compañero"); ac.onclick = function () { if (r.co.length < 2) { r.co.push({ n: cs.value, hp: 100 }); redo(); } }; sh.appendChild(ac); }
+      else if (!r.co.length) para(sh, "Para añadir uno, crea antes su carta de personaje en Cartas de lore."); }
     if (r.en) { sh.appendChild(el("h3", null, "Combate")); para(sh, "Te enfrentas a " + r.en.n + ". Aguante: " + Math.round(r.en.hp) + " de " + r.en.mx + ". Cada éxito lo desgasta; huir también es una salida."); var tc = el("button", "small", "Terminar combate"); tc.onclick = function () { delete r.en; save(); closeSheet(); render(true); toast("Combate terminado."); }; sh.appendChild(tc); }
     closeBtn(sh);
   });
@@ -3329,15 +3472,15 @@ function rpgPre(s, action, shown) {
   if (!s.scenes.length || /^\[IDEA PARA LA HISTORIA/.test(a.text)) { r.pr = null; return { action: a.text, shown: sh }; }
   if (!r.pr || r.pr.a !== a.text) {
     var risk = a.risk || r.nr || "Arriesgado", d = rpgRnd(20), dc = RPG_DC[risk];
-    var at = a.at || rpgGuess(a.text), mod = at ? (r.at[RPG_AT[at]] || 0) : 0, ub = (r.use && r.inv.indexOf(r.use) >= 0) ? 2 : 0, tot = d + mod + ub, tier = tot >= dc ? "pleno" : tot >= dc - 5 ? "coste" : "fallo";
+    var at = a.at || rpgGuess(a.text), mod = at ? (r.at[RPG_AT[at]] || 0) : 0, ub = (r.use && r.inv.indexOf(r.use) >= 0) ? 2 : 0, hb = (r.help && r.co.some(function (c) { return c.n === r.help && c.hp > 0; })) ? 3 : 0, tot = d + mod + ub + hb, tier = tot >= dc ? "pleno" : tot >= dc - 5 ? "coste" : "fallo";
     if (d === 20) tier = "pleno"; if (d === 1 && risk !== "Seguro") tier = "fallo";
-    r.pr = { a: a.text, risk: risk, d: d, dc: dc, tier: tier, crit: d === 20, pifia: d === 1 && risk !== "Seguro", at: at, mod: mod, ub: ub, use: ub ? r.use : null };
+    r.pr = { a: a.text, risk: risk, d: d, dc: dc, tier: tier, crit: d === 20, pifia: d === 1 && risk !== "Seguro", at: at, mod: mod, ub: ub, use: ub ? r.use : null, hb: hb, help: hb ? r.help : null };
     if (r.en) { var ix0 = RPG_IX[risk], flee = /(^|[^a-záéíóúñ])(huy|huir|escap|retir|me voy|salgo corriendo)/i.test(a.text);
       if (flee) r.pr.flee = tier !== "fallo"; else { var dm = tier === "pleno" ? [12, 22, 34][ix0] : tier === "coste" ? [6, 11, 17][ix0] : 0; if (dm) dm += mod * 2 + ub; if (d === 20) dm = Math.round(dm * 1.5); r.pr.eh = Math.max(0, Math.round(r.en.hp - dm)); } }
   }
   return { action: a.text, shown: sh };
 }
-function rpgExtra(sc) { var o = ""; if (sc.cb) o += sc.cb.end === "victoria" ? " · ⚔ Vences a " + sc.cb.n : sc.cb.end === "huida" ? " · ⚔ Sales del combate" : " · ⚔ " + sc.cb.n + " " + sc.cb.hp + "/" + sc.cb.mx; if (sc.ig) o += " · 🎒 +" + sc.ig.join(", +"); if (sc.il) o += " · 🎒 −" + sc.il.join(", −"); return o; }
+function rpgExtra(sc) { var o = ""; if (sc.cb) o += sc.cb.end === "victoria" ? " · ⚔ Vences a " + sc.cb.n : sc.cb.end === "huida" ? " · ⚔ Sales del combate" : " · ⚔ " + sc.cb.n + " " + sc.cb.hp + "/" + sc.cb.mx; if (sc.ig) o += " · 🎒 +" + sc.ig.join(", +"); if (sc.il) o += " · 🎒 −" + sc.il.join(", −"); if (sc.cj) o += " · 🤝 " + sc.cj + " se une"; if (sc.cl) o += " · 🤝 " + sc.cl + " se va"; if (sc.cod) o += " · 🤝 " + sc.cod + " cae"; return o; }
 function rpgTierName(p) { return p.crit ? "¡Éxito crítico!" : p.pifia ? "¡Pifia!" : p.tier === "pleno" ? "Éxito" : p.tier === "coste" ? "Éxito con coste" : "Fallo"; }
 function rpgCtx(s, compact) {
   var r = rpgFix(s.rpg); if (!r) return ""; var o = "\nMODO RPG (el juego decide los resultados; tú solo narras): salud del protagonista " + Math.round(r.hp) + "/100, " + r.b2n.toUpperCase() + " " + Math.round(r.b2) + "/100, créditos de destino " + (r.diff === "relajado" ? "ilimitados" : r.cred) + ".";
@@ -3348,13 +3491,14 @@ function rpgCtx(s, compact) {
   o += "\nATRIBUTOS DEL PROTAGONISTA (de 0 a 4): " + Object.keys(RPG_AT).map(function (n) { return n + " " + r.at[RPG_AT[n]]; }).join(", ") + ". Que lo que hace bien o mal sea coherente con ellos.";
   o += "\nINVENTARIO (lo único que lleva encima; no le des por hecho objetos que no estén aquí): " + (r.inv.length ? r.inv.join(", ") : "nada") + ".";
   if (r.pr && r.pr.use) o += " En esta acción usa «" + r.pr.use + "»: que se note en la escena.";
+  if (r.co.length) { o += "\nCOMPAÑEROS que van con el protagonista (tenlos presentes en la escena): " + r.co.map(function (c) { return c.n + (c.hp <= 0 ? " (fuera de combate: herido o agotado, no puede actuar hasta descansar)" : c.hp <= 35 ? " (malherido)" : ""); }).join(", ") + "."; if (r.pr && r.pr.help) o += " En esta acción " + r.pr.help + " ayuda activamente al protagonista" + (r.pr.tier !== "pleno" ? " y sale mal parado por ello" : "") + ": que se vea."; }
   if (r.en) { o += "\nCOMBATE EN CURSO contra " + r.en.n + " (aguante " + Math.round(r.en.hp) + " de " + r.en.mx + ").";
     if (r.pr && r.pr.flee) o += " El protagonista consigue salir del enfrentamiento en esta escena: nárralo.";
     else if (r.pr && r.pr.eh === 0) o += " Con este resultado " + r.en.n + " QUEDA FUERA DE COMBATE en esta escena (cae, huye o se rinde, lo que mejor encaje): nárralo con claridad.";
     else o += " Al final de esta escena " + r.en.n + " SIGUE EN PIE y el enfrentamiento continúa: no lo derrotes, no lo hagas huir ni rendirse todavía" + (r.pr && r.pr.eh != null && r.pr.eh < r.en.hp ? ", aunque acusa el golpe" : "") + ". Las 3 opciones deben ser maneras de seguir el enfrentamiento o de salir de él."; }
   if (r.hp <= 25) o += " La salud es muy baja: el cuerpo del protagonista lo muestra (dolor, temblor, torpeza) y los riesgos pesan más.";
   if (r.b2 <= 25) o += " " + r.b2n + " está muy bajo: que se note en la escena y en las decisiones.";
-  o += "\nNo cambies salud ni peligro en «estado» (los gestiona el juego) y no escribas el final de la historia por tu cuenta. OPCIONES: exactamente 3, cada una empieza por [Seguro], [Arriesgado] o [Temerario] según el riesgo real para el protagonista (que haya variedad), seguido de [Fuerza], [Agilidad], [Ingenio] o [Carisma] según lo que más pese en esa acción (ejemplo: «[Arriesgado][Ingenio] Forzar la cerradura»), sin otra etiqueta. En el JSON puedes añadir \"rpg\":{...} con estas claves, solo cuando ocurra de verdad en la escena: \"recupera\":true si el protagonista descansa, se alimenta, se cura o recarga; \"gana\":[\"objeto\"] si consigue un objeto útil y concreto (nombre corto); \"pierde\":[\"objeto\"] si gasta, rompe o pierde uno de su inventario" + (r.en ? "" : "; \"enemigo\":{\"nombre\":\"…\",\"fuerza\":1} (fuerza 1, 2 o 3) si en esta escena EMPIEZA un enfrentamiento directo con alguien o algo (pelea, duelo, persecución) que no se resuelve aún") + ".";
+  o += "\nNo cambies salud ni peligro en «estado» (los gestiona el juego) y no escribas el final de la historia por tu cuenta. OPCIONES: exactamente 3, cada una empieza por [Seguro], [Arriesgado] o [Temerario] según el riesgo real para el protagonista (que haya variedad), seguido de [Fuerza], [Agilidad], [Ingenio] o [Carisma] según lo que más pese en esa acción (ejemplo: «[Arriesgado][Ingenio] Forzar la cerradura»), sin otra etiqueta. En el JSON puedes añadir \"rpg\":{...} con estas claves, solo cuando ocurra de verdad en la escena: \"recupera\":true si el protagonista descansa, se alimenta, se cura o recarga; \"gana\":[\"objeto\"] si consigue un objeto útil y concreto (nombre corto); \"pierde\":[\"objeto\"] si gasta, rompe o pierde uno de su inventario; \"se_une\":\"Nombre\" si un personaje decide acompañar al protagonista de forma estable; \"se_va\":\"Nombre\" si un compañero se separa de él" + (r.en ? "" : "; \"enemigo\":{\"nombre\":\"…\",\"fuerza\":1} (fuerza 1, 2 o 3) si en esta escena EMPIEZA un enfrentamiento directo con alguien o algo (pelea, duelo, persecución) que no se resuelve aún") + ".";
   var pa = r.parent && LIB.filter(function (x) { return x.id === r.parent; })[0];
   if (pa && pa.memory && !compact) o += "\nCANON DE LA NOVELA (ya escrito; esta partida RPG ocurre en ese mismo mundo, respétalo): " + String(pa.memory).slice(0, 600);
   return o;
@@ -3368,15 +3512,16 @@ function rpgRestore(s, p) {
   if (p.rs && s.rpg) { var _h = s.rpg.hp, _b = s.rpg.b2; rpgStateBack(s.rpg, p.rs); s.rpg.hp = _h; s.rpg.b2 = _b; }
 }
 function rpgApply(s, cand, sn) {
-  var r = rpgFix(s.rpg), p = r.pr, mul = r.diff === "relajado" ? 0.6 : r.diff === "duro" ? 1.3 : 1, ix = p ? RPG_IX[p.risk] : 0, won = false;
+  var r = rpgFix(s.rpg), p = r.pr, mul = r.diff === "relajado" ? 0.6 : r.diff === "duro" ? 1.3 : 1, ix = p ? RPG_IX[p.risk] : 0, won = false, hm = p && p.hb ? 0.5 : 1;
   if (r.en) mul *= [0.8, 1, 1.3][(r.en.f || 2) - 1];
   if (p) {
     sn.roll = { d: p.d, dc: p.dc, risk: p.risk, tier: p.tier, crit: p.crit, pifia: p.pifia };
     if (p.at) { sn.roll.at = p.at; sn.roll.mod = p.mod || 0; } if (p.ub) { sn.roll.ub = p.ub; sn.roll.use = p.use; }
-    if (p.tier === "coste") { r.hp -= [4, 8, 13][ix] * mul; r.b2 -= 5; } else if (p.tier === "fallo") { r.hp -= [8, 18, 30][ix] * mul * (p.pifia ? 1.2 : 1); r.b2 -= 10; } else if (p.crit) { r.hp += 6; r.b2 += 8; }
+    if (p.tier === "coste") { r.hp -= [4, 8, 13][ix] * mul * hm; r.b2 -= 5; } else if (p.tier === "fallo") { r.hp -= [8, 18, 30][ix] * mul * hm * (p.pifia ? 1.2 : 1); r.b2 -= 10; }
+    if (p.hb) { sn.roll.hb = p.hb; sn.roll.help = p.help; r.co.forEach(function (c) { if (c.n === p.help && p.tier !== "pleno") { c.hp = Math.max(0, c.hp - (p.tier === "coste" ? 10 : 25)); if (c.hp <= 0) { sn.cod = c.n; setTimeout(function () { toast(c.n + " queda fuera de combate."); }, 700); } } }); } else if (p.crit) { r.hp += 6; r.b2 += 8; }
   }
   r.b2 -= 3; if (r.b2 <= 0) { r.b2 = 0; r.hp -= 8 * mul; }
-  if (cand && cand.rpg && cand.rpg.recupera === true) { r.b2 += 30; r.hp += 15; sn.rec = 1; }
+  if (cand && cand.rpg && cand.rpg.recupera === true) { r.b2 += 30; r.hp += 15; sn.rec = 1; r.co.forEach(function (c) { c.hp = Math.min(100, c.hp + 40); }); }
   if (r.en && p) {
     if (p.flee) { sn.cb = { n: r.en.n, end: "huida" }; delete r.en; }
     else { if (p.eh != null) r.en.hp = p.eh; if (r.en.hp <= 0) { sn.cb = { n: r.en.n, end: "victoria" }; won = true; var _nm = r.en.n; delete r.en; var _tot = r.pts + r.at.f + r.at.a + r.at.i + r.at.c; if (_tot < 14) { r.pts++; sn.cb.pt = 1; } setTimeout(function () { toast("Has vencido a " + _nm + "." + (sn.cb.pt ? " Ganas 1 punto de atributo." : "")); }, 500); } else sn.cb = { n: r.en.n, hp: Math.round(r.en.hp), mx: r.en.mx }; }
@@ -3387,9 +3532,11 @@ function rpgApply(s, cand, sn) {
     (Array.isArray(g.pierde) ? g.pierde : []).slice(0, 3).forEach(function (x) { var k = rpgHas(r, x); if (k >= 0) { li.push(r.inv[k]); if (r.use === r.inv[k]) delete r.use; r.inv.splice(k, 1); } });
     (Array.isArray(g.gana) ? g.gana : []).slice(0, 3).forEach(function (x) { x = rpgItem(x); if (x && r.inv.length < 12 && rpgHas(r, x) < 0) { r.inv.push(x); gi.push(x); } });
     if (gi.length) sn.ig = gi; if (li.length) sn.il = li;
+    var ju = rpgItem(g.se_une), lv = rpgItem(g.se_va); if (lv) { var _n0 = r.co.length; r.co = r.co.filter(function (c) { return c.n.toLowerCase() !== lv.toLowerCase(); }); if (r.co.length < _n0) sn.cl = lv; }
+    if (ju && r.co.length < 2 && !r.co.some(function (c) { return c.n.toLowerCase() === ju.toLowerCase(); })) { r.co.push({ n: ju, hp: 100 }); sn.cj = ju; }
     if (!r.en && !won && !(sn.cb && sn.cb.end) && g.enemigo && typeof g.enemigo === "object") { var en = rpgItem(g.enemigo.nombre); if (en) { var ef = Math.max(1, Math.min(3, Math.round(Number(g.enemigo.fuerza) || 2))), mx = [40, 70, 100][ef - 1]; r.en = { n: en, f: ef, hp: mx, mx: mx }; sn.cb = { n: en, hp: mx, mx: mx, start: 1 }; } }
   }
-  delete r.use;
+  delete r.use; delete r.help;
   r.hp = Math.max(0, Math.min(100, r.hp)); r.b2 = Math.max(0, Math.min(100, r.b2)); r.pr = null;
   s.state = s.state || {}; s.state.salud = Math.round(r.hp);
   if (s.scenes.length % 12 === 0 && r.cred < 5 && r.diff !== "relajado") { r.cred++; setTimeout(function () { toast("Has ganado 1 crédito de destino"); }, 400); }
@@ -3400,6 +3547,7 @@ function rpgHud() {
   if (mn) { [["❤ Salud", r.hp, r.hp <= 25 ? "low" : "hp"], [r.b2n, r.b2, r.b2 <= 25 ? "low" : "b2"]].forEach(function (x) { var w = el("span", "mini"); w.appendChild(el("b", null, x[0] + " " + Math.round(x[1]))); var m = el("span", "meter"), ii = el("i", x[2]); ii.style.width = Math.round(x[1]) + "%"; m.appendChild(ii); w.appendChild(m); mn.appendChild(w); }); mn.appendChild(el("span", "mini", "🎟 " + (r.diff === "relajado" ? "∞" : r.cred)));
     rpgFix(r); var fb = el("button", "small", "🎒 Ficha" + (r.pts > 0 ? " (+" + r.pts + ")" : "")); fb.id = "rpgficha"; fb.setAttribute("aria-label", "Ficha de aventura: atributos e inventario" + (r.pts > 0 ? ". Tienes " + r.pts + " puntos por repartir" : "")); fb.onclick = function () { rpgSheet(s); }; mn.appendChild(fb);
     if (r.use) mn.appendChild(el("span", "mini use", "Usando: " + r.use));
+    r.co.forEach(function (c) { var w = el("span", "mini co" + (c.hp <= 0 ? " out" : ""), "🤝 " + c.n + " " + Math.round(c.hp) + (r.help === c.n ? " · ayuda" : "")); w.setAttribute("role", "img"); w.setAttribute("aria-label", "Compañero " + c.n + ", salud " + Math.round(c.hp) + (r.help === c.n ? ", te ayudará en la próxima acción" : "")); mn.appendChild(w); });
     if (r.en) { var ew = el("span", "mini en"); ew.setAttribute("role", "img"); ew.setAttribute("aria-label", "Enemigo " + r.en.n + ", aguante " + Math.round(r.en.hp) + " de " + r.en.mx); ew.appendChild(el("b", null, "⚔ " + r.en.n + " " + Math.round(r.en.hp) + "/" + r.en.mx)); var em = el("span", "meter"), ei = el("i", "low"); ei.style.width = Math.round(r.en.hp * 100 / r.en.mx) + "%"; em.appendChild(ei); ew.appendChild(em); mn.appendChild(ew); } }
   function bar(n, v, cl) { var w = el("div", "rbar"); w.setAttribute("role", "img"); w.setAttribute("aria-label", n + " " + Math.round(v) + " de 100"); w.appendChild(el("b", null, n)); var m = el("span", "meter"), i = el("i", cl); i.style.width = Math.round(v) + "%"; m.appendChild(i); w.appendChild(m); w.appendChild(el("em", null, String(Math.round(v)))); return w; }
   h.appendChild(bar("Salud", r.hp, r.hp <= 25 ? "low" : "hp")); h.appendChild(bar(r.b2n, r.b2, r.b2 <= 25 ? "low" : "b2"));
@@ -4042,6 +4190,7 @@ function sceneImg(sc, i) {
   if (altOk(cur, i)) { var ab = el("button", "small", "Comparar con la otra versión"); ab.onclick = function () { altSheet(i); }; r.appendChild(ab); }
   var ed = el("button", "small", "Editar texto"); ed.onclick = function () { editScene(i); }; r.appendChild(ed);
   var rvb = el("button", "small", "Revisar esta escena"); rvb.onclick = function () { reviewScene(i); }; r.appendChild(rvb);
+  var pvb = el("button", "small", "Otro punto de vista"); pvb.onclick = function () { povSheet(i); }; r.appendChild(pvb);
   if (i >= 1 && sc.pv) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); }
   var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
   var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
@@ -4498,7 +4647,7 @@ if (RD.simple === undefined) { try { RD.simple = !(typeof LIB !== "undefined" &&
 function saveRead() { try { localStorage.setItem("narrador:read:v1", JSON.stringify(RD)); } catch (e) {} }
 function applyRead() {
   document.body.classList.toggle("calm", !!RD.calm); document.body.classList.toggle("hc", !!RD.hc); document.body.classList.toggle("simple", !!RD.simple);
-  var b = $("book"); b.className = "scene rd t-" + RD.tone + (RD.font === "sans" ? " f-sans" : RD.font === "legible" ? " f-leg" : RD.font === "modern" ? " f-modern" : RD.font === "mono" ? " f-mono" : "") + (RD.tex ? " tex" : "") + (RD.just ? " just" : "") + (RD.drop ? " drop" : "");
+  var b = $("book"); b.className = "scene rd t-" + RD.tone + (RD.font === "sans" ? " f-sans" : RD.font === "legible" ? " f-leg" : RD.font === "modern" ? " f-modern" : RD.font === "mono" ? " f-mono" : "") + (RD.tex ? " tex" : "") + (RD.just ? " just" : "") + (RD.drop ? " drop" : ""); try { if (cur && comicOn(cur)) b.classList.add("cmx"); } catch (e) {}
   b.style.setProperty("--lh", String(RD.lh || 1.75)); document.body.setAttribute("data-fx", RD.fxl || "sutil");
   b.style.fontSize = RD.size + "px";
 }
@@ -6012,7 +6161,7 @@ function para(sh, t, c) { var p = el("p", c || "hint", t); sh.appendChild(p); re
 function closeBtn(sh, t) { var b = el("button", null, t || "Cerrar"); b.style.marginTop = ".8rem"; b.onclick = closeSheet; sh.appendChild(b); return b; }
 
 /* Copia de seguridad */
-var BKEYS = ["narrador:v1", "narrador:chars:v1", "narrador:read:v1"];
+var BKEYS = ["narrador:v1", "narrador:chars:v1", "narrador:read:v1", "hv:goal"];
 function today() { return new Date().toISOString().slice(0, 10); }
 // v0.9: una sola función arma la copia manual y la copia SAF; las claves no viven en BKEYS.
 function backupData() {
@@ -6045,6 +6194,7 @@ function mergeBackup(o, msg) {
   var ch = []; try { ch = JSON.parse(o.data["narrador:chars:v1"] || "[]"); } catch (e) {}
   if (Array.isArray(ch)) ch.forEach(function (c) { if (c && c.name && !CHARS.some(function (x) { return (c.id && x.id === c.id) || nk(x.name) === nk(c.name); })) CHARS.push(c); });
   if (o.data["narrador:read:v1"] && !localStorage.getItem("narrador:read:v1")) localStorage.setItem("narrador:read:v1", o.data["narrador:read:v1"]);
+  try { if (o.data["hv:goal"]) { var _bg = JSON.parse(o.data["hv:goal"]), _g = goalGet(); if (_bg && typeof _bg === "object") { if (!_g.goal && _bg.goal) _g.goal = Math.max(0, Math.min(20000, Math.round(Number(_bg.goal) || 0))); Object.keys(_bg.days || {}).forEach(function (k) { if (/^\d{4}-\d\d-\d\d$/.test(k)) _g.days[k] = Math.max(_g.days[k] || 0, Math.round(Number(_bg.days[k]) || 0)); }); goalSet(_g); } } } catch (e) {}
   save(); saveChars(); renderLib();
   msg.textContent = "Recuperado: " + added + " historia" + (added === 1 ? "" : "s") + " nueva" + (added === 1 ? "" : "s") + " y " + updated + " actualizada" + (updated === 1 ? "" : "s") + ". No se ha borrado nada del móvil.";
   return true;
@@ -6208,6 +6358,8 @@ var GUIDE = {
     ["Novedades / Enviar sugerencia", "Qué ha cambiado en esta versión y un formulario para contarme qué mejorarías."],
     ["🕯 Rincón de los olvidados", "Historias que dejaste de jugar. Desde ahí puedes retomarlas."],
     ["Meta de escritura", "Bajo la portada: las palabras nuevas de hoy, tu meta diaria y los días seguidos que llevas. Tócala para fijar o quitar la meta. «Guardar meta» la aplica. En Ajustes, «Meta de escritura: visible / oculta» la esconde del todo y deja de contar palabras."],
+    ["Color de acento: del género", "En Ajustes: cambia el color de botones y detalles (ámbar, azul, verde, rosa o violeta) o lo deja según el género de cada historia."],
+    ["Ocultar barras al leer: sí", "En Ajustes: al bajar por una historia se esconden la cabecera y el menú de abajo, y vuelven al subir."],
     ["+ Crear nuevo", "Empieza una historia nueva."],
     ["Barra de abajo", "Inicio, Historias, Personajes, Mundo (tu historia actual) y Ajustes (menú de la aplicación: copias de seguridad, versiones, espacio, tutorial…)."],
     ["? (arriba a la derecha)", "Esta ayuda, explicando la pantalla en la que estás."]]],
@@ -6240,6 +6392,11 @@ var GUIDE = {
     ["Añadir objeto", "Añade tú un objeto al inventario de la aventura."],
     ["Terminar combate", "Da por acabado el enfrentamiento en curso sin tirar más dados."],
     ["🎙 Entrevistar a", "Hazle preguntas a un personaje: responde con su voz, sin cambiar la historia. «Preguntar» envía la pregunta (gasta una consulta). «Borrar esta entrevista» la elimina."],
+    ["Otro punto de vista", "En las opciones de una escena: El Cronista la vuelve a contar desde otro personaje sin cambiar la original. «Reescribir desde su mirada» la genera, «Probar otra vez» la repite, «Guardar en Documentos» la conserva y «Copiar texto» la copia."],
+    ["Documentos del mundo", "Cartas, noticias, diarios o leyendas de tu historia. «Que lo escriba El Cronista» lo genera, «Escribirlo yo» crea uno vacío, «Guardar cambios» guarda lo editado y «Borrar documento» lo elimina."],
+    ["Mapa de lugares", "Dibuja tus cartas de tipo lugar. Arrástralas para colocarlas y usa «Conectar lugares» para unirlas; El Cronista respeta esas conexiones."],
+    ["Pedir ayuda", "En la ficha RPG: un compañero te ayuda en la próxima acción (+3 al dado). «Ayudando» lo cancela. «Añadir compañero» suma a un personaje a tu grupo."],
+    ["¿quién?", "En las viñetas, toca el nombre sobre un bocadillo para corregir quién habla. «Nadie en concreto» lo deja sin nombre y «Volver a deducirlo solo» quita tu corrección."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
@@ -6428,6 +6585,19 @@ function goalOff() { try { return localStorage.getItem("hv:goalhide") === "1"; }
 function goalLabel() { $("dgoal").textContent = "Meta de escritura: " + (goalOff() ? "oculta" : "visible"); }
 $("dgoal").onclick = function () { try { localStorage.setItem("hv:goalhide", goalOff() ? "0" : "1"); } catch (e) {} goalLabel(); goalCard(); toast(goalOff() ? "Meta de escritura oculta. No se cuentan palabras." : "Meta de escritura visible."); };
 try { goalLabel(); } catch (e) {}
+function accLabel() { $("dacc").textContent = "Color de acento: " + ACCN[accGet()]; }
+$("dacc").onclick = function () { var ks = Object.keys(ACCN), k = ks[(ks.indexOf(accGet()) + 1) % ks.length]; try { if (k) localStorage.setItem("hv:accent", k); else localStorage.removeItem("hv:accent"); } catch (e) {} accLabel(); try { reTheme(); } catch (e) {} };
+try { accLabel(); } catch (e) {}
+function barsOn() { try { return localStorage.getItem("hv:autobars") !== "0"; } catch (e) { return true; } }
+function barsLabel() { $("dbars").textContent = "Ocultar barras al leer: " + (barsOn() ? "sí" : "no"); }
+$("dbars").onclick = function () { try { localStorage.setItem("hv:autobars", barsOn() ? "0" : "1"); } catch (e) {} barsLabel(); document.body.classList.remove("hidebars"); };
+try { barsLabel(); } catch (e) {}
+(function () { var ly = 0, tk = false;
+  window.addEventListener("scroll", function () { if (tk) return; tk = true; requestAnimationFrame(function () { tk = false; var y = window.scrollY || 0, d = y - ly, pl = $("play"), on = barsOn() && pl && !pl.hidden && !document.body.classList.contains("imm");
+    var bottom = y + window.innerHeight > document.documentElement.scrollHeight - 260, ae = document.activeElement, typing = ae && (ae.tagName === "TEXTAREA" || ae.tagName === "INPUT");
+    if (!on || y < 160 || bottom || typing) document.body.classList.remove("hidebars"); else if (d > 10) document.body.classList.add("hidebars"); else if (d < -10) document.body.classList.remove("hidebars");
+    if (Math.abs(d) > 10) ly = y; }); }, { passive: true });
+})();
 $("dczoom").onclick = function () { try { localStorage.setItem("hv:coverzoom", czOn() ? "0" : "1"); } catch (e) {} czLabel(); };
 czLabel();
 $("dtheme").onclick = function () {
