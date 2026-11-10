@@ -94,3 +94,10 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 7. Cartas de lore → «Documentos del mundo»: pide una carta al Cronista, edítala y guárdala.
 8. «⋯» de una escena → «Otro punto de vista»: elige personaje; la escena original no debe cambiar.
 9. Haz una copia de seguridad y restáurala en limpio: la meta de escritura y la racha deben volver.
+
+## 30. Buscadores — v0.13.0
+1. Abre una historia: abajo a la derecha hay un botón redondo con una lupa. Tócalo, escribe un nombre o una palabra (con o sin tildes) y comprueba que salen resultados agrupados (cartas, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa, escenas).
+2. Toca un resultado de «Cartas de lore»: debe abrir el menú, llevarte a esa carta y resaltarla un momento. Prueba lo mismo con uno de «Lore del universo», un documento y una escena.
+3. Dentro de Cartas de lore y de Lore del universo (con 4 o más entradas) hay un cuadro «Buscar…» que filtra la lista mientras escribes.
+4. Con 6 o más historias, Inicio muestra «Buscar entre tus historias». Con 5 o más personajes, «Mis personajes» también tiene buscador.
+5. La lupa no debe tapar el botón Continuar ni verse mientras escribes en el cuadro de texto. Comprueba que no molesta al leer.

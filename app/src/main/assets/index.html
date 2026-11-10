@@ -509,6 +509,16 @@ button.cname{background:none!important;border:0!important;box-shadow:none!import
 .mapsvg .mlink{stroke:var(--acc);stroke-width:2;stroke-dasharray:5 4;opacity:.8}.mapsvg .mlbl{font:600 9px system-ui,sans-serif;fill:var(--mute)}
 .mapsvg .mnode{cursor:grab}.mapsvg .mnode circle{fill:var(--card);stroke:var(--acc);stroke-width:3}.mapsvg .mnode.here circle{fill:var(--acc)}.mapsvg .mnode text{font:600 10px system-ui,sans-serif;fill:var(--ink)}.mapsvg .mnode .mhere{fill:var(--accink);font-size:12px}
 details.docit{margin:.5rem 0;padding:.2rem 0}details.docit>summary{font-weight:600}
+/* v0.13.0: buscadores */
+.fhide{display:none!important}
+.hvfilt{margin:.5rem 0;display:grid;gap:.2rem}.hvfilt input,.findq{width:100%;box-sizing:border-box;padding:.65rem .8rem;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:1rem}
+.fflash{animation:hvFlashK 2.2s ease-out}@keyframes hvFlashK{0%,35%{box-shadow:0 0 0 3px var(--acc);background-color:rgba(255,214,150,.22)}100%{box-shadow:0 0 0 0 transparent}}
+.findres h3{margin:1rem 0 .3rem;font-size:.8rem}
+.findres .findit{display:block;width:100%;text-align:left;margin:.3rem 0;padding:.55rem .75rem;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);height:auto;min-height:0;line-height:1.4;white-space:normal;box-sizing:border-box}
+.findres .findit b{display:block;font-size:.9rem;margin-bottom:.15rem}.findres .fsn{font-size:.86rem;color:var(--mute);overflow-wrap:anywhere}.findres mark{background:var(--acc);color:var(--accink);border-radius:3px;padding:0 .15em}
+#findfab{position:fixed;right:.8rem;bottom:calc(5.6rem + env(safe-area-inset-bottom,0px));z-index:7;width:48px;height:48px;min-height:0;padding:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--ink);border:1.5px solid var(--acc);box-shadow:0 4px 14px rgba(0,0,0,.45);opacity:.88;transition:bottom .28s ease,opacity .2s}
+body.imm #findfab,body.hidebars #findfab{bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
+#play:has(textarea:focus) #findfab,#play:has(input[type=text]:focus) #findfab{opacity:0;pointer-events:none}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -659,6 +669,7 @@ details.docit{margin:.5rem 0;padding:.2rem 0}details.docit>summary{font-weight:6
 <button id="imx" class="go" hidden style="width:auto">Salir de la lectura</button>
 <div id="pgbar" role="group" aria-label="Pasar páginas"><button id="pgprev" aria-label="Página anterior">‹</button><span id="pglab" role="status" aria-live="polite">1 / 1</span><button id="pgnext" aria-label="Página siguiente">›</button><button id="pgtog" class="small">Desplazar</button></div>
 <div id="sr" class="sronly" role="status" aria-live="polite"></div>
+<button id="findfab" type="button" aria-label="Buscar en el lore, los personajes y los documentos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg></button>
 <div class="row" id="cmxbar" hidden role="group" aria-label="Cómo ver las escenas" style="margin:.6rem 0 0"></div>
 <div class="scene rd" id="book"></div>
 <p class="status" id="status" role="status" hidden>El narrador está escribiendo…</p>
@@ -1176,6 +1187,7 @@ function renderLib() {
     var d = el("button", "small", "⋯ Opciones"); d.setAttribute("aria-label", "Opciones de " + s.title); d.onclick = function () { storyMenu(s); };
     it.appendChild(d); box.appendChild(it);
   });
+  try { var _oq = $("listq"); if (_oq) _oq.remove(); var _cc = box.querySelectorAll(".cc"); if (_cc.length) { var _hq = el("div"); _hq.id = "listq"; box.parentNode.insertBefore(_hq, box); if (!hvFilter("lib", _hq, null, _cc, "Buscar entre tus historias", 6)) _hq.remove(); } } catch (e) {}
 
   $("more1").onclick = function () { var g = box.classList.toggle("grid"); $("more1").textContent = g ? "Ver menos" : "Ver todo ›"; };
   $("more1").hidden = LIB.length - nA < 3;
@@ -1205,8 +1217,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.12.0";
+var VERSION = "0.13.0";
 var NEWS = [
+  ["0.13.0", "Buscadores: una lupa flotante mientras lees o juegas busca a la vez en cartas de lore, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa y escenas, y te lleva al resultado. Las listas largas (cartas, ideas de lore, documentos, personajes e historias) tienen ahora su propio cuadro de búsqueda."],
   ["0.12.0", "Ajustes ordenados por apartados, con color de acento a elegir. Al leer, las barras se esconden solas. Capítulos con cabecera más vistosa. En las viñetas puedes tocar un nombre para corregir quién habla. RPG: compañeros que te ayudan (+3 al dado). Nuevos en Cartas de lore: «Mapa de lugares» y «Documentos del mundo» (cartas, noticias, diarios). En cada escena, «Otro punto de vista» la cuenta desde otro personaje. La meta de escritura ya entra en las copias de seguridad."],
   ["0.11.0", "Aventuras RPG más completas: ficha con cuatro atributos que suman al dado, inventario de objetos que puedes usar (+2) y combates con un enemigo cuya barra de aguante ves bajar. Además, entrevista a tus personajes: toca su cara en las viñetas o su carta y pregúntales lo que quieras sin cambiar la historia."],
   ["0.10.3", "La meta de escritura se puede ocultar del todo desde Ajustes («Meta de escritura: visible / oculta»). Oculta, no cuenta palabras."],
@@ -1816,7 +1829,7 @@ function renderWl() {
   var tot = s.wl.reduce(function (a, e) { return a + (e.t || "").length; }, 0);
   if (s.wl.length) b.appendChild(el("p", "hint", s.wl.length + " ideas · " + tot + " caracteres. Ahora estás en el capítulo " + (chCur(s) || 1) + "."));
   s.wl.forEach(function (e) {
-    var c = el("div"); c.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem;margin:.5rem 0" + (e.on === false ? ";opacity:.55" : "");
+    var c = el("div", "wlit"); c.dataset.id = e.id; c.dataset.q = sfold((e.h || "") + " " + (e.t || "")); c.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem;margin:.5rem 0" + (e.on === false ? ";opacity:.55" : "");
     c.appendChild(el("b", null, (e.pin ? "📌 " : "") + e.h + (e.open ? " · libre" : " · discreto")));
     var meta = el("p", "hint", "Desde el capítulo " + (e.rev || 1) + ((e.rev || 1) > (chCur(s) || 1) ? " (aún no disponible)" : "") + (e.on === false ? " · en pausa" : "")); meta.style.margin = ".1rem 0"; c.appendChild(meta);
     var pv = el("p", null, e.t.length > 160 ? e.t.slice(0, 160) + "…" : e.t); pv.style.cssText = "margin:.3rem 0;white-space:pre-wrap"; c.appendChild(pv);
@@ -1829,6 +1842,7 @@ function renderWl() {
     bd.onclick = function () { if (!arm) { arm = true; bd.textContent = "¿Seguro? Toca otra vez"; setTimeout(function () { arm = false; bd.textContent = "Borrar"; }, 3500); return; } s.wl = s.wl.filter(function (x) { return x !== e; }); save(); renderWl(); };
     rr.appendChild(bd); c.appendChild(rr); b.appendChild(c);
   });
+  try { var _wc = b.querySelectorAll(".wlit"); if (_wc.length) hvFilter("wl", b, _wc[0], _wc, "Buscar en el lore del universo", 4); } catch (e) {}
 }
 function impAddMore(b) {
   var d = el("details"); d.appendChild(el("summary", null, "Añadir más material del autor (archivos o texto)"));
@@ -2101,7 +2115,7 @@ function renderLore() {
   var mb0 = el("button", "small", "Mapa de lugares"); mb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; mb0.onclick = function () { mapSheet(); }; b.appendChild(mb0);
   var db0 = el("button", "small", "Documentos del mundo" + ((cur.docs || []).length ? " (" + cur.docs.length + ")" : "")); db0.style.cssText = "margin:.2rem 0 .6rem .4rem"; db0.onclick = function () { docsSheet(); }; b.appendChild(db0);
   (cur.lore || []).forEach(function (c) {
-    var d = el("div", "lore");
+    var d = el("div", "lore"); d.dataset.q = sfold(c.nombre + " " + c.tipo + " " + (c.desc || ""));
     if (c.img) { var th = el("img", "lorethumb"); th.src = c.img; th.alt = c.nombre; d.appendChild(th); }
     d.appendChild(el("b", null, c.nombre)); d.appendChild(document.createTextNode(" · " + c.tipo + ". " + c.desc));
     if (appxCards(cur).indexOf(c) >= 0) d.appendChild(el("small", "hint", " 📖 en el apéndice del libro"));
@@ -2146,6 +2160,7 @@ function renderLore() {
     };
     d.appendChild(eb); b.appendChild(d);
   });
+  try { var _lc = b.querySelectorAll(".lore"); if (_lc.length) hvFilter("lore", b, _lc[0], _lc, "Buscar en las cartas (nombre, tipo o texto)", 4); } catch (e) {}
 }
 function estadoTxt(v, a, b, c) { return v > 66 ? a : v > 33 ? b : c; }
 var FRESH = -1, TYPER = null, TOK = null, WIN = 14;
@@ -2187,6 +2202,50 @@ function goalSheet() {
   });
 }
 function woptsLabel() { var d = $("wopts"); if (!d) return; var a = []; if (cur && cur.nextTone) a.push("Tono: " + cur.nextTone); if ($("longsc") && $("longsc").checked) a.push("Escena larga"); d.firstElementChild.textContent = a.length ? "Opciones: " + a.join(" · ") : "Tono y longitud (opcional)"; }
+/* v0.13.0: buscadores. FILT guarda lo escrito en cada filtro para que no se pierda al repintar. */
+var FILT = {};
+function hvFilter(key, host, before, items, label, min) {
+  var its = [].slice.call(items); if (its.length < (min || 4) && !FILT[key]) return null;
+  var w = el("div", "hvfilt"), q = el("input"), st = el("small", "hint"); q.type = "search"; q.placeholder = label; q.setAttribute("aria-label", label); q.value = FILT[key] || ""; st.setAttribute("role", "status");
+  function run() { var t = sfold(q.value.trim()), n = 0; FILT[key] = q.value; its.forEach(function (e) { var hit = !t || (e.dataset.q || sfold(e.textContent)).indexOf(t) >= 0; e.classList.toggle("fhide", !hit); if (hit) n++; }); st.textContent = t ? (n ? n + " de " + its.length : "Nada coincide con «" + q.value.trim() + "».") : ""; }
+  q.oninput = run; w.appendChild(q); w.appendChild(st); host.insertBefore(w, before || null); run(); return q;
+}
+function hvFlash(e) { if (!e) return; try { e.scrollIntoView({ block: "center" }); } catch (x) {} e.classList.add("fflash"); setTimeout(function () { e.classList.remove("fflash"); }, 2200); }
+function findOpen(box) { try { closeSheet(); var pm = $("pmenu"); if (pm) pm.open = true; var b = $(box); if (b) b.open = true; } catch (e) {} }
+function findSnip(text, term) { var f = sfold(text), at = f.indexOf(term); if (at < 0) return null; var a = Math.max(0, at - 45), z = Math.min(text.length, at + term.length + 75); return { pre: (a ? "…" : "") + text.slice(a, at), hit: text.slice(at, at + term.length), post: text.slice(at + term.length, z) + (z < text.length ? "…" : "") }; }
+function findAll(s, raw) {
+  var term = sfold(String(raw || "").trim()), out = []; if (term.length < 2) return out;
+  function add(sec, title, text, go, also) { var full = String(text || ""), sn = findSnip(full, term); if (!sn && sfold(title + " " + (also || "")).indexOf(term) >= 0) sn = { pre: full.replace(/\s+/g, " ").slice(0, 110) + (full.length > 110 ? "…" : ""), hit: "", post: "" }; if (sn) out.push({ sec: sec, title: title, sn: sn, go: go }); }
+  (s.lore || []).forEach(function (c, i) { if (c) add("Cartas de lore", c.nombre + " · " + c.tipo, String(c.desc || "").replace(/\s+/g, " "), function () { FILT.lore = ""; findOpen("lorebox"); renderLore(); setTimeout(function () { hvFlash($("lorebody").querySelectorAll(".lore")[i]); }, 80); }); });
+  (s.wl || []).forEach(function (e) { if (e) add("Lore del universo", e.h || "Idea", String(e.t || "").replace(/\s+/g, " "), function () { FILT.wl = ""; findOpen("wlbox"); renderWl(); setTimeout(function () { hvFlash($("wlbody").querySelector('.wlit[data-id="' + e.id + '"]')); }, 80); }); });
+  (s.sx || []).forEach(function (e) { if (e && e.t) add("Secretos", "Secreto del autor", String(e.t).replace(/\s+/g, " "), function () { findOpen("wlbox"); renderWl(); setTimeout(function () { var hit = null; [].forEach.call($("wlbody").querySelectorAll("p,b,textarea,div"), function (x) { if (!hit && !x.children.length && sfold(x.value || x.textContent).indexOf(sfold(e.t).slice(0, 40)) >= 0) hit = x; }); hvFlash(hit || $("wlbox")); }, 80); }); });
+  (s.docs || []).forEach(function (d) { if (d) add("Documentos del mundo", d.tipo + " · " + d.titulo, String(d.t || "").replace(/\s+/g, " "), function () { closeSheet(); docsSheet(d.id); }); });
+  (s.prot || []).forEach(function (c) { if (c) add("Protagonistas", c.name, [c.desc, (c.traits || []).join(", "), c.goal, c.flaw, c.voice].filter(function (x) { return x; }).join(" · "), null); });
+  try { if (s.mem && s.mem.chars) Object.keys(s.mem.chars).forEach(function (k) { var m = s.mem.chars[k]; if (m && m.name) { var tx = Object.keys(m).filter(function (x) { return x !== "name" && m[x] && typeof m[x] !== "object"; }).map(function (x) { return String(m[x]); }).join(" · "); add("Lo que recuerda El Cronista", m.name, tx, null, (m.alias || []).join(" ")); } }); } catch (e) {}
+  (s.rel || []).forEach(function (r) { if (r) { var tx = [r.a, r.b, r.t || r.tipo, r.n || r.nota || r.d].filter(function (x) { return x; }).join(" · "); add("Relaciones", (r.a || "") + " ↔ " + (r.b || ""), tx, function () { closeSheet(); relSheet(); }); } });
+  if (s.iv) Object.keys(s.iv).forEach(function (n) { (s.iv[n] || []).forEach(function (x) { add("Entrevistas", n, x.q + " — " + x.a, function () { closeSheet(); interviewSheet(n); }); }); });
+  if (s.map && s.map.links) s.map.links.forEach(function (l) { add("Mapa de lugares", l[0] + " ↔ " + l[1], l[2] || "", function () { closeSheet(); mapSheet(); }); });
+  var ns = 0; (s.scenes || []).forEach(function (sc, i) { var tx = String(sc.t || "").replace(/\s+/g, " "); if (sfold(tx).indexOf(term) >= 0) { ns++; if (ns <= 4) add("Escenas", "Capítulo " + chOf(s, i) + " · escena " + (i + 1), tx, function () { goScene(i); }); } });
+  out.scenes = ns; return out;
+}
+function findSheet(q0) {
+  var s = cur; if (!s) return;
+  sheet("Buscar en tu mundo", function (sh) {
+    var q = el("input"); q.type = "search"; q.placeholder = "Un nombre, un lugar, una palabra…"; q.setAttribute("aria-label", "Buscar en cartas, lore, personajes, documentos y escenas"); q.className = "findq"; q.value = q0 || FILT.find || ""; sh.appendChild(q);
+    var st = el("p", "hint"); st.setAttribute("role", "status"); sh.appendChild(st); var res = el("div", "findres"); sh.appendChild(res);
+    function run() {
+      res.innerHTML = ""; FILT.find = q.value; var raw = q.value.trim(); if (raw.length < 2) { st.textContent = raw.length ? "Escribe al menos 2 letras." : "Busca a la vez en las cartas de lore, el lore del universo, los secretos, los documentos, los personajes, las relaciones, las entrevistas, el mapa y las escenas."; return; }
+      var R = findAll(s, raw); if (!R.length) { st.textContent = "No aparece «" + raw + "» en ninguna parte."; return; }
+      st.textContent = R.length + (R.length === 1 ? " resultado." : " resultados.") + " Toca uno para ir a él."; var lastSec = "";
+      R.slice(0, 60).forEach(function (x) {
+        if (x.sec !== lastSec) { lastSec = x.sec; res.appendChild(el("h3", null, x.sec + " (" + R.filter(function (y) { return y.sec === x.sec; }).length + (x.sec === "Escenas" && R.scenes > 4 ? " de " + R.scenes : "") + ")")); }
+        var b = el(x.go ? "button" : "div", "findit"); if (x.go) { b.type = "button"; b.onclick = x.go; } b.appendChild(el("b", null, x.title)); var p = el("span", "fsn"); p.appendChild(document.createTextNode(x.sn.pre)); if (x.sn.hit) p.appendChild(el("mark", null, x.sn.hit)); p.appendChild(document.createTextNode(x.sn.post)); b.appendChild(p); res.appendChild(b);
+      });
+      if (R.scenes > 4) { var more = el("button", "small", "Ver las " + R.scenes + " escenas en el índice"); more.onclick = function () { closeSheet(); idxSheet(raw); }; res.appendChild(more); }
+    }
+    var tm = null; q.oninput = function () { clearTimeout(tm); tm = setTimeout(run, 180); }; run(); closeBtn(sh); setTimeout(function () { try { q.focus(); } catch (e) {} }, 120);
+  });
+}
 /* v0.12.0: documentos del mundo, otro punto de vista, mapa de lugares, compañeros */
 function hvCopy(txt) { try { navigator.clipboard.writeText(txt).then(function () { toast("Copiado."); }, function () { toast("No se pudo copiar."); }); } catch (e) { toast("No se pudo copiar."); } }
 var DOC_T = ["Carta", "Noticia", "Página de diario", "Informe", "Leyenda", "Otro punto de vista", "Otro"];
@@ -2198,7 +2257,7 @@ function docPrompt(s, tipo, idea) {
     (hid ? "\nSECRETOS DEL AUTOR (no los reveles; como mucho, una pista muy indirecta):\n" + hid : "") +
     "\nENCARGO DEL AUTOR (quién lo escribe, a quién, sobre qué): " + (idea || "decide tú algo que enriquezca el mundo") + "\nResponde así: primera línea, un título corto sin comillas; después una línea en blanco y el texto del documento. Nada más.";
 }
-function docsSheet() {
+function docsSheet(openId) {
   var s = cur; if (!s) return; s.docs = s.docs || [];
   sheet("Documentos del mundo", function (sh) {
     para(sh, "Cartas, noticias, diarios o leyendas que existen dentro de tu historia. Se guardan aparte de las escenas.");
@@ -2215,7 +2274,7 @@ function docsSheet() {
     me.onclick = function () { s.docs.push({ id: "d" + Date.now(), tipo: sel.value, titulo: sel.value + " sin título", t: ta.value.trim(), d: Date.now() }); save(); closeSheet(); docsSheet(); };
     if (!s.docs.length) para(sh, "Aún no hay documentos.");
     s.docs.slice().reverse().forEach(function (d) {
-      var box = el("details", "pl docit"); box.appendChild(el("summary", null, d.tipo + " · " + d.titulo));
+      var box = el("details", "pl docit"); box.dataset.q = sfold(d.tipo + " " + d.titulo + " " + d.t); if (openId && d.id === openId) { box.open = true; setTimeout(function () { hvFlash(box); }, 150); } box.appendChild(el("summary", null, d.tipo + " · " + d.titulo));
       var ti = el("input"); ti.type = "text"; ti.maxLength = 80; ti.value = d.titulo; ti.setAttribute("aria-label", "Título del documento"); ti.style.cssText = "width:100%;margin:.4rem 0"; box.appendChild(ti);
       var tx = el("textarea"); tx.value = d.t; tx.setAttribute("aria-label", "Texto del documento"); tx.style.cssText = "width:100%;min-height:11rem;font-family:Georgia,serif;line-height:1.5"; box.appendChild(tx);
       if (d.tipo !== "Otro punto de vista") { var lb = el("label", "chk"), ck = el("input"); ck.type = "checkbox"; ck.checked = d.on !== false; ck.onchange = function () { d.on = ck.checked; save(); }; lb.appendChild(ck); lb.appendChild(document.createTextNode(" El Cronista lo tiene en cuenta (los 3 más recientes)")); lb.style.cssText = "display:block;margin:.4rem 0"; box.appendChild(lb); }
@@ -2225,6 +2284,7 @@ function docsSheet() {
       del.onclick = function () { if (del.textContent === "Borrar documento") { del.textContent = "¿Seguro? Toca otra vez"; return; } s.docs = s.docs.filter(function (x) { return x !== d; }); save(); closeSheet(); docsSheet(); };
       r2.appendChild(sv); r2.appendChild(cp); r2.appendChild(del); box.appendChild(r2); sh.appendChild(box);
     });
+    try { var _dl = sh.querySelectorAll("details.docit"); if (_dl.length) hvFilter("docs", sh, _dl[0], _dl, "Buscar en los documentos", 4); } catch (e) {}
     closeBtn(sh);
   });
 }
@@ -3768,7 +3828,7 @@ function goScene(i) {
   var s = cur; if (!s || i < 0 || i >= s.scenes.length) return; var need = s.scenes.length - i + 2; if (need > WIN) WIN = need;
   closeSheet(); render(true); setTimeout(function () { var e = $("sc-" + i); if (e && e.scrollIntoView) { e.scrollIntoView({ block: "start" }); e.style.transition = "background .6s"; e.style.background = "rgba(255,214,150,.18)"; setTimeout(function () { e.style.background = ""; }, 1800); } }, 60);
 }
-function idxSheet() {
+function idxSheet(q0) {
   var s = cur; if (!s || !s.scenes.length) return;
   sheet("Índice y buscador", function (sh) {
     var q = el("input"); q.type = "search"; q.placeholder = "Buscar en la historia (nombre, objeto, frase…)"; q.setAttribute("aria-label", "Buscar en la historia"); q.style.cssText = "width:100%;box-sizing:border-box;padding:.7rem;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font-size:1rem"; sh.appendChild(q);
@@ -3793,7 +3853,7 @@ function idxSheet() {
       out.forEach(function (r) { var b = el("button", null); b.style.cssText = "display:block;width:100%;text-align:left;margin:.25rem 0;font-size:.92rem"; var hd = el("small", "hint", "Capítulo " + chOf(s, r.i) + " · escena " + (r.i + 1) + (r.src === "tu acción" ? " · en tu acción" : "")); hd.style.display = "block"; b.appendChild(hd); var p = el("span"); if (r.pre) p.appendChild(document.createTextNode("…")); hl(p, r.t, r.at, term.length); if (r.post) p.appendChild(document.createTextNode("…")); b.appendChild(p); b.onclick = function () { goScene(r.i); }; res.appendChild(b); });
     }
     var tm = null; q.oninput = function () { clearTimeout(tm); tm = setTimeout(search, 200); };
-    drawBase(); setTimeout(function () { try { q.focus(); } catch (e) {} }, 100);
+    drawBase(); if (q0) { q.value = q0; search(); } setTimeout(function () { try { q.focus(); } catch (e) {} }, 100);
   });
 }
 $("idxb").onclick = idxSheet; $("rewb").onclick = function () { $("moremenu").hidden = true; rewindSheet(); };
@@ -3898,6 +3958,7 @@ function undoTurn() {
   s.prev = null; save(); renderLore(); render();
 }
 $("new").onclick = function () { startCreate(""); };
+try { $("findfab").onclick = function () { findSheet(); }; } catch (e) {}
 try { $("goalcard").onclick = goalSheet; $("goalcard").onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goalSheet(); } }; } catch (e) {}
 $("back1").onclick = function () { renderLib(); view("lib"); };
 $("back2").onclick = function () { renderLib(); view("lib"); };
@@ -3957,7 +4018,7 @@ $("csave").onclick = function () {
   leaveDesigner();
 };
 function renderChars() {
-  var b = $("clist"); b.innerHTML = "";
+  var b = $("clist"); b.innerHTML = ""; setTimeout(function () { try { var _pc = b.querySelectorAll(".pcard"); if (!b.querySelector(".hvfilt") && _pc.length) hvFilter("chars", b, b.firstChild, _pc, "Buscar entre tus personajes", 5); } catch (e) {} }, 0);
   if (!CHARS.length) b.appendChild(el("p", "hint", "Aún no tienes personajes."));
   CHARS.forEach(function (c) {
     var r = el("div", "pcard"), t = el("div", "tx");
@@ -6397,6 +6458,7 @@ var GUIDE = {
     ["Mapa de lugares", "Dibuja tus cartas de tipo lugar. Arrástralas para colocarlas y usa «Conectar lugares» para unirlas; El Cronista respeta esas conexiones."],
     ["Pedir ayuda", "En la ficha RPG: un compañero te ayuda en la próxima acción (+3 al dado). «Ayudando» lo cancela. «Añadir compañero» suma a un personaje a tu grupo."],
     ["¿quién?", "En las viñetas, toca el nombre sobre un bocadillo para corregir quién habla. «Nadie en concreto» lo deja sin nombre y «Volver a deducirlo solo» quita tu corrección."],
+    ["Lupa (buscar en tu mundo)", "El botón redondo con una lupa, abajo a la derecha mientras lees o juegas, busca a la vez en cartas de lore, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa y escenas. Toca un resultado para ir a él. «Ver las escenas en el índice» abre el buscador de escenas. Además, las listas largas (cartas, ideas de lore, documentos, personajes, historias) tienen su propio cuadro de búsqueda."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

@@ -399,3 +399,9 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - La meta de escritura (`hv:goal`) entra en las copias y se fusiona al restaurar.
 - No añadido por existir ya: letra «Legible (más espaciada)» en Lectura.
 - Prueba nueva: tests/t111_v012.js.
+
+**v0.13.0 — Buscadores**
+- Lupa flotante en la pantalla de juego (`#findfab`) → «Buscar en tu mundo» (`findSheet`/`findAll`): cartas, lore del universo, secretos, documentos, protagonistas, memoria del Cronista, relaciones, entrevistas, mapa y escenas; sin distinguir tildes ni mayúsculas. Cada resultado lleva a su sitio y lo resalta.
+- Filtros en listas largas (`hvFilter`): cartas de lore (≥4), ideas del lore del universo (≥4, busca en el texto completo), documentos (≥4), mis personajes (≥5), historias en Inicio (≥6). Lo escrito se conserva al repintar.
+- El «Índice y buscador» de escenas ya existente acepta un término inicial.
+- Prueba nueva: tests/t112_buscar.js.
