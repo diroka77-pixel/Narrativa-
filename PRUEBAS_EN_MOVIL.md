@@ -74,3 +74,12 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 5. Viñetas: si la escena tiene imagen, se ve de fondo en la primera viñeta; con tono elegido, la viñeta cambia de color.
 6. Inicio: tarjeta «Hoy: X palabras». Tócala, fija una meta, escribe una escena y comprueba que suma.
 7. Ajustes → «Meta de escritura: visible» → tócalo: la tarjeta de Inicio debe desaparecer; tócalo otra vez y vuelve. (v0.10.3)
+
+## 28. Ficha RPG, combate y entrevistas — v0.11.0
+1. Abre una aventura RPG (también vale una antigua): junto a las acciones debe salir «🎒 Ficha (+4)». Ábrela y reparte los puntos con «+».
+2. En la ficha, añade un objeto, pulsa «Usar» y juega una acción: la línea del dado debe mostrar «+2» y el nombre del objeto.
+3. Las opciones deben indicar el atributo («Arriesgado · Ingenio +2 · …»). Si El Cronista no lo pone, la opción sale sin atributo: anótalo.
+4. Provoca una pelea: debe aparecer la barra roja del enemigo y bajar con cada éxito. Al llegar a 0, mensaje de victoria y +1 punto de atributo. Prueba también a huir.
+5. Comprueba si El Cronista añade o quita objetos del inventario cuando la escena lo pide (🎒 +objeto / −objeto).
+6. «Deshacer» o «Borrar y reescribir» tras un combate: salud, inventario y enemigo deben volver a como estaban.
+7. Entrevista: toca la cara de un personaje (viñetas) o «🎙 Entrevistar» en su carta de lore, hazle una pregunta y comprueba que responde con su voz y que la historia no cambia.

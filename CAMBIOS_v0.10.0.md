@@ -378,3 +378,12 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 
 **v0.10.3**
 - Ajustes: «Meta de escritura: visible / oculta» (`hv:goalhide`). Oculta, la tarjeta no aparece y no se cuentan palabras.
+
+**v0.11.0 — Ficha RPG, combate y entrevistas**
+- Atributos (Fuerza, Agilidad, Ingenio, Carisma; 0–4): suman al dado. 4 puntos iniciales (también en partidas antiguas) y +1 por combate ganado (tope 14 en total). La opción lleva etiqueta `[Riesgo][Atributo]`; si el jugador escribe su acción, se deduce por palabras clave o no se aplica ninguno.
+- Inventario (máx. 12): lo gestiona el juego. El Cronista propone cambios con `"rpg":{"gana":[…],"pierde":[…]}`; el jugador puede añadir, quitar y «Usar» (+2 al dado en la siguiente acción).
+- Combate: El Cronista lo abre con `"rpg":{"enemigo":{"nombre","fuerza":1-3}}`; el juego lleva el aguante (40/70/100), calcula el daño antes de narrar y le dice al Cronista si el enemigo cae o sigue en pie. Huir con éxito cierra el combate. «Terminar combate» en la ficha.
+- El estado RPG completo (salud, inventario, enemigo, atributos) se guarda en cada punto de vuelta atrás.
+- Entrevista a personajes (`s.iv`): consulta ligera con ficha, memoria y secretos del autor protegidos; no añade escenas.
+- La «papelera» no se ha añadido: borrar una historia ya crea una copia recuperable en Ajustes → Recuperación y versiones.
+- Prueba nueva: tests/t110_ficha.js.
