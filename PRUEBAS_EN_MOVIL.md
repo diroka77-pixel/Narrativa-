@@ -122,3 +122,10 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 2. Debe salir un formulario con lo que ha leído. Corrige algo y pulsa «Guardar como canon». Comprueba que la ficha muestra los datos y el «Canon del autor».
 3. Juega una escena con ese personaje: El Cronista debe respetar el aspecto y los datos del canon.
 4. Con solo Groq o Mistral conectados, debe salir un aviso claro de que hace falta Gemini, OpenAI o Anthropic.
+
+## 34. Sagas — v0.17.0
+1. En el menú de tu novela (toca su portada en Inicio): «📚 Construir el volumen 2».
+2. Pulsa «Que El Cronista resuma este volumen», revisa el resumen (debe incluir el final y los hilos abiertos) y escribe cómo empieza el volumen 2.
+3. «📚 Construir el volumen 2»: se abre una historia nueva. Comprueba en Cartas de lore, Atlas y Lore del universo que está todo lo del volumen 1, y que el volumen 1 sigue intacto.
+4. Juega la primera escena: El Cronista debe conocer lo ocurrido en el volumen 1 sin repetirlo.
+5. Repite desde el volumen 2 para crear el 3: en «📖 Saga: volúmenes anteriores» deben salir el 1 y el 2.

@@ -430,3 +430,11 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - `fix.canon` va en el prompt del personaje (no en la lista breve de otros personajes) y en «El mundo del libro».
 - shim.js: `sample(…, {image})` con partes de imagen por proveedor; error claro `no_vision` si no hay clave con visión o en modo copiar y pegar.
 - Prueba nueva: tests/t115_canon.js.
+
+**v0.17.0 — Sagas**
+- «📚 Construir el volumen N» en el menú de la historia (si tiene escenas) y al final de una historia terminada. Crea una historia nueva (`sagaNext`) con lore, imágenes, protagonistas, lore del universo, glosario, mapa, documentos, secretos, entrevistas, reglas, biblia, estilo y memoria de personajes (canon, voz, saberes, hilos abiertos); la cronología y los capítulos del volumen anterior se sustituyen por su resumen. Números de escena de la memoria a 0.
+- `s.saga = {id, name, vol, prev:[{vol,title,sum,id}], next}`; cada volumen hereda la lista de resúmenes de los anteriores. Va al prompt con `sagaCtx` (completo hasta 9000 caracteres; compacto 2200).
+- Resumen del volumen: borrador local o «Que El Cronista resuma este volumen» (una consulta; incluye final e hilos abiertos); editable antes y después («📖 Saga: volúmenes anteriores»).
+- RPG: opción de llevar la ficha (salud llena, sin enemigo, misiones abiertas).
+- Etiqueta «VOL. N» en la biblioteca; sección de la saga en «El mundo del libro».
+- Prueba nueva: tests/t116_saga.js.

@@ -533,6 +533,8 @@ body.imm.paged #book .bkcover{display:flex;flex-direction:column;align-items:cen
 body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 .bkcover,.bkcover *{hyphens:none;-webkit-hyphens:none}
 .bkcover .bkcap{font-size:1.1rem;text-wrap:balance}
+/* v0.17.0: sagas */
+.scene .sagab,#book .sagab{display:block;margin:.6rem auto 1.4rem;width:auto}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -1106,6 +1108,8 @@ function storyMenu(s) {
     para(sh, (s.scenes || []).length + " escenas · " + (s.fin ? "terminada" : "en curso"));
     var go = el("button", "go", "▶ Continuar"); go.onclick = function () { closeSheet(); openStory(s); }; sh.appendChild(go);
     if (!s.rpg && !s.sample) { var rp = el("button", null, "⚔ Jugarla también como aventura RPG"); rp.style.cssText = "margin-top:.5rem;width:100%"; rp.onclick = function () { closeSheet(); rpgSetup(s); }; sh.appendChild(rp); }
+    if (!s.sample && (s.scenes || []).length) { var nx = s.saga && s.saga.next && LIB.filter(function (x) { return x.id === s.saga.next; })[0]; var sv = el("button", null, nx ? "📚 Ir al volumen " + (sagaVol(s) + 1) : "📚 Construir el volumen " + (sagaVol(s) + 1)); sv.style.cssText = "margin-top:.5rem;width:100%"; sv.onclick = function () { closeSheet(); if (nx) openStory(nx); else sagaSheet(s); }; sh.appendChild(sv); }
+    if (s.saga && (s.saga.prev || []).length) { var pv = el("button", null, "📖 Saga: volúmenes anteriores"); pv.style.cssText = "margin-top:.5rem;width:100%"; pv.onclick = function () { closeSheet(); sagaPrevSheet(s); }; sh.appendChild(pv); }
     var ar = el("button", null, "🕯 Guardar en el Rincón de los olvidados"); ar.style.marginTop = ".5rem"; ar.style.width = "100%";
     ar.onclick = function () { s.arch = Date.now(); save(); closeSheet(); renderLib(); toast("«" + s.title + "» descansa ahora en el Rincón de los olvidados."); }; sh.appendChild(ar);
     para(sh, "No se borra nada: la historia sale de la página principal y puedes rescatarla cuando quieras.");
@@ -1189,7 +1193,7 @@ function renderLib() {
   LIB.filter(function (x) { return !x.arch; }).sort(function (a, b) { return (b.at || +b.id || 0) - (a.at || +a.id || 0); }).forEach(function (s) {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s); if (s.cover) { cv.classList.add("hasimg"); cd.classList.add("clean"); cv.setAttribute("aria-label", s.title); }
-    if (!s.cover) cd.appendChild(el("span", "chip", (s.rpg ? "RPG · " : "") + (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
+    if (!s.cover) cd.appendChild(el("span", "chip", (s.saga && s.saga.vol > 1 ? "VOL. " + s.saga.vol + " · " : "") + (s.rpg ? "RPG · " : "") + (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
     cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, vocabApply(s, s.syn) || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
     var lpT = 0, lpF = false;
     cv.onpointerdown = function () { lpF = false; clearTimeout(lpT); lpT = setTimeout(function () { lpF = true; storyMenu(s); }, 650); };
@@ -1231,8 +1235,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.16.0";
+var VERSION = "0.17.0";
 var NEWS = [
+  ["0.17.0", "Sagas: desde el menú de una historia (o al terminarla) puedes «Construir el volumen 2». Se lleva todo el mundo y la memoria de los personajes, más un resumen del volumen anterior que El Cronista puede escribir y tú corregir. El volumen 3 hereda el resumen del 1 y del 2, y así sucesivamente."],
   ["0.16.0", "Canon desde una imagen: en la ficha de cada personaje (Atlas → Personajes) puedes subir su lámina o esquema y El Cronista extrae su descripción y rasgos. Los revisas, los guardas y quedan como canon fijo."],
   ["0.15.0", "«El mundo del libro en PDF»: exporta todo el making of separado por tarjetas, con sus imágenes: lore del universo, protagonistas, personajes, cartas de lore, glosario, mapa, relaciones, documentos, secretos, entrevistas, cronología y más. Está en las opciones de exportar y en Cartas de lore."],
   ["0.14.1", "El botón para salir de la lectura es ahora pequeño y discreto («✕ Salir», arriba a la derecha) y ya no tapa la portada ni el texto."],
@@ -2605,7 +2610,7 @@ function render(keep) {
     book.appendChild(w);
   });
   try { var _op = openerEl(s); if (_op) book.appendChild(_op); } catch (e) {}
-  if (s.fin) book.appendChild(el("p", "fin", "Fin de la historia."));
+  if (s.fin) { book.appendChild(el("p", "fin", "Fin " + (s.saga ? "del volumen " + sagaVol(s) : "de la historia") + ".")); if (!s.sample) { var _nx = s.saga && s.saga.next && LIB.filter(function (x) { return x.id === s.saga.next; })[0], _sb = el("button", "go sagab", _nx ? "📚 Ir al volumen " + (sagaVol(s) + 1) : "📚 Construir el volumen " + (sagaVol(s) + 1)); _sb.onclick = function () { if (_nx) openStory(_nx); else sagaSheet(s); }; book.appendChild(_sb); } }
   try { var _ax = s.fin ? appxEl(s) : null; if (_ax) { _ax.open = true; book.appendChild(_ax); } } catch (e) {}
   $("status").hidden = !busy;
   $("ctrl").hidden = busy || s.fin || !!(s.cmode === "yo" && openerOpen(s));
@@ -3213,7 +3218,7 @@ function build(s, action, note, sp, compact) {
     (LONGCUR ? "\nLONGITUD: ESCENA LARGA. Escribe de 1500 a 2000 palabras en total (unos 3 o 4 folios), en muchos párrafos y varios momentos, sin resumir ni acortar: no cierres la escena hasta llegar a esa extensión. DESARROLLA TODO lo que el jugador ha escrito, en el orden en que lo escribió, sin saltarte ni condensar nada; trátalo como guion de lo que ocurre y despliégalo con acción, diálogos, gestos y detalles del entorno. Conserva sus frases y diálogos clave cuando estén bien escritos y añade lo que haga falta para enlazarlos. No inventes un final cerrado ni avances más allá de lo que el jugador cuenta." : "\nLONGITUD: párrafos de longitud natural, " + (compact ? "de 250 a 350 palabras en total (sé breve)" : "de " + LEN[len] + " palabras en total") + ".") +
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s, recentFocus(s, action)).slice(0, 1800) : loreTxt(s, recentFocus(s, action))) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
-    extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sxCtx(s, compact) + gloCtx(s, compact) + docCtx(s, compact) + mapCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
+    extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sagaCtx(s, compact) + sxCtx(s, compact) + gloCtx(s, compact) + docCtx(s, compact) + mapCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
     "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
@@ -3812,6 +3817,88 @@ function rpgReroll(s) {
   var r = s.rpg; if (busy || !s.prev || !s.lastAct) return;
   if (r.diff !== "relajado") { if (r.cred <= 0) { toast("No te quedan créditos de destino."); return; } r.cred--; }
   var lr = s.scenes[s.scenes.length - 1]; if (lr && lr.roll) r.nr = lr.roll.risk; var a = s.lastAct; undoTurn(); r.pr = null; turn(a[0], a[1]);
+}
+/* v0.17.0: sagas. Cada volumen nuevo hereda el mundo y el resumen de todos los anteriores. */
+function sagaBase(s) { return String((s.saga && s.saga.name) || s.title || "").replace(/\s*[·:\-–—]\s*Volumen\s+\d+\s*$/i, "").trim() || s.title; }
+function sagaVol(s) { return (s.saga && s.saga.vol) || 1; }
+function sagaCtx(s, compact) {
+  var g = s.saga; if (!g || !(g.prev || []).length) return "";
+  var cap = compact ? 450 : 1800, tot = compact ? 2200 : 9000, out = "", n = 0;
+  g.prev.slice().reverse().forEach(function (v) { var t = "\nVOLUMEN " + v.vol + " · «" + v.title + "»: " + String(v.sum || "").replace(/\s+/g, " ").slice(0, cap); if (n + t.length <= tot) { out = t + out; n += t.length; } });
+  return "\nSAGA «" + (g.name || sagaBase(s)) + "»: esta historia es el VOLUMEN " + g.vol + ". Lo ocurrido en los volúmenes anteriores es canon: respétalo, no lo contradigas ni lo repitas; menciónalo solo cuando venga a cuento (un recuerdo, una cicatriz, una deuda). Los personajes recuerdan lo que vivieron." + out;
+}
+function sagaLocal(s) {
+  var m = ensureMem(s), out = [];
+  if (s.syn) out.push(String(s.syn));
+  var an = Object.keys(m.acts || {}).map(Number).sort(function (a, b) { return a - b; }); an.forEach(function (k) { out.push(String(m.acts[k])); });
+  var cn = Object.keys(m.chap || {}).map(Number).sort(function (a, b) { return a - b; }); if (!an.length) cn.forEach(function (k) { out.push("Cap. " + k + ": " + String(m.chap[k])); });
+  if (s.memory) out.push(String(s.memory));
+  var ev = (m.ev || []).slice(-8).map(function (e) { return e.what; }).filter(Boolean); if (ev.length) out.push("Últimos sucesos: " + ev.join("; ") + ".");
+  return out.join("\n").replace(/[ \t]+/g, " ").slice(0, 3500);
+}
+function sagaPrompt(s) {
+  var m = ensureMem(s), last = s.scenes.length ? String(s.scenes[s.scenes.length - 1].t).slice(-1800) : "";
+  var cs = Object.keys(m.chars).map(function (k) { var c = m.chars[k]; return "- " + c.name + ": " + [c.desc, c.loc && "está en " + c.loc, c.mood && "ánimo: " + c.mood, c.goal && "quiere: " + c.goal].filter(Boolean).join("; "); }).slice(0, 25).join("\n");
+  var pend = (m.pend || []).filter(function (p) { return p.open; }).slice(-15).map(function (p) { return "- " + p.text; }).join("\n");
+  var chap = Object.keys(m.chap || {}).map(Number).sort(function (a, b) { return a - b; }).map(function (k) { return "Cap. " + k + ": " + m.chap[k]; }).join("\n").slice(-6000);
+  var acts = Object.keys(m.acts || {}).map(Number).sort(function (a, b) { return a - b; }).map(function (k) { return "Acto " + k + ": " + m.acts[k]; }).join("\n");
+  var ev = (m.ev || []).slice(-120).map(function (e) { return "- " + e.what + (e.cons ? " → " + e.cons : ""); }).join("\n").slice(-6000);
+  return "Eres el editor de una saga de novelas. Escribe el RESUMEN DEFINITIVO del volumen «" + s.title + "» para que el autor de la continuación lo conozca todo. Incluye el final, los giros y quién muere o desaparece: es un documento interno, sin miedo a destripar. Sé fiel a los datos; no inventes nada. Español.\n" +
+    "SINOPSIS: " + (s.syn || "") + (acts ? "\nACTOS:\n" + acts : "") + (chap ? "\nCAPÍTULOS:\n" + chap : "") + (ev ? "\nSUCESOS:\n" + ev : "") + (s.memory ? "\nRESUMEN DEL ÚLTIMO ARCO: " + String(s.memory).slice(0, 2000) : "") + (cs ? "\nPERSONAJES AL FINAL:\n" + cs : "") + (pend ? "\nHILOS QUE QUEDARON ABIERTOS:\n" + pend : "") + (last ? "\nÚLTIMA ESCENA (final):\n" + last : "") +
+    "\nResponde SOLO con JSON: {\"resumen\":\"de 250 a 450 palabras: qué ocurre de principio a fin, en orden\",\"final\":\"cómo queda cada personaje importante al cerrar el volumen (vivo o muerto, dónde, con quién, qué ha cambiado)\",\"abiertos\":\"hilos, misterios y deudas que quedan para el siguiente volumen\"}";
+}
+function sagaZero(m) {
+  m = JSON.parse(JSON.stringify(m)); m.ev = []; m.chap = {}; m.acts = {};
+  ["chars", "items", "world"].forEach(function (k) { Object.keys(m[k] || {}).forEach(function (q) { var o = m[k][q]; if (!o || typeof o !== "object") return; if (o.first != null) o.first = 0; if (o.last != null) o.last = 0; if (o.sc != null) o.sc = 0; delete o.hist; delete o.rhist; (o.know || []).forEach(function (x) { if (x) x.sc = 0; }); }); });
+  (m.pend || []).forEach(function (p) { if (p) p.sc = 0; }); m.pend = (m.pend || []).filter(function (p) { return p && p.open; });
+  return m;
+}
+function sagaNext(s, o) {
+  var g0 = s.saga || { id: s.id, name: sagaBase(s), vol: 1, prev: [] }, N = g0.vol + 1, name = o.name || g0.name || sagaBase(s);
+  var prev = (g0.prev || []).concat([{ vol: g0.vol, title: s.title, sum: String(o.sum || "").trim().slice(0, 6000), at: Date.now(), id: s.id }]);
+  var J = function (x) { return x == null ? undefined : JSON.parse(JSON.stringify(x)); };
+  var c = { id: String(Date.now()), title: (o.title || (name + " · Volumen " + N)).slice(0, 80), syn: o.idea ? String(o.idea).slice(0, 400) : "Volumen " + N + " de la saga «" + name + "».", genre: s.genre, genres: (s.genres || []).slice(), director: s.director, pov: s.pov, aut: s.aut, review: s.review, len: s.len, sty: s.sty, intens: J(s.intens), ten: s.ten, lens: s.lens, pmode: s.pmode, cmode: s.cmode,
+    lore: J(s.lore || []), prot: J(s.prot || []), premise: "Volumen " + N + " de la saga «" + name + "». Continúa la historia de los volúmenes anteriores." + (o.idea ? " Arranque propuesto por el autor: " + o.idea : "") + (s.premise ? " Premisa original de la saga: " + String(s.premise).slice(0, 600) : ""),
+    bible: s.bible, rules: s.rules ? s.rules.slice() : undefined, vocab: J(s.vocab), rel: J(s.rel), src: J(s.src), wl: J(s.wl), wlsum: J(s.wlsum), glo: J(s.glo), docs: J(s.docs), map: J(s.map), sx: J(s.sx), iv: J(s.iv),
+    at: Date.now(), memory: "", last: "", turn: 0, state: { salud: 100, peligro: 10, objetos: [], relaciones: {}, hilos: [], eventos_pendientes: [], deudas: [], aportes: [] }, scenes: [], opts: [], fin: false, prev: null, mem: sagaZero(ensureMem(s)), now: null,
+    saga: { id: g0.id, name: name, vol: N, prev: prev } };
+  Object.keys(c).forEach(function (k) { if (c[k] === undefined) delete c[k]; });
+  if (s.rpg) { if (o.rpg) { var r = J(rpgFix(s.rpg)); r.hp = 100; r.b2 = 100; delete r.en; delete r.shop; delete r.use; delete r.help; r.pr = null; r.cp = null; r.ms = (r.ms || []).filter(function (x) { return x.st === "open"; }); (r.co || []).forEach(function (x) { x.hp = 100; }); r.cred = r.diff === "duro" ? 1 : 3; c.rpg = r; } else c.rpg = rpgNew(s.rpg.diff || "normal", s.rpg.b2n || "Energía"); delete c.rpg.parent; rpgFix(c.rpg); }
+  if (o.close) { s.fin = true; s.opts = []; }
+  s.saga = { id: g0.id, name: name, vol: g0.vol, prev: g0.prev || [], next: c.id, sum: prev[prev.length - 1].sum };
+  LIB.push(c); return c;
+}
+function sagaSheet(s) {
+  if (!s || busy) return; var N = sagaVol(s) + 1, name0 = (s.saga && s.saga.name) || sagaBase(s);
+  sheet("Construir el volumen " + N, function (sh) {
+    para(sh, "Crea una historia nueva que continúa esta. Se lleva todo el mundo: cartas de lore con sus imágenes, personajes y su memoria (canon, voz, relaciones), lore del universo, glosario, mapa, documentos, secretos y reglas." + (s.saga && s.saga.prev && s.saga.prev.length ? (s.saga.prev.length === 1 ? " También el resumen del volumen anterior." : " También el resumen de los " + s.saga.prev.length + " volúmenes anteriores.") : "") + " Este volumen no se toca.");
+    function lab(t, e) { var w = el("label"); w.style.cssText = "display:block;margin:.5rem 0;font-size:.85rem"; w.appendChild(document.createTextNode(t)); e.style.width = "100%"; w.appendChild(e); sh.appendChild(w); return e; }
+    var nm = el("input"); nm.type = "text"; nm.maxLength = 60; nm.value = name0; lab("Nombre de la saga", nm);
+    var tt = el("input"); tt.type = "text"; tt.maxLength = 80; tt.value = name0 + " · Volumen " + N; lab("Título del volumen " + N, tt);
+    nm.oninput = function () { if (/·\s*Volumen\s+\d+$/.test(tt.value)) tt.value = (nm.value.trim() || name0) + " · Volumen " + N; };
+    var sm = el("textarea"); sm.maxLength = 6000; sm.value = (s.saga && s.saga.sum) || sagaLocal(s); sm.style.minHeight = "12rem"; sm.style.fontFamily = "Georgia,serif"; lab("Resumen de «" + s.title + "» (lo que el volumen " + N + " sabrá de este)", sm);
+    var st = el("p", "hint"); st.setAttribute("role", "status"); st.textContent = "Puedes editarlo a mano o pedir al Cronista un resumen completo, con el final y los hilos abiertos (gasta una consulta)."; sh.appendChild(st);
+    var ab = el("button", "small", "Que El Cronista resuma este volumen"); sh.appendChild(ab);
+    ab.onclick = async function () { if (ab.disabled) return; ab.disabled = true; st.textContent = "El Cronista está releyendo el volumen…";
+      try { var d = parse((await ask(sagaPrompt(s), "polish")).text); var tx = [d.resumen, d.final && "CÓMO QUEDA TODO: " + d.final, d.abiertos && "HILOS ABIERTOS: " + (Array.isArray(d.abiertos) ? d.abiertos.join("; ") : d.abiertos)].filter(Boolean).join("\n\n"); if (!tx.trim()) throw new Error("vacío"); sm.value = tx.slice(0, 6000); st.textContent = "Resumen listo. Revísalo y corrige lo que haga falta."; }
+      catch (e) { st.textContent = e && e.code === "rate_limited" ? "Has llegado al límite de consultas por ahora. Prueba más tarde." : "No he podido resumirlo. Puedes escribirlo tú o intentarlo de nuevo."; }
+      ab.disabled = false; };
+    var id = el("textarea"); id.maxLength = 400; id.placeholder = "Por ejemplo: un año después, Sora busca a su hermano en la Torre Axis"; id.style.minHeight = "4.6rem"; lab("¿Cómo empieza el volumen " + N + "? (opcional)", id); try { var mc = hvMic(id); if (mc) sh.appendChild(mc); } catch (e) {}
+    var cl = null, rk = null;
+    if (!s.fin) { var l1 = el("label", "chk"); cl = el("input"); cl.type = "checkbox"; cl.checked = true; l1.appendChild(cl); l1.appendChild(document.createTextNode(" Dar por terminado este volumen")); l1.style.cssText = "display:block;margin:.6rem 0"; sh.appendChild(l1); }
+    if (s.rpg) { var l2 = el("label", "chk"); rk = el("input"); rk.type = "checkbox"; rk.checked = true; l2.appendChild(rk); l2.appendChild(document.createTextNode(" Llevar la ficha RPG (atributos, inventario, dinero, compañeros y misiones abiertas)")); l2.style.cssText = "display:block;margin:.6rem 0"; sh.appendChild(l2); }
+    var go = el("button", "go", "📚 Construir el volumen " + N); go.style.marginTop = ".6rem"; sh.appendChild(go);
+    go.onclick = function () { if (!sm.value.trim()) { toast("Escribe o genera primero el resumen de este volumen."); return; } var c = sagaNext(s, { name: nm.value.trim().slice(0, 60) || name0, title: tt.value.trim(), sum: sm.value, idea: id.value.trim(), close: cl ? cl.checked : false, rpg: rk ? rk.checked : false }); if (save() === false) { toast("No hay espacio para guardar el volumen nuevo. Quita alguna imagen."); return; } closeSheet(); toast("Volumen " + N + " creado. Se lleva el mundo y la memoria de la saga."); openStory(c); };
+    closeBtn(sh, "Cancelar");
+  });
+}
+function sagaPrevSheet(s) {
+  var g = s && s.saga; if (!g || !(g.prev || []).length) return;
+  sheet("Saga «" + g.name + "» · volúmenes anteriores", function (sh) {
+    para(sh, "Esto es lo que este volumen sabe de los anteriores. Puedes corregirlo: El Cronista lo usará como canon.");
+    g.prev.forEach(function (v) { var d = el("details", "pl"); d.appendChild(el("summary", null, "Volumen " + v.vol + " · " + v.title)); var ta = el("textarea"); ta.value = v.sum || ""; ta.maxLength = 6000; ta.style.cssText = "width:100%;min-height:12rem;font-family:Georgia,serif;line-height:1.5"; ta.setAttribute("aria-label", "Resumen del volumen " + v.vol); ta.onchange = function () { v.sum = ta.value.trim(); save(); toast("Resumen del volumen " + v.vol + " guardado."); }; d.appendChild(ta); var src = LIB.filter(function (x) { return x.id === v.id; })[0]; if (src) { var ob = el("button", "small", "Abrir el volumen " + v.vol); ob.onclick = function () { closeSheet(); openStory(src); }; d.appendChild(ob); } sh.appendChild(d); });
+    closeBtn(sh);
+  });
 }
 function rpgFrom(s, diff, b2n) {
   var m = JSON.parse(JSON.stringify(ensureMem(s))); m.chap = {}; m.acts = {};
@@ -6116,6 +6203,7 @@ function fichaLines(s) {
   L.push({ k: "title", t: s.title || "Historia" });
   p("El mundo del libro: lore, tarjetas, personajes y todo lo creado durante la escritura · " + n + " escenas · generado con Historias vivas el " + new Date().toISOString().slice(0, 10));
   if (s.blurb) { h1("CONTRAPORTADA"); p(s.blurb); }
+  if (s.saga && (s.saga.prev || []).length) { h1("SAGA «" + s.saga.name + "»: VOLÚMENES ANTERIORES"); p("Este es el volumen " + s.saga.vol + "."); s.saga.prev.forEach(function (v) { card("Volumen " + v.vol + " · " + v.title, "volumen", v.sum, ""); }); }
   h1("DATOS GENERALES");
   li("Géneros: " + ((s.genres && s.genres.length ? s.genres : [s.genre]).filter(Boolean).join(" + ") || "sin definir"));
   li("Sinopsis: " + (s.syn || s.premise || ""));
@@ -6681,6 +6769,8 @@ var GUIDE = {
     ["🎤 Dictar", "Solo en la app instalada: dicta con la voz en lugar de escribir."],
     ["Seguir por donde ibas", "En la portada del modo libro: salta a la página donde dejaste la lectura."],
     ["📷 Leer su canon desde una imagen", "En Atlas → Personajes, dentro de cada ficha: sube la lámina o esquema del personaje y El Cronista extrae su descripción y rasgos. Los revisas y «Guardar como canon» los fija. Necesita una clave de Gemini, OpenAI o Anthropic y gasta una consulta."],
+    ["📚 Construir el volumen", "En el menú de una historia (o al final, cuando está terminada): crea el siguiente volumen de la saga con todo el mundo, los personajes y su memoria, más el resumen de los volúmenes anteriores. «Que El Cronista resuma este volumen» genera ese resumen (gasta una consulta); puedes editarlo antes de construir."],
+    ["📖 Saga: volúmenes anteriores", "En el menú de un volumen 2 o posterior: lee y corrige lo que este volumen sabe de los anteriores."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
