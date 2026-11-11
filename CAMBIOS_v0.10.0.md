@@ -417,3 +417,9 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 
 **v0.14.1**
 - Botón de salir de la lectura pequeño y discreto («✕ Salir», 30 px de alto, arriba a la derecha, por encima del área del libro). Portada sin partir palabras con guion.
+
+**v0.15.0 — El mundo del libro en PDF (making of)**
+- La antigua «Ficha de la historia» pasa a llamarse «El mundo del libro» y se amplía: contraportada, glosario, mapa, relaciones, documentos, secretos del autor, entrevistas y ficha RPG, además de lo que ya tenía (lore del universo, biblia, plan, personajes, objetos, cartas, hilos, cronología).
+- En el PDF, protagonistas, cartas de lore, términos y documentos van en tarjetas con cabecera, tipo e imagen; la portada de la historia abre el documento. Archivo: `titulo-mundo.pdf` / `.txt`.
+- Acceso nuevo: Cartas de lore → «Exportar el mundo (PDF)».
+- Prueba nueva: tests/t114_mundo.js.

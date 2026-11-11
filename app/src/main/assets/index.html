@@ -702,7 +702,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 </div>
 <div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="twist" class="small">Sorpréndeme</button><button id="more" class="small" aria-expanded="false" aria-controls="moremenu">⋯ Más</button></div>
 <div class="tail" id="moremenu" hidden style="margin-top:.4rem;padding:.6rem;border-radius:14px;background:var(--card);border:1px solid var(--line)"><p class="hint" style="flex-basis:100%;margin:.2rem 0 0">Corregir y recordar</p><button id="nocuadra" class="small">Esto no cuadra</button><button id="memnow" class="small">Qué recuerda ahora</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Moverme por la historia</p><button id="idxb" class="small">🔎 Índice y buscador</button><button id="rewb" class="small">↩ Volver a una escena</button><button id="recapb" class="small">Anteriormente… (resumen)</button><button id="rvw" class="small">Revisar el libro</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Sacar el libro</p><button id="layb2" class="small">🎨 Maquetación del libro</button><button id="exp" class="small">Exportar para leer</button></div>
-<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📋 Ficha de la historia: lore, personajes y memoria (PDF)</button><button class="small" id="fichat" style="flex-basis:100%">📋 La misma ficha en texto (.txt)</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📕 El mundo del libro en PDF: tarjetas, lore, personajes y más</button><button class="small" id="fichat" style="flex-basis:100%">📕 El mundo del libro en texto (.txt)</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
@@ -1231,8 +1231,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.14.1";
+var VERSION = "0.15.0";
 var NEWS = [
+  ["0.15.0", "«El mundo del libro en PDF»: exporta todo el making of separado por tarjetas, con sus imágenes: lore del universo, protagonistas, personajes, cartas de lore, glosario, mapa, relaciones, documentos, secretos, entrevistas, cronología y más. Está en las opciones de exportar y en Cartas de lore."],
   ["0.14.1", "El botón para salir de la lectura es ahora pequeño y discreto («✕ Salir», arriba a la derecha) y ya no tapa la portada ni el texto."],
   ["0.14.0", "«Leer como un libro» empieza ahora por la portada. Nuevo glosario de tu mundo (las palabras salen subrayadas al leer) y texto de contraportada, ambos en Cartas de lore. RPG: misiones, dinero y tienda en la ficha. Vibración al tirar el dado, recibir daño o vencer (se quita en Ajustes). Botón de dictado en entrevistas, documentos, glosario y buscador."],
   ["0.13.0", "Buscadores: una lupa flotante mientras lees o juegas busca a la vez en cartas de lore, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa y escenas, y te lleva al resultado. Las listas largas (cartas, ideas de lore, documentos, personajes e historias) tienen ahora su propio cuadro de búsqueda."],
@@ -2132,6 +2133,7 @@ function renderLore() {
   var db0 = el("button", "small", "Documentos del mundo" + ((cur.docs || []).length ? " (" + cur.docs.length + ")" : "")); db0.style.cssText = "margin:.2rem 0 .6rem .4rem"; db0.onclick = function () { docsSheet(); }; b.appendChild(db0);
   var gb0 = el("button", "small", "Glosario" + ((cur.glo || []).length ? " (" + cur.glo.length + ")" : "")); gb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; gb0.onclick = function () { gloSheet(); }; b.appendChild(gb0);
   var bb0 = el("button", "small", "Contraportada"); bb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; bb0.onclick = function () { blurbSheet(); }; b.appendChild(bb0);
+  var xb0 = el("button", "small on", "Exportar el mundo (PDF)"); xb0.style.cssText = "margin:.2rem 0 .6rem .4rem"; xb0.onclick = function () { exportFicha("pdf"); }; b.appendChild(xb0);
   (cur.lore || []).forEach(function (c) {
     var d = el("div", "lore"); d.dataset.q = sfold(c.nombre + " " + c.tipo + " " + (c.desc || ""));
     if (c.img) { var th = el("img", "lorethumb"); th.src = c.img; th.alt = c.nombre; d.appendChild(th); }
@@ -6066,9 +6068,12 @@ function fichaRel(v) { v = Number(v) || 0; return v >= 5 ? "muy cercana" : v >= 
 function fichaLines(s) {
   var L = [], m = ensureMem(s), n = (s.scenes || []).length;
   function h1(t) { L.push({ k: "h1", t: t }); } function h2(t) { L.push({ k: "h2", t: t }); } function p(t) { if (t) L.push({ k: "p", t: t }); } function li(t) { if (t) L.push({ k: "li", t: t }); }
+  function card(title, tag, body, img) { L.push({ k: "card", t: String(title || "Sin nombre"), tag: String(tag || ""), body: String(body || "").trim(), img: img || "" }); }
+  function faceOf(n) { var k = String(n || "").toLowerCase(), r = ""; (s.lore || []).forEach(function (c) { if (!r && c && c.img && String(c.nombre || "").toLowerCase() === k) r = c.img; }); return r; }
   function sc(x) { return typeof x === "number" ? "esc. " + (x + 1) : ""; }
   L.push({ k: "title", t: s.title || "Historia" });
-  p("Ficha de la historia · " + n + " escenas · generada con Historias vivas el " + new Date().toISOString().slice(0, 10));
+  p("El mundo del libro: lore, tarjetas, personajes y todo lo creado durante la escritura · " + n + " escenas · generado con Historias vivas el " + new Date().toISOString().slice(0, 10));
+  if (s.blurb) { h1("CONTRAPORTADA"); p(s.blurb); }
   h1("DATOS GENERALES");
   li("Géneros: " + ((s.genres && s.genres.length ? s.genres : [s.genre]).filter(Boolean).join(" + ") || "sin definir"));
   li("Sinopsis: " + (s.syn || s.premise || ""));
@@ -6079,7 +6084,7 @@ function fichaLines(s) {
   if (s.rules && s.rules.length) { if (!s.bible) h1("BIBLIA, TONO Y REGLAS"); s.rules.forEach(function (x) { li("Regla: " + x); }); }
   if (s.plan && s.plan.pts && s.plan.pts.length) { h1("PLAN DE LA NOVELA"); var pp = planPoint(s); s.plan.pts.forEach(function (x, i) { li((i + 1) + ". " + x + (pp && pp.i === i ? "  ◄ aquí va la historia" : "")); }); }
   if (s.src && s.src.open && s.src.open.length) { h1("CONTRADICCIONES SIN DECIDIR"); s.src.open.forEach(function (x) { li(x); }); }
-  if ((s.prot || []).length) { h1("PROTAGONISTAS"); s.prot.forEach(function (c) { h2(c.name); p(charTxt(c)); }); }
+  if ((s.prot || []).length) { h1("PROTAGONISTAS"); s.prot.forEach(function (c) { var bt = String(charTxt(c) || ""); if (c.desc && bt.indexOf(String(c.desc).slice(0, 20)) < 0) bt = String(c.desc) + (bt.replace(/[.\s]/g, "").length > 2 ? "\n" + bt : ""); card(c.name, "Protagonista", bt, c.img || faceOf(c.name)); }); }
   var chars = Object.keys(m.chars).map(function (k) { return m.chars[k]; }).sort(function (a, b) { return (a.first || 0) - (b.first || 0); });
   if (chars.length) {
     h1("PERSONAJES");
@@ -6102,8 +6107,15 @@ function fichaLines(s) {
   if ((s.lore || []).length) {
     h1("CARTAS DE LORE");
     var by = {}; s.lore.forEach(function (c) { (by[c.tipo || "otro"] = by[c.tipo || "otro"] || []).push(c); });
-    Object.keys(by).forEach(function (t) { h2(t.charAt(0).toUpperCase() + t.slice(1)); by[t].forEach(function (c) { li(c.nombre + ": " + c.desc); }); });
+    Object.keys(by).forEach(function (t) { h2(t.charAt(0).toUpperCase() + t.slice(1)); by[t].forEach(function (c) { if (!String(c.desc || "").trim() && (s.prot || []).some(function (x) { return String(x.name || "").toLowerCase() === String(c.nombre || "").toLowerCase(); })) return; card(c.nombre, t, c.desc, c.img); }); });
   }
+  var gl = (s.glo || []).filter(function (g) { return g && g.w; }); if (gl.length) { h1("GLOSARIO"); gl.forEach(function (g) { card(g.w, "término", g.d, ""); }); }
+  if (s.map && s.map.links && s.map.links.length) { h1("MAPA: CONEXIONES ENTRE LUGARES"); s.map.links.forEach(function (l) { li(l[0] + " <-> " + l[1] + (l[2] ? " (" + l[2] + ")" : "")); }); }
+  var rels = (s.rel || []).filter(function (r) { return r && (r.a || r.b); }); if (rels.length) { h1("RELACIONES FIJADAS POR EL AUTOR"); rels.forEach(function (r) { li([r.a, r.b].filter(Boolean).join(" y ") + ": " + [r.t || r.tipo, r.n || r.nota || r.d].filter(Boolean).join(". ")); }); }
+  var dcs = (s.docs || []).filter(function (d) { return d && d.t; }); if (dcs.length) { h1("DOCUMENTOS DEL MUNDO"); dcs.forEach(function (d) { card(d.titulo, d.tipo, d.t, ""); }); }
+  var sxs = (s.sx || []).filter(function (e) { return e && e.t; }); if (sxs.length) { h1("SECRETOS DEL AUTOR"); p("Lo que el lector no debe saber todavía. No compartas esta sección si no quieres destripar la historia."); sxs.forEach(function (e) { li(e.t); }); }
+  if (s.iv && Object.keys(s.iv).length) { h1("ENTREVISTAS A PERSONAJES"); Object.keys(s.iv).forEach(function (nm) { if (!(s.iv[nm] || []).length) return; h2(nm); s.iv[nm].forEach(function (x) { li("P: " + x.q); p("R: " + x.a); }); }); }
+  if (s.rpg) { var rr = rpgFix(s.rpg); h1("FICHA DE AVENTURA (RPG)"); li("Atributos: " + Object.keys(RPG_AT).map(function (a) { return a + " " + rr.at[RPG_AT[a]]; }).join(", ")); li("Salud " + Math.round(rr.hp) + " · " + rr.b2n + " " + Math.round(rr.b2) + " · " + rr.gold + " " + rr.coin); if (rr.inv.length) li("Inventario: " + rr.inv.join(", ")); if (rr.co.length) li("Compañeros: " + rr.co.map(function (c) { return c.n; }).join(", ")); rr.ms.forEach(function (m) { li("Misión " + (m.st === "open" ? "abierta" : m.st === "done" ? "cumplida" : "fallida") + ": " + m.t); }); }
   var op = (m.pend || []).filter(function (x) { return x.open; }), cl = (m.pend || []).filter(function (x) { return !x.open; });
   if (op.length || cl.length) { h1("HILOS ABIERTOS Y RESUELTOS"); op.forEach(function (x) { li("Abierto: " + x.text + (x.sc ? " [" + sc(x.sc) + "]" : "")); }); cl.slice(-30).forEach(function (x) { li("Resuelto: " + x.text); }); }
   if ((m.ev || []).length) { h1("CRONOLOGÍA DE SUCESOS"); m.ev.slice(-150).forEach(function (e) { li((e.sc != null ? sc(e.sc) + ": " : "") + e.what + ((e.where || (e.who || []).length) ? " (" + [e.where, (e.who || []).join(", ")].filter(Boolean).join("; ") + ")" : "") + (e.cons ? " → " + e.cons : "")); }); }
@@ -6114,7 +6126,7 @@ function fichaLines(s) {
   return L;
 }
 function fichaTxt(s) {
-  return fichaLines(s).map(function (x) { return x.k === "title" ? x.t.toUpperCase() + "\n" : x.k === "h1" ? "\n" + x.t + "\n" + "=".repeat(Math.min(40, x.t.length)) : x.k === "h2" ? "\n" + x.t : x.k === "li" ? "- " + x.t : x.t; }).join("\n") + "\n";
+  return fichaLines(s).map(function (x) { return x.k === "title" ? x.t.toUpperCase() + "\n" : x.k === "h1" ? "\n" + x.t + "\n" + "=".repeat(Math.min(40, x.t.length)) : x.k === "h2" ? "\n" + x.t : x.k === "li" ? "- " + x.t : x.k === "card" ? "\n" + x.t + (x.tag ? "  [" + x.tag + "]" : "") + "\n" + x.body : x.t; }).join("\n") + "\n";
 }
 async function fichaPdf(s) {
   var L = window.PDFLib, doc = await L.PDFDocument.create(), fR = await doc.embedFont(L.StandardFonts.Helvetica), fB = await doc.embedFont(L.StandardFonts.HelveticaBold);
@@ -6125,8 +6137,31 @@ async function fichaPdf(s) {
     var ls = wrap(pdfSafe(t), font, size, maxw); if (y - (need || ls.length * lh) < M) np();
     ls.forEach(function (l) { if (y < M + 4) np(); page.drawText(l, { x: x, y: y, size: size, font: font }); y -= lh; }); y -= gapAfter || 0;
   }
+  var emb = {};
+  async function image(u) { if (!u) return null; if (u in emb) return emb[u]; var b = dataBytes(u), im = null; if (b) { try { im = await doc.embedJpg(b); } catch (e) { try { im = await doc.embedPng(b); } catch (e2) { im = null; } } } emb[u] = im; return im; }
+  function fit(im, bw, bh) { var k = Math.min(bw / im.width, bh / im.height); return { w: im.width * k, h: im.height * k }; }
+  var LINES = fichaLines(s), cov = null; try { cov = await image(s.cover); } catch (e) {}
+  for (var q = 0; q < LINES.length; q++) { if (LINES[q].k === "card" && LINES[q].img) { try { LINES[q].im = await image(LINES[q].img); } catch (e) {} } }
   np();
-  fichaLines(s).forEach(function (x) {
+  if (cov) { var cf = fit(cov, TW, 470); page.drawImage(cov, { x: M + (TW - cf.w) / 2, y: y - cf.h, width: cf.w, height: cf.h }); y -= cf.h + 26; }
+  function drawCard(x) {
+    var pad = 9, th = 20, iw = x.im ? 78 : 0, isz = x.im ? fit(x.im, iw, 104) : { w: 0, h: 0 }, bx = M + pad + (iw ? iw + 10 : 0), bw = TW - 2 * pad - (iw ? iw + 10 : 0);
+    var body = wrap(pdfSafe(x.body || "Sin descripción."), fR, 10, bw), i0 = 0, first = true, guard = 0;
+    do {
+      var room = y - M - th - 2 * pad, need = first ? Math.max(isz.h, 39) : 39; if (room < need && guard++ < 3) { np(); continue; }
+      var take = body.slice(i0, i0 + Math.max(1, Math.floor(room / 13))), bh = Math.max(take.length * 13, first ? isz.h : 0), hh = th + bh + 2 * pad;
+      page.drawRectangle({ x: M, y: y - hh, width: TW, height: hh, borderColor: L.rgb(0.55, 0.55, 0.6), borderWidth: 0.8, color: L.rgb(0.985, 0.98, 0.965) });
+      page.drawRectangle({ x: M, y: y - th, width: TW, height: th, color: L.rgb(0.16, 0.2, 0.3) });
+      var tg = pdfSafe(x.tag || "").toUpperCase(), tgw = tg ? fB.widthOfTextAtSize(tg, 7.5) : 0, ttl = pdfSafe(x.t + (first ? "" : " (continúa)")); while (ttl.length > 4 && fB.widthOfTextAtSize(ttl, 11) > TW - 2 * pad - tgw - 12) ttl = ttl.slice(0, -2);
+      page.drawText(ttl, { x: M + pad, y: y - 14, size: 11, font: fB, color: L.rgb(1, 1, 1) });
+      if (tg) page.drawText(tg, { x: M + TW - pad - tgw, y: y - 13, size: 7.5, font: fB, color: L.rgb(0.95, 0.8, 0.5) });
+      if (first && x.im) page.drawImage(x.im, { x: M + pad + (iw - isz.w) / 2, y: y - th - pad - isz.h, width: isz.w, height: isz.h });
+      var ty = y - th - pad - 9; take.forEach(function (l) { page.drawText(l, { x: bx, y: ty, size: 10, font: fR, color: L.rgb(0.1, 0.1, 0.12) }); ty -= 13; });
+      y -= hh + 9; i0 += take.length; if (first && iw && i0 < body.length) { body = body.slice(0, i0).concat(wrap(body.slice(i0).join(" "), fR, 10, TW - 2 * pad)); bx = M + pad; } first = false; guard = 0;
+    } while (i0 < body.length);
+  }
+  LINES.forEach(function (x) {
+    if (x.k === "card") { drawCard(x); return; }
     if (x.k === "title") put(x.t, fB, 22, M, TW, 27, 4);
     else if (x.k === "h1") { y -= 8; if (y < M + 60) np(); put(x.t, fB, 13, M, TW, 17, 5, 40); page.drawLine({ start: { x: M, y: y + 9 }, end: { x: W - M, y: y + 9 }, thickness: 0.6, color: L.rgb(0.6, 0.6, 0.6) }); }
     else if (x.k === "h2") { y -= 3; put(x.t, fB, 11, M, TW, 14, 2, 30); }
@@ -6138,15 +6173,16 @@ async function fichaPdf(s) {
 async function exportFicha(fmt) {
   var s = cur; if (!s) return; var dl = null;
   try { dl = await claude.use("downloads"); } catch (e) {}
-  if (!dl) { emsg("Guardar archivos no está disponible en esta vista."); return; }
+  if (!dl) { emsg("Guardar archivos no está disponible en esta vista."); try { toast("Guardar archivos no está disponible en esta vista."); } catch (x) {} return; }
+  try { toast("Preparando el archivo del mundo…"); } catch (x) {}
   var slug = (s.title || "historia").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "historia";
   try {
-    var name = slug + "-ficha." + (fmt === "txt" ? "txt" : "pdf"), data;
+    var name = slug + "-mundo." + (fmt === "txt" ? "txt" : "pdf"), data;
     if (fmt === "txt") data = new TextEncoder().encode(fichaTxt(s));
     else { if (!window.PDFLib) { emsg("No se pudo cargar el generador de PDF."); return; } data = await fichaPdf(s); }
     await dl.save({ filename: name, data: data });
-    emsg("Listo: " + name + ". Para reutilizarla: Crear → «Ya tengo material escrito».");
-  } catch (e) { emsg(e && e.code === "declined" ? "Descarga cancelada." : "No se pudo crear la ficha."); }
+    emsg("Listo: " + name + ". Para reutilizarla: Crear → «Ya tengo material escrito»."); try { toast("Guardado: " + name); } catch (x) {}
+  } catch (e) { emsg(e && e.code === "declined" ? "Descarga cancelada." : "No se pudo crear la ficha."); try { toast(e && e.code === "declined" ? "Descarga cancelada." : "No se pudo crear el archivo."); } catch (x) {} }
 }
 $("fichab").onclick = function () { exportFicha("pdf"); };
 $("fichat").onclick = function () { exportFicha("txt"); };
@@ -6617,7 +6653,7 @@ var GUIDE = {
     ["✓ Revisar la ortografía / ✎ Pulir el texto", "Mejoran el texto antes de exportar."],
     ["🛠 Preparar el libro", "Colocar imágenes, ajustar páginas y ver cómo quedará impreso."],
     ["🕓 Versiones anteriores de esta historia", "Copias automáticas de la historia por si algo sale mal."],
-    ["📋 Ficha de la historia", "PDF o texto con lore, personajes y memoria."]]],
+    ["📕 El mundo del libro", "El «making of»: un PDF (o texto) con todo lo creado para la historia, separado por tarjetas: contraportada, lore del universo, biblia, plan, protagonistas, personajes, objetos, cartas de lore con su imagen, glosario, mapa, relaciones, documentos, secretos, entrevistas, cronología y ficha RPG. También en Cartas de lore con «Exportar el mundo (PDF)»."]]],
   layout: ["Maquetación", "Cómo se verá el libro en papel. Arriba se ve una página de tu novela que cambia con cada ajuste.", [
     ["? (en esta pantalla)", "Muestra u oculta una explicación corta bajo cada opción."],
     ["Plantillas rápidas", "Clásico, Moderno, Bolsillo y Lectura cómoda: rellenan todas las opciones de golpe y luego puedes retocarlas."],

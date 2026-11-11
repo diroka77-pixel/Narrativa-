@@ -111,3 +111,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 6. Jugando, comprueba si El Cronista abre misiones, las cierra y da o quita dinero (aparece en la línea del dado: 🪙 +12, 📜 Nueva misión…).
 7. Vibración: al tirar el dado, al recibir daño y al vencer. Se quita en Ajustes → «Vibración».
 8. Dictado: el botón «🎤 Dictar» debe aparecer en entrevistas, documentos, glosario y en el buscador de la lupa.
+
+## 32. El mundo del libro en PDF — v0.15.0
+1. Cartas de lore → «Exportar el mundo (PDF)» (o en las opciones de exportar → «📕 El mundo del libro en PDF»). Debe guardarse un archivo `titulo-mundo.pdf`.
+2. Ábrelo: portada, y después cada concepto en su tarjeta (con su imagen si la tiene), separado por apartados. Comprueba tildes, eñes y que no falte ninguna carta.
+3. Revisa que los textos largos continúan en la página siguiente sin cortarse.
