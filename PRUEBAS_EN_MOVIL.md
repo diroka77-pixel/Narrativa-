@@ -129,3 +129,7 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 3. «📚 Construir el volumen 2»: se abre una historia nueva. Comprueba en Cartas de lore, Atlas y Lore del universo que está todo lo del volumen 1, y que el volumen 1 sigue intacto.
 4. Juega la primera escena: El Cronista debe conocer lo ocurrido en el volumen 1 sin repetirlo.
 5. Repite desde el volumen 2 para crear el 3: en «📖 Saga: volúmenes anteriores» deben salir el 1 y el 2.
+
+## 35. Galería — v0.18.0
+1. En una historia con ilustraciones: «🖼 Galería (N)» junto a «Leer como un libro». Deben salir la portada, las escenas, los personajes y los lugares con imagen.
+2. Toca una: se ve en grande. Pasa con el dedo o con «Siguiente». En una de escena, «Ir a la escena» te lleva a ella en el libro.

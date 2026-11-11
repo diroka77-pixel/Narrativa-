@@ -40,7 +40,7 @@ if(!r.h1||!r.h2||!r.h3)fail('ocultar meta');
 if(r.cover!=='rgb(255, 255, 255)')fail('cover '+r.cover);
 if(!r.novOrder||r.q!=='¿Qué ocurre ahora?')fail('orden novela');
 if(!r.wopts||r.lab0!=='Tono y longitud (opcional)'||r.lab1!=='Opciones: Tono: Calma · Escena larga'||r.tone!=='Calma')fail('wopts '+r.lab1);
-if(r.rd.indexOf('immp,listen')!==0||r.rdw!=='nowrap')fail('rdbar '+r.rd);
+if(r.rd.indexOf('immp,galb,listen')!==0||r.rdw!=='nowrap')fail('rdbar '+r.rd);
 if(r.optTxt!=='Opciones de la escena'||r.optFs!=='0px'||!r.optOpen)fail('opciones escena');
 if(r.act0!=='▸ Tu acción (toca para ver)'||r.act1!=='▾ Fuerzo|true')fail('accion '+r.act1);
 if(!r.rpgOrder||r.q2!=='O escribe tu propia acción:')fail('orden rpg');

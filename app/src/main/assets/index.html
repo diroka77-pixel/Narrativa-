@@ -535,6 +535,17 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 .bkcover .bkcap{font-size:1.1rem;text-wrap:balance}
 /* v0.17.0: sagas */
 .scene .sagab,#book .sagab{display:block;margin:.6rem auto 1.4rem;width:auto}
+/* v0.18.0: galería */
+.galgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(7.2rem,1fr));gap:.5rem;margin:.3rem 0 .8rem}
+.galit{display:flex;flex-direction:column;gap:.25rem;padding:0;min-height:0;height:auto;border:1px solid var(--line);border-radius:10px;background:var(--card);overflow:hidden;text-align:left;color:var(--ink)}
+.galit img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;background:#000}
+.galit span{display:block;padding:.15rem .4rem .35rem;font-size:.72rem;line-height:1.25;color:var(--mute);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;white-space:normal}
+#galv{position:fixed;inset:0;z-index:60;background:#03050a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;padding:calc(.8rem + env(safe-area-inset-top,0px)) .6rem calc(.8rem + env(safe-area-inset-bottom,0px));box-sizing:border-box}
+#galv img{width:100%;height:calc(100% - 8rem);flex:0 0 auto;object-fit:contain;border-radius:6px;box-shadow:0 10px 40px rgba(0,0,0,.7);touch-action:pan-y}
+#galv .galcap{margin:0;color:#e8ecf5;font-size:.88rem;text-align:center;max-width:36rem}
+#galv .galbar{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center}
+#galv .galbar button{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.3)}
+#galv .galbar button.on{background:var(--acc);color:var(--accink)}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -681,7 +692,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 <details class="pl" id="lorebox"><summary id="lorecount">Cartas de lore</summary><div id="lorebody"></div></details>
 <button class="small" id="layb3" style="margin:.5rem 0 .2rem;width:100%">🎨 Maquetación del libro</button>
 </details>
-<div class="row" id="rdbar" style="margin:.6rem 0 0"><button id="immp" class="small bookbtn">📖 Leer como un libro</button><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="listenpick" class="small">Elegir qué escuchar</button><button id="immb" class="small">Pantalla completa</button><button id="bgb" class="small">Cambiar fondo</button></div>
+<div class="row" id="rdbar" style="margin:.6rem 0 0"><button id="immp" class="small bookbtn">📖 Leer como un libro</button><button id="galb" class="small">🖼 Galería</button><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="listenpick" class="small">Elegir qué escuchar</button><button id="immb" class="small">Pantalla completa</button><button id="bgb" class="small">Cambiar fondo</button></div>
 <button id="imx" class="small" hidden style="width:auto" aria-label="Salir de la lectura">✕ Salir</button>
 <div id="pgbar" role="group" aria-label="Pasar páginas"><button id="pgprev" aria-label="Página anterior">‹</button><span id="pglab" role="status" aria-live="polite">1 / 1</span><button id="pgnext" aria-label="Página siguiente">›</button><button id="pgtog" class="small">Desplazar</button></div>
 <div id="sr" class="sronly" role="status" aria-live="polite"></div>
@@ -1110,6 +1121,7 @@ function storyMenu(s) {
     if (!s.rpg && !s.sample) { var rp = el("button", null, "⚔ Jugarla también como aventura RPG"); rp.style.cssText = "margin-top:.5rem;width:100%"; rp.onclick = function () { closeSheet(); rpgSetup(s); }; sh.appendChild(rp); }
     if (!s.sample && (s.scenes || []).length) { var nx = s.saga && s.saga.next && LIB.filter(function (x) { return x.id === s.saga.next; })[0]; var sv = el("button", null, nx ? "📚 Ir al volumen " + (sagaVol(s) + 1) : "📚 Construir el volumen " + (sagaVol(s) + 1)); sv.style.cssText = "margin-top:.5rem;width:100%"; sv.onclick = function () { closeSheet(); if (nx) openStory(nx); else sagaSheet(s); }; sh.appendChild(sv); }
     if (s.saga && (s.saga.prev || []).length) { var pv = el("button", null, "📖 Saga: volúmenes anteriores"); pv.style.cssText = "margin-top:.5rem;width:100%"; pv.onclick = function () { closeSheet(); sagaPrevSheet(s); }; sh.appendChild(pv); }
+    var _gi = galItems(s).length; if (_gi) { var gb = el("button", null, "🖼 Galería de ilustraciones (" + _gi + ")"); gb.style.cssText = "margin-top:.5rem;width:100%"; gb.onclick = function () { closeSheet(); galSheet(s); }; sh.appendChild(gb); }
     var ar = el("button", null, "🕯 Guardar en el Rincón de los olvidados"); ar.style.marginTop = ".5rem"; ar.style.width = "100%";
     ar.onclick = function () { s.arch = Date.now(); save(); closeSheet(); renderLib(); toast("«" + s.title + "» descansa ahora en el Rincón de los olvidados."); }; sh.appendChild(ar);
     para(sh, "No se borra nada: la historia sale de la página principal y puedes rescatarla cuando quieras.");
@@ -1235,8 +1247,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.17.0";
+var VERSION = "0.18.0";
 var NEWS = [
+  ["0.18.0", "Galería: un botón «🖼 Galería» junto a «Leer como un libro» reúne todas las ilustraciones de la historia (portada, escenas, personajes y lugares). Tócalas para verlas en grande, pasa con el dedo de una a otra y salta a la escena de cada imagen."],
   ["0.17.0", "Sagas: desde el menú de una historia (o al terminarla) puedes «Construir el volumen 2». Se lleva todo el mundo y la memoria de los personajes, más un resumen del volumen anterior que El Cronista puede escribir y tú corregir. El volumen 3 hereda el resumen del 1 y del 2, y así sucesivamente."],
   ["0.16.0", "Canon desde una imagen: en la ficha de cada personaje (Atlas → Personajes) puedes subir su lámina o esquema y El Cronista extrae su descripción y rasgos. Los revisas, los guardas y quedan como canon fijo."],
   ["0.15.0", "«El mundo del libro en PDF»: exporta todo el making of separado por tarjetas, con sus imágenes: lore del universo, protagonistas, personajes, cartas de lore, glosario, mapa, relaciones, documentos, secretos, entrevistas, cronología y más. Está en las opciones de exportar y en Cartas de lore."],
@@ -3818,6 +3831,44 @@ function rpgReroll(s) {
   if (r.diff !== "relajado") { if (r.cred <= 0) { toast("No te quedan créditos de destino."); return; } r.cred--; }
   var lr = s.scenes[s.scenes.length - 1]; if (lr && lr.roll) r.nr = lr.roll.risk; var a = s.lastAct; undoTurn(); r.pr = null; turn(a[0], a[1]);
 }
+/* v0.18.0: galería de ilustraciones de la historia */
+function galItems(s) {
+  var out = [], seen = {};
+  function add(u, grp, cap, go) { if (!u || !/^data:image|^https?:|^blob:|^file:|^content:/.test(String(u)) || seen[u]) return; seen[u] = 1; out.push({ u: u, g: grp, c: cap, go: go }); }
+  if (s.cover) add(s.cover, "Portada", s.title, null);
+  (s.scenes || []).forEach(function (sc, i) { if (sc && sc.img) add(sc.img, "Escenas", "Capítulo " + chOf(s, i) + " · escena " + (i + 1) + (sc.a ? " · " + String(sc.a).slice(0, 60) : ""), function () { goScene(i); }); });
+  (s.prot || []).forEach(function (c) { if (c && c.img) add(c.img, "Personajes", c.name, null); });
+  (s.lore || []).forEach(function (c) { if (c && c.img) add(c.img, /^(personaje|protagonista|antagonista|secundario)$/.test(c.tipo) ? "Personajes" : "Lugares, objetos y mundo", c.nombre + (c.tipo ? " · " + c.tipo : ""), null); });
+  return out;
+}
+function galSheet(s) {
+  s = s || cur; if (!s) return; var A = galItems(s);
+  sheet("Galería de «" + s.title + "»", function (sh) {
+    if (!A.length) { para(sh, "Todavía no hay ilustraciones en esta historia. Puedes añadirlas en las opciones de cada escena («⋯»), en la portada o en las cartas de lore."); closeBtn(sh); return; }
+    para(sh, A.length + (A.length === 1 ? " ilustración." : " ilustraciones.") + " Toca una para verla en grande.");
+    var last = "";
+    A.forEach(function (x, k) {
+      if (x.g !== last) { last = x.g; sh.appendChild(el("h3", null, x.g + " (" + A.filter(function (y) { return y.g === x.g; }).length + ")")); var gr = el("div", "galgrid"); gr.dataset.g = x.g; sh.appendChild(gr); }
+      var b = el("button", "galit"); b.type = "button"; b.setAttribute("aria-label", "Ver en grande: " + x.c); var im = el("img"); im.src = x.u; im.alt = ""; im.loading = "lazy"; b.appendChild(im); b.appendChild(el("span", null, x.c)); b.onclick = function () { galView(A, k); };
+      sh.querySelector('.galgrid[data-g="' + x.g + '"]').appendChild(b);
+    });
+    closeBtn(sh);
+  });
+}
+function galView(A, k) {
+  var old = $("galv"); if (old) old.remove();
+  var v = el("div"); v.id = "galv"; v.setAttribute("role", "dialog"); v.setAttribute("aria-modal", "true"); v.setAttribute("aria-label", "Ilustración");
+  var im = el("img"), cap = el("p", "galcap"), bar = el("div", "galbar"), pv = el("button", "small", "‹ Anterior"), nx = el("button", "small", "Siguiente ›"), go = el("button", "small on", "Ir a la escena"), cl = el("button", "small", "✕ Cerrar");
+  pv.setAttribute("aria-label", "Ilustración anterior"); nx.setAttribute("aria-label", "Ilustración siguiente");
+  function show(i) { k = (i + A.length) % A.length; var x = A[k]; im.src = x.u; im.alt = x.c; cap.textContent = x.c + "  ·  " + (k + 1) + " de " + A.length; go.hidden = !x.go; pv.hidden = nx.hidden = A.length < 2; }
+  function close() { document.removeEventListener("keydown", key); v.remove(); }
+  function key(e) { if (e.key === "Escape") close(); else if (e.key === "ArrowLeft") show(k - 1); else if (e.key === "ArrowRight") show(k + 1); }
+  pv.onclick = function () { show(k - 1); }; nx.onclick = function () { show(k + 1); }; cl.onclick = close;
+  go.onclick = function () { var f = A[k].go; close(); closeSheet(); if (f) setTimeout(f, 60); };
+  var x0 = null; im.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true }); im.addEventListener("touchend", function (e) { if (x0 == null) return; var d = e.changedTouches[0].clientX - x0; if (Math.abs(d) > 50) show(k + (d < 0 ? 1 : -1)); x0 = null; });
+  v.onclick = function (e) { if (e.target === v) close(); };
+  [pv, go, nx, cl].forEach(function (b) { bar.appendChild(b); }); v.appendChild(im); v.appendChild(cap); v.appendChild(bar); document.body.appendChild(v); document.addEventListener("keydown", key); show(k); try { cl.focus(); } catch (e) {}
+}
 /* v0.17.0: sagas. Cada volumen nuevo hereda el mundo y el resumen de todos los anteriores. */
 function sagaBase(s) { return String((s.saga && s.saga.name) || s.title || "").replace(/\s*[·:\-–—]\s*Volumen\s+\d+\s*$/i, "").trim() || s.title; }
 function sagaVol(s) { return (s.saga && s.saga.vol) || 1; }
@@ -4220,9 +4271,10 @@ function undoTurn() {
   if (p.rpg && s.rpg) { rpgStateBack(s.rpg, p.rpg); s.state.salud = Math.round(s.rpg.hp); }
   s.prev = null; save(); renderLore(); render();
 }
-(function () { var _r0 = render; render = function (k) { var x = _r0(k); try { bkCover(); } catch (e) {} try { if (cur && !comicOn(cur)) gloMark($("book"), cur); } catch (e) {} return x; }; })();
+(function () { var _r0 = render; render = function (k) { var x = _r0(k); try { bkCover(); } catch (e) {} try { var _gn = cur ? galItems(cur).length : 0; $("galb").textContent = "🖼 Galería" + (_gn ? " (" + _gn + ")" : ""); } catch (e) {} try { if (cur && !comicOn(cur)) gloMark($("book"), cur); } catch (e) {} return x; }; })();
 $("new").onclick = function () { startCreate(""); };
 try { $("findfab").onclick = function () { findSheet(); }; } catch (e) {}
+try { $("galb").onclick = function () { galSheet(); }; } catch (e) {}
 try { $("goalcard").onclick = goalSheet; $("goalcard").onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goalSheet(); } }; } catch (e) {}
 $("back1").onclick = function () { renderLib(); view("lib"); };
 $("back2").onclick = function () { renderLib(); view("lib"); };
@@ -6771,6 +6823,7 @@ var GUIDE = {
     ["📷 Leer su canon desde una imagen", "En Atlas → Personajes, dentro de cada ficha: sube la lámina o esquema del personaje y El Cronista extrae su descripción y rasgos. Los revisas y «Guardar como canon» los fija. Necesita una clave de Gemini, OpenAI o Anthropic y gasta una consulta."],
     ["📚 Construir el volumen", "En el menú de una historia (o al final, cuando está terminada): crea el siguiente volumen de la saga con todo el mundo, los personajes y su memoria, más el resumen de los volúmenes anteriores. «Que El Cronista resuma este volumen» genera ese resumen (gasta una consulta); puedes editarlo antes de construir."],
     ["📖 Saga: volúmenes anteriores", "En el menú de un volumen 2 o posterior: lee y corrige lo que este volumen sabe de los anteriores."],
+    ["🖼 Galería", "Junto a «Leer como un libro»: todas las ilustraciones de la historia en un solo sitio (portada, escenas, personajes y lugares). Toca una para verla en grande; «Anterior» y «Siguiente» (o deslizar) pasan de una a otra, «Ir a la escena» te lleva a su sitio en el libro y «✕ Cerrar» vuelve."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

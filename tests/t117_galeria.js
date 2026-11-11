@@ -1,0 +1,33 @@
+const {chromium}=require('playwright');
+const URL=process.env.HV_URL||'file:///home/claude/v091/assets/index.html';
+(async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:390,height:844},deviceScaleFactor:2,colorScheme:'dark'})).newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
+await p.goto(URL);await p.waitForTimeout(500);
+const fail=m=>{console.log('FALLA',m,errs);process.exit(1)};
+const r=await p.evaluate(async()=>{const o={};const wait=ms=>new Promise(r=>setTimeout(r,ms));const btn=(root,t)=>[].slice.call(document.querySelectorAll(root+' button')).filter(x=>x.textContent===t)[0];
+ const mk=(col)=>{const c=document.createElement('canvas');c.width=90;c.height=120;const g=c.getContext('2d');g.fillStyle=col;g.fillRect(0,0,90,120);return c.toDataURL('image/jpeg',.7)};
+ const C=mk('#802'),S1=mk('#228'),S2=mk('#282'),P=mk('#aa2'),L=mk('#2aa');
+ const sc=[];for(let i=0;i<30;i++)sc.push({t:'Escena '+i+'. Texto.',m:{},a:i?'Acción '+i:''});sc[3].img=S1;sc[25].img=S2;sc[26].img=S2;
+ const s={id:'g',title:'Neón',syn:'x',genre:'Misterio',genres:[],cover:C,scenes:sc,lore:[{tipo:'personaje',nombre:'Sora',desc:'',img:P},{tipo:'lugar',nombre:'Torre Axis',desc:'',img:L},{tipo:'lugar',nombre:'Sin imagen',desc:''}],turn:30,at:Date.now(),state:{},opts:[],premise:'p',prot:[{name:'Diroka',desc:''}],ce:[],memory:'m'};
+ const n={id:'n',title:'Vacía',syn:'x',genre:'Misterio',genres:[],scenes:[{t:'Hola.',m:{}}],lore:[],turn:1,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'m'};
+ LIB.length=0;LIB.push(s);LIB.push(n);openStory(s);
+ o.items=galItems(s).map(x=>x.g+':'+x.c.split(' · ')[0]).join('|');o.btn=$('galb').textContent;
+ $('galb').click();o.h3=[].slice.call(document.querySelectorAll('#gsheet h3')).map(x=>x.textContent).join('|');o.thumbs=document.querySelectorAll('#gsheet .galit').length;
+ document.querySelectorAll('#gsheet .galit')[1].click();await wait(50);const v=$('galv');o.view=!!v+'|'+v.querySelector('.galcap').textContent+'|'+!btn('#galv','Ir a la escena').hidden;
+ btn('#galv','Siguiente ›').click();o.next=v.querySelector('.galcap').textContent;btn('#galv','‹ Anterior').click();btn('#galv','‹ Anterior').click();o.wrap=v.querySelector('.galcap').textContent+'|'+btn('#galv','Ir a la escena').hidden;
+ document.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight'}));o.key=v.querySelector('.galcap').textContent.split('  ·  ')[1];
+ btn('#galv','Siguiente ›').click();o.s26=v.querySelector('.galcap').textContent;
+ btn('#galv','Ir a la escena').click();await wait(600);o.go=!$('galv')+'|'+$('gmodal').hidden+'|'+!!document.getElementById('sc-25');
+ $('galb').click();document.querySelectorAll('#gsheet .galit')[0].click();document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));o.esc=!$('galv')+'|'+!$('gmodal').hidden;closeSheet();
+ storyMenu(s);o.menu=!!btn('#gsheet','🖼 Galería de ilustraciones (5)');closeSheet();
+ openStory(n);o.nbtn=$('galb').textContent;$('galb').click();o.empty=/Todavía no hay ilustraciones/.test($('gsheet').textContent);closeSheet();storyMenu(n);o.nmenu=[].slice.call(document.querySelectorAll('#gsheet button')).some(x=>/Galería/.test(x.textContent));closeSheet();
+ return o});
+console.log(JSON.stringify(r,null,1));
+if(r.items!=='Portada:Neón|Escenas:Capítulo 1|Escenas:Capítulo 1|Personajes:Sora|Lugares, objetos y mundo:Torre Axis')fail('items '+r.items);
+if(r.btn!=='🖼 Galería (5)'||r.h3!=='Portada (1)|Escenas (2)|Personajes (1)|Lugares, objetos y mundo (1)'||r.thumbs!==5)fail('hoja '+r.h3);
+if(!/^true\|Capítulo 1 · escena 4 · Acción 3  ·  2 de 5\|true$/.test(r.view))fail('visor '+r.view);
+if(!/2 de 5$/.test(r.next)&&!/3 de 5$/.test(r.next))fail('next '+r.next);if(!/1 de 5\|true$/.test(r.wrap)&&!/5 de 5/.test(r.wrap))fail('wrap '+r.wrap);
+if(!/escena 26/.test(r.s26)||r.go!=='true|true|true'||r.esc!=='true|true'||!r.menu)fail('ir '+r.s26+' '+r.go+' '+r.esc);
+if(r.nbtn!=='🖼 Galería'||!r.empty||r.nmenu)fail('vacía');
+if(process.env.SHOT){await p.evaluate(()=>{openStory(LIB[0]);galSheet()});await p.waitForTimeout(400);await p.screenshot({path:process.env.SHOT+'_1.png'});await p.evaluate(()=>{document.querySelectorAll('#gsheet .galit')[1].click()});await p.waitForTimeout(300);await p.screenshot({path:process.env.SHOT+'_2.png'})}
+if(errs.length)fail('err');console.log('OK galería');await b.close()})()

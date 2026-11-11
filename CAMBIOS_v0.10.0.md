@@ -438,3 +438,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - RPG: opción de llevar la ficha (salud llena, sin enemigo, misiones abiertas).
 - Etiqueta «VOL. N» en la biblioteca; sección de la saga en «El mundo del libro».
 - Prueba nueva: tests/t116_saga.js.
+
+**v0.18.0 — Galería de ilustraciones**
+- Botón «🖼 Galería (N)» junto a «Leer como un libro» y en el menú de la historia. Reúne portada, imágenes de escenas, protagonistas y cartas de lore con imagen (sin duplicados), agrupadas.
+- Visor a pantalla completa: anterior/siguiente, deslizar, teclas, «Ir a la escena» (imágenes de escena) y cerrar.
+- Prueba nueva: tests/t117_galeria.js.
