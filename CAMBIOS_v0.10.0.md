@@ -423,3 +423,10 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - En el PDF, protagonistas, cartas de lore, términos y documentos van en tarjetas con cabecera, tipo e imagen; la portada de la historia abre el documento. Archivo: `titulo-mundo.pdf` / `.txt`.
 - Acceso nuevo: Cartas de lore → «Exportar el mundo (PDF)».
 - Prueba nueva: tests/t114_mundo.js.
+
+**v0.16.0 — Canon de personaje desde una imagen**
+- Atlas → Personajes → cada ficha: «📷 Leer su canon desde una imagen». La imagen (reducida a 1400 px, JPEG) se envía al proveedor con visión (Gemini, OpenAI o Anthropic, el conectado primero); devuelve JSON que el autor revisa antes de guardar.
+- Rellena descripción, físico, sexo, edad, pelo, ojos, rasgos, forma de hablar y un campo nuevo `fix.canon` (máx. 700). Lo vacío no sobrescribe. Opcional: usar la imagen como cara en las viñetas.
+- `fix.canon` va en el prompt del personaje (no en la lista breve de otros personajes) y en «El mundo del libro».
+- shim.js: `sample(…, {image})` con partes de imagen por proveedor; error claro `no_vision` si no hay clave con visión o en modo copiar y pegar.
+- Prueba nueva: tests/t115_canon.js.

@@ -516,11 +516,12 @@
     if (r.status === 0) return { code: "network", message: "No se pudo contactar con " + who + ": sin internet, poca señal o el servidor tarda demasiado. Reinténtalo en unos segundos." + (r.text ? " (" + String(r.text).slice(0, 60) + ")" : "") };
     return { code: "error", message: who + " respondió con error " + r.status + ". " + m };
   }
-  async function viaGemini(prompt, c, quick, lg) {
+  function imgParts(u) { var m = /^data:(image\/[a-z+]+);base64,(.+)$/i.exec(String(u || "")); return m ? { mime: m[1].toLowerCase(), data: m[2] } : null; }
+  async function viaGemini(prompt, c, quick, lg, img) {
     var model = (c.models && c.models.gemini) || PROV.gemini.model;
     var r = await http("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent",
       { "Content-Type": "application/json", "x-goog-api-key": c.keys.gemini },
-      { contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.9, maxOutputTokens: lg ? 9000 : 6000 } }, quick);
+      { contents: [{ role: "user", parts: img ? [{ inline_data: { mime_type: img.mime, data: img.data } }, { text: prompt }] : [{ text: prompt }] }], generationConfig: { temperature: img ? 0.2 : 0.9, maxOutputTokens: lg ? 9000 : 6000 } }, quick);
     if (r.status !== 200) throw fail(r, "Gemini", model);
     var j = JSON.parse(r.text), cd = (j.candidates || [])[0] || {}, p = (cd.content || {}).parts || [];
     var t = p.map(function (x) { return x.text || ""; }).join("");
@@ -530,22 +531,22 @@
     }
     return t;
   }
-  async function viaOpenAI(prompt, c, quick) {
+  async function viaOpenAI(prompt, c, quick, img) {
     var model = (c.models && c.models.openai) || PROV.openai.model;
     var r = await http("https://api.openai.com/v1/chat/completions",
       { "Content-Type": "application/json", "Authorization": "Bearer " + c.keys.openai },
-      { model: model, messages: [{ role: "user", content: prompt }] }, quick);
+      { model: model, messages: [{ role: "user", content: img ? [{ type: "text", text: prompt }, { type: "image_url", image_url: { url: "data:" + img.mime + ";base64," + img.data } }] : prompt }] }, quick);
     if (r.status !== 200) throw fail(r, "OpenAI", model);
     var j = JSON.parse(r.text);
     var t = (((j.choices || [])[0] || {}).message || {}).content || "";
     if (!t) throw { code: "blocked", message: "OpenAI no ha devuelto texto. Prueba a reformular la acción." };
     return t;
   }
-  async function viaAnthropic(prompt, c, quick, lg) {
+  async function viaAnthropic(prompt, c, quick, lg, img) {
     var model = (c.models && c.models.anthropic) || PROV.anthropic.model;
     var r = await http("https://api.anthropic.com/v1/messages",
       { "Content-Type": "application/json", "x-api-key": c.keys.anthropic, "anthropic-version": "2023-06-01" },
-      { model: model, max_tokens: lg ? 8000 : 4096, messages: [{ role: "user", content: prompt }] }, quick);
+      { model: model, max_tokens: lg ? 8000 : 4096, messages: [{ role: "user", content: img ? [{ type: "image", source: { type: "base64", media_type: img.mime, data: img.data } }, { type: "text", text: prompt }] : prompt }] }, quick);
     if (r.status !== 200) throw fail(r, "Anthropic", model);
     var j = JSON.parse(r.text);
     var t = (j.content || []).map(function (x) { return x.text || ""; }).join("");
@@ -613,7 +614,15 @@
     if (typeof N.online === "function" && !N.online()) throw { code: "offline", message: "No hay conexión. La acción se guardará en el móvil." };
     var c = cfg();
     if (!c.mode || (c.mode !== "manual" && !KEYS[c.mode])) { var ok = await wiz({}); if (!ok) throw { code: "not_granted", message: "No has conectado ninguna IA." }; c = cfg(); }
+    if (c.mode === "manual" && opts.image) throw { code: "no_vision", message: "En el modo de copiar y pegar no se pueden enviar imágenes. Conecta una clave de Gemini, OpenAI o Anthropic para usar esta función." };
     if (c.mode === "manual") { var tm = await viaManual(prompt); return { text: String(tm), truncated: false }; }
+    if (opts.image) {
+      var im = imgParts(opts.image); if (!im) throw { code: "bad_image", message: "No pude leer esa imagen. Prueba con un JPG o PNG." };
+      var vp = ["gemini", "openai", "anthropic"].filter(function (k) { return !!KEYS[k]; }); if (vp.indexOf(c.mode) > 0) { vp.splice(vp.indexOf(c.mode), 1); vp.unshift(c.mode); }
+      if (!vp.length) throw { code: "no_vision", message: "Para leer imágenes hace falta una clave de Gemini, OpenAI o Anthropic. La IA que tienes conectada ahora no admite imágenes." };
+      var tv = vp[0] === "gemini" ? await viaGemini(prompt, c, false, false, im) : vp[0] === "openai" ? await viaOpenAI(prompt, c, false, im) : await viaAnthropic(prompt, c, false, false, im);
+      return { text: String(tv), truncated: false, via: { prov: vp[0], model: (c.models && c.models[vp[0]]) || PROV[vp[0]].model, fb: vp[0] !== c.mode } };
+    }
     var cls = opts.kind === "light" ? "light" : "quality", chain = chainFor(c, cls), first = null, tried = [], now = Date.now();
     var live = chain.filter(function (x) { return !(COOL[x.prov + x.model] > now); });
     if (!live.length) live = chain;

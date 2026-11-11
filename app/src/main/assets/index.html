@@ -1049,9 +1049,9 @@ function quotaSheet() {
   });
 }
 function useSave(o) { try { localStorage.setItem("hv:use", JSON.stringify(o)); } catch (e) {} }
-async function ask(p, kind, alt) {
+async function ask(p, kind, alt, img) {
   var r, md = curModel(), cls = (kind === "turn" || kind === "create" || kind === "polish") ? "quality" : "light";
-  try { r = await sample(p, { cache: false, modelTier: "complex", kind: cls, alt: alt || "", long: !!(LONGCUR && kind === "turn") }); }
+  try { r = await sample(p, { cache: false, modelTier: "complex", kind: cls, alt: alt || "", long: !!(LONGCUR && kind === "turn"), image: img || undefined }); }
   catch (e) { if (e && e.code === "rate_limited") { var h = useGet(); h.hit = 1; useSave(h); } throw e; }
   if (r && r.via && r.via.model) { md = r.via.model; try { if (cur) dg(cur, "via", r.via.prov); } catch (e) {} }
   var o = useGet(); o.n++; var me = (o.m[md] = o.m[md] || { t: 0, a: 0 }); if (kind === "turn") me.t++; else me.a++; useSave(o); try { if (window.hvStatusRefresh) window.hvStatusRefresh(); } catch (e) {} usePill();
@@ -1231,8 +1231,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.15.0";
+var VERSION = "0.16.0";
 var NEWS = [
+  ["0.16.0", "Canon desde una imagen: en la ficha de cada personaje (Atlas → Personajes) puedes subir su lámina o esquema y El Cronista extrae su descripción y rasgos. Los revisas, los guardas y quedan como canon fijo."],
   ["0.15.0", "«El mundo del libro en PDF»: exporta todo el making of separado por tarjetas, con sus imágenes: lore del universo, protagonistas, personajes, cartas de lore, glosario, mapa, relaciones, documentos, secretos, entrevistas, cronología y más. Está en las opciones de exportar y en Cartas de lore."],
   ["0.14.1", "El botón para salir de la lectura es ahora pequeño y discreto («✕ Salir», arriba a la derecha) y ya no tapa la portada ni el texto."],
   ["0.14.0", "«Leer como un libro» empieza ahora por la portada. Nuevo glosario de tu mundo (las palabras salen subrayadas al leer) y texto de contraportada, ambos en Cartas de lore. RPG: misiones, dinero y tienda en la ficha. Vibración al tirar el dado, recibir daño o vencer (se quita en Ajustes). Botón de dictado en entrevistas, documentos, glosario y buscador."],
@@ -2222,6 +2223,45 @@ function goalSheet() {
   });
 }
 function woptsLabel() { var d = $("wopts"); if (!d) return; var a = []; if (cur && cur.nextTone) a.push("Tono: " + cur.nextTone); if ($("longsc") && $("longsc").checked) a.push("Escena larga"); d.firstElementChild.textContent = a.length ? "Opciones: " + a.join(" · ") : "Tono y longitud (opcional)"; }
+/* v0.16.0: leer el canon de un personaje desde una imagen */
+function canonPrompt(name, s) {
+  return "Esta imagen es la ficha o lámina de referencia («canon») del personaje " + name + " de la novela «" + (s.title || "") + "». Puede contener un dibujo, texto escrito o las dos cosas. Lee TODO el texto que aparezca y observa el dibujo. Extrae solo lo que la imagen muestra o dice; no inventes nada: si un dato no aparece, deja la cadena vacía. No describas el estilo del dibujo ni la composición, solo al personaje. Español. Responde SOLO con JSON:\n" +
+    "{\"descripcion\":\"quién es, en 1 o 2 frases (máx. 200 caracteres)\",\"fisico\":\"complexión, altura, piel, ropa habitual, marcas visibles (máx. 200)\",\"sexo\":\"\",\"edad\":\"\",\"pelo\":\"\",\"ojos\":\"\",\"rasgos\":\"cicatrices, raza o especie, oficio, implantes, armas u objetos característicos (máx. 200)\",\"caracter\":\"personalidad y forma de hablar, solo si la imagen lo dice (máx. 200)\",\"canon\":\"todos los demás datos que consten en la ficha: historia, habilidades, debilidades, relaciones, notas del autor (máx. 650)\"}";
+}
+function canonSheet(c, m) {
+  var s = cur; if (!s || !c) return;
+  sheet("Canon de " + c.name + " desde una imagen", function (sh) {
+    para(sh, "Sube la ficha, lámina o esquema de " + c.name + ". El Cronista leerá el texto y el dibujo, y te propondrá sus datos para que los revises antes de guardarlos.");
+    para(sh, "La imagen se envía a tu proveedor de IA (Gemini, OpenAI o Anthropic) con tu propia clave. Gasta una consulta.");
+    var fi = el("input"); fi.type = "file"; fi.accept = "image/*"; fi.setAttribute("aria-label", "Imagen con el canon de " + c.name); fi.style.cssText = "display:block;width:100%;margin:.5rem 0"; sh.appendChild(fi);
+    var st = el("p", "hint"); st.hidden = true; st.setAttribute("role", "status"); sh.appendChild(st);
+    var form = el("div"); sh.appendChild(form); var IMG = null;
+    var F = [["descripcion", "Descripción", 220, 1], ["fisico", "Aspecto físico", 220, 1], ["sexo", "Sexo o género", 60], ["edad", "Edad", 60], ["pelo", "Pelo", 120], ["ojos", "Ojos", 120], ["rasgos", "Otros rasgos fijos", 220, 1], ["caracter", "Carácter y forma de hablar", 200, 1], ["canon", "Resto del canon (historia, habilidades, notas)", 700, 2]];
+    function show(d) {
+      form.innerHTML = ""; var inp = {};
+      form.appendChild(el("p", "hint", "Revisa y corrige lo que haga falta. Lo que dejes vacío no cambia lo que ya tenía la ficha."));
+      F.forEach(function (f) { var w = el("label"); w.style.cssText = "display:block;margin:.4rem 0;font-size:.85rem"; w.appendChild(document.createTextNode(f[1])); var e = el(f[3] ? "textarea" : "input"); if (!f[3]) e.type = "text"; e.maxLength = f[2]; e.value = String(d[f[0]] == null ? "" : d[f[0]]).replace(/\s+/g, " ").trim().slice(0, f[2]); if (f[3]) e.style.minHeight = f[3] === 2 ? "8rem" : "3.6rem"; e.style.width = "100%"; w.appendChild(e); form.appendChild(w); inp[f[0]] = e; });
+      var lb = el("label", "chk"), ck = el("input"); ck.type = "checkbox"; lb.appendChild(ck); lb.appendChild(document.createTextNode(" Usar también esta imagen como cara del personaje en las viñetas")); lb.style.cssText = "display:block;margin:.5rem 0"; form.appendChild(lb);
+      var ok = el("button", "go", "Guardar como canon"); form.appendChild(ok);
+      ok.onclick = function () {
+        var v = {}; F.forEach(function (f) { v[f[0]] = inp[f[0]].value.trim(); }); c.fix = c.fix || {};
+        if (v.descripcion) c.desc = v.descripcion; if (v.fisico) c.body = v.fisico; if (v.sexo) c.fix.sex = v.sexo; if (v.edad) c.fix.age = v.edad; if (v.pelo) c.fix.hair = v.pelo; if (v.ojos) c.fix.eyes = v.ojos; if (v.rasgos) c.fix.note = v.rasgos; if (v.caracter) c.voice = v.caracter; if (v.canon) c.fix.canon = v.canon;
+        var done = function () { var okS = save(); closeSheet(); try { renderAtlas(); } catch (e) {} toast(okS === false ? "No hay espacio para guardar. Quita alguna imagen." : "Canon de " + c.name + " guardado. El Cronista lo respetará siempre."); };
+        if (ck.checked && IMG) { var bytes = dataBytes(IMG); shrink(new Blob([bytes], { type: "image/jpeg" }), 480, 480, function (u) { if (u) { s.lore = s.lore || []; var k = String(c.name).toLowerCase(), cc = null; s.lore.forEach(function (x) { if (!cc && x && (x.tipo === "personaje" || x.tipo === "protagonista") && String(x.nombre).toLowerCase() === k) cc = x; }); if (!cc) { cc = { tipo: "personaje", nombre: c.name, desc: v.descripcion || c.desc || "", u: 1, inb: false }; s.lore.push(cc); } cc.img = u; } done(); }); } else done();
+      };
+    }
+    fi.onchange = function () {
+      var f0 = fi.files && fi.files[0]; if (!f0) return; form.innerHTML = ""; st.hidden = false; st.textContent = "Preparando la imagen…";
+      shrink(f0, 1400, 1400, async function (u) {
+        if (!u) { st.textContent = "No pude leer esa imagen. Prueba con un JPG o PNG."; return; } IMG = u; st.textContent = "El Cronista está estudiando la ficha de " + c.name + "…"; fi.disabled = true;
+        try { var r = await ask(canonPrompt(c.name, s), "polish", "", u), d = parse(r && r.text); if (!d || typeof d !== "object") throw { message: "" }; var any = F.some(function (f) { return String(d[f[0]] || "").trim(); }); if (!any) { st.textContent = "El Cronista no ha encontrado datos del personaje en esa imagen. Prueba con otra más nítida."; fi.disabled = false; return; } st.textContent = "Listo. Esto es lo que ha leído:"; show(d); }
+        catch (e) { st.textContent = e && (e.code === "no_vision" || e.code === "bad_image") ? e.message : e && e.code === "rate_limited" ? "Has llegado al límite de consultas por ahora. Prueba más tarde." : e && e.code === "blocked" ? "La IA no ha querido leer esa imagen (filtros de contenido). Prueba con otra." : "No he podido leer la imagen. Revisa la conexión o tu clave y vuelve a intentarlo."; }
+        fi.disabled = false;
+      });
+    };
+    closeBtn(sh);
+  });
+}
 /* v0.14.0: vibración, micrófono, glosario, contraportada, portada en modo libro */
 function buzzOn() { try { return localStorage.getItem("hv:buzz") !== "0"; } catch (e) { return true; } }
 function hvBuzz(p) { try { if (buzzOn() && navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
@@ -2682,7 +2722,7 @@ function ensureMem(s) {
   arr(s.facts).forEach(function (f) { f = str(f, 220); if (f) m.ev.push({ id: "e" + m.ev.length, sc: 0, what: f, where: "", who: [], cons: "" }); });
   s.mem = m; return m;
 }
-function fixTxt(c) { var f = c && c.fix; if (!f) return ""; return [f.sex && "sexo/género: " + f.sex, f.age && "edad: " + f.age, f.hair && "pelo: " + f.hair, f.eyes && "ojos: " + f.eyes, f.note].filter(Boolean).join("; "); }
+function fixTxt(c, brief) { var f = c && c.fix; if (!f) return ""; return [f.sex && "sexo/género: " + f.sex, f.age && "edad: " + f.age, f.hair && "pelo: " + f.hair, f.eyes && "ojos: " + f.eyes, f.note, !brief && f.canon && "canon del autor: " + String(f.canon).replace(/\s+/g, " ").slice(0, 700)].filter(Boolean).join("; "); }
 function mergeUndo(m) {
   var u = (m.undoM || []).pop(); if (!u || !m.chars[u.toK]) return false;
   m.chars[u.fromK] = u.f; m.chars[u.toK] = u.t;
@@ -3097,7 +3137,7 @@ function memCtx(s, focus, lvl) {
     return l.join("\n");
   }).join("\n") : "(ninguno)"));
   var others = keys.filter(function (k) { var c0 = m.chars[k]; return !inFocus[k] && !(sc - c0.last > 80 && c0.last > 0 && !c0.know.some(function (x) { return x.k === "secreto"; }) && !(c0.want || c0.need || c0.fear)); }).sort(function (a, b) { return m.chars[b].last - m.chars[a].last; }).slice(0, L.oth);
-  if (others.length) out.push("OTROS PERSONAJES (conservan su propia vida y memoria):\n" + others.map(function (k) { var c = m.chars[k]; return "- " + c.name + (fixTxt(c) ? " [" + fixTxt(c) + "]" : "") + (c.loc ? " (en " + c.loc + ")" : "") + (c.goal ? ", quiere: " + c.goal : "") + (c.body ? ", " + c.body : ""); }).join("\n"));
+  if (others.length) out.push("OTROS PERSONAJES (conservan su propia vida y memoria):\n" + others.map(function (k) { var c = m.chars[k]; return "- " + c.name + (fixTxt(c, 1) ? " [" + fixTxt(c, 1) + "]" : "") + (c.loc ? " (en " + c.loc + ")" : "") + (c.goal ? ", quiere: " + c.goal : "") + (c.body ? ", " + c.body : ""); }).join("\n"));
   var its = Object.keys(m.items).map(function (k) { return m.items[k]; }).slice(-L.its);
   if (its.length) out.push("OBJETOS:\n" + its.map(function (i) { return "- " + i.name + ": " + (i.owner ? "lo tiene " + i.owner : i.loc ? "está en " + i.loc : "paradero desconocido") + (i.state ? " (" + i.state + ")" : ""); }).join("\n"));
   var evs = m.ev.map(function (e, i) { return { e: e, i: i }; }), last = evs.slice(-L.last), pool = evs.slice(0, Math.max(0, evs.length - L.last));
@@ -4685,6 +4725,7 @@ function renderAtlas() {
         ab.disabled = true; ab.textContent = "El Cronista piensa…";
         try { var dd = parse((await ask("Eres un editor de novelas. Con lo que se sabe de este personaje, propón sus motivaciones. Responde SOLO con JSON: {\"quiere\":\"...\",\"necesita\":\"...\",\"teme\":\"...\"} (frases cortas).\nPERSONAJE: " + c.name + " — " + (c.desc || "") + "\nHISTORIA: " + (s.premise || "") + " " + (s.memory || "").slice(0, 400) + "\nSABE/CREE: " + c.know.slice(-6).map(function (x) { return x.t; }).join("; "))).text); c.want = str(dd.quiere, 160); c.need = str(dd.necesita, 160); c.fear = str(dd.teme, 160); save(); renderAtlas(); } catch (e) { ab.textContent = "Error; reintenta"; ab.disabled = false; }
       }; d.appendChild(ab);
+      var cnb = el("button", "small on", "📷 Leer su canon desde una imagen"); cnb.style.cssText = "display:block;margin:.6rem 0 .2rem"; cnb.setAttribute("aria-label", "Leer el canon de " + c.name + " desde una imagen"); cnb.onclick = function () { canonSheet(c, m); }; d.appendChild(cnb);
       d.appendChild(el("p", "hint", "Ficha fija: lo que escribas aquí la IA lo respeta siempre, aunque la historia diga otra cosa."));
       c.fix = c.fix || {};
       ed(d, "Nombre", c.name, function (v) { if (!v || v === c.name) return; var ok = Object.keys(m.chars).filter(function (k) { return m.chars[k] === c; })[0], nkk = canon(v); c.alias = (c.alias || []).filter(function (x) { return canon(x) !== nkk; }); if (c.alias.indexOf(c.name) < 0) c.alias.push(c.name); c.alias = c.alias.slice(-8); c.name = str(v, 60); if (nkk && nkk !== ok && !m.chars[nkk]) { m.chars[nkk] = c; delete m.chars[ok]; Object.keys(m.chars).forEach(function (k) { var cc = m.chars[k]; if (cc.rel[ok]) { cc.rel[nkk] = cc.rel[ok]; cc.rel[nkk].name = c.name; delete cc.rel[ok]; } }); } renderAtlas(); });
@@ -4693,6 +4734,7 @@ function renderAtlas() {
       ed(d, "Pelo", c.fix.hair, function (v) { c.fix.hair = v; });
       ed(d, "Ojos", c.fix.eyes, function (v) { c.fix.eyes = v; });
       ed(d, "Otros rasgos fijos (cicatrices, raza, oficio…)", c.fix.note, function (v) { c.fix.note = v; });
+      if (c.fix.canon) { var cw = el("label"); cw.style.cssText = "display:block;margin:.35rem 0;font-size:.82rem;opacity:.9"; cw.appendChild(document.createTextNode("Canon del autor (leído de su ficha)")); var ct = el("textarea"); ct.value = c.fix.canon; ct.maxLength = 700; ct.style.minHeight = "6rem"; ct.onchange = function () { c.fix.canon = ct.value.trim(); save(); }; cw.appendChild(ct); d.appendChild(cw); }
       ed(d, "Corregir descripción", c.desc, function (v) { c.desc = v; }, true);
       ed(d, "Corregir aspecto físico", c.body, function (v) { c.body = v; });
       ed(d, "Corregir ubicación", c.loc, function (v) { c.loc = v; });
@@ -6090,7 +6132,7 @@ function fichaLines(s) {
     h1("PERSONAJES");
     chars.forEach(function (c) {
       h2(c.name + ((c.alias || []).length ? "  (también: " + c.alias.join(", ") + ")" : ""));
-      li("Descripción: " + (c.desc || "sin ficha"));
+      li("Descripción: " + (c.desc || "sin ficha")); if (fixTxt(c, 1)) li("Ficha fija: " + fixTxt(c, 1)); if (c.fix && c.fix.canon) li("Canon del autor: " + c.fix.canon); if (c.voice) li("Cómo habla: " + c.voice);
       var ah = [c.loc && "está en " + c.loc, c.body && "cuerpo: " + c.body, c.mood && "ánimo: " + c.mood].filter(Boolean); if (ah.length) li("Estado actual: " + ah.join("; "));
       if (c.goal) li("Quiere: " + c.goal);
       if ((c.objs || []).length) li("Lleva: " + c.objs.join(", "));
@@ -6638,6 +6680,7 @@ var GUIDE = {
     ["Añadir misión", "En la ficha RPG: apunta un objetivo. «Cumplida» lo cierra y te da 20 monedas. El Cronista también abre y cierra misiones."],
     ["🎤 Dictar", "Solo en la app instalada: dicta con la voz en lugar de escribir."],
     ["Seguir por donde ibas", "En la portada del modo libro: salta a la página donde dejaste la lectura."],
+    ["📷 Leer su canon desde una imagen", "En Atlas → Personajes, dentro de cada ficha: sube la lámina o esquema del personaje y El Cronista extrae su descripción y rasgos. Los revisas y «Guardar como canon» los fija. Necesita una clave de Gemini, OpenAI o Anthropic y gasta una consulta."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

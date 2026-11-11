@@ -116,3 +116,9 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 1. Cartas de lore → «Exportar el mundo (PDF)» (o en las opciones de exportar → «📕 El mundo del libro en PDF»). Debe guardarse un archivo `titulo-mundo.pdf`.
 2. Ábrelo: portada, y después cada concepto en su tarjeta (con su imagen si la tiene), separado por apartados. Comprueba tildes, eñes y que no falte ninguna carta.
 3. Revisa que los textos largos continúan en la página siguiente sin cortarse.
+
+## 33. Canon de personaje desde una imagen — v0.16.0
+1. Atlas → Personajes → abre una ficha (por ejemplo Sora) → «📷 Leer su canon desde una imagen» → elige su lámina.
+2. Debe salir un formulario con lo que ha leído. Corrige algo y pulsa «Guardar como canon». Comprueba que la ficha muestra los datos y el «Canon del autor».
+3. Juega una escena con ese personaje: El Cronista debe respetar el aspecto y los datos del canon.
+4. Con solo Groq o Mistral conectados, debe salir un aviso claro de que hace falta Gemini, OpenAI o Anthropic.
