@@ -414,3 +414,6 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Vibración (`hv:buzz`) con permiso VIBRATE nuevo en el manifiesto (permiso normal, sin aviso al usuario).
 - El dictado por voz ya existía en el cuadro de escritura; ahora hay botón «🎤 Dictar» también en entrevistas, documentos, glosario y buscador.
 - Prueba nueva: tests/t113_v014.js.
+
+**v0.14.1**
+- Botón de salir de la lectura pequeño y discreto («✕ Salir», 30 px de alto, arriba a la derecha, por encima del área del libro). Portada sin partir palabras con guion.

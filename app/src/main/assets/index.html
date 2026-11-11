@@ -527,6 +527,12 @@ body.imm.paged #book .bkcover{display:flex;flex-direction:column;align-items:cen
 .bkcover .bkart{flex:1;min-height:0;width:100%;max-width:26rem;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.6);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8rem;padding:1.4rem;box-sizing:border-box;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.8)}
 .bkcover .bkt{font:italic 700 2rem/1.15 Georgia,"Times New Roman",serif}.bkcover .bkg{font:600 .75rem/1 system-ui,sans-serif;letter-spacing:.25em;text-transform:uppercase;opacity:.85}
 .bkcover .bkcap{margin:0;font:italic 700 1.2rem/1.2 Georgia,serif}
+/* v0.14.1: botón de salir de la lectura, discreto */
+#imx{min-height:0!important;height:30px;padding:0 .7rem!important;border-radius:999px!important;font:600 .78rem/1 system-ui,sans-serif!important;letter-spacing:.02em;text-transform:none!important;background:rgba(10,14,24,.72)!important;color:#e8ecf5!important;border:1px solid rgba(255,255,255,.28)!important;box-shadow:none!important;opacity:.85;display:inline-flex;align-items:center;gap:.3rem}
+#imx[hidden]{display:none!important}
+body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
+.bkcover,.bkcover *{hyphens:none;-webkit-hyphens:none}
+.bkcover .bkcap{font-size:1.1rem;text-wrap:balance}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -674,7 +680,7 @@ body.imm.paged #book .bkcover{display:flex;flex-direction:column;align-items:cen
 <button class="small" id="layb3" style="margin:.5rem 0 .2rem;width:100%">🎨 Maquetación del libro</button>
 </details>
 <div class="row" id="rdbar" style="margin:.6rem 0 0"><button id="immp" class="small bookbtn">📖 Leer como un libro</button><button id="listen" class="small on">Escuchar la última escena</button><button id="stoplisten" class="small" hidden>Parar</button><button id="listenpick" class="small">Elegir qué escuchar</button><button id="immb" class="small">Pantalla completa</button><button id="bgb" class="small">Cambiar fondo</button></div>
-<button id="imx" class="go" hidden style="width:auto">Salir de la lectura</button>
+<button id="imx" class="small" hidden style="width:auto" aria-label="Salir de la lectura">✕ Salir</button>
 <div id="pgbar" role="group" aria-label="Pasar páginas"><button id="pgprev" aria-label="Página anterior">‹</button><span id="pglab" role="status" aria-live="polite">1 / 1</span><button id="pgnext" aria-label="Página siguiente">›</button><button id="pgtog" class="small">Desplazar</button></div>
 <div id="sr" class="sronly" role="status" aria-live="polite"></div>
 <button id="findfab" type="button" aria-label="Buscar en el lore, los personajes y los documentos"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg></button>
@@ -1225,8 +1231,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.14.0";
+var VERSION = "0.14.1";
 var NEWS = [
+  ["0.14.1", "El botón para salir de la lectura es ahora pequeño y discreto («✕ Salir», arriba a la derecha) y ya no tapa la portada ni el texto."],
   ["0.14.0", "«Leer como un libro» empieza ahora por la portada. Nuevo glosario de tu mundo (las palabras salen subrayadas al leer) y texto de contraportada, ambos en Cartas de lore. RPG: misiones, dinero y tienda en la ficha. Vibración al tirar el dado, recibir daño o vencer (se quita en Ajustes). Botón de dictado en entrevistas, documentos, glosario y buscador."],
   ["0.13.0", "Buscadores: una lupa flotante mientras lees o juegas busca a la vez en cartas de lore, lore del universo, secretos, documentos, personajes, relaciones, entrevistas, mapa y escenas, y te lleva al resultado. Las listas largas (cartas, ideas de lore, documentos, personajes e historias) tienen ahora su propio cuadro de búsqueda."],
   ["0.12.0", "Ajustes ordenados por apartados, con color de acento a elegir. Al leer, las barras se esconden solas. Capítulos con cabecera más vistosa. En las viñetas puedes tocar un nombre para corregir quién habla. RPG: compañeros que te ayudan (+3 al dado). Nuevos en Cartas de lore: «Mapa de lugares» y «Documentos del mundo» (cartas, noticias, diarios). En cada escena, «Otro punto de vista» la cuenta desde otro personaje. La meta de escritura ya entra en las copias de seguridad."],
