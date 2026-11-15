@@ -546,6 +546,14 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 #galv .galbar{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center}
 #galv .galbar button{background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.3)}
 #galv .galbar button.on{background:var(--acc);color:var(--accink)}
+/* v0.19.0: nombre de autor en las portadas */
+.cover .byl{display:block;margin-top:.55rem;font:italic 600 .82rem/1.2 Georgia,"Times New Roman",serif;letter-spacing:.06em;color:#fff;opacity:.92;text-shadow:0 1px 6px rgba(0,0,0,.85)}
+.cc .cover .byl{font-size:.7rem;margin-top:.35rem}
+.cover.hasimg .byl,.card.clean .cover.hasimg .byl{display:block!important;position:absolute;left:0;right:0;bottom:.55rem;margin:0;text-align:center;padding:0 .5rem}
+.cover.hasimg{position:relative}
+#hero .hbyl{margin:-.3rem 0 .4rem;font:italic 600 1rem/1.2 Georgia,"Times New Roman",serif;letter-spacing:.04em;color:#fff;opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.8)}
+.bkcover .bka{font:italic 600 1rem/1.2 Georgia,serif;letter-spacing:.05em;opacity:.95}
+.bkcover .bkby{margin:-.4rem 0 0;font:italic .95rem/1.2 Georgia,serif;opacity:.85}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -560,7 +568,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 <body data-v="lib">
 <div id="bgart"></div><div id="bgmist"></div><canvas id="fx"></canvas><div id="bgshade"></div>
 <header class="top"><button class="brand" id="home"><img class="mk" src="data:image/webp;base64,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" width="26" height="26" alt="" style="border-radius:6px"> Historias vivas</button><div class="hr"><button class="small round" id="hq" aria-label="Ayuda de esta pantalla">?</button><button class="small round" id="menu" aria-label="Menú">☰</button></div></header>
-<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><p class="dgrp">Historias</p><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dlib">Mi biblioteca y registro de creación</button><p class="dgrp">Apariencia</p><button id="dtheme">Tema: automático</button><button id="dacc">Color de acento: del género</button><button id="dhcov">Fondo de inicio: del género</button><button id="dczoom">Ampliar portada al tocarla: sí</button><button id="dbars">Ocultar barras al leer: sí</button><button id="dbuzz">Vibración: sí</button><button id="dgoal">Meta de escritura: visible</button><p class="dgrp">Copias y datos</p><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dstor">Espacio y almacenamiento</button><p class="dgrp">Ayuda</p><button id="dtut">Tutorial y ayuda</button><button id="dhelp">Privacidad y ayuda</button><button id="dlic">Licencias de terceros</button><p class="hint" style="margin-top:auto">Historias vivas · v0.10</p></nav></div>
+<div id="drawer" hidden><div class="dov" id="dov" aria-hidden="true"></div><nav class="dnav" aria-label="Menú de la aplicación"><p class="dgrp">Historias</p><button id="dbyl">Nombre en las portadas: sin poner</button><button id="dhome">Inicio</button><button id="dchars">Mis personajes</button><button id="dlib">Mi biblioteca y registro de creación</button><p class="dgrp">Apariencia</p><button id="dtheme">Tema: automático</button><button id="dacc">Color de acento: del género</button><button id="dhcov">Fondo de inicio: del género</button><button id="dczoom">Ampliar portada al tocarla: sí</button><button id="dbars">Ocultar barras al leer: sí</button><button id="dbuzz">Vibración: sí</button><button id="dgoal">Meta de escritura: visible</button><p class="dgrp">Copias y datos</p><button id="dbackup">Copia de seguridad</button><button id="dvers">Recuperación y versiones</button><button id="dstor">Espacio y almacenamiento</button><p class="dgrp">Ayuda</p><button id="dtut">Tutorial y ayuda</button><button id="dhelp">Privacidad y ayuda</button><button id="dlic">Licencias de terceros</button><p class="hint" style="margin-top:auto">Historias vivas · v0.10</p></nav></div>
 <div id="hlbar" hidden role="toolbar" aria-label="Acciones sobre el texto seleccionado"><button class="small" id="hldef" hidden>📖 Definición</button><button class="small" id="hlsub">🖍 Subrayar</button><button class="small" id="hlfic">＋ Crear ficha</button><button class="small" id="hlcopy">Copiar</button></div>
 <div id="gmodal" hidden role="dialog" aria-modal="true"><div class="psheet" id="gsheet" tabindex="-1"></div></div>
 <div id="pmodal" hidden><div class="psheet"><h2 style="margin-top:0" id="ptit">Prompt para imagen</h2>
@@ -708,6 +716,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
 <div class="row" id="rpgrisk" hidden style="margin-bottom:.6rem;align-items:center"><span class="hint">Riesgo de tu acción:</span><button class="small" data-r="Seguro">🟢 Seguro</button><button class="small on" data-r="Arriesgado">🟠 Arriesgado</button><button class="small" data-r="Temerario">🔴 Temerario</button></div>
 <button id="dict" class="small" hidden style="margin-bottom:.5rem">Dictar con la voz</button>
+<p class="hint" id="verbh" hidden style="margin:.2rem 0 .4rem">Tu texto entrará en el libro tal cual, sin cambiar ni una coma. El Cronista solo lo lee para recordarlo y proponerte cómo seguir (gasta una consulta).</p>
 <textarea id="own" style="min-height:5.5rem" placeholder="Por ejemplo: Erik se asoma al acantilado y ve una aldea ardiendo a lo lejos"></textarea>
 <details class="pl" id="wopts"><summary>Tono y longitud (opcional)</summary><label class="chk" id="longl" style="display:block;margin:.5rem 0 0"><input type="checkbox" id="longsc"> Escena larga (3 o 4 folios): que desarrolle todo lo que he escrito</label><p class="hint" id="longh" hidden></p></details>
 <button class="go" id="do" style="margin-top:.6rem">Continuar</button>
@@ -1171,6 +1180,7 @@ function coverZoom(s) {
   var big = el("button", "cover czbig" + (s.cover ? " hasimg" : ""));
   big.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s);
   if (!s.cover) { big.appendChild(el("span", "ttl", s.title)); big.appendChild(el("small", null, s.syn || gtxt(s))); }
+  if (byline()) big.appendChild(el("span", "byl", byline()));
   big.setAttribute("aria-label", "Entrar en " + s.title);
   var hint = el("p", "czhint", "Toca la portada para entrar · toca fuera para cerrar");
   function close() { ov.remove(); document.removeEventListener("keydown", kd); }
@@ -1187,6 +1197,7 @@ function renderLib() {
   if (s0) {
     h.appendChild(el("span", "tag", "CONTINÚA TU AVENTURA"));
     h.appendChild(el("h1", null, s0.title));
+    if (byline()) h.appendChild(el("p", "hbyl", "de " + byline()));
     h.appendChild(el("p", "syn", vocabApply(s0, s0.syn) || (gtxt(s0) + " · capítulo " + chCur(s0))));
     var pr = el("div", "prog"), bar = el("i"); bar.style.width = Math.min(100, Math.round(s0.turn / 120 * 100)) + "%"; pr.appendChild(bar); h.appendChild(pr);
     var gb = el("button", "go", ""); gb.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg>'; gb.appendChild(document.createTextNode(s0.fin ? "Releer" : "Continuar"));
@@ -1206,7 +1217,7 @@ function renderLib() {
     var it = el("div", "cc"), cd = el("div", "card"), cv = el("button", "cover");
     cv.style.background = s.cover ? "url(\"" + s.cover + "\") center/cover" : coverBg(s); if (s.cover) { cv.classList.add("hasimg"); cd.classList.add("clean"); cv.setAttribute("aria-label", s.title); }
     if (!s.cover) cd.appendChild(el("span", "chip", (s.saga && s.saga.vol > 1 ? "VOL. " + s.saga.vol + " · " : "") + (s.rpg ? "RPG · " : "") + (s.fin ? "FINAL" : "EN CURSO") + (s.fork ? " · RAMA ESC. " + s.fork.at : "")));
-    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, vocabApply(s, s.syn) || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas"));
+    cv.appendChild(el("span", "ttl", s.title)); cv.appendChild(el("small", null, vocabApply(s, s.syn) || (gtxt(s) + " · turno " + s.turn))); if (s.scenes && s.scenes.length) cv.appendChild(el("small", null, "Capítulo " + chCur(s) + " · " + s.scenes.length + " escenas")); if (byline()) cv.appendChild(el("span", "byl", byline()));
     var lpT = 0, lpF = false;
     cv.onpointerdown = function () { lpF = false; clearTimeout(lpT); lpT = setTimeout(function () { lpF = true; storyMenu(s); }, 650); };
     ["pointerup", "pointerleave", "pointercancel", "pointermove"].forEach(function (ev) { cv.addEventListener(ev, function () { clearTimeout(lpT); }); });
@@ -1247,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.18.1";
+var VERSION = "0.19.0";
 var NEWS = [
+  ["0.19.0", "Nuevo modo «Texto completo sin modificar» al escribir: tu escena entra en el libro tal cual y El Cronista solo la lee para recordarla y proponerte cómo seguir. Además, tu nombre en las portadas: en Ajustes → «Nombre en las portadas» escribe tu nombre de autor y aparecerá en la cubierta de todas tus historias y partidas, en «Leer como un libro», en los PDF y en los EPUB."],
   ["0.18.1", "Lore del universo: «Que El Cronista lo lea y lo aprenda» tiene ahora su propio cuadro para pegar textos largos, sin límite. Nuevo botón «📋 Pegar lo copiado» en los cuadros de texto largos, por si el móvil no ofrece «Pegar» al mantener pulsado."],
   ["0.18.0", "Galería: un botón «🖼 Galería» junto a «Leer como un libro» reúne todas las ilustraciones de la historia (portada, escenas, personajes y lugares). Tócalas para verlas en grande, pasa con el dedo de una a otra y salta a la escena de cada imagen."],
   ["0.17.0", "Sagas: desde el menú de una historia (o al terminarla) puedes «Construir el volumen 2». Se lleva todo el mundo y la memoria de los personajes, más un resumen del volumen anterior que El Cronista puede escribir y tú corregir. El volumen 3 hereda el resumen del 1 y del 2, y así sucesivamente."],
@@ -2358,9 +2370,9 @@ function bkCover() {
   if (!cur || !document.body.classList.contains("paged")) return; var s = cur;
   var c = el("div", "bkcover"); c.setAttribute("role", "img"); c.setAttribute("aria-label", "Portada de " + s.title);
   var art = el("div", "bkart" + (s.cover ? " hasimg" : "")); art.style.background = s.cover ? "url(" + JSON.stringify(String(s.cover)) + ") center/cover no-repeat" : coverBg(s);
-  if (!s.cover) { art.appendChild(el("span", "bkt", s.title)); art.appendChild(el("span", "bkg", gtxt(s) || "")); }
+  if (!s.cover) { art.appendChild(el("span", "bkt", s.title)); if (byline()) art.appendChild(el("span", "bka", byline())); art.appendChild(el("span", "bkg", gtxt(s) || "")); }
   c.appendChild(art);
-  if (s.cover) c.appendChild(el("p", "bkcap", s.title));
+  if (s.cover) { c.appendChild(el("p", "bkcap", s.title)); if (byline()) c.appendChild(el("p", "bkby", byline())); }
   var go = el("button", "small on", "Seguir por donde ibas"); go.onclick = function (ev) { ev.stopPropagation(); COVER_FIRST = false; pgStart(); }; c.appendChild(go);
   b.insertBefore(c, b.firstChild);
 }
@@ -4013,8 +4025,9 @@ function hvDie(p) { hvBuzz(25);
 async function turn(action, shown, extra) {
   if (busy || !sample || !cur) return;
   if (!cur.ce) cur.ce = chEnds(cur).slice();
-  var s = cur; LONGCUR = !!LONGNEXT; LONGNEXT = false; s.lastLong = LONGCUR; if (s.rpg) { var _pk = rpgPre(s, action, shown); action = _pk.action; shown = _pk.shown; if (s.rpg.pr) hvDie(s.rpg.pr); }
-  var note = extra || "", cand = null, sp = s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
+  var verb = VERB; VERB = null;
+  var s = cur; LONGCUR = verb ? false : !!LONGNEXT; LONGNEXT = false; s.lastLong = LONGCUR; if (s.rpg && !verb) { var _pk = rpgPre(s, action, shown); action = _pk.action; shown = _pk.shown; if (s.rpg.pr) hvDie(s.rpg.pr); }
+  var note = (extra || "") + (verb ? " MODO TEXTO DEL AUTOR: el autor ha escrito él mismo la escena completa que aparece en la acción. NO la reescribas ni la continúes: en \"escena\" pon solo un guion (-). Rellena todos los demás campos (opciones para seguir desde el final de ese texto, memoria, mem, estado, escena_ahora…) basándote fielmente en lo que ocurre en ese texto." : ""), cand = null, sp = !verb && s.turn >= 3 && Math.random() < Math.min(0.9, 0.2 * (s.turn - (s.ls || 0) - 1));
   pending = [action, shown]; busy = true; $("err").hidden = true; stopTalk(); render(true);
   try {
     for (var i = 0; i < 2; i++) {
@@ -4022,6 +4035,7 @@ async function turn(action, shown, extra) {
       try { d = parse(r.text); } catch (e) { dg(s, "jsonFail"); note = "Tu respuesta anterior no era JSON válido."; continue; }
       if (!d.escena) { dg(s, "noScene"); note = "Falta la escena."; continue; }
       cand = d;
+      if (verb) break;
       var vv = validateScene(s, d), isMan = !!(window.hvIsManual && window.hvIsManual());
       if (vv.errs.length && i === 0 && !isMan) { dg(s, "valFix"); note = "Corrige estos errores sin cambiar la trama: " + vv.errs.join(" "); continue; }
       if (vv.errs.length || vv.warns.length) { dg(s, "valWarn"); try { var mw = ensureMem(s); mw.warn = (mw.warn || []).concat(vv.errs, vv.warns).slice(-8); } catch (e) {} }
@@ -4037,7 +4051,7 @@ async function turn(action, shown, extra) {
     if (!cand) throw new Error("vacío");
     ensureMem(s); s.prev = { rpg: s.rpg ? rpgState(s.rpg) : null, ce: s.ce ? s.ce.slice() : null, mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
     try { vocabDeep(s, cand); } catch (e) {}
-    cand.escena = vocabApply(s, cleanScene(cand.escena)); if (Array.isArray(cand.opciones)) cand.opciones = cand.opciones.map(function (o) { return vocabApply(s, o); }); s.scenes.push({ a: shown || "", t: cand.escena, d: Date.now() }); try { if (s.nextTone) s.scenes[s.scenes.length - 1].tn = s.nextTone; goalAdd(cand.escena); } catch (e) {} try { var _om = /^\[COMIENZO DEL CAPÍTULO (\d+) ESCRITO POR EL ESCRITOR\]\n([\s\S]*?)\n\[FIN DEL TEXTO/.exec(action), _lsc = s.scenes[s.scenes.length - 1]; try { pvKeep(s, _lsc); } catch (e) {} if (_om) { _lsc.orig = _om[2]; _lsc.op = "polish"; _lsc.opch = +_om[1]; } else if (/^\[IDEA DEL ESCRITOR PARA EL COMIENZO/.test(action)) _lsc.op = "idea"; } catch (e) {}
+    cand.escena = verb ? verb : vocabApply(s, cleanScene(cand.escena)); if (Array.isArray(cand.opciones)) cand.opciones = cand.opciones.map(function (o) { return vocabApply(s, o); }); s.scenes.push({ a: shown || "", t: cand.escena, d: Date.now() }); if (verb) s.scenes[s.scenes.length - 1].own = 1; try { if (s.nextTone) s.scenes[s.scenes.length - 1].tn = s.nextTone; goalAdd(cand.escena); } catch (e) {} try { var _om = /^\[COMIENZO DEL CAPÍTULO (\d+) ESCRITO POR EL ESCRITOR\]\n([\s\S]*?)\n\[FIN DEL TEXTO/.exec(action), _lsc = s.scenes[s.scenes.length - 1]; try { pvKeep(s, _lsc); } catch (e) {} if (_om) { _lsc.orig = _om[2]; _lsc.op = "polish"; _lsc.opch = +_om[1]; } else if (/^\[IDEA DEL ESCRITOR PARA EL COMIENZO/.test(action)) _lsc.op = "idea"; } catch (e) {}
     s.last = cand.escena; s.memory = cand.memoria || s.memory;
     var _n = s.scenes.length, _mm = ensureMem(s);
     if (!memOk(cand.mem) && !Array.isArray(cand.hechos_nuevos)) { dg(s, "memMiss"); _mm.miss = (_mm.miss || []).concat([_n]).slice(-60); if (!(window.hvIsManual && window.hvIsManual())) setTimeout(function () { repairMem(s, _n).then(function () { if ($("atlbox").open) renderAtlas(); }); }, 400); }
@@ -4077,9 +4091,10 @@ async function turn(action, shown, extra) {
   if (cur === s && s.rpg && s.rpg.hp <= 0 && !s.fin && s.scenes.length) setTimeout(function () { rpgDown(s); }, 350);
 }
 
-[["idea", "Idea para la historia"], ["accion", "Mi personaje hace"]].forEach(function (m) {
+var VERB = null; try { $("own").dataset.ph = $("own").placeholder; } catch (e) {}
+[["idea", "Idea para la historia"], ["accion", "Mi personaje hace"], ["texto", "Texto completo sin modificar"]].forEach(function (m) {
   var b = el("button", m[0] === MODE ? "on" : "", m[1]);
-  b.onclick = function () { MODE = m[0]; Array.prototype.forEach.call($("modes").children, function (c) { c.className = c === b ? "on" : ""; }); };
+  b.onclick = function () { MODE = m[0]; Array.prototype.forEach.call($("modes").children, function (c) { c.className = c === b ? "on" : ""; }); try { var h = $("verbh"); if (h) h.hidden = MODE !== "texto"; $("own").placeholder = MODE === "texto" ? "Escribe o pega aquí la escena completa. Entrará en el libro exactamente así." : $("own").dataset.ph || $("own").placeholder; var w = $("wopts"); if (w) w.hidden = MODE === "texto"; } catch (e) {} };
   $("modes").appendChild(b);
 });
 (function () {
@@ -4097,8 +4112,14 @@ async function turn(action, shown, extra) {
 $("do").onclick = function () {
   var v = $("own").value.trim(); if (!v) return;
   LONGNEXT = !!$("longsc").checked; if ($("longsc").checked) { $("longsc").checked = false; $("longh").hidden = true; try { woptsLabel(); } catch (e) {} }
+  if (MODE === "texto") { verbTurn($("own").value.replace(/\r/g, "").replace(/^\s*\n|\s+$/g, "")); return; }
   turn((MODE === "idea" ? "[IDEA PARA LA HISTORIA, aportada por el jugador] " : "[ACCIÓN DE " + (ACTOR || "SU PERSONAJE").toUpperCase() + "] ") + v, v);
 };
+function verbTurn(txt) {
+  var s = cur; if (!s || busy || !txt.trim()) return;
+  if (!sample) { var _pv = { len: s.scenes.length, memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls }; s.scenes.push({ a: "✍ Escena escrita por el autor", t: txt, d: Date.now(), own: 1, pv: _pv }); s.last = txt; s.turn++; s.opts = []; try { goalAdd(txt); } catch (e) {} $("own").value = ""; save(); render(); toast("Escena añadida tal cual. Sin IA conectada, El Cronista no ha podido anotarla en su memoria."); return; }
+  VERB = txt; turn("[ESCENA COMPLETA ESCRITA POR EL AUTOR]\n" + txt, "✍ Escena escrita por el autor");
+}
 $("own").addEventListener("input", function () { var n = $("own").value.length, c = $("longsc"); if (n > 1500 && !c.dataset.t && !c.checked) { c.checked = true; if ($("wopts")) $("wopts").open = true; woptsLabel(); } if (n > 1500) { $("longh").hidden = false; $("longh").textContent = "Texto largo (" + Math.round($("own").value.trim().split(/\s+/).length) + " palabras): se escribirá una escena larga que lo desarrolle entero. Desmarca la casilla si prefieres una escena normal."; } else $("longh").hidden = true; });
 $("longsc").addEventListener("change", function () { $("longsc").dataset.t = "1"; woptsLabel(); });
 $("undo").onclick = function () { undoTurn(); };
@@ -5341,7 +5362,7 @@ function coverSvg(s) {
   var c = COV[s.genre] || COV["Auto"], d = (s.genres || [])[1] && COV[(s.genres || [])[1]] ? COV[s.genres[1]] : c;
   var tx = wrapTxt(s.title, 14).map(function (l, i) { return "<text x='200' y='" + (270 + i * 50) + "' text-anchor='middle' font-family='Georgia,serif' font-size='40' font-weight='bold' fill='#ffffff'>" + xe(l) + "</text>"; }).join("");
   return "<?xml version='1.0' encoding='UTF-8'?><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 600' width='400' height='600'><defs><linearGradient id='g' x1='0' y1='0' x2='0.4' y2='1'><stop offset='0' stop-color='" + c[0] + "'/><stop offset='1' stop-color='" + d[1] + "'/></linearGradient></defs><rect width='400' height='600' fill='url(#g)'/><rect x='18' y='18' width='364' height='564' fill='none' stroke='#ffd596' stroke-opacity='0.5' stroke-width='1.5'/><line x1='160' y1='200' x2='240' y2='200' stroke='#ffd596' stroke-width='2'/>" + tx +
-    "<text x='200' y='560' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='#ffd9a0'>" + xe(gtxt(s)) + "</text></svg>";
+    (byline() ? "<text x='200' y='510' text-anchor='middle' font-family='Georgia,serif' font-size='22' font-style='italic' fill='#ffffff'>" + xe(byline()) + "</text>" : "") + "<text x='200' y='560' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='#ffd9a0'>" + xe(gtxt(s)) + "</text></svg>";
 }
 function xhtml(title, body) { return '<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="es" lang="es"><head><meta charset="utf-8"/><title>' + xe(title) + '</title><link rel="stylesheet" type="text/css" href="style.css"/></head><body>' + body + '</body></html>'; }
 function cleanScene(t) {
@@ -5392,6 +5413,17 @@ function authGet() {
   var a = {}; try { a = JSON.parse(localStorage.getItem("hv:author") || "{}") || {}; } catch (e) { a = {}; }
   if (!a.aid) { a.aid = hvUuid(); authSet(a); }
   return a;
+}
+function byline() { var a = {}; try { a = JSON.parse(localStorage.getItem("hv:author") || "{}") || {}; } catch (e) {} return a.cover !== false && a.name ? String(a.name).trim().slice(0, 60) : ""; }
+function bylineSheet() {
+  var a = authGet();
+  sheet("Nombre en las portadas", function (sh) {
+    para(sh, "Este nombre aparece en la cubierta de todas tus historias y partidas: en Inicio, en «Leer como un libro», en los PDF y en los EPUB.");
+    var ni = el("input"); ni.type = "text"; ni.maxLength = 60; ni.value = a.name || ""; ni.placeholder = "Por ejemplo: DJ Rodríguez"; ni.setAttribute("aria-label", "Nombre de autor"); ni.style.cssText = "width:100%;margin:.4rem 0"; sh.appendChild(ni);
+    var lb = el("label", "chk"), ck = el("input"); ck.type = "checkbox"; ck.checked = a.cover !== false; lb.appendChild(ck); lb.appendChild(document.createTextNode(" Mostrarlo en las portadas")); lb.style.cssText = "display:block;margin:.4rem 0 .8rem"; sh.appendChild(lb);
+    var ok = el("button", "go", "Guardar"); ok.onclick = function () { var a2 = authGet(); a2.name = ni.value.trim().slice(0, 60); a2.cover = ck.checked; authSet(a2); closeSheet(); try { bylineLabel(); renderLib(); if (cur && !$("play").hidden) render(true); } catch (e) {} toast(a2.name && a2.cover ? "Tus portadas dirán: " + a2.name + "." : "Las portadas no mostrarán nombre."); }; sh.appendChild(ok);
+    closeBtn(sh, "Cancelar");
+  });
 }
 function authSet(a) { try { localStorage.setItem("hv:author", JSON.stringify(a)); } catch (e) {} }
 function regOf(s) {
@@ -5547,7 +5579,7 @@ function buildEpubFiles(s, meta) {
   f["OEBPS/style.css"] = ecss;
   var cimg = s.cover ? dataBytes(s.cover) : null, cname = cimg ? "cover.jpg" : "cover.svg";
   if (cimg) f["OEBPS/cover.jpg"] = cimg; else f["OEBPS/cover.svg"] = coverSvg(s);
-  f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1>');
+  f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1>' + (byline() ? '<p class="t" style="font-style:italic">' + xe(byline()) + '</p>' : ''));
   var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/><item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
   var spine = '<itemref idref="title"/>', nav = '<li><a href="title.xhtml">Portada</a></li>';
   for (i = 0; i < ch.length; i++) {
@@ -5867,6 +5899,7 @@ function bookLayout(s, fonts) {
   newPage("title"); y = H * 0.3;
   var tl = wrapLines(pdfSafe(s.title), fonts.B, FS * 2.2, W - mi - mo - 20, 0); tl.forEach(function (ln) { var t = ln.w.join(" "), wd = fonts.B.widthOfTextAtSize(t, FS * 2.2); cur.items.push({ t: "txt", x: (W - wd) / 2, y: y, s: FS * 2.2, f: "B", text: t }); y += FS * 2.9; });
   cur.items.push({ t: "ln", x1: W / 2 - 24, y1: y, x2: W / 2 + 24, y2: y, bw: 0.6 });
+  if (byline()) { var _bt = pdfSafe(byline()), _bf = fonts.I || fonts.R || fonts.B, _bw = _bf.widthOfTextAtSize(_bt, FS * 1.25); y += FS * 2.6; cur.items.push({ t: "txt", x: (W - _bw) / 2, y: y, s: FS * 1.25, f: fonts.I ? "I" : fonts.R ? "R" : "B", text: _bt }); }
   cur = null;
   function orn(p, cx, cy, big) {
     if (o.orn === "none") return;
@@ -6341,6 +6374,7 @@ async function fichaPdf(s) {
   for (var q = 0; q < LINES.length; q++) { if (LINES[q].k === "card" && LINES[q].img) { try { LINES[q].im = await image(LINES[q].img); } catch (e) {} } }
   np();
   if (cov) { var cf = fit(cov, TW, 470); page.drawImage(cov, { x: M + (TW - cf.w) / 2, y: y - cf.h, width: cf.w, height: cf.h }); y -= cf.h + 26; }
+  if (byline()) { var _bn = pdfSafe(byline()); page.drawText(_bn, { x: M + (TW - fR.widthOfTextAtSize(_bn, 13)) / 2, y: y, size: 13, font: fR, color: L.rgb(0.25, 0.25, 0.3) }); y -= 26; }
   function drawCard(x) {
     var pad = 9, th = 20, iw = x.im ? 78 : 0, isz = x.im ? fit(x.im, iw, 104) : { w: 0, h: 0 }, bx = M + pad + (iw ? iw + 10 : 0), bw = TW - 2 * pad - (iw ? iw + 10 : 0);
     var body = wrap(pdfSafe(x.body || "Sin descripción."), fR, 10, bw), i0 = 0, first = true, guard = 0;
@@ -6841,6 +6875,8 @@ var GUIDE = {
     ["🖼 Galería", "Junto a «Leer como un libro»: todas las ilustraciones de la historia en un solo sitio (portada, escenas, personajes y lugares). Toca una para verla en grande; «Anterior» y «Siguiente» (o deslizar) pasan de una a otra, «Ir a la escena» te lleva a su sitio en el libro y «✕ Cerrar» vuelve."],
     ["📋 Pegar lo copiado", "Pega en el cuadro lo que tengas copiado en el móvil, sin tener que mantener pulsado."],
     ["Solo guardarlo en el lore", "Guarda el texto pegado en tu lore, separado por apartados, sin gastar consultas."],
+    ["Nombre en las portadas", "En Ajustes: el nombre de autor que aparece en la cubierta de todas tus historias (Inicio, modo libro, PDF y EPUB). «Guardar» lo aplica."],
+    ["Texto completo sin modificar", "Junto a «Idea para la historia» y «Mi personaje hace»: escribes o pegas una escena entera y entra en el libro exactamente como la escribiste. El Cronista solo la lee para recordarla y proponer cómo seguir."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
@@ -7032,6 +7068,9 @@ try { goalLabel(); } catch (e) {}
 function accLabel() { $("dacc").textContent = "Color de acento: " + ACCN[accGet()]; }
 $("dacc").onclick = function () { var ks = Object.keys(ACCN), k = ks[(ks.indexOf(accGet()) + 1) % ks.length]; try { if (k) localStorage.setItem("hv:accent", k); else localStorage.removeItem("hv:accent"); } catch (e) {} accLabel(); try { reTheme(); } catch (e) {} };
 try { accLabel(); } catch (e) {}
+function bylineLabel() { var n = byline(); $("dbyl").textContent = "Nombre en las portadas: " + (n || "sin poner"); }
+$("dbyl").onclick = function () { bylineSheet(); };
+try { bylineLabel(); } catch (e) {}
 function buzzLabel() { $("dbuzz").textContent = "Vibración: " + (buzzOn() ? "sí" : "no"); }
 $("dbuzz").onclick = function () { try { localStorage.setItem("hv:buzz", buzzOn() ? "0" : "1"); } catch (e) {} buzzLabel(); hvBuzz(40); };
 try { buzzLabel(); } catch (e) {}

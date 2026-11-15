@@ -138,3 +138,7 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 1. Copia un texto largo (por ejemplo, de un documento). Lore del universo → «Que El Cronista lo lea y lo aprenda» → «📋 Pegar lo copiado»: el texto debe aparecer en el cuadro.
 2. «Solo guardarlo en el lore» (sin consultas) o «Que El Cronista lo lea ahora»: deben aparecer las ideas separadas por apartados.
 3. Prueba también a mantener pulsado dentro del cuadro y elegir «Pegar».
+
+## 37. Nombre en las portadas y texto del autor — v0.19.0
+1. Ajustes → «Nombre en las portadas» → escribe tu nombre → Guardar. Debe verse en Inicio, en la portada de «Leer como un libro» y en los PDF/EPUB.
+2. Al escribir, elige «Texto completo sin modificar», pega una escena y pulsa continuar: debe aparecer en el libro exactamente igual, y las opciones siguientes deben seguir desde ese final.

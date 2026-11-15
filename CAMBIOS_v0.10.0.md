@@ -448,3 +448,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Lore del universo → «Que El Cronista lo lea y lo aprenda»: cuadro propio (`#wlbody #wlbulk`, sin límite) que se guarda como ideas (`wlSplit`) y luego se resume; «Solo guardarlo en el lore» no gasta consultas. Antes el apartado no tenía cuadro y el texto gris de debajo era el ejemplo de «Añadir una idea».
 - Botón «📋 Pegar lo copiado» (`hvPasteBtn`, usa `Native.paste` en la app y `navigator.clipboard` en web) en ese cuadro, en «Añadir una idea», importar cartas, importar material y la acción propia.
 - Prueba nueva: tests/t118_pegar.js.
+
+**v0.19.0 — Nombre en las portadas y texto del autor sin modificar**
+- Ajustes → «Nombre en las portadas» (usa el nombre de autor de `hv:author`, con `cover` para mostrarlo u ocultarlo): aparece en Inicio (portada grande y tarjetas, también sobre portadas con imagen), en la portada de «Leer como un libro», en la página de título del PDF del libro y del PDF del mundo, y en la portada y página de título del EPUB.
+- Nuevo modo de escritura «Texto completo sin modificar» (`verbTurn`): la escena entra tal cual (se marca `own:1`). Con IA conectada se hace una consulta solo para memoria, estado y opciones (se pide «-» como escena y se sustituye por el texto del autor; sin reintentos de validación, sin escena larga, sin dado RPG). Sin IA, se añade en local.
+- Pruebas nuevas: tests/t119_autor.js y tests/t120_textoautor.js.
