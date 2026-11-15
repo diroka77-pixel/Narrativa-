@@ -142,3 +142,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 ## 37. Nombre en las portadas y texto del autor — v0.19.0
 1. Ajustes → «Nombre en las portadas» → escribe tu nombre → Guardar. Debe verse en Inicio, en la portada de «Leer como un libro» y en los PDF/EPUB.
 2. Al escribir, elige «Texto completo sin modificar», pega una escena y pulsa continuar: debe aparecer en el libro exactamente igual, y las opciones siguientes deben seguir desde ese final.
+
+## 38. Firma en la portada y separadores — v0.19.1
+1. Exporta el EPUB de tu novela y ábrelo en tu lector: la portada debe llevar «DJ RODRÍGUEZ» abajo, con dos pequeñas líneas a los lados.
+2. Entre escenas ya no deben salir los tres asteriscos, solo un espacio.
+3. Ajustes → «Nombre en las portadas»: prueba «Arriba» y mira la vista previa antes de guardar.

@@ -453,3 +453,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Ajustes → «Nombre en las portadas» (usa el nombre de autor de `hv:author`, con `cover` para mostrarlo u ocultarlo): aparece en Inicio (portada grande y tarjetas, también sobre portadas con imagen), en la portada de «Leer como un libro», en la página de título del PDF del libro y del PDF del mundo, y en la portada y página de título del EPUB.
 - Nuevo modo de escritura «Texto completo sin modificar» (`verbTurn`): la escena entra tal cual (se marca `own:1`). Con IA conectada se hace una consulta solo para memoria, estado y opciones (se pide «-» como escena y se sustituye por el texto del autor; sin reintentos de validación, sin escena larga, sin dado RPG). Sin IA, se añade en local.
 - Pruebas nuevas: tests/t119_autor.js y tests/t120_textoautor.js.
+
+**v0.19.1 — Firma en la portada y sin asteriscos**
+- Al exportar (EPUB, PDF del libro, FB2 y PDF del mundo) el nombre de autor se graba sobre la imagen de portada (`stampCover`/`covUrl`, caché en memoria; la portada guardada no cambia). Ajustes → «Nombre en las portadas»: firmar sí/no, abajo/arriba y vista previa.
+- Separador entre escenas por defecto: solo espacio en blanco. Libros con «* * *» o «⁂» heredados (de presets o del valor por defecto anterior) pasan a espacio salvo elección explícita en Maquetación (`sepv2`).
+- Prueba nueva: tests/t121_firma.js.

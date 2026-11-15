@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.0";
+var VERSION = "0.19.1";
 var NEWS = [
+  ["0.19.1", "Tu firma en la imagen de portada: al exportar el libro (PDF o EPUB) tu nombre de autor se graba en la portada, abajo o arriba, sin cambiar la imagen guardada. Y entre escenas ya no salen los tres asteriscos: por defecto queda solo un espacio en blanco (puedes elegir otro separador en Maquetación)."],
   ["0.19.0", "Nuevo modo «Texto completo sin modificar» al escribir: tu escena entra en el libro tal cual y El Cronista solo la lee para recordarla y proponerte cómo seguir. Además, tu nombre en las portadas: en Ajustes → «Nombre en las portadas» escribe tu nombre de autor y aparecerá en la cubierta de todas tus historias y partidas, en «Leer como un libro», en los PDF y en los EPUB."],
   ["0.18.1", "Lore del universo: «Que El Cronista lo lea y lo aprenda» tiene ahora su propio cuadro para pegar textos largos, sin límite. Nuevo botón «📋 Pegar lo copiado» en los cuadros de texto largos, por si el móvil no ofrece «Pegar» al mantener pulsado."],
   ["0.18.0", "Galería: un botón «🖼 Galería» junto a «Leer como un libro» reúne todas las ilustraciones de la historia (portada, escenas, personajes y lugares). Tócalas para verlas en grande, pasa con el dedo de una a otra y salta a la escena de cada imagen."],
@@ -4306,7 +4307,7 @@ function undoTurn() {
   if (p.rpg && s.rpg) { rpgStateBack(s.rpg, p.rpg); s.state.salud = Math.round(s.rpg.hp); }
   s.prev = null; save(); renderLore(); render();
 }
-(function () { var _r0 = render; render = function (k) { var x = _r0(k); try { bkCover(); } catch (e) {} try { var _gn = cur ? galItems(cur).length : 0; $("galb").textContent = "🖼 Galería" + (_gn ? " (" + _gn + ")" : ""); } catch (e) {} try { if (cur && !comicOn(cur)) gloMark($("book"), cur); } catch (e) {} return x; }; })();
+(function () { var _r0 = render; render = function (k) { var x = _r0(k); try { if (cur && cur.cover && byline()) stampCover(cur); } catch (e) {} try { bkCover(); } catch (e) {} try { var _gn = cur ? galItems(cur).length : 0; $("galb").textContent = "🖼 Galería" + (_gn ? " (" + _gn + ")" : ""); } catch (e) {} try { if (cur && !comicOn(cur)) gloMark($("book"), cur); } catch (e) {} return x; }; })();
 $("new").onclick = function () { startCreate(""); };
 try { [["imptxt"], ["own"]].forEach(function (x) { var ta = $(x[0]); if (!ta) return; var r = el("div", "row"); r.style.margin = ".3rem 0"; r.appendChild(hvPasteBtn(ta)); ta.parentNode.insertBefore(r, ta.nextSibling); }); } catch (e) {}
 try { $("findfab").onclick = function () { findSheet(); }; } catch (e) {}
@@ -5414,6 +5415,29 @@ function authGet() {
   if (!a.aid) { a.aid = hvUuid(); authSet(a); }
   return a;
 }
+/* v0.19.1: firma del autor grabada en la imagen de portada al exportar (PDF, EPUB, FB2). La portada guardada no se toca. */
+var COVSTAMP = { k: "", u: "" };
+function stampOpts() { var a = {}; try { a = JSON.parse(localStorage.getItem("hv:author") || "{}") || {}; } catch (e) {} return { on: a.stamp !== false, pos: a.stampPos === "arriba" ? "arriba" : "abajo" }; }
+function stampKey(s) { var o = stampOpts(), n = byline(); if (!s || !s.cover || !n || !o.on) return ""; return String(s.cover).length + "|" + String(s.cover).slice(-48) + "|" + n + "|" + o.pos; }
+function covUrl(s) { var k = stampKey(s); return k && COVSTAMP.k === k && COVSTAMP.u ? COVSTAMP.u : (s && s.cover); }
+function stampDraw(src, name, pos) {
+  return new Promise(function (ok) {
+    var im = new Image(); im.onload = function () {
+      try {
+        var sc = Math.min(1, 1800 / Math.max(im.naturalWidth, im.naturalHeight)), W = Math.round(im.naturalWidth * sc), H = Math.round(im.naturalHeight * sc), cv = document.createElement("canvas"); cv.width = W; cv.height = H; var g = cv.getContext("2d"); g.drawImage(im, 0, 0, W, H);
+        var band = Math.round(H * 0.2), top = pos === "arriba", gr = g.createLinearGradient(0, top ? 0 : H - band, 0, top ? band : H); gr.addColorStop(0, top ? "rgba(0,0,0,0.62)" : "rgba(0,0,0,0)"); gr.addColorStop(1, top ? "rgba(0,0,0,0)" : "rgba(0,0,0,0.62)"); g.fillStyle = gr; g.fillRect(0, top ? 0 : H - band, W, band);
+        var fs = Math.max(14, Math.round(W * 0.06)), txt = String(name).toUpperCase(); g.font = "600 " + fs + "px Georgia, 'Times New Roman', serif"; try { g.letterSpacing = Math.round(fs * 0.18) + "px"; } catch (e) {}
+        while (g.measureText(txt).width > W * 0.78 && fs > 12) { fs -= 1; g.font = "600 " + fs + "px Georgia, 'Times New Roman', serif"; try { g.letterSpacing = Math.round(fs * 0.18) + "px"; } catch (e) {} }
+        var tw = g.measureText(txt).width, y = top ? Math.round(H * 0.045) : Math.round(H - H * 0.055), cx = W / 2;
+        g.textAlign = "center"; g.textBaseline = "middle"; g.shadowColor = "rgba(0,0,0,0.9)"; g.shadowBlur = Math.round(fs * 0.5); g.fillStyle = "#f4ecdc"; g.fillText(txt, cx, y);
+        g.shadowBlur = 0; g.strokeStyle = "rgba(244,236,220,0.85)"; g.lineWidth = Math.max(1, Math.round(fs * 0.06)); var gap = fs * 0.7, ln = Math.min(W * 0.09, (W - tw) / 2 - gap - W * 0.03);
+        if (ln > fs * 0.6) { g.beginPath(); g.moveTo(cx - tw / 2 - gap - ln, y); g.lineTo(cx - tw / 2 - gap, y); g.moveTo(cx + tw / 2 + gap, y); g.lineTo(cx + tw / 2 + gap + ln, y); g.stroke(); [cx - tw / 2 - gap - ln - fs * 0.22, cx + tw / 2 + gap + ln + fs * 0.22].forEach(function (x) { g.save(); g.translate(x, y); g.rotate(Math.PI / 4); g.fillStyle = "#f4ecdc"; var d = fs * 0.13; g.fillRect(-d, -d, d * 2, d * 2); g.restore(); }); }
+        ok(cv.toDataURL("image/jpeg", 0.92));
+      } catch (e) { ok(null); }
+    }; im.onerror = function () { ok(null); }; im.src = src;
+  });
+}
+async function stampCover(s) { var k = stampKey(s); if (!k) return s && s.cover; if (COVSTAMP.k === k && COVSTAMP.u) return COVSTAMP.u; var o = stampOpts(), u = await stampDraw(s.cover, byline(), o.pos); if (u) COVSTAMP = { k: k, u: u }; return u || s.cover; }
 function byline() { var a = {}; try { a = JSON.parse(localStorage.getItem("hv:author") || "{}") || {}; } catch (e) {} return a.cover !== false && a.name ? String(a.name).trim().slice(0, 60) : ""; }
 function bylineSheet() {
   var a = authGet();
@@ -5421,7 +5445,12 @@ function bylineSheet() {
     para(sh, "Este nombre aparece en la cubierta de todas tus historias y partidas: en Inicio, en «Leer como un libro», en los PDF y en los EPUB.");
     var ni = el("input"); ni.type = "text"; ni.maxLength = 60; ni.value = a.name || ""; ni.placeholder = "Por ejemplo: DJ Rodríguez"; ni.setAttribute("aria-label", "Nombre de autor"); ni.style.cssText = "width:100%;margin:.4rem 0"; sh.appendChild(ni);
     var lb = el("label", "chk"), ck = el("input"); ck.type = "checkbox"; ck.checked = a.cover !== false; lb.appendChild(ck); lb.appendChild(document.createTextNode(" Mostrarlo en las portadas")); lb.style.cssText = "display:block;margin:.4rem 0 .8rem"; sh.appendChild(lb);
-    var ok = el("button", "go", "Guardar"); ok.onclick = function () { var a2 = authGet(); a2.name = ni.value.trim().slice(0, 60); a2.cover = ck.checked; authSet(a2); closeSheet(); try { bylineLabel(); renderLib(); if (cur && !$("play").hidden) render(true); } catch (e) {} toast(a2.name && a2.cover ? "Tus portadas dirán: " + a2.name + "." : "Las portadas no mostrarán nombre."); }; sh.appendChild(ok);
+    var l2 = el("label", "chk"), ck2 = el("input"); ck2.type = "checkbox"; ck2.checked = a.stamp !== false; l2.appendChild(ck2); l2.appendChild(document.createTextNode(" Firmar también la imagen de portada en el PDF y el EPUB (tu imagen guardada no cambia)")); l2.style.cssText = "display:block;margin:0 0 .4rem"; sh.appendChild(l2);
+    var pl = el("label"); pl.style.cssText = "display:block;margin:.2rem 0 .6rem;font-size:.9rem"; pl.appendChild(document.createTextNode("Dónde va la firma en la portada")); var ps = el("select"); [["abajo", "Abajo"], ["arriba", "Arriba"]].forEach(function (x) { var op = el("option", null, x[1]); op.value = x[0]; ps.appendChild(op); }); ps.value = a.stampPos === "arriba" ? "arriba" : "abajo"; ps.style.cssText = "display:block;width:100%;margin-top:.3rem"; pl.appendChild(ps); sh.appendChild(pl);
+    var pv = el("img"); pv.alt = "Vista previa de la portada firmada"; pv.style.cssText = "display:none;width:60%;max-width:14rem;margin:.2rem auto .8rem;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.5)"; sh.appendChild(pv);
+    function prev() { var s0 = cur || LIB.filter(function (x) { return x.cover; })[0]; if (!s0 || !s0.cover || !ni.value.trim() || !ck2.checked) { pv.style.display = "none"; return; } stampDraw(s0.cover, ni.value.trim(), ps.value).then(function (u) { if (u) { pv.src = u; pv.style.display = "block"; } }); }
+    ni.oninput = function () { clearTimeout(ni._t); ni._t = setTimeout(prev, 300); }; ck2.onchange = prev; ps.onchange = prev; prev();
+    var ok = el("button", "go", "Guardar"); ok.onclick = function () { var a2 = authGet(); a2.name = ni.value.trim().slice(0, 60); a2.cover = ck.checked; a2.stamp = ck2.checked; a2.stampPos = ps.value; authSet(a2); COVSTAMP = { k: "", u: "" }; closeSheet(); try { bylineLabel(); renderLib(); if (cur && !$("play").hidden) render(true); } catch (e) {} toast(a2.name && a2.cover ? "Tus portadas dirán: " + a2.name + "." : "Las portadas no mostrarán nombre."); }; sh.appendChild(ok);
     closeBtn(sh, "Cancelar");
   });
 }
@@ -5442,6 +5471,7 @@ async function regEpub(s) {
   try { var _fm = BK_FONTS[bkOf(s).font][5]; if (_fm) await hvLoadFam(_fm); } catch (e) {}
   var r = regOf(s), a = authGet(), v = (r.v || 0) + 1, now = new Date();
   var meta = { uid: r.uid, v: v, at: now.toISOString().replace(/\.\d+Z$/, "Z"), author: (a.showName !== false && a.name) ? a.name : "", aid: a.showId !== false ? r.aid : "" };
+  try { await stampCover(s); } catch (e) {}
   var z = new JSZip(), files = buildEpubFiles(s, meta);
   z.file("mimetype", "application/epub+zip", { compression: "STORE" });
   Object.keys(files).forEach(function (k) { z.file(k, files[k]); });
@@ -5577,7 +5607,7 @@ function buildEpubFiles(s, meta) {
   ecss = ecss.replace("body{font-family:serif;", "body{font-family:" + fam2 + ";").replace("text-align:justify}", (ob.just ? "text-align:justify;" + (ob.hyph ? "hyphens:auto;-webkit-hyphens:auto;-epub-hyphens:auto;" : "hyphens:manual;") : "text-align:left;") + (ob.ind ? "" : "text-indent:0;") + "}");
   ecss += "\np.f{text-indent:0}\np.fd::first-letter{float:left;font-size:3.2em;line-height:.8;padding:.06em .08em 0 0;font-weight:bold}\np.sep{text-indent:0;text-align:center;margin:1.2em 0;letter-spacing:.2em;line-height:1.1}\nhr.sep{border:0;border-top:1px solid #888;width:30%;margin:1.4em auto}\n.gap{height:1.3em}\nh2.ch{margin:1.2em 0 1.2em}";
   f["OEBPS/style.css"] = ecss;
-  var cimg = s.cover ? dataBytes(s.cover) : null, cname = cimg ? "cover.jpg" : "cover.svg";
+  var cimg = s.cover ? dataBytes(covUrl(s)) : null, cname = cimg ? "cover.jpg" : "cover.svg";
   if (cimg) f["OEBPS/cover.jpg"] = cimg; else f["OEBPS/cover.svg"] = coverSvg(s);
   f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1>' + (byline() ? '<p class="t" style="font-style:italic">' + xe(byline()) + '</p>' : ''));
   var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/><item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
@@ -5662,10 +5692,11 @@ function dictSheet(word, ctx) {
 }
 function emsg(t) { var m = $("emsg"); m.textContent = t; m.hidden = false; }
 function fb2Doc(s) {
+  try { stampCover(s); } catch (e) {}
   var chs = [], bin = "", ic = 0, b64 = function (u) { return String(u).split(",")[1] || ""; };
   s.scenes.forEach(function (sc, k) { var c = chOf(s, k) - 1; (chs[c] = chs[c] || []).push(sc); }); chs = chs.filter(Boolean);
   var cover = "";
-  if (s.cover) { bin += '<binary id="cover.jpg" content-type="image/jpeg">' + b64(s.cover) + '</binary>'; cover = '<coverpage><image l:href="#cover.jpg"/></coverpage>'; }
+  if (s.cover) { bin += '<binary id="cover.jpg" content-type="image/jpeg">' + b64(covUrl(s)) + '</binary>'; cover = '<coverpage><image l:href="#cover.jpg"/></coverpage>'; }
   var body = '<title><p>' + xe(s.title) + '</p></title>';
   chs.forEach(function (ch, i) {
     var sec = '<section><title><p>Capítulo ' + (i + 1) + (ctitle(s, i + 1) ? ' · ' + xe(ctitle(s, i + 1)) : '') + '</p></title>';
@@ -5811,15 +5842,16 @@ var BK_FONTS = {
 }, BK_FONTS_UI = ["crimson", "lora", "plex", "liberation"];
 var BK_PAPER = { blanco: ["Blanco", "#ffffff"], crema: ["Crema", "#fbf6e9"], sepia: ["Sepia suave", "#f1e4c8"], gris: ["Gris claro", "#eeeeea"] };
 var BK_TPL = {
-  clasico: ["Clásico", "Novela de toda la vida: letra con serifas, justificado, letra capital y adorno.", { font: "crimson", size: "a5", fs: 11.5, lh: 1.4, mi: 22, mo: 16, mt: 20, mb: 22, just: true, hyph: true, ind: true, drop: true, capnum: true, chnew: true, odd: true, sep: "asm", orn: "linea", head: "both", pn: true, cov: true }],
+  clasico: ["Clásico", "Novela de toda la vida: letra con serifas, justificado, letra capital y adorno.", { font: "crimson", size: "a5", fs: 11.5, lh: 1.4, mi: 22, mo: 16, mt: 20, mb: 22, just: true, hyph: true, ind: true, drop: true, capnum: true, chnew: true, odd: true, sep: "espacio", orn: "linea", head: "both", pn: true, cov: true }],
   moderno: ["Moderno", "Más aire y sin letra capital; texto a la izquierda y separadores finos.", { font: "plex", size: "seis9", fs: 10.5, lh: 1.5, mi: 24, mo: 18, mt: 22, mb: 24, just: false, hyph: false, ind: true, drop: false, capnum: false, chnew: true, odd: false, sep: "linea", orn: "none", head: "novel", pn: true, cov: true }],
-  bolsillo: ["Bolsillo", "Para imprimir en formato pequeño: letra algo menor y márgenes ajustados.", { font: "liberation", size: "bolsillo", fs: 9.5, lh: 1.32, mi: 15, mo: 11, mt: 14, mb: 15, just: true, hyph: true, ind: true, drop: false, capnum: true, chnew: false, odd: false, sep: "ast", orn: "none", head: "novel", pn: true, cov: true }],
-  lectura: ["Lectura cómoda", "Letra grande y mucho espacio entre líneas, sin cabeceras ni adornos.", { font: "lora", size: "a5", fs: 13, lh: 1.6, mi: 22, mo: 18, mt: 22, mb: 24, just: false, hyph: false, ind: true, drop: false, capnum: true, chnew: true, odd: false, sep: "ast", orn: "none", head: "none", pn: true, cov: true }]
+  bolsillo: ["Bolsillo", "Para imprimir en formato pequeño: letra algo menor y márgenes ajustados.", { font: "liberation", size: "bolsillo", fs: 9.5, lh: 1.32, mi: 15, mo: 11, mt: 14, mb: 15, just: true, hyph: true, ind: true, drop: false, capnum: true, chnew: false, odd: false, sep: "espacio", orn: "none", head: "novel", pn: true, cov: true }],
+  lectura: ["Lectura cómoda", "Letra grande y mucho espacio entre líneas, sin cabeceras ni adornos.", { font: "lora", size: "a5", fs: 13, lh: 1.6, mi: 22, mo: 18, mt: 22, mb: 24, just: false, hyph: false, ind: true, drop: false, capnum: true, chnew: true, odd: false, sep: "espacio", orn: "none", head: "none", pn: true, cov: true }]
 };
 function bkUserDef() { try { var d = JSON.parse(localStorage.getItem("hv:bookdef") || "null"); return d && typeof d === "object" ? d : {}; } catch (e) { return {}; } }
 function bkOf(s) {
-  var b = s.book || {}, d = { size: "a5", mi: 22, mo: 16, mt: 20, mb: 22, fs: 11.5, lh: 1.4, just: true, hyph: true, ind: true, head: "both", pn: true, odd: true, font: "crimson", paper: "blanco", frame: "none", orn: "linea", sep: "asm", drop: true, capnum: true, chnew: true, cov: true, bg: "", bgop: 0.15, bgsc: "all" }, u = bkUserDef(), o = {};
+  var b = s.book || {}, d = { size: "a5", mi: 22, mo: 16, mt: 20, mb: 22, fs: 11.5, lh: 1.4, just: true, hyph: true, ind: true, head: "both", pn: true, odd: true, font: "crimson", paper: "blanco", frame: "none", orn: "linea", sep: "espacio", drop: true, capnum: true, chnew: true, cov: true, bg: "", bgop: 0.15, bgsc: "all" }, u = bkUserDef(), o = {};
   Object.keys(d).forEach(function (k) { o[k] = b[k] !== undefined ? b[k] : (u[k] !== undefined ? u[k] : d[k]); });
+  if (!b.sepv2 && !u.sepv2 && (o.sep === "ast" || o.sep === "asm")) o.sep = "espacio";
   if (b.sep === undefined && u.sep === undefined && b.sbr === "adorno") o.sep = { linea: "linea", puntos: "ast", rombo: "rombo", none: "espacio" }[b.orn || "linea"] || "linea";
   if (b.sep === undefined && u.sep === undefined && b.sbr === "espacio") o.sep = "espacio";
   if (o.head === "title") o.head = "both";
@@ -5895,7 +5927,7 @@ function bookLayout(s, fonts) {
     var d = jpgDims(u); if (!d || !d.w) return null; var k = Math.min(bw / d.w, bh / d.h), w = d.w * k, h = d.h * k;
     p.items.push({ t: "img", src: u, x: bx + (bw - w) / 2, y: by + (center ? (bh - h) / 2 : 0), w: w, h: h }); return { w: w, h: h };
   }
-  if (s.cover && o.cov) { var cp = newPage("cover"); cp.cover = true; cp.num = 0; drawImgFit(cp, s.cover, 0, 0, W, H, true); if (!cp.items.length) pages.pop(); }
+  if (s.cover && o.cov) { var cp = newPage("cover"); cp.cover = true; cp.num = 0; drawImgFit(cp, covUrl(s), 0, 0, W, H, true); if (!cp.items.length) pages.pop(); }
   newPage("title"); y = H * 0.3;
   var tl = wrapLines(pdfSafe(s.title), fonts.B, FS * 2.2, W - mi - mo - 20, 0); tl.forEach(function (ln) { var t = ln.w.join(" "), wd = fonts.B.widthOfTextAtSize(t, FS * 2.2); cur.items.push({ t: "txt", x: (W - wd) / 2, y: y, s: FS * 2.2, f: "B", text: t }); y += FS * 2.9; });
   cur.items.push({ t: "ln", x1: W / 2 - 24, y1: y, x2: W / 2 + 24, y2: y, bw: 0.6 });
@@ -6006,6 +6038,7 @@ async function bookFonts(s) {
   return { doc: doc, f: { R: await doc.embedFont(L.StandardFonts[F[1]]), B: await doc.embedFont(L.StandardFonts[F[2]]), I: await doc.embedFont(L.StandardFonts[F[3]]) }, fam: null, fell: fell };
 }
 async function pdfDoc(s) {
+  try { await stampCover(s); } catch (e) {}
   var L = window.PDFLib, bf = await bookFonts(s), doc = bf.doc, fonts = bf.f, M = bookLayout(s, fonts), emb = {}, pc = M.o.paper !== "blanco" ? BK_PAPER[M.o.paper][1] : null;
   for (var pi = 0; pi < M.pages.length; pi++) {
     var p = M.pages[pi], pg = doc.addPage([p.w, p.h]);
@@ -6066,7 +6099,7 @@ function layoutSheet() {
     var tp = el("div"); tp.appendChild(el("p", null, "Plantillas rápidas")).style.cssText = "font-weight:700;margin:.8rem 0 .2rem"; var tr = el("div", "row"); tp.appendChild(tr); sh.appendChild(tp);
     var ctl = el("div"); sh.appendChild(ctl);
     var timer = 0; function refresh() { clearTimeout(timer); timer = setTimeout(function () { layPreview(pv, st, s); }, 280); }
-    function setK(k, v) { s.book[k] = v; save(); refresh(); }
+    function setK(k, v) { s.book[k] = v; if (k === "sep") s.book.sepv2 = 1; save(); refresh(); }
     function hlp(parent, t) { var h = el("p", "hint hlpx", t); h.style.cssText = "margin:.1rem 0 .5rem;font-size:.82rem;display:" + (LAYHELP ? "block" : "none"); parent.appendChild(h); }
     function applyHelp() { Array.prototype.forEach.call(sh.querySelectorAll(".hlpx"), function (h) { h.style.display = LAYHELP ? "block" : "none"; }); hb.setAttribute("aria-pressed", LAYHELP ? "true" : "false"); hb.className = LAYHELP ? "small round on" : "small round"; }
     hb.onclick = function () { LAYHELP = !LAYHELP; applyHelp(); };
@@ -6126,7 +6159,7 @@ function layoutSheet() {
     drawCtl(); refresh();
     var r = el("div", "row"); r.style.marginTop = "1rem";
     var v = el("button", null, "Ver el libro completo"); v.onclick = function () { bkPreviewSheet(1); };
-    var df = el("button", null, "Usar como predeterminada"); df.onclick = function () { try { var o = bkOf(s), d = {}; ["font", "size", "fs", "lh", "mi", "mo", "mt", "mb", "just", "hyph", "ind", "drop", "capnum", "chnew", "odd", "sep", "orn", "head", "pn", "cov"].forEach(function (k) { d[k] = o[k]; }); localStorage.setItem("hv:bookdef", JSON.stringify(d)); toast("Las novelas nuevas usarán esta maquetación."); } catch (e) { toast("No se pudo guardar."); } };
+    var df = el("button", null, "Usar como predeterminada"); df.onclick = function () { try { var o = bkOf(s), d = {}; ["font", "size", "fs", "lh", "mi", "mo", "mt", "mb", "just", "hyph", "ind", "drop", "capnum", "chnew", "odd", "sep", "sepv2", "orn", "head", "pn", "cov"].forEach(function (k) { d[k] = o[k]; }); localStorage.setItem("hv:bookdef", JSON.stringify(d)); toast("Las novelas nuevas usarán esta maquetación."); } catch (e) { toast("No se pudo guardar."); } };
     var rs = el("button", null, "Volver a la predeterminada"); rs.onclick = function () { delete s.book; save(); drawCtl(); refresh(); toast("Maquetación restablecida."); };
     r.appendChild(v); r.appendChild(df); r.appendChild(rs); sh.appendChild(r);
     var ok = el("button", "go", "Listo"); ok.style.cssText = "width:100%;margin-top:.6rem"; ok.onclick = closeSheet; sh.appendChild(ok);
@@ -6370,7 +6403,7 @@ async function fichaPdf(s) {
   var emb = {};
   async function image(u) { if (!u) return null; if (u in emb) return emb[u]; var b = dataBytes(u), im = null; if (b) { try { im = await doc.embedJpg(b); } catch (e) { try { im = await doc.embedPng(b); } catch (e2) { im = null; } } } emb[u] = im; return im; }
   function fit(im, bw, bh) { var k = Math.min(bw / im.width, bh / im.height); return { w: im.width * k, h: im.height * k }; }
-  var LINES = fichaLines(s), cov = null; try { cov = await image(s.cover); } catch (e) {}
+  var LINES = fichaLines(s), cov = null; try { await stampCover(s); cov = await image(covUrl(s)); } catch (e) {}
   for (var q = 0; q < LINES.length; q++) { if (LINES[q].k === "card" && LINES[q].img) { try { LINES[q].im = await image(LINES[q].img); } catch (e) {} } }
   np();
   if (cov) { var cf = fit(cov, TW, 470); page.drawImage(cov, { x: M + (TW - cf.w) / 2, y: y - cf.h, width: cf.w, height: cf.h }); y -= cf.h + 26; }
@@ -6901,7 +6934,7 @@ var GUIDE = {
     ["Tamaño de página y márgenes", "Bolsillo, A5, 6×9 pulgadas o A4. Los márgenes nunca bajan de 10 mm para que la imprenta no corte letras."],
     ["Alineación", "Justificado con separación en sílabas (por defecto), justificado sin cortar palabras, o a la izquierda."],
     ["Capítulos", "Mostrar «Capítulo N», letra capital, empezar en página nueva o impar, y adorno bajo el título."],
-    ["Separador entre escenas", "* * *, ⁂, línea fina, rombo o solo espacio."],
+    ["Separador entre escenas", "Por defecto, solo un espacio en blanco (sin asteriscos). También: * * *, ⁂, línea fina o rombo."],
     ["Cabecera y números de página", "Título de la novela y/o del capítulo arriba, y número al pie."],
     ["Incluir la portada", "Pone la portada como primera página."],
     ["Usar como predeterminada / Volver a la predeterminada", "Guarda esta maquetación para las novelas nuevas, o restablece la de esta novela."],
