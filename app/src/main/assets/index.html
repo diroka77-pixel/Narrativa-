@@ -1247,8 +1247,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.18.0";
+var VERSION = "0.18.1";
 var NEWS = [
+  ["0.18.1", "Lore del universo: «Que El Cronista lo lea y lo aprenda» tiene ahora su propio cuadro para pegar textos largos, sin límite. Nuevo botón «📋 Pegar lo copiado» en los cuadros de texto largos, por si el móvil no ofrece «Pegar» al mantener pulsado."],
   ["0.18.0", "Galería: un botón «🖼 Galería» junto a «Leer como un libro» reúne todas las ilustraciones de la historia (portada, escenas, personajes y lugares). Tócalas para verlas en grande, pasa con el dedo de una a otra y salta a la escena de cada imagen."],
   ["0.17.0", "Sagas: desde el menú de una historia (o al terminarla) puedes «Construir el volumen 2». Se lleva todo el mundo y la memoria de los personajes, más un resumen del volumen anterior que El Cronista puede escribir y tú corregir. El volumen 3 hereda el resumen del 1 y del 2, y así sucesivamente."],
   ["0.16.0", "Canon desde una imagen: en la ficha de cada personaje (Atlas → Personajes) puedes subir su lámina o esquema y El Cronista extrae su descripción y rasgos. Los revisas, los guardas y quedan como canon fijo."],
@@ -1767,6 +1768,14 @@ function wlCtx(s, action, compact) {
   if (!parts.length) return sm;
   return sm + "\nLORE DEL UNIVERSO (verdad fija creada por el autor: respétala y no la contradigas; úsala solo cuando venga a cuento en la escena, sin soltar lecciones de historia ni resumirla):\n" + parts.join("\n---\n") + "\nDISCRECIÓN DEL LORE: usa únicamente lo imprescindible para esta escena. Lo marcado DISCRETO solo puede asomar de forma muy sutil e integrada (una frase de diálogo, un detalle del entorno, una reacción) y sin explicar más de lo que el momento pide. Lo marcado LIBRE puede contarse con claridad si encaja. No reveles nada más del lore ni anticipes lo que no ha llegado. Si hay lore relacionado que no usas ahora, puedes ofrecerlo como UNA de las opciones (preguntar a alguien, investigar, leer algo…) sin adelantar su contenido en el texto de la opción; solo si el jugador la elige se desarrolla en la escena siguiente.";
 }
+/* v0.18.1: pegar con un botón (en la app instalada la pulsación larga puede no ofrecer «Pegar») */
+async function hvPaste() { try { if (window.Native && Native.paste) return String(Native.paste() || ""); } catch (e) {} try { if (navigator.clipboard && navigator.clipboard.readText) return String(await navigator.clipboard.readText() || ""); } catch (e) {} return null; }
+function hvPasteBtn(target, label) {
+  var b = el("button", "small", label || "📋 Pegar lo copiado"); b.type = "button"; b.setAttribute("aria-label", "Pegar lo que tienes copiado");
+  b.onclick = async function (e) { if (e) e.preventDefault(); var tx = await hvPaste(); if (tx == null) { toast("No puedo leer el portapapeles aquí. Mantén pulsado dentro del cuadro y elige «Pegar»."); return; } if (!tx.trim()) { toast("No hay nada copiado. Copia el texto y vuelve a pulsar."); return; }
+    var a = target.selectionStart, z = target.selectionEnd, v = target.value; if (typeof a !== "number" || document.activeElement !== target) { a = z = v.length; tx = (v && !/\s$/.test(v) ? "\n\n" : "") + tx; } target.value = v.slice(0, a) + tx + v.slice(z); try { target.dispatchEvent(new Event("input")); } catch (x) {} toast(tx.length > 400 ? "Pegado: " + tx.length.toLocaleString("es") + " caracteres." : "Pegado."); };
+  return b;
+}
 async function wlDigest(st) {
   var s = cur; if (!s || busy) return; var L = wlAvail(s);
   if (!L.length) { st.textContent = "Primero guarda alguna idea que esté disponible en este capítulo."; return; }
@@ -1801,10 +1810,14 @@ function renderWl() {
   b.appendChild(el("p", "hint", "Aquí guardas la historia de tu mundo: razas, épocas, guerras, secretos… Puedes ir añadiendo ideas según se te ocurran, o pegar de golpe todo el lore. El Cronista consulta solo lo que hace falta en cada escena y nunca contradice lo que escribas. Con «Disponible desde el capítulo» eliges cuándo puede empezar a usarlo (no se lo enseñamos antes, así no adelanta nada)."));
   var sb = el("div"); sb.style.cssText = "border:1px solid var(--line);border-radius:12px;padding:.7rem;margin:.6rem 0";
   sb.appendChild(el("b", null, "Que El Cronista lo lea y lo aprenda"));
-  sb.appendChild(el("p", "hint", "Pega un texto largo (varias páginas, o diez si hace falta) y pulsa el botón: El Cronista lo lee entero y prepara un resumen fiel que tendrá presente en todas las escenas. Los detalles completos los consulta cuando hacen falta. Solo lee lo disponible en el capítulo actual, así no adelanta nada. Gasta unas pocas consultas de IA."));
+  sb.appendChild(el("p", "hint", "Pega aquí un texto largo (varias páginas, o diez si hace falta), sin límite. Se guarda en tu lore separado por apartados y El Cronista lo lee entero para preparar un resumen fiel que tendrá presente en todas las escenas. Los detalles completos los consulta cuando hacen falta. Solo usa lo disponible en el capítulo actual, así no adelanta nada. Leerlo gasta unas pocas consultas de IA."));
+  var bulk = el("textarea"); bulk.id = "wlbulk"; bulk.rows = 7; bulk.placeholder = "Pega aquí tu lore…"; bulk.setAttribute("aria-label", "Texto largo de lore para pegar"); bulk.style.cssText = "width:100%;margin:.4rem 0;min-height:9rem"; sb.appendChild(bulk);
   var dst = el("p", "hint"); dst.setAttribute("role", "status");
-  var dbtn = el("button", "small on", s.wlsum ? "Volver a leerlo y actualizar el resumen" : "Que El Cronista lo lea ahora"); dbtn.onclick = function () { dbtn.disabled = true; wlDigest(dst).then(function () { dbtn.disabled = false; }); };
-  sb.appendChild(dbtn); sb.appendChild(dst);
+  function takeBulk() { var tx = bulk.value.trim(); if (!tx) return 0; var parts = wlSplit(tx); parts.forEach(function (x, k) { s.wl.push({ id: "w" + Date.now() + "_" + k + Math.floor(Math.random() * 1000), h: x.h, t: x.t, rev: 1, on: true }); }); save(); bulk.value = ""; return parts.length; }
+  var brow = el("div", "row"); brow.appendChild(hvPasteBtn(bulk));
+  var dbtn = el("button", "small on", s.wlsum ? "Volver a leerlo y actualizar el resumen" : "Que El Cronista lo lea ahora"); dbtn.onclick = function () { var n = takeBulk(); if (n) { renderWl(); toast("Añadidas " + n + (n === 1 ? " idea" : " ideas") + " a tu lore. El Cronista empieza a leer…"); var st2 = $("wlbody").querySelector('p[role="status"]'); if (st2) wlDigest(st2); return; } dbtn.disabled = true; wlDigest(dst).then(function () { dbtn.disabled = false; }); };
+  var only = el("button", "small", "Solo guardarlo en el lore"); only.onclick = function () { var n = takeBulk(); if (!n) { toast("Primero pega el texto en el cuadro."); return; } renderWl(); toast("Añadidas " + n + (n === 1 ? " idea" : " ideas") + " a tu lore."); };
+  brow.appendChild(dbtn); brow.appendChild(only); sb.appendChild(brow); sb.appendChild(dst);
   if (s.wlsum) {
     sb.appendChild(el("p", "hint", "Resumen que usa El Cronista (leído en el capítulo " + s.wlsum.ch + ", " + s.wlsum.n + " ideas). Puedes corregirlo."));
     var sa = el("textarea"); sa.rows = 8; sa.style.cssText = "width:100%"; sa.value = s.wlsum.t; sb.appendChild(sa);
@@ -1821,7 +1834,7 @@ function renderWl() {
   var r1 = el("label", "chk"), rv = el("input"); rv.type = "number"; rv.min = 1; rv.max = 99; rv.value = ed ? (ed.rev || 1) : 1; rv.style.cssText = "width:4rem;margin:0 .4rem"; r1.appendChild(document.createTextNode("Disponible desde el capítulo")); r1.appendChild(rv);
   var r2 = el("label", "chk"), pn = el("input"); pn.type = "checkbox"; pn.checked = !!(ed && ed.pin); r2.appendChild(pn); r2.appendChild(document.createTextNode("Siempre presente (lo tendrá en cuenta en todas las escenas; úsalo con pocas ideas)")); r2.style.display = "block";
   var r3 = el("label", "chk"), op = el("input"); op.type = "checkbox"; op.checked = !!(ed && ed.open); r3.appendChild(op); r3.appendChild(document.createTextNode("Puede contarse con claridad (si no la marcas, el Cronista solo lo deja caer de forma sutil)")); r3.style.display = "block"; r3.style.margin = ".3rem 0";
-  f.appendChild(h); f.appendChild(t); f.appendChild(r1); f.appendChild(r2); f.appendChild(r3);
+  f.appendChild(h); f.appendChild(t); var _pr = el("div", "row"); _pr.appendChild(hvPasteBtn(t)); f.appendChild(_pr); f.appendChild(r1); f.appendChild(r2); f.appendChild(r3);
   var row = el("div", "row"), sv = el("button", "small on", ed ? "Guardar cambios" : "Guardar en el lore");
   sv.onclick = function () {
     var tt = t.value.trim(); if (!tt) { toast("Escribe el texto de la idea."); return; }
@@ -2126,6 +2139,7 @@ function cardsSheet() {
   sheet("Importar cartas de lore", function (sh) {
     sh.appendChild(el("p", "hint", "Pega un texto o carga un archivo (PDF, Word o texto) con tus cartas y elige cómo se separan. Verás cuántas se han encontrado antes de importarlas. Cada carta: la primera línea es el nombre (o «Nombre: descripción», o «Lugar: Nombre. Descripción») y el resto es la descripción. También entiende campos «Tipo:», «Nombre:» y «Descripción:»."));
     var ta = el("textarea"); ta.rows = 8; ta.style.cssText = "width:100%;margin:.3rem 0"; ta.placeholder = "Pega aquí tus cartas…";
+    try { var _cp = el("div", "row"); _cp.appendChild(hvPasteBtn(ta)); ta.insertAdjacentElement ? setTimeout(function () { if (ta.parentNode && !_cp.parentNode) ta.parentNode.insertBefore(_cp, ta.nextSibling); }, 0) : 0; } catch (e) {}
     var fi = el("input"); fi.type = "file"; fi.accept = ".pdf,.docx,.txt,.md,text/plain,application/pdf";
     var fp = el("p", "hint"), sel = el("select"); sel.setAttribute("aria-label", "Cómo se separan las cartas"); sel.style.cssText = "width:100%;margin:.3rem 0";
     [["auto", "Detectar solo (recomendado)"], ["blanco", "Separadas por una línea en blanco"], ["linea", "Una carta por línea"], ["raya", "Separadas por una línea --- o ==="], ["enc", "Cada # Título empieza una carta"], ["sep", "Separador propio (lo escribo abajo)"]].forEach(function (o) { var op = el("option", null, o[1]); op.value = o[0]; sel.appendChild(op); });
@@ -4273,6 +4287,7 @@ function undoTurn() {
 }
 (function () { var _r0 = render; render = function (k) { var x = _r0(k); try { bkCover(); } catch (e) {} try { var _gn = cur ? galItems(cur).length : 0; $("galb").textContent = "🖼 Galería" + (_gn ? " (" + _gn + ")" : ""); } catch (e) {} try { if (cur && !comicOn(cur)) gloMark($("book"), cur); } catch (e) {} return x; }; })();
 $("new").onclick = function () { startCreate(""); };
+try { [["imptxt"], ["own"]].forEach(function (x) { var ta = $(x[0]); if (!ta) return; var r = el("div", "row"); r.style.margin = ".3rem 0"; r.appendChild(hvPasteBtn(ta)); ta.parentNode.insertBefore(r, ta.nextSibling); }); } catch (e) {}
 try { $("findfab").onclick = function () { findSheet(); }; } catch (e) {}
 try { $("galb").onclick = function () { galSheet(); }; } catch (e) {}
 try { $("goalcard").onclick = goalSheet; $("goalcard").onkeydown = function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goalSheet(); } }; } catch (e) {}
@@ -6824,6 +6839,8 @@ var GUIDE = {
     ["📚 Construir el volumen", "En el menú de una historia (o al final, cuando está terminada): crea el siguiente volumen de la saga con todo el mundo, los personajes y su memoria, más el resumen de los volúmenes anteriores. «Que El Cronista resuma este volumen» genera ese resumen (gasta una consulta); puedes editarlo antes de construir."],
     ["📖 Saga: volúmenes anteriores", "En el menú de un volumen 2 o posterior: lee y corrige lo que este volumen sabe de los anteriores."],
     ["🖼 Galería", "Junto a «Leer como un libro»: todas las ilustraciones de la historia en un solo sitio (portada, escenas, personajes y lugares). Toca una para verla en grande; «Anterior» y «Siguiente» (o deslizar) pasan de una a otra, «Ir a la escena» te lleva a su sitio en el libro y «✕ Cerrar» vuelve."],
+    ["📋 Pegar lo copiado", "Pega en el cuadro lo que tengas copiado en el móvil, sin tener que mantener pulsado."],
+    ["Solo guardarlo en el lore", "Guarda el texto pegado en tu lore, separado por apartados, sin gastar consultas."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

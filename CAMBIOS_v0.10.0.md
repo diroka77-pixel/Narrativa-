@@ -443,3 +443,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Botón «🖼 Galería (N)» junto a «Leer como un libro» y en el menú de la historia. Reúne portada, imágenes de escenas, protagonistas y cartas de lore con imagen (sin duplicados), agrupadas.
 - Visor a pantalla completa: anterior/siguiente, deslizar, teclas, «Ir a la escena» (imágenes de escena) y cerrar.
 - Prueba nueva: tests/t117_galeria.js.
+
+**v0.18.1 — Pegar textos largos**
+- Lore del universo → «Que El Cronista lo lea y lo aprenda»: cuadro propio (`#wlbody #wlbulk`, sin límite) que se guarda como ideas (`wlSplit`) y luego se resume; «Solo guardarlo en el lore» no gasta consultas. Antes el apartado no tenía cuadro y el texto gris de debajo era el ejemplo de «Añadir una idea».
+- Botón «📋 Pegar lo copiado» (`hvPasteBtn`, usa `Native.paste` en la app y `navigator.clipboard` en web) en ese cuadro, en «Añadir una idea», importar cartas, importar material y la acción propia.
+- Prueba nueva: tests/t118_pegar.js.

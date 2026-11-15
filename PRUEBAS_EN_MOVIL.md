@@ -133,3 +133,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 ## 35. Galería — v0.18.0
 1. En una historia con ilustraciones: «🖼 Galería (N)» junto a «Leer como un libro». Deben salir la portada, las escenas, los personajes y los lugares con imagen.
 2. Toca una: se ve en grande. Pasa con el dedo o con «Siguiente». En una de escena, «Ir a la escena» te lleva a ella en el libro.
+
+## 36. Pegar lore largo — v0.18.1
+1. Copia un texto largo (por ejemplo, de un documento). Lore del universo → «Que El Cronista lo lea y lo aprenda» → «📋 Pegar lo copiado»: el texto debe aparecer en el cuadro.
+2. «Solo guardarlo en el lore» (sin consultas) o «Que El Cronista lo lea ahora»: deben aparecer las ideas separadas por apartados.
+3. Prueba también a mantener pulsado dentro del cuadro y elegir «Pegar».
