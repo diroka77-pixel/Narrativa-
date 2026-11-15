@@ -491,3 +491,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - La app ya no pone la firma encima si la portada lleva el nombre en el diseño (por defecto, no la pone).
 - Al subir una portada pregunta «¿Ya lleva tu nombre?»; casilla «Añadir mi firma encima» en Imágenes.
 - Prueba: abre tu portada desde Inicio: solo debe verse el nombre del diseño.
+
+## v0.20.2 — Página de créditos propia
+- EPUB: cada parte empieza en página nueva; los créditos (© y «con la asistencia de Historias vivas») van solos y el capítulo 1 empieza en la siguiente.
+- PDF: nueva página de créditos tras la del título.
+- Prueba: exporta EPUB y ábrelo en tu lector; la página de créditos no debe llevar texto del capítulo.
