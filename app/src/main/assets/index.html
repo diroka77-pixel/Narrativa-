@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.2";
+var VERSION = "0.19.3";
 var NEWS = [
+  ["0.19.3", "Nueva opción «Borrar escena» en el «⋯» de cada escena: la borra sin reescribirla y deja tu acción en el cuadro de escritura para que escribas otra idea o lo que haga tu personaje."],
   ["0.19.2", "El «Prompt para la portada» ya pide que la imagen incluya tu nombre de autor. Tu firma en la imagen de portada: al exportar el libro (PDF o EPUB) tu nombre de autor se graba en la portada, abajo o arriba, sin cambiar la imagen guardada. Y entre escenas ya no salen los tres asteriscos: por defecto queda solo un espacio en blanco (puedes elegir otro separador en Maquetación)."],
   ["0.19.0", "Nuevo modo «Texto completo sin modificar» al escribir: tu escena entra en el libro tal cual y El Cronista solo la lee para recordarla y proponerte cómo seguir. Además, tu nombre en las portadas: en Ajustes → «Nombre en las portadas» escribe tu nombre de autor y aparecerá en la cubierta de todas tus historias y partidas, en «Leer como un libro», en los PDF y en los EPUB."],
   ["0.18.1", "Lore del universo: «Que El Cronista lo lea y lo aprenda» tiene ahora su propio cuadro para pegar textos largos, sin límite. Nuevo botón «📋 Pegar lo copiado» en los cuadros de texto largos, por si el móvil no ofrece «Pegar» al mantener pulsado."],
@@ -4152,6 +4153,24 @@ function rewriteSheet(i) {
     c.onclick = closeSheet; r.appendChild(y); r.appendChild(c); sh.appendChild(r);
   });
 }
+function eraseSheet(i) {
+  var s = cur; if (!s || busy || !s.scenes[i] || i < 1 || !s.scenes[i].pv) return;
+  var n = s.scenes.length - 1 - i;
+  sheet("Borrar la escena " + (i + 1), function (sh) {
+    para(sh, "Se borra esta escena" + (n ? " y las " + n + " siguientes (dependen de ella)" : "") + ". La historia vuelve al final de la escena anterior y lo que habías escrito queda en el cuadro de escritura, para que lo cambies o escribas otra cosa. El Cronista no escribe nada hasta que pulses Continuar. Por seguridad, la versión anterior se guarda en «Versiones».", "");
+    var r = el("div", "row"), y = el("button", "go", "Borrar escena"), c = el("button", null, "Cancelar");
+    y.onclick = function () {
+      var sc = s.scenes[i], own = !!sc.own, txt = own ? String(sc.t || "") : String(sc.a || "").replace(/^[🎲✍]\S*\s*/, "");
+      closeSheet(); if (!rewindTo(i - 1)) { toast("No se puede volver a esa escena (es demasiado antigua)."); return; }
+      delete s.alt; save(); render();
+      setTimeout(function () {
+        try { if (own) { var mb = [].slice.call($("modes").children).filter(function (b) { return b.textContent === "Texto completo sin modificar"; })[0]; if (mb) mb.click(); } var o = $("own"); o.value = txt; o.dispatchEvent(new Event("input")); o.scrollIntoView({ block: "center" }); o.focus(); } catch (e) {}
+        toast("Escena borrada. Escribe lo que quieras y pulsa Continuar.");
+      }, 120);
+    };
+    c.onclick = closeSheet; r.appendChild(y); r.appendChild(c); sh.appendChild(r);
+  });
+}
 function noCuadraSheet() {
   var s = cur; if (!s || busy || !s.scenes.length) return;
   var can = !!(s.prev && s.lastAct && !s.rpg);
@@ -4605,7 +4624,7 @@ function sceneImg(sc, i) {
   var ed = el("button", "small", "Editar texto"); ed.onclick = function () { editScene(i); }; r.appendChild(ed);
   var rvb = el("button", "small", "Revisar esta escena"); rvb.onclick = function () { reviewScene(i); }; r.appendChild(rvb);
   var pvb = el("button", "small", "Otro punto de vista"); pvb.onclick = function () { povSheet(i); }; r.appendChild(pvb);
-  if (i >= 1 && sc.pv) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); }
+  if (i >= 1 && sc.pv) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); var erb = el("button", "small", "Borrar escena"); erb.onclick = function () { eraseSheet(i); }; r.appendChild(erb); }
   var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
   var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
   var ls2 = el("button", "small", "Escuchar desde aquí"); ls2.onclick = function () { startTalk(i, true); }; r.appendChild(ls2);
@@ -6910,6 +6929,7 @@ var GUIDE = {
     ["Solo guardarlo en el lore", "Guarda el texto pegado en tu lore, separado por apartados, sin gastar consultas."],
     ["Nombre en las portadas", "En Ajustes: el nombre de autor que aparece en la cubierta de todas tus historias (Inicio, modo libro, PDF y EPUB). «Guardar» lo aplica."],
     ["Texto completo sin modificar", "Junto a «Idea para la historia» y «Mi personaje hace»: escribes o pegas una escena entera y entra en el libro exactamente como la escribiste. El Cronista solo la lee para recordarla y proponer cómo seguir."],
+    ["Borrar escena", "En las opciones de una escena («⋯»): la borra (y las siguientes) sin que El Cronista escriba nada. Tu acción vuelve al cuadro de escritura para que la cambies o escribas otra idea; nada ocurre hasta que pulses Continuar."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

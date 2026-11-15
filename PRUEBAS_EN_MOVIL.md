@@ -147,3 +147,7 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 1. Exporta el EPUB de tu novela y ábrelo en tu lector: la portada debe llevar «DJ RODRÍGUEZ» abajo, con dos pequeñas líneas a los lados.
 2. Entre escenas ya no deben salir los tres asteriscos, solo un espacio.
 3. Ajustes → «Nombre en las portadas»: prueba «Arriba» y mira la vista previa antes de guardar.
+
+## 39. Borrar escena — v0.19.3
+1. «⋯» de una escena → «Borrar escena» → confirma. La escena desaparece, tu acción vuelve al cuadro de escritura y El Cronista no escribe nada.
+2. Cambia el texto (o escribe otra idea) y pulsa Continuar.

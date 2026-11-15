@@ -459,3 +459,7 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Separador entre escenas por defecto: solo espacio en blanco. Libros con «* * *» o «⁂» heredados (de presets o del valor por defecto anterior) pasan a espacio salvo elección explícita en Maquetación (`sepv2`).
 - Prueba nueva: tests/t121_firma.js.
 - v0.19.2: «Prompt para la portada» pide que la imagen incluya el nombre de autor abajo (`coverClose`).
+
+**v0.19.3 — Borrar escena**
+- «Borrar escena» en el «⋯» de cada escena (desde la 2.ª): `eraseSheet` vuelve al final de la anterior con `rewindTo` (borra también las siguientes; copia en Versiones) sin llamar a la IA, y deja la acción en el cuadro (o el texto y el modo «Texto completo sin modificar» si era una escena del autor).
+- Prueba nueva: tests/t122_borrar.js.
