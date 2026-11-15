@@ -458,3 +458,4 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Al exportar (EPUB, PDF del libro, FB2 y PDF del mundo) el nombre de autor se graba sobre la imagen de portada (`stampCover`/`covUrl`, caché en memoria; la portada guardada no cambia). Ajustes → «Nombre en las portadas»: firmar sí/no, abajo/arriba y vista previa.
 - Separador entre escenas por defecto: solo espacio en blanco. Libros con «* * *» o «⁂» heredados (de presets o del valor por defecto anterior) pasan a espacio salvo elección explícita en Maquetación (`sepv2`).
 - Prueba nueva: tests/t121_firma.js.
+- v0.19.2: «Prompt para la portada» pide que la imagen incluya el nombre de autor abajo (`coverClose`).

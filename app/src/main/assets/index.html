@@ -1258,9 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.1";
+var VERSION = "0.19.2";
 var NEWS = [
-  ["0.19.1", "Tu firma en la imagen de portada: al exportar el libro (PDF o EPUB) tu nombre de autor se graba en la portada, abajo o arriba, sin cambiar la imagen guardada. Y entre escenas ya no salen los tres asteriscos: por defecto queda solo un espacio en blanco (puedes elegir otro separador en Maquetación)."],
+  ["0.19.2", "El «Prompt para la portada» ya pide que la imagen incluya tu nombre de autor. Tu firma en la imagen de portada: al exportar el libro (PDF o EPUB) tu nombre de autor se graba en la portada, abajo o arriba, sin cambiar la imagen guardada. Y entre escenas ya no salen los tres asteriscos: por defecto queda solo un espacio en blanco (puedes elegir otro separador en Maquetación)."],
   ["0.19.0", "Nuevo modo «Texto completo sin modificar» al escribir: tu escena entra en el libro tal cual y El Cronista solo la lee para recordarla y proponerte cómo seguir. Además, tu nombre en las portadas: en Ajustes → «Nombre en las portadas» escribe tu nombre de autor y aparecerá en la cubierta de todas tus historias y partidas, en «Leer como un libro», en los PDF y en los EPUB."],
   ["0.18.1", "Lore del universo: «Que El Cronista lo lea y lo aprenda» tiene ahora su propio cuadro para pegar textos largos, sin límite. Nuevo botón «📋 Pegar lo copiado» en los cuadros de texto largos, por si el móvil no ofrece «Pegar» al mantener pulsado."],
   ["0.18.0", "Galería: un botón «🖼 Galería» junto a «Leer como un libro» reúne todas las ilustraciones de la historia (portada, escenas, personajes y lugares). Tócalas para verlas en grande, pasa con el dedo de una a otra y salta a la escena de cada imagen."],
@@ -4703,7 +4703,7 @@ function protTxt(s) {
   var l = (s.lore || []).filter(function (c) { return c.tipo === "protagonista"; });
   return l.length ? l.map(function (c) { return c.nombre + ": " + c.desc; }).join(". ") : "protagonista adulto, a tu elección";
 }
-function coverClose(s) { return " Genera la imagen como si fuera la portada de una novela, en formato vertical 2:3, e incluye el título «" + s.title + "» escrito de forma legible y elegante en la portada. Todos los personajes son adultos."; }
+function coverClose(s) { return " Genera la imagen como si fuera la portada de una novela, en formato vertical 2:3, e incluye el título «" + s.title + "» escrito de forma legible y elegante en la portada" + (byline() ? " y, en la parte inferior y en letras más pequeñas, el nombre del autor «" + byline() + "»" : "") + ". Todos los personajes son adultos."; }
 function localPrompt(s, kind, idx) {
   var base = "Historia: " + (s.syn || s.title) + " Género: " + gtxt(s) + ". Protagonista(s): " + protTxt(s) + ".";
   if (kind === "cover") return "Ilustración de portada de novela. " + base + " Composición cinematográfica centrada en el protagonista, atmósfera y paleta propias del género, ilustración digital detallada." + coverClose(s);
