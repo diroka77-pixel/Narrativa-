@@ -467,3 +467,10 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 **v0.19.4 — Continuidad**
 - El prompt de cada turno (completo y compacto) incluye, justo antes de la acción del jugador, el final exacto de la última escena (1-3 párrafos, máx. 1400 caracteres, `tailTxt`) con la regla de continuar desde el instante siguiente, sin repetir ni resumir. Ya se enviaban las 3 últimas escenas enteras (2 en compacto).
 - Prueba nueva: tests/t123_continuidad.js.
+
+**v0.19.5 — Autor en el EPUB**
+- Al exportar (PDF, EPUB, FB2 y EPUB con registro), si no hay nombre de autor la app lo pide (`askAuthor`); «Exportar sin nombre» deja de preguntar hasta que se ponga uno.
+- EPUB: `dc:creator` con el nombre, nombre bajo el título, página «creditos.xhtml» (© año, autor, asistencia de Historias vivas) y portada firmada.
+- PDF del libro: en la cabecera de las páginas pares, «Autor · Título» (con la cabecera por defecto).
+- Nota: en un EPUB no se pueden poner pies de página fijos; el lector maqueta las páginas.
+- Prueba nueva: tests/t124_autorepub.js.

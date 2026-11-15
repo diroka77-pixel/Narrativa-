@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.4";
+var VERSION = "0.19.5";
 var NEWS = [
+  ["0.19.5", "Al exportar un libro, si aún no has puesto tu nombre de autor, la app te lo pide. El EPUB lleva tu nombre como autor, bajo el título y en una página de créditos; el PDF, además, en la cabecera de las páginas pares."],
   ["0.19.4", "Mejor continuidad: El Cronista recibe aparte el final exacto de la última escena, justo antes de tu acción, y empieza la nueva desde ese instante, sin repetir ni resumir lo anterior."],
   ["0.19.3", "Nueva opción «Borrar escena» en el «⋯» de cada escena: la borra sin reescribirla y deja tu acción en el cuadro de escritura para que escribas otra idea o lo que haga tu personaje."],
   ["0.19.2", "El «Prompt para la portada» ya pide que la imagen incluya tu nombre de autor. Tu firma en la imagen de portada: al exportar el libro (PDF o EPUB) tu nombre de autor se graba en la portada, abajo o arriba, sin cambiar la imagen guardada. Y entre escenas ya no salen los tres asteriscos: por defecto queda solo un espacio en blanco (puedes elegir otro separador en Maquetación)."],
@@ -5466,9 +5467,10 @@ function stampDraw(src, name, pos) {
 }
 async function stampCover(s) { var k = stampKey(s); if (!k) return s && s.cover; if (COVSTAMP.k === k && COVSTAMP.u) return COVSTAMP.u; var o = stampOpts(), u = await stampDraw(s.cover, byline(), o.pos); if (u) COVSTAMP = { k: k, u: u }; return u || s.cover; }
 function byline() { var a = {}; try { a = JSON.parse(localStorage.getItem("hv:author") || "{}") || {}; } catch (e) {} return a.cover !== false && a.name ? String(a.name).trim().slice(0, 60) : ""; }
-function bylineSheet() {
+function bylineSheet(onDone) {
   var a = authGet();
-  sheet("Nombre en las portadas", function (sh) {
+  sheet(onDone ? "¿Con qué nombre firmas este libro?" : "Nombre en las portadas", function (sh) {
+    if (onDone) para(sh, "Todavía no has puesto tu nombre de autor. Escríbelo una vez y saldrá en la portada, en la página de créditos y en las páginas del libro, y también en todas tus historias.");
     para(sh, "Este nombre aparece en la cubierta de todas tus historias y partidas: en Inicio, en «Leer como un libro», en los PDF y en los EPUB.");
     var ni = el("input"); ni.type = "text"; ni.maxLength = 60; ni.value = a.name || ""; ni.placeholder = "Por ejemplo: DJ Rodríguez"; ni.setAttribute("aria-label", "Nombre de autor"); ni.style.cssText = "width:100%;margin:.4rem 0"; sh.appendChild(ni);
     var lb = el("label", "chk"), ck = el("input"); ck.type = "checkbox"; ck.checked = a.cover !== false; lb.appendChild(ck); lb.appendChild(document.createTextNode(" Mostrarlo en las portadas")); lb.style.cssText = "display:block;margin:.4rem 0 .8rem"; sh.appendChild(lb);
@@ -5477,10 +5479,12 @@ function bylineSheet() {
     var pv = el("img"); pv.alt = "Vista previa de la portada firmada"; pv.style.cssText = "display:none;width:60%;max-width:14rem;margin:.2rem auto .8rem;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.5)"; sh.appendChild(pv);
     function prev() { var s0 = cur || LIB.filter(function (x) { return x.cover; })[0]; if (!s0 || !s0.cover || !ni.value.trim() || !ck2.checked) { pv.style.display = "none"; return; } stampDraw(s0.cover, ni.value.trim(), ps.value).then(function (u) { if (u) { pv.src = u; pv.style.display = "block"; } }); }
     ni.oninput = function () { clearTimeout(ni._t); ni._t = setTimeout(prev, 300); }; ck2.onchange = prev; ps.onchange = prev; prev();
-    var ok = el("button", "go", "Guardar"); ok.onclick = function () { var a2 = authGet(); a2.name = ni.value.trim().slice(0, 60); a2.cover = ck.checked; a2.stamp = ck2.checked; a2.stampPos = ps.value; authSet(a2); COVSTAMP = { k: "", u: "" }; closeSheet(); try { bylineLabel(); renderLib(); if (cur && !$("play").hidden) render(true); } catch (e) {} toast(a2.name && a2.cover ? "Tus portadas dirán: " + a2.name + "." : "Las portadas no mostrarán nombre."); }; sh.appendChild(ok);
+    var ok = el("button", "go", "Guardar"); ok.onclick = function () { var a2 = authGet(); a2.name = ni.value.trim().slice(0, 60); if (a2.name) delete a2.skipAsk; a2.cover = ck.checked; a2.stamp = ck2.checked; a2.stampPos = ps.value; authSet(a2); COVSTAMP = { k: "", u: "" }; if (onDone) { closeSheet(); setTimeout(onDone, 60); return; } closeSheet(); try { bylineLabel(); renderLib(); if (cur && !$("play").hidden) render(true); } catch (e) {} toast(a2.name && a2.cover ? "Tus portadas dirán: " + a2.name + "." : "Las portadas no mostrarán nombre."); }; sh.appendChild(ok);
+    if (onDone) { var sk = el("button", "small", "Exportar sin nombre"); sk.style.marginTop = ".5rem"; sk.onclick = function () { var a3 = authGet(); a3.skipAsk = true; authSet(a3); closeSheet(); setTimeout(onDone, 60); }; sh.appendChild(sk); }
     closeBtn(sh, "Cancelar");
   });
 }
+function askAuthor() { return new Promise(function (ok, no) { var a = authGet(); if (a.name || a.skipAsk) { ok(); return; } bylineSheet(function () { ok(); }); }); }
 function authSet(a) { try { localStorage.setItem("hv:author", JSON.stringify(a)); } catch (e) {} }
 function regOf(s) {
   if (!s.reg || !s.reg.uid) { var a = authGet(), id = Number(s.id); s.reg = { uid: hvUuid(), aid: a.aid, c: (id > 1e12 && id < 4e12) ? id : (s.at || Date.now()), v: 0, ex: [] }; }
@@ -5555,6 +5559,7 @@ async function regSaveFile(name, data) {
   await dl.save({ filename: name, data: data });
 }
 async function regDoEpub(s, st) {
+  await askAuthor();
   try { var rr = await regEpub(s); await regSaveFile(rr.name, rr.data); st.textContent = "Listo: " + rr.name + " (versión " + rr.entry.v + "). Huella: " + rr.entry.sha.slice(0, 16) + "…"; return rr.entry; }
   catch (e) { st.textContent = e && e.code === "declined" ? "Descarga cancelada." : (e && e.message) || "No se pudo crear el EPUB."; return null; }
 }
@@ -5632,13 +5637,15 @@ function buildEpubFiles(s, meta) {
   }
   var ecss = fcss + "body{font-family:serif;line-height:1.55;margin:5%}\nh1,h2{text-align:center}\nh1.t{margin-top:12%;font-size:2em}\np{margin:0 0 .8em;text-indent:1.2em;text-align:justify}\np.c{text-indent:0;text-align:center}\nimg.cv{display:block;margin:0 auto;max-width:70%;height:auto}\nimg.si{display:block;margin:0 auto;max-width:100%;height:auto}\n.lore p{text-indent:0;text-align:left}\n.card{border:1px solid #b08d57;border-radius:.6em;padding:.7em .9em;margin:0 0 1.1em;background:#fbf6ec;color:#222;page-break-inside:avoid;break-inside:avoid}\n.card h3{margin:.3em 0 .1em;font-size:1.1em;text-align:center}\n.card img.ci{display:block;margin:0 auto .4em;max-width:70%;height:auto;border-radius:.4em}\n.card p.k{text-align:center;text-indent:0;font-size:.8em;letter-spacing:.08em;text-transform:uppercase;color:#7a5a2a;margin:0 0 .5em}\n.sheet{page-break-before:always;break-before:page;margin:0}\n.sheet h3{text-align:center;font-size:1em;margin:0 0 .4em}\n.sheet img.sh{display:block;width:100%;height:auto}\n.card p.d{text-indent:0;text-align:left;font-size:.92em;margin:0}\n.pbk{page-break-before:always;break-before:page}\nimg.si.sm{max-width:45%}\nimg.si.wd{width:100%;max-width:100%}\n.fpg{page-break-before:always;break-before:page;page-break-after:always;break-after:page;text-align:center;margin:0}\n.fpg img{display:block;margin:0 auto;max-width:100%;max-height:90vh;width:auto;height:auto}\n.cap{text-indent:0;text-align:center;font-style:italic;font-size:.9em;margin:.2em 0 1em}";
   ecss = ecss.replace("body{font-family:serif;", "body{font-family:" + fam2 + ";").replace("text-align:justify}", (ob.just ? "text-align:justify;" + (ob.hyph ? "hyphens:auto;-webkit-hyphens:auto;-epub-hyphens:auto;" : "hyphens:manual;") : "text-align:left;") + (ob.ind ? "" : "text-indent:0;") + "}");
-  ecss += "\np.f{text-indent:0}\np.fd::first-letter{float:left;font-size:3.2em;line-height:.8;padding:.06em .08em 0 0;font-weight:bold}\np.sep{text-indent:0;text-align:center;margin:1.2em 0;letter-spacing:.2em;line-height:1.1}\nhr.sep{border:0;border-top:1px solid #888;width:30%;margin:1.4em auto}\n.gap{height:1.3em}\nh2.ch{margin:1.2em 0 1.2em}";
+  ecss += "\n.cred{margin-top:30%}\n.cred p.c{margin:.6em 0;font-size:.9em;text-indent:0;text-align:center}\np.f{text-indent:0}\np.fd::first-letter{float:left;font-size:3.2em;line-height:.8;padding:.06em .08em 0 0;font-weight:bold}\np.sep{text-indent:0;text-align:center;margin:1.2em 0;letter-spacing:.2em;line-height:1.1}\nhr.sep{border:0;border-top:1px solid #888;width:30%;margin:1.4em auto}\n.gap{height:1.3em}\nh2.ch{margin:1.2em 0 1.2em}";
   f["OEBPS/style.css"] = ecss;
   var cimg = s.cover ? dataBytes(covUrl(s)) : null, cname = cimg ? "cover.jpg" : "cover.svg";
   if (cimg) f["OEBPS/cover.jpg"] = cimg; else f["OEBPS/cover.svg"] = coverSvg(s);
-  f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1>' + (byline() ? '<p class="t" style="font-style:italic">' + xe(byline()) + '</p>' : ''));
+  f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1>' + (byline() ? '<p class="t" style="font-style:italic">' + xe(byline()) + '</p>' : ((meta && meta.author) ? '<p class="t" style="font-style:italic">' + xe(meta.author) + '</p>' : '')));
   var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/><item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
   var spine = '<itemref idref="title"/>', nav = '<li><a href="title.xhtml">Portada</a></li>';
+  var _au = (meta && meta.author) || byline();
+  if (_au) { f["OEBPS/creditos.xhtml"] = xhtml("Créditos", '<div class="cred"><p class="c">' + xe(s.title) + '</p><p class="c">' + xe(_au) + '</p><p class="c">© ' + new Date().getFullYear() + ' ' + xe(_au) + '. Todos los derechos reservados.</p><p class="c">Escrita por ' + xe(_au) + ' con la asistencia de Historias vivas.</p></div>'); items += '<item id="cred" href="creditos.xhtml" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="cred"/>'; }
   for (i = 0; i < ch.length; i++) {
     var n = i + 1, name = "c" + n + ".xhtml";
     var _ct = ctitle(s, n), _hd = ob.capnum ? "Capítulo " + n + (_ct ? " · " + xe(_ct) : "") : (_ct ? xe(_ct) : "");
@@ -6047,7 +6054,7 @@ function bookLayout(s, fonts) {
     if (p.cover || p.kind === "blank" || p.kind === "img" || p.kind === "sheet" || p.kind === "title") return;
 
     if (p.kind === "text" && o.head !== "none") {
-      var cht = p.ch ? "Capítulo " + p.ch + (ctitle(s, p.ch) ? " · " + ctitle(s, p.ch) : "") : s.title, ht = o.head === "novel" ? s.title : o.head === "chapter" ? cht : (p.num % 2 === 0 ? s.title : cht); ht = pdfSafe(ht).slice(0, 70);
+      var cht = p.ch ? "Capítulo " + p.ch + (ctitle(s, p.ch) ? " · " + ctitle(s, p.ch) : "") : s.title, ht = o.head === "novel" ? s.title : o.head === "chapter" ? cht : (p.num % 2 === 0 ? (byline() ? byline() + "  ·  " + s.title : s.title) : cht); ht = pdfSafe(ht).slice(0, 70);
       var hw = fonts.I.widthOfTextAtSize(ht, FS * 0.8); p.items.push({ t: "txt", x: lm(p) + (TW - hw) / 2, y: mt * 0.6, s: FS * 0.8, f: "I", text: ht });
     }
     if (o.pn && p.kind !== "chap") { var nt = String(p.num), nw = fonts.R.widthOfTextAtSize(nt, FS * 0.85); p.items.push({ t: "txt", x: lm(p) + (TW - nw) / 2, y: H - mb * 0.45, s: FS * 0.85, f: "R", text: nt }); }
@@ -6570,6 +6577,7 @@ $("hlcopy").onclick = function () { var h = HL.sel; if (!h) return; try { naviga
 
 async function exportAs(fmt) {
   var s = cur; if (!s || !s.scenes.length) return;
+  if (fmt !== "txt" && fmt !== "md") await askAuthor();
   var dl = null;
   try { dl = await claude.use("downloads"); } catch (e) {}
   if (!dl) { emsg("Guardar archivos no está disponible en esta vista."); return; }
