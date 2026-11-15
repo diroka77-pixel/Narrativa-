@@ -7,7 +7,7 @@ const fail=m=>{console.log('FALLA',m,errs);process.exit(1)};
 const r=await p.evaluate(async()=>{const o={};const wait=ms=>new Promise(r=>setTimeout(r,ms));const btn=(root,t)=>[].slice.call(document.querySelectorAll(root+' button')).filter(x=>x.textContent===t)[0];
  const c=document.createElement('canvas');c.width=600;c.height=900;const g=c.getContext('2d');const gr=g.createLinearGradient(0,0,0,900);gr.addColorStop(0,'#3a0a2a');gr.addColorStop(1,'#0a1a3a');g.fillStyle=gr;g.fillRect(0,0,600,900);g.fillStyle='#ff3fa4';g.font='bold 60px Georgia';g.textAlign='center';g.fillText('NEÓN Y',300,120);g.fillText('COLMILLOS',300,190);g.fillStyle='#35e0ff';g.beginPath();g.arc(300,500,160,0,7);g.fill();const IMG=c.toDataURL('image/jpeg',.9);
  const sc=[];for(let i=0;i<4;i++)sc.push({t:'Escena '+i+'. Diroka avanzó hacia la terminal. '.repeat(6),m:{},a:i?'x':''});
- const s={id:'f',title:'Neón y Colmillos: La Sangre de los Mestizos',syn:'x',genre:'Ciencia ficción',genres:[],cover:IMG,scenes:sc,lore:[],turn:4,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'m',book:{sep:'ast'}};
+ const s={id:'f',title:'Neón y Colmillos: La Sangre de los Mestizos',syn:'x',genre:'Ciencia ficción',genres:[],cover:IMG,covSigned:false,scenes:sc,lore:[],turn:4,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'m',book:{sep:'ast'}};
  LIB.length=0;LIB.push(s);openStory(s);
  // sin nombre: no firma
  o.k0=stampKey(s)===''&&covUrl(s)===IMG;

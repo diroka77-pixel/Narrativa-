@@ -7,7 +7,7 @@ const fail=m=>{console.log('FALLA',m,errs);process.exit(1)};
 const r=await p.evaluate(async()=>{const o={};const wait=ms=>new Promise(r=>setTimeout(r,ms));const btn=(root,t)=>[].slice.call(document.querySelectorAll(root+' button')).filter(x=>x.textContent===t)[0];
  const c=document.createElement('canvas');c.width=300;c.height=450;c.getContext('2d').fillRect(0,0,300,450);const IMG=c.toDataURL('image/jpeg');
  const sc=[];for(let i=0;i<5;i++)sc.push({t:('Escena '+i+'. Texto. ').repeat(80),m:{},a:i?'x':''});
- const s={id:'e',title:'Neón y Colmillos',syn:'x',genre:'Ciencia ficción',genres:[],cover:IMG,scenes:sc,lore:[],turn:5,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'m'};
+ const s={id:'e',title:'Neón y Colmillos',syn:'x',genre:'Ciencia ficción',genres:[],cover:IMG,covSigned:false,scenes:sc,lore:[],turn:5,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'m'};
  LIB.length=0;LIB.push(s);openStory(s);
  const pr=exportAs('epub');await wait(300);o.ask=/¿Con qué nombre firmas este libro\?/.test($('gsheet').textContent)&&!!btn('#gsheet','Exportar sin nombre');
  document.querySelector('#gsheet input[type=text]').value='DJ Rodríguez';btn('#gsheet','Guardar').click();await pr;await wait(800);

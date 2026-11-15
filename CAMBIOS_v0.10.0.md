@@ -486,3 +486,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Nuevo «Prompt para la contraportada»: misma paleta y estilo que la portada (si hay portada y la IA tiene visión, El Cronista la mira), con el texto de contraportada, el título en pequeño y el nombre del autor.
 - «Subir mi contraportada»: sale al final del PDF (modo libro con portada) y del EPUB, y en la galería.
 - Prueba en el móvil: Imágenes → Prompt para la contraportada → copiar → generar en tu IA de imágenes → Subir mi contraportada → exportar PDF/EPUB y comprobar la última página.
+
+## v0.20.1 — Sin nombre repetido en la portada
+- La app ya no pone la firma encima si la portada lleva el nombre en el diseño (por defecto, no la pone).
+- Al subir una portada pregunta «¿Ya lleva tu nombre?»; casilla «Añadir mi firma encima» en Imágenes.
+- Prueba: abre tu portada desde Inicio: solo debe verse el nombre del diseño.

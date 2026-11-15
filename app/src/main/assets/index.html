@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.20.0";
+var VERSION = "0.20.1";
 var NEWS = [
+  ["0.20.1", "Se acabó el nombre repetido en la portada: la app ya no pone tu firma encima si la portada lleva tu nombre. Al subir una portada te pregunta si ya lo lleva; puedes cambiarlo en Imágenes con «Añadir mi firma encima»."],
   ["0.20.0", "Portada y contraportada a juego: el prompt de la portada pide tu nombre de autor con la misma tipografía y acabado que el título. Nuevo «Prompt para la contraportada», que copia el estilo de tu portada e incluye tu texto de contraportada y tu nombre. Puedes subir la contraportada y sale al final del PDF y del EPUB, y en la galería."],
   ["0.19.6", "Los capítulos los marcas tú: El Cronista ya no abre capítulos por su cuenta (salvo que se lo permitas). En el «⋯» de cada escena puedes «Empezar un capítulo nuevo en esta escena» o quitar un corte de capítulo y unirlo con el anterior."],
   ["0.19.5", "Al exportar un libro, si aún no has puesto tu nombre de autor, la app te lo pide. El EPUB lleva tu nombre como autor, bajo el título y en una página de créditos; el PDF, además, en la cabecera de las páginas pares."],
@@ -4492,6 +4493,17 @@ function takeImage(f, kind, idx) {
       imgMsg("No hay espacio para guardar la imagen en este navegador. Quita alguna imagen o usa una más pequeña."); return;
     }
     refreshImages(true);
+    if (kind === "cover" && byline()) askCovSigned(s);
+  });
+}
+function askCovSigned(s) {
+  sheet("Tu nombre en la portada", function (sh) {
+    para(sh, "¿Esta portada ya lleva tu nombre («" + byline() + "») escrito en el diseño?", "");
+    var r = el("div", "row"), y = el("button", "go", "Sí, ya lo lleva"), n = el("button", null, "No, añádelo tú");
+    y.onclick = function () { s.covSigned = true; save(); closeSheet(); refreshImages(true); };
+    n.onclick = function () { s.covSigned = false; save(); closeSheet(); refreshImages(true); };
+    r.appendChild(y); r.appendChild(n); sh.appendChild(r);
+    para(sh, "Si eliges «añádelo tú», la app pondrá tu firma encima en la portada, el PDF y el EPUB. Puedes cambiarlo luego en Imágenes.");
   });
 }
 function imgFromBlob(b, kind, idx) { if (b) takeImage(b, kind, idx); }
@@ -4549,6 +4561,7 @@ function imgPanel(box, withTitle) {
   var pr = el("button", "small", "Prompt para la portada"); pr.onclick = function () { makePrompt("cover"); }; r.appendChild(pr);
   box.appendChild(r);
   box.appendChild(el("p", "hint", window.Native ? "Se abrirá la galería de tu móvil." : "Si «Subir» no abre la galería en tu móvil: copia la imagen y usa «Pegar imagen»."));
+  if (s.cover && byline()) { var lsg = el("label", "chk"), csg = el("input"); csg.type = "checkbox"; csg.checked = s.covSigned === false; lsg.appendChild(csg); lsg.appendChild(document.createTextNode(" Añadir mi firma encima (solo si la portada no lleva ya mi nombre)")); csg.onchange = function () { s.covSigned = !csg.checked; save(); refreshImages(true); }; box.appendChild(lsg); }
   if (s.cover) { var im = el("img", "pv"); im.src = s.cover; im.alt = "Portada"; box.appendChild(im); }
   box.appendChild(el("p", "hint", "Contraportada: la parte de atrás del libro. Se añade al final del PDF y del EPUB."));
   var rb = el("div", "row");
@@ -5492,7 +5505,7 @@ function authGet() {
 /* v0.19.1: firma del autor grabada en la imagen de portada al exportar (PDF, EPUB, FB2). La portada guardada no se toca. */
 var COVSTAMP = { k: "", u: "" };
 function stampOpts() { var a = {}; try { a = JSON.parse(localStorage.getItem("hv:author") || "{}") || {}; } catch (e) {} return { on: a.stamp !== false, pos: a.stampPos === "arriba" ? "arriba" : "abajo" }; }
-function stampKey(s) { var o = stampOpts(), n = byline(); if (!s || !s.cover || !n || !o.on) return ""; return String(s.cover).length + "|" + String(s.cover).slice(-48) + "|" + n + "|" + o.pos; }
+function stampKey(s) { var o = stampOpts(), n = byline(); if (!s || !s.cover || !n || !o.on || s.covSigned !== false) return ""; return String(s.cover).length + "|" + String(s.cover).slice(-48) + "|" + n + "|" + o.pos; }
 function covUrl(s) { var k = stampKey(s); return k && COVSTAMP.k === k && COVSTAMP.u ? COVSTAMP.u : (s && s.cover); }
 function stampDraw(src, name, pos) {
   return new Promise(function (ok) {
@@ -6997,6 +7010,7 @@ var GUIDE = {
     ["Borrar escena", "En las opciones de una escena («⋯»): la borra (y las siguientes) sin que El Cronista escriba nada. Tu acción vuelve al cuadro de escritura para que la cambies o escribas otra idea; nada ocurre hasta que pulses Continuar."],
     ["Empezar un capítulo nuevo en esta escena", "En el «⋯» de una escena: tú decides dónde empieza cada capítulo. «Quitar el capítulo N (unir con el anterior)» deshace un corte. El Cronista solo cierra capítulos por su cuenta si se lo permites en el menú de la historia."],
     ["Prompt para la contraportada", "Junto a la portada: un prompt para crear la parte de atrás del libro a juego con tu portada (misma paleta, estilo y tipografía), con tu texto de contraportada y tu nombre. Si tienes portada y una IA con visión, El Cronista la mira primero. «Subir mi contraportada» la añade al final del PDF y del EPUB."],
+    ["Firma encima de la portada", "Si tu portada ya trae tu nombre en el diseño, la app no pone nada encima. Solo si marcas «Añadir mi firma encima» en Imágenes (o respondes «No, añádelo tú» al subirla) pone tu firma sobre la portada."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
