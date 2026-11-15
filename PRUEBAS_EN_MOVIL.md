@@ -157,3 +157,9 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 2. En tu novela, ve a la escena donde empieza el «Capítulo 2» que no querías → «⋯» → «Quitar el capítulo 2 (unir con el anterior)».
 3. En la escena donde quieras que empiece un capítulo → «⋯» → «Empezar un capítulo nuevo en esta escena».
 4. Juega varias escenas: no debe aparecer ningún capítulo nuevo por su cuenta.
+
+## v0.20.0 — Portada y contraportada a juego
+- El prompt de la portada pide el nombre del autor (si falta, lo pregunta) con la misma tipografía, color y acabado que el título.
+- Nuevo «Prompt para la contraportada»: misma paleta y estilo que la portada (si hay portada y la IA tiene visión, El Cronista la mira), con el texto de contraportada, el título en pequeño y el nombre del autor.
+- «Subir mi contraportada»: sale al final del PDF (modo libro con portada) y del EPUB, y en la galería.
+- Prueba en el móvil: Imágenes → Prompt para la contraportada → copiar → generar en tu IA de imágenes → Subir mi contraportada → exportar PDF/EPUB y comprobar la última página.

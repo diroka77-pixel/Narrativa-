@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.6";
+var VERSION = "0.20.0";
 var NEWS = [
+  ["0.20.0", "Portada y contraportada a juego: el prompt de la portada pide tu nombre de autor con la misma tipografía y acabado que el título. Nuevo «Prompt para la contraportada», que copia el estilo de tu portada e incluye tu texto de contraportada y tu nombre. Puedes subir la contraportada y sale al final del PDF y del EPUB, y en la galería."],
   ["0.19.6", "Los capítulos los marcas tú: El Cronista ya no abre capítulos por su cuenta (salvo que se lo permitas). En el «⋯» de cada escena puedes «Empezar un capítulo nuevo en esta escena» o quitar un corte de capítulo y unirlo con el anterior."],
   ["0.19.5", "Al exportar un libro, si aún no has puesto tu nombre de autor, la app te lo pide. El EPUB lleva tu nombre como autor, bajo el título y en una página de créditos; el PDF, además, en la cabecera de las páginas pares."],
   ["0.19.4", "Mejor continuidad: El Cronista recibe aparte el final exacto de la última escena, justo antes de tu acción, y empieza la nueva desde ese instante, sin repetir ni resumir lo anterior."],
@@ -2366,6 +2367,7 @@ function blurbSheet() {
     sv.onclick = function () { s.blurb = ta.value.trim(); save(); toast("Contraportada guardada."); };
     cp.onclick = function () { hvCopy(ta.value); };
     us.onclick = function () { var t = ta.value.trim(); if (!t) { toast("Primero escribe o genera el texto."); return; } s.blurb = t; s.syn = t.length > 400 ? t.slice(0, 397).replace(/\s+\S*$/, "") + "…" : t; save(); toast("Sinopsis de la historia actualizada."); };
+    var ib = el("button", "small", "Prompt para la imagen de contraportada"); ib.style.marginTop = ".5rem"; ib.onclick = function () { s.blurb = ta.value.trim() || s.blurb; save(); closeSheet(); makePrompt("back"); }; sh.appendChild(ib);
     closeBtn(sh);
   });
 }
@@ -3882,6 +3884,7 @@ function galItems(s) {
   var out = [], seen = {};
   function add(u, grp, cap, go) { if (!u || !/^data:image|^https?:|^blob:|^file:|^content:/.test(String(u)) || seen[u]) return; seen[u] = 1; out.push({ u: u, g: grp, c: cap, go: go }); }
   if (s.cover) add(s.cover, "Portada", s.title, null);
+  if (s.back) add(s.back, "Portada", "Contraportada", null);
   (s.scenes || []).forEach(function (sc, i) { if (sc && sc.img) add(sc.img, "Escenas", "Capítulo " + chOf(s, i) + " · escena " + (i + 1) + (sc.a ? " · " + String(sc.a).slice(0, 60) : ""), function () { goScene(i); }); });
   (s.prot || []).forEach(function (c) { if (c && c.img) add(c.img, "Personajes", c.name, null); });
   (s.lore || []).forEach(function (c) { if (c && c.img) add(c.img, /^(personaje|protagonista|antagonista|secundario)$/.test(c.tipo) ? "Personajes" : "Lugares, objetos y mundo", c.nombre + (c.tipo ? " · " + c.tipo : ""), null); });
@@ -4480,12 +4483,12 @@ function imgMsg(t) {
   var m = !$("play").hidden ? $("emsg") : $("cmsg"); m.textContent = t; m.hidden = false;
 }
 function takeImage(f, kind, idx) {
-  shrink(f, kind === "cover" ? 1500 : 1800, kind === "cover" ? 2250 : 2400, function (u) {
+  shrink(f, kind === "cover" || kind === "back" ? 1500 : 1800, kind === "cover" || kind === "back" ? 2250 : 2400, function (u) {
     if (!u) { imgMsg("No pude leer esa imagen. Prueba con un JPG o PNG."); return; }
     var s = cur, old;
-    if (kind === "cover") { old = s.cover; s.cover = u; } else { old = s.scenes[idx].img; s.scenes[idx].img = u; }
+    if (kind === "cover") { old = s.cover; s.cover = u; } else if (kind === "back") { old = s.back; s.back = u; } else { old = s.scenes[idx].img; s.scenes[idx].img = u; }
     if (!save()) {
-      if (kind === "cover") s.cover = old; else s.scenes[idx].img = old;
+      if (kind === "cover") s.cover = old; else if (kind === "back") { if (old) s.back = old; else delete s.back; } else s.scenes[idx].img = old;
       imgMsg("No hay espacio para guardar la imagen en este navegador. Quita alguna imagen o usa una más pequeña."); return;
     }
     refreshImages(true);
@@ -4547,6 +4550,14 @@ function imgPanel(box, withTitle) {
   box.appendChild(r);
   box.appendChild(el("p", "hint", window.Native ? "Se abrirá la galería de tu móvil." : "Si «Subir» no abre la galería en tu móvil: copia la imagen y usa «Pegar imagen»."));
   if (s.cover) { var im = el("img", "pv"); im.src = s.cover; im.alt = "Portada"; box.appendChild(im); }
+  box.appendChild(el("p", "hint", "Contraportada: la parte de atrás del libro. Se añade al final del PDF y del EPUB."));
+  var rb = el("div", "row");
+  rb.appendChild(fileBtn(s.back ? "Cambiar contraportada" : "Subir mi contraportada", "back"));
+  if (s.back) { var rmb = el("button", "small", "Quitar contraportada"); rmb.onclick = function () { delete s.back; save(); refreshImages(true); }; rb.appendChild(rmb); }
+  if (!window.Native) rb.appendChild(pasteBtn("back"));
+  var prb = el("button", "small", "Prompt para la contraportada"); prb.onclick = function () { makePrompt("back"); }; rb.appendChild(prb);
+  box.appendChild(rb);
+  if (s.back) { var imb = el("img", "pv"); imb.src = s.back; imb.alt = "Contraportada"; box.appendChild(imb); }
 }
 function wrapTxt(x, t, maxW) { var w = t.split(/\s+/), l = "", out = []; w.forEach(function (z) { var tt = l ? l + " " + z : z; if (x.measureText(tt).width > maxW && l) { out.push(l); l = z; } else l = tt; }); if (l) out.push(l); return out; }
 async function shareCard(i, quote) {
@@ -4744,15 +4755,25 @@ function protTxt(s) {
   var l = (s.lore || []).filter(function (c) { return c.tipo === "protagonista"; });
   return l.length ? l.map(function (c) { return c.nombre + ": " + c.desc; }).join(". ") : "protagonista adulto, a tu elección";
 }
-function coverClose(s) { return " Genera la imagen como si fuera la portada de una novela, en formato vertical 2:3, e incluye el título «" + s.title + "» escrito de forma legible y elegante en la portada" + (byline() ? " y, en la parte inferior y en letras más pequeñas, el nombre del autor «" + byline() + "»" : "") + ". Todos los personajes son adultos."; }
+function authLine(where) { var n = byline(); return n ? " " + where + " el nombre del autor «" + n + "», escrito exactamente así, letra por letra, más pequeño que el título pero bien legible, con la misma familia tipográfica, color y acabado que el título (si el título es metálico, de neón, grabado o pintado, el nombre también), integrado en el diseño como en una novela publicada." : ""; }
+function coverClose(s) { return " Genera la imagen como si fuera la portada de una novela, en formato vertical 2:3, e incluye el título «" + s.title + "» escrito de forma legible y elegante en la portada." + authLine("En la parte inferior, incluye") + " Todos los personajes son adultos."; }
+function backClose(s) {
+  var b = String(s.blurb || s.syn || "").replace(/\s+/g, " ").trim(), fits = b && b.length <= 700;
+  return " Genera la imagen como la CONTRAPORTADA de esa misma novela, en formato vertical 2:3, a juego con su portada: misma paleta, misma iluminación, mismo estilo de ilustración y misma tipografía. Fondo más sobrio que la portada (un detalle, una textura o un paisaje del mundo, desenfocado o en penumbra), sin personajes en primer plano y con un recuadro central semitransparente para el texto." +
+    (fits ? " Dentro del recuadro, escribe este texto de contraportada, bien legible y sin cambiar ni una palabra: «" + b + "»." : " Deja el recuadro vacío: el texto lo pondré yo.") +
+    " En la parte inferior, el título «" + s.title + "» en pequeño." + authLine("Junto al título, incluye") + " Todos los personajes son adultos.";
+}
 function localPrompt(s, kind, idx) {
   var base = "Historia: " + (s.syn || s.title) + " Género: " + gtxt(s) + ". Protagonista(s): " + protTxt(s) + ".";
   if (kind === "cover") return "Ilustración de portada de novela. " + base + " Composición cinematográfica centrada en el protagonista, atmósfera y paleta propias del género, ilustración digital detallada." + coverClose(s);
+  if (kind === "back") return "Contraportada de novela. " + base + " Atmósfera y paleta propias del género, ilustración digital detallada." + backClose(s);
   var t = s.scenes[idx].t.replace(/\s+/g, " ").slice(0, 450);
   var fm = cur && cur.scenes[idx] && cur.scenes[idx].il; var ft = fm === "p" ? "formato vertical 2:3, a página completa como una página de novela gráfica, composición dramática" : fm === "v" ? "formato vertical 2:3" : "formato horizontal 3:2"; return "Ilustración de una escena de novela, " + ft + ", sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
 }
 async function makePrompt(kind, idx) {
   var s = cur; if (!s) return;
+  if (kind === "cover" || kind === "back") await askAuthor();
+  if (kind === "back") return makeBackPrompt(s);
   $("pmodal").hidden = false; $("ptit").textContent = kind === "cover" ? "Prompt para la portada" : "Prompt para esta escena"; $("pcopy").textContent = "Copiar prompt";
   var local = localPrompt(s, kind, idx); $("ptxt").value = local; $("ptxt").readOnly = false;
   if (!sample) { $("pstat").textContent = "Versión básica (sin IA)."; return; }
@@ -4762,6 +4783,18 @@ async function makePrompt(kind, idx) {
     var r = await ask(q), t = String(r.text || "").trim();
     if (t) { $("ptxt").value = kind === "cover" ? t + coverClose(s) : t; $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; }
   } catch (e) { $("pstat").textContent = "No pude mejorarlo con IA; te dejo la versión básica."; }
+  $("pcopy").disabled = false;
+}
+async function makeBackPrompt(s) {
+  $("pmodal").hidden = false; $("ptit").textContent = "Prompt para la contraportada"; $("pcopy").textContent = "Copiar prompt";
+  $("ptxt").value = localPrompt(s, "back"); $("ptxt").readOnly = false;
+  if (!s.blurb) $("pstat").textContent = "Consejo: escribe antes el texto de contraportada (Cartas de lore → Contraportada) para que el prompt lo incluya.";
+  if (!sample) { if (s.blurb) $("pstat").textContent = "Versión básica (sin IA)."; return; }
+  $("pstat").textContent = s.cover ? "El Cronista está mirando tu portada para que la contraportada vaya a juego…" : "Preparando un prompt más visual…"; $("pcopy").disabled = true;
+  var q = "Escribe UNA descripción visual en español (máximo 90 palabras) del FONDO de la contraportada de esta novela, para una IA generadora de imágenes: paleta de colores, luz, texturas, un elemento del mundo en penumbra y el estilo de ilustración. Sin personajes en primer plano. NO menciones textos, títulos ni formato: los añadiré yo." + (s.cover ? " Mira la imagen adjunta: es la PORTADA. La contraportada debe parecer la otra cara del mismo libro: copia su paleta, estilo, acabado y el tipo de letra del título (descríbelo: metálico, neón, grabado, pintado…)." : "") + "\nHistoria: " + (s.syn || s.title) + ". Género: " + gtxt(s) + ".\nResponde solo con la descripción.";
+  try { var r; try { r = s.cover ? await ask(q, "polish", "", s.cover) : await ask(q); } catch (e) { if (e && (e.code === "no_vision" || e.code === "bad_image")) r = await ask(q.replace(/ Mira la imagen adjunta[^.]*\.[^.]*\./, "")); else throw e; }
+    var t = String((r && r.text) || "").trim(); if (t) { $("ptxt").value = "Contraportada de novela. " + t + backClose(s); $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; } }
+  catch (e) { $("pstat").textContent = "No pude mejorarlo con IA; te dejo la versión básica."; }
   $("pcopy").disabled = false;
 }
 $("pclose").onclick = function () { $("pmodal").hidden = true; };
@@ -5658,6 +5691,7 @@ function buildEpubFiles(s, meta) {
   var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/><item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
   var spine = '<itemref idref="title"/>', nav = '<li><a href="title.xhtml">Portada</a></li>';
   var _au = (meta && meta.author) || byline();
+  var _bk = s.back ? dataBytes(s.back) : null;
   if (_au) { f["OEBPS/creditos.xhtml"] = xhtml("Créditos", '<div class="cred"><p class="c">' + xe(s.title) + '</p><p class="c">' + xe(_au) + '</p><p class="c">© ' + new Date().getFullYear() + ' ' + xe(_au) + '. Todos los derechos reservados.</p><p class="c">Escrita por ' + xe(_au) + ' con la asistencia de Historias vivas.</p></div>'); items += '<item id="cred" href="creditos.xhtml" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="cred"/>'; }
   for (i = 0; i < ch.length; i++) {
     var n = i + 1, name = "c" + n + ".xhtml";
@@ -5691,6 +5725,7 @@ function buildEpubFiles(s, meta) {
     f["OEBPS/galeria.xhtml"] = xhtml("Galería de personajes y mundo", ah);
     items += '<item id="galeria" href="galeria.xhtml" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="galeria"/>'; nav += '<li><a href="galeria.xhtml">Galería de personajes y mundo</a></li>';
   }
+  if (_bk) { f["OEBPS/back.jpg"] = _bk; f["OEBPS/back.xhtml"] = xhtml("Contraportada", '<img class="cv" src="back.jpg" alt="Contraportada"/>'); items += '<item id="backimg" href="back.jpg" media-type="image/jpeg"/><item id="back" href="back.xhtml" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="back"/>'; nav += '<li><a href="back.xhtml">Contraportada</a></li>'; }
   items += imgItems;
   f["OEBPS/nav.xhtml"] = xhtml("Índice", '<nav epub:type="toc" id="toc"><h2>Índice</h2><ol>' + nav + '</ol></nav>');
   f["OEBPS/content.opf"] = '<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bid" xml:lang="es" prefix="hv: urn:historiasvivas:vocab#"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bid">' + xe(id) + '</dc:identifier><dc:title>' + xe(s.title) + '</dc:title><dc:language>es</dc:language><dc:creator>' + xe(meta.author || "Historias vivas") + '</dc:creator><dc:contributor>Historias vivas (con asistencia de IA)</dc:contributor><meta name="cover" content="cover"/><meta property="dcterms:modified">' + (meta.at || new Date().toISOString().replace(/\.\d+Z$/, "Z")) + '</meta><meta property="hv:work-id">' + xe(meta.uid) + '</meta>' + (meta.aid ? '<meta property="hv:author-id">' + xe(meta.aid) + '</meta>' : "") + (meta.v ? '<meta property="hv:export-date">' + xe(meta.at) + '</meta><meta property="hv:version">' + meta.v + '</meta>' : "") + '<meta property="hv:ai-assisted">true</meta></metadata><manifest>' + items + '</manifest><spine>' + spine + '</spine></package>';
@@ -6073,6 +6108,7 @@ function bookLayout(s, fonts) {
     if (o.pn && p.kind !== "chap") { var nt = String(p.num), nw = fonts.R.widthOfTextAtSize(nt, FS * 0.85); p.items.push({ t: "txt", x: lm(p) + (TW - nw) / 2, y: H - mb * 0.45, s: FS * 0.85, f: "R", text: nt }); }
     else if (o.pn && p.kind === "chap") { /* sin número en la apertura de capítulo */ }
   });
+  if (s.back && o.cov) { var bp = { w: W, h: H, items: [], kind: "cover", num: 0, cover: true, ch: 0 }; pages.push(bp); drawImgFit(bp, s.back, 0, 0, W, H, true); if (!bp.items.length) pages.pop(); }
   return { pages: pages, W: W, H: H, o: o };
 }
 async function bookFonts(s) {
@@ -6960,6 +6996,7 @@ var GUIDE = {
     ["Texto completo sin modificar", "Junto a «Idea para la historia» y «Mi personaje hace»: escribes o pegas una escena entera y entra en el libro exactamente como la escribiste. El Cronista solo la lee para recordarla y proponer cómo seguir."],
     ["Borrar escena", "En las opciones de una escena («⋯»): la borra (y las siguientes) sin que El Cronista escriba nada. Tu acción vuelve al cuadro de escritura para que la cambies o escribas otra idea; nada ocurre hasta que pulses Continuar."],
     ["Empezar un capítulo nuevo en esta escena", "En el «⋯» de una escena: tú decides dónde empieza cada capítulo. «Quitar el capítulo N (unir con el anterior)» deshace un corte. El Cronista solo cierra capítulos por su cuenta si se lo permites en el menú de la historia."],
+    ["Prompt para la contraportada", "Junto a la portada: un prompt para crear la parte de atrás del libro a juego con tu portada (misma paleta, estilo y tipografía), con tu texto de contraportada y tu nombre. Si tienes portada y una IA con visión, El Cronista la mira primero. «Subir mi contraportada» la añade al final del PDF y del EPUB."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
