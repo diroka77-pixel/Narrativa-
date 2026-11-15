@@ -474,3 +474,9 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - PDF del libro: en la cabecera de las páginas pares, «Autor · Título» (con la cabecera por defecto).
 - Nota: en un EPUB no se pueden poner pies de página fijos; el lector maqueta las páginas.
 - Prueba nueva: tests/t124_autorepub.js.
+
+**v0.19.6 — Capítulos marcados por el autor**
+- Ya no hay cortes automáticos cada 5 escenas (`chEnds` sin `s.ce` devuelve []), y El Cronista solo cierra capítulos si la historia tiene `cmode: "ia"` (casilla del menú de la historia, ahora marcada por defecto).
+- En el «⋯» de cada escena (desde la 2.ª): «Empezar un capítulo nuevo en esta escena» o «Quitar el capítulo N (unir con el anterior)» (`chBreakAt`, renumera títulos y resúmenes; se pide confirmación).
+- Las pruebas que exportan sin autor marcan `skipAsk`.
+- Prueba nueva: tests/t125_capitulos.js.

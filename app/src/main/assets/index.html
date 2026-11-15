@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.5";
+var VERSION = "0.19.6";
 var NEWS = [
+  ["0.19.6", "Los capítulos los marcas tú: El Cronista ya no abre capítulos por su cuenta (salvo que se lo permitas). En el «⋯» de cada escena puedes «Empezar un capítulo nuevo en esta escena» o quitar un corte de capítulo y unirlo con el anterior."],
   ["0.19.5", "Al exportar un libro, si aún no has puesto tu nombre de autor, la app te lo pide. El EPUB lleva tu nombre como autor, bajo el título y en una página de créditos; el PDF, además, en la cabecera de las páginas pares."],
   ["0.19.4", "Mejor continuidad: El Cronista recibe aparte el final exacto de la última escena, justo antes de tu acción, y empieza la nueva desde ese instante, sin repetir ni resumir lo anterior."],
   ["0.19.3", "Nueva opción «Borrar escena» en el «⋯» de cada escena: la borra sin reescribirla y deja tu acción en el cuadro de escritura para que escribas otra idea o lo que haga tu personaje."],
@@ -2003,7 +2004,7 @@ function renderSet() {
   var l2 = el("label", "chk"), i2 = el("input"); i2.type = "checkbox"; i2.checked = !!cur.critic;
   i2.onchange = function () { cur.critic = i2.checked; save(); };
   l2.appendChild(i2); l2.appendChild(document.createTextNode("Lector crítico al cerrar cada capítulo (1 consulta extra por capítulo)")); l2.style.margin = ".4rem 0 .8rem"; b.appendChild(l2);
-  var l3 = el("label", "chk"), i3 = el("input"); i3.type = "checkbox"; i3.checked = cur.cmode === "yo";
+  var l3 = el("label", "chk"), i3 = el("input"); i3.type = "checkbox"; i3.checked = cur.cmode !== "ia";
   i3.onchange = function () { cur.cmode = i3.checked ? "yo" : "ia"; save(); };
   l3.appendChild(i3); l3.appendChild(document.createTextNode("Los capítulos los cierro y empiezo yo (el Cronista no los cierra por su cuenta)")); l3.style.margin = ".4rem 0 .8rem"; b.appendChild(l3);
   b.appendChild(el("p", "hint", "Estilo de autor (opcional)"));
@@ -3419,12 +3420,20 @@ function errMsg(e) {
 }
 var PAGE_W = 280;
 function wc(sc) { return (String(sc.t || "").match(/\S+/g) || []).length; }
-function chEnds(s) { if (s.ce) return s.ce; var e = [], n = s.scenes.length; for (var k = 5; k <= n; k += 5) e.push(k); return e; }
+function chEnds(s) { if (s.ce) return s.ce; return []; }
 function chOf(s, i) { var e = chEnds(s), c = 1; for (var k = 0; k < e.length; k++) if (e[k] <= i) c++; return c; }
 function chCur(s) { return chOf(s, Math.max(0, s.scenes.length - 1)) + (s.scenes.length && chEnds(s).indexOf(s.scenes.length) >= 0 ? 1 : 0); }
 function chStartIdx(s, c) { return c <= 1 ? 0 : (chEnds(s)[c - 2] || 0); }
 function curChWords(s) { var e = chEnds(s), from = e.length ? e[e.length - 1] : 0, w = 0; for (var i = from; i < s.scenes.length; i++) w += wc(s.scenes[i]); return w; }
 function pagesOf(s) { var w = 0; s.scenes.forEach(function (x) { w += wc(x); }); return Math.max(0, Math.round(w / PAGE_W)); }
+function chShift(s, from, d) {
+  var m = ensureMem(s); ["chap", "ctit"].forEach(function (k) { var o = m[k] || {}, n = {}; Object.keys(o).forEach(function (x) { var c = Number(x); if (c < from) n[x] = o[x]; else if (d < 0 && c === from) { } else n[String(c + d)] = o[x]; }); m[k] = n; });
+}
+function chBreakAt(s, i, on) {
+  var e = chEnds(s).slice(); if (on) { if (i < 1 || e.indexOf(i) >= 0) return; var c = chOf(s, i); e.push(i); e.sort(function (a, b) { return a - b; }); s.ce = e; chShift(s, c + 1, 1); }
+  else { var k = e.indexOf(i); if (k < 0) return; var c2 = chOf(s, i); e.splice(k, 1); s.ce = e; chShift(s, c2, -1); }
+  save(); render(true);
+}
 function closeChapterNow(s) { var n = s.scenes.length, e = chEnds(s).slice(); if (e[e.length - 1] !== n) e.push(n); s.ce = e; }
 function chaptersOf(s) { var out = []; s.scenes.forEach(function (sc, k) { var c = chOf(s, k) - 1; (out[c] = out[c] || []).push(sc); }); return out.filter(Boolean); }
 function ctitle(s, n) { try { return ((s.mem && s.mem.ctit) || {})[String(n)] || ""; } catch (e) { return ""; } }
@@ -4066,7 +4075,7 @@ async function turn(action, shown, extra) {
     s.last = cand.escena; s.memory = cand.memoria || s.memory;
     var _n = s.scenes.length, _mm = ensureMem(s);
     if (!memOk(cand.mem) && !Array.isArray(cand.hechos_nuevos)) { dg(s, "memMiss"); _mm.miss = (_mm.miss || []).concat([_n]).slice(-60); if (!(window.hvIsManual && window.hvIsManual())) setTimeout(function () { repairMem(s, _n).then(function () { if ($("atlbox").open) renderAtlas(); }); }, 400); }
-    var _close = s.cmode === "yo" ? false : (!!(cand.mem && cand.mem.cierra_capitulo === true && curChWords(s) / PAGE_W >= 1.5) || (curChWords(s) / PAGE_W >= 30)); if (_close && cand.mem) cand.mem.__close = true;
+    var _close = s.cmode !== "ia" ? false : (!!(cand.mem && cand.mem.cierra_capitulo === true && curChWords(s) / PAGE_W >= 1.5) || (curChWords(s) / PAGE_W >= 30)); if (_close && cand.mem) cand.mem.__close = true;
     if (_close && !cand.mem) cand.mem = { __close: true };
     try { var _nw = cleanNow(cand.escena_ahora); if (_nw && (_nw.lugar || _nw.presentes.length)) s.now = _nw; } catch (e) {}
     try { applyMem(s, cand.mem, s.scenes.length); if (Array.isArray(cand.hechos_nuevos)) applyMem(s, { eventos: cand.hechos_nuevos.map(function (h) { return { que: h }; }) }, s.scenes.length); } catch (e) {}
@@ -4639,6 +4648,10 @@ function sceneImg(sc, i) {
   var ls2 = el("button", "small", "Escuchar desde aquí"); ls2.onclick = function () { startTalk(i, true); }; r.appendChild(ls2);
   var fk = el("button", "small", "Crear rama desde aquí"); fk.onclick = function () { forkSheet(i); }; advw.appendChild(fk);
   if (i === cur.scenes.length - 1 && chEnds(cur).indexOf(cur.scenes.length) < 0) { var cc = el("button", "small", "Cerrar el capítulo aquí"); cc.onclick = function () { closeChapterSheet(); }; r.appendChild(cc); }
+  if (i >= 1) { var _isStart = chEnds(cur).indexOf(i) >= 0, _cn = chOf(cur, i);
+    var chb = el("button", "small", _isStart ? "Quitar el capítulo " + _cn + " (unir con el anterior)" : "Empezar un capítulo nuevo en esta escena");
+    chb.onclick = function () { var s0 = cur; if (_isStart) { askYes("¿Quitar este corte? El capítulo " + _cn + " se unirá al " + (_cn - 1) + " y los siguientes se renumeran.", function () { chBreakAt(s0, i, false); toast("Capítulo " + _cn + " unido al " + (_cn - 1) + "."); }, "Quitar el corte"); } else { chBreakAt(s0, i, true); toast("Esta escena empieza ahora el capítulo " + chOf(s0, i) + "."); } };
+    r.appendChild(chb); }
   if (i === cur.scenes.length - 1 && !cur.fin) { var en = el("button", "small", cur.endIn != null ? "Cancelar el final" : "Empezar a cerrar la historia"); en.onclick = function () { if (cur.endIn != null) { delete cur.endIn; save(); render(true); } else endSheet(); }; r.appendChild(en); }
   var sh2 = el("button", "small", "Compartir como imagen"); sh2.onclick = function () { shareCard(i); }; r.appendChild(sh2);
   var sq = el("button", "small", "Compartir una frase"); sq.onclick = function () { quoteSheet(i); }; r.appendChild(sq);
@@ -6946,6 +6959,7 @@ var GUIDE = {
     ["Nombre en las portadas", "En Ajustes: el nombre de autor que aparece en la cubierta de todas tus historias (Inicio, modo libro, PDF y EPUB). «Guardar» lo aplica."],
     ["Texto completo sin modificar", "Junto a «Idea para la historia» y «Mi personaje hace»: escribes o pegas una escena entera y entra en el libro exactamente como la escribiste. El Cronista solo la lee para recordarla y proponer cómo seguir."],
     ["Borrar escena", "En las opciones de una escena («⋯»): la borra (y las siguientes) sin que El Cronista escriba nada. Tu acción vuelve al cuadro de escritura para que la cambies o escribas otra idea; nada ocurre hasta que pulses Continuar."],
+    ["Empezar un capítulo nuevo en esta escena", "En el «⋯» de una escena: tú decides dónde empieza cada capítulo. «Quitar el capítulo N (unir con el anterior)» deshace un corte. El Cronista solo cierra capítulos por su cuenta si se lo permites en el menú de la historia."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

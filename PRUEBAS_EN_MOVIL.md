@@ -151,3 +151,9 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 ## 39. Borrar escena — v0.19.3
 1. «⋯» de una escena → «Borrar escena» → confirma. La escena desaparece, tu acción vuelve al cuadro de escritura y El Cronista no escribe nada.
 2. Cambia el texto (o escribe otra idea) y pulsa Continuar.
+
+## 40. Autor y capítulos — v0.19.5 / v0.19.6
+1. Exporta el EPUB sin haber puesto nombre: la app debe pedírtelo. Ábrelo en tu lector: autor DJ Rodríguez, nombre bajo el título, página de créditos y portada firmada.
+2. En tu novela, ve a la escena donde empieza el «Capítulo 2» que no querías → «⋯» → «Quitar el capítulo 2 (unir con el anterior)».
+3. En la escena donde quieras que empiece un capítulo → «⋯» → «Empezar un capítulo nuevo en esta escena».
+4. Juega varias escenas: no debe aparecer ningún capítulo nuevo por su cuenta.

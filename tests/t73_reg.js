@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');const fs=require('fs');
 const SP='/tmp/claude-0/-home-claude/5b267948-f4e1-5644-878a-b683b3903646/scratchpad/';
 (async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:390,height:844}});const errs=[];p.on('pageerror',e=>errs.push(String(e)));
-await p.addInitScript(()=>{window.__saved=[];window.claude={use:async(k)=>({save:async(o)=>{window.__saved.push({n:o.filename,d:Array.from(o.data)})}})};localStorage.setItem('hv:welcome','1')});
+await p.addInitScript(()=>{try{if(!localStorage.getItem('hv:author'))localStorage.setItem('hv:author',JSON.stringify({skipAsk:true}))}catch(e){};window.__saved=[];window.claude={use:async(k)=>({save:async(o)=>{window.__saved.push({n:o.filename,d:Array.from(o.data)})}})};localStorage.setItem('hv:welcome','1')});
 await p.goto('file:///home/claude/v091/assets/index.html');await p.waitForTimeout(600);
 const r=await p.evaluate(async()=>{
 const o={};
