@@ -463,3 +463,7 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 **v0.19.3 — Borrar escena**
 - «Borrar escena» en el «⋯» de cada escena (desde la 2.ª): `eraseSheet` vuelve al final de la anterior con `rewindTo` (borra también las siguientes; copia en Versiones) sin llamar a la IA, y deja la acción en el cuadro (o el texto y el modo «Texto completo sin modificar» si era una escena del autor).
 - Prueba nueva: tests/t122_borrar.js.
+
+**v0.19.4 — Continuidad**
+- El prompt de cada turno (completo y compacto) incluye, justo antes de la acción del jugador, el final exacto de la última escena (1-3 párrafos, máx. 1400 caracteres, `tailTxt`) con la regla de continuar desde el instante siguiente, sin repetir ni resumir. Ya se enviaban las 3 últimas escenas enteras (2 en compacto).
+- Prueba nueva: tests/t123_continuidad.js.

@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.19.3";
+var VERSION = "0.19.4";
 var NEWS = [
+  ["0.19.4", "Mejor continuidad: El Cronista recibe aparte el final exacto de la última escena, justo antes de tu acción, y empieza la nueva desde ese instante, sin repetir ni resumir lo anterior."],
   ["0.19.3", "Nueva opción «Borrar escena» en el «⋯» de cada escena: la borra sin reescribirla y deja tu acción en el cuadro de escritura para que escribas otra idea o lo que haga tu personaje."],
   ["0.19.2", "El «Prompt para la portada» ya pide que la imagen incluya tu nombre de autor. Tu firma en la imagen de portada: al exportar el libro (PDF o EPUB) tu nombre de autor se graba en la portada, abajo o arriba, sin cambiar la imagen guardada. Y entre escenas ya no salen los tres asteriscos: por defecto queda solo un espacio en blanco (puedes elegir otro separador en Maquetación)."],
   ["0.19.0", "Nuevo modo «Texto completo sin modificar» al escribir: tu escena entra en el libro tal cual y El Cronista solo la lee para recordarla y proponerte cómo seguir. Además, tu nombre en las portadas: en Ajustes → «Nombre en las portadas» escribe tu nombre de autor y aparecerá en la cubierta de todas tus historias y partidas, en «Leer como un libro», en los PDF y en los EPUB."],
@@ -3260,7 +3261,7 @@ function build(s, action, note, sp, compact) {
     "\nAUTORIDAD DEL JUGADOR (" + aut + "): " + AUT[aut] + "\nINTENSIDAD (ejes de 0 a 3): " + intTxt(s) +
     "\nPROTAGONISTAS (la historia se centra en ellos): " + ((s.prot || []).map(function (c) { return c.name; }).join(", ") || "los definidos en las cartas de lore") + "\nPREMISA: " + s.premise + "\nCARTAS DE LORE:\n" + (compact ? loreTxt(s, recentFocus(s, action)).slice(0, 1800) : loreTxt(s, recentFocus(s, action))) + "\nTURNO: " + s.turn + "\nRESUMEN DEL ARCO EN CURSO:\n" + (s.memory || "(historia nueva)") +
     extraCtx(s, compact) + voiceCtx(s, compact) + relCtx(s) + (compact ? "" : forgotCtx(s)) + vocabCtx(s, compact) + srcCtx(s, action, compact) + wlCtx(s, action, compact) + sagaCtx(s, compact) + sxCtx(s, compact) + gloCtx(s, compact) + docCtx(s, compact) + mapCtx(s, compact) + rpgCtx(s, compact) + "\nESTADO OCULTO (JSON):\n" + JSON.stringify(s.state || {}) + "\nMEMORIA ESTRUCTURADA (verdad de la historia):\n" + memCtxB(s, recentFocus(s, action)) + nowTxt(s) + (function () { try { var dl = []; (s.scenes || []).slice(-3).forEach(function (x) { dialogLines(x.t).forEach(function (d) { if (dl.indexOf(d.raw) < 0) dl.push(d.raw); }); }); if (dl.length) return "\nDIÁLOGOS RECIENTES (no repitas ninguna de estas frases ni su sentido: si un personaje insiste, que cambie la forma o el motivo, y no repitas el mismo gesto o la misma acción que en la escena anterior; cada escena debe aportar algo nuevo): " + dl.slice(-8).map(function (x) { return "«" + x.slice(0, 80) + "»"; }).join(", "); } catch (e) {} return ""; })() + (function () { var rb = repeatedBits(s); return rb.length ? "\nEXPRESIONES YA REPETIDAS (no las uses en esta escena; busca otra imagen o simplemente omítelas): " + rb.map(function (x) { return "«" + x + "»"; }).join(", ") : ""; })() + "\nESCENAS RECIENTES (de la más antigua a la más reciente; continúa desde el final de la última):\n" + recentTxt(s, compact ? 2 : 3) +
-    "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
+    tailTxt(s) + "\nACCIÓN DEL JUGADOR: " + action + "\n" + aviso + chapNote(s) +
     (sp ? "INICIATIVA DEL MUNDO: en este turno, además de reaccionar al jugador, el mundo actúa por su cuenta. Introduce un suceso propio (traición, enamoramiento, batalla, desaparición, secreto o pérdida) coherente con la trama y la INTENSIDAD, o activa un evento pendiente o una deuda. No lo expliques ni pidas permiso.\n" : "") + FORMAT;
 }
 function repeatedBits(s) {
@@ -3388,6 +3389,13 @@ function chapNote(s) {
   return t + "Es demasiado largo: ciérralo YA en esta escena con un buen gancho." + close + "\n";
 }
 function factsTxt(s) { var f = (s.facts || []).slice(-60); return f.length ? f.map(function (x) { return "- " + x; }).join("\n") : "(ninguno todavía)"; }
+function tailTxt(s) {
+  var sc = (s.scenes || [])[s.scenes.length - 1]; if (!sc || !sc.t) return "";
+  var ps = String(sc.t).replace(/\r/g, "").split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean), out = [], n = 0;
+  for (var k = ps.length - 1; k >= 0 && out.length < 3; k--) { out.unshift(ps[k]); n += ps[k].length; if (n > 450) break; }
+  var tx = out.join("\n\n"); if (tx.length > 1400) tx = "…" + tx.slice(-1400);
+  return "\nFINAL EXACTO DEL TEXTO HASTA AHORA (lo último que ha leído el lector" + (sc.own ? "; lo escribió el autor" : "") + "):\n«" + tx + "»\nCONTINUIDAD: tu escena empieza en el instante inmediatamente posterior a ese final, como el siguiente párrafo del mismo libro. Mismo lugar, mismo momento y mismos personajes presentes, salvo que la acción del jugador diga otra cosa. No repitas, no resumas ni vuelvas a describir lo que ya pasó; si alguien estaba hablando o a punto de hacer algo, retómalo ahí. Mantén el tiempo verbal, la persona narrativa y el tono de ese final.";
+}
 function recentTxt(s, n) {
   var r = (s.scenes || []).slice(-(n || 3));
   if (!r.length) return s.last || "(ninguna)";

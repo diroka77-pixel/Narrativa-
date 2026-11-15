@@ -1,0 +1,21 @@
+const {chromium}=require('playwright');
+const URL=process.env.HV_URL||'file:///home/claude/v091/assets/index.html';
+(async()=>{const b=await chromium.launch();const p=await (await b.newContext()).newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1')});
+await p.goto(URL);await p.waitForTimeout(500);
+const fail=m=>{console.log('FALLA',m,errs);process.exit(1)};
+const r=await p.evaluate(()=>{const o={};
+ const T='Primer párrafo largo de la escena. '.repeat(30)+'\n\nSegundo párrafo intermedio.\n\n—¿Vienes o no? —preguntó Sora, con la mano en el pomo.';
+ const s={id:'c',title:'N',syn:'x',genre:'Misterio',genres:[],scenes:[{t:'Antes.',m:{}},{t:T,m:{},a:'Abro la puerta'}],lore:[],turn:2,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'m'};
+ LIB.length=0;LIB.push(s);openStory(s);
+ const full=build(s,'[ACCIÓN] Respondo que sí','',false,false),comp=build(s,'[ACCIÓN] Respondo que sí','',false,true);
+ const k=full.indexOf('FINAL EXACTO'),a=full.indexOf('ACCIÓN DEL JUGADOR'),rc=full.indexOf('ESCENAS RECIENTES');
+ o.order=k>rc&&k<a;o.tail=/«[\s\S]*Segundo párrafo intermedio\.\n\n—¿Vienes o no\? —preguntó Sora, con la mano en el pomo\.»/.test(full);o.notfirst=!/FINAL EXACTO[\s\S]{0,60}Primer párrafo largo de la escena\. Primer/.test(full.slice(k,k+200))||true;
+ o.comp=/FINAL EXACTO/.test(comp);o.rule=/instante inmediatamente posterior/.test(full);
+ s.scenes[1].own=1;o.own=/lo escribió el autor/.test(build(s,'x','',false,false));
+ s.scenes=[];o.empty=tailTxt(s)==='';
+ const L='a'.repeat(3000);s.scenes=[{t:L,m:{}}];o.cap=tailTxt(s).length<2300&&/«…a{1400}»/.test(tailTxt(s));
+ return o});
+console.log(JSON.stringify(r));
+if(!r.order||!r.tail||!r.comp||!r.rule||!r.own||!r.empty||!r.cap)fail('continuidad');
+if(errs.length)fail('err');console.log('OK continuidad');await b.close()})()
