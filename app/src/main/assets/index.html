@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.21.0";
+var VERSION = "0.21.1";
 var NEWS = [
+  ["0.21.1", "El «Formato» de la imagen de una escena tiene la opción «Página completa con texto encima»: el prompt de imagen pide una imagen vertical a página entera con una zona despejada para el texto, y en el libro sale así automáticamente."],
   ["0.21.0", "Nuevo acabado: «Página completa con el texto encima». La imagen de una escena ocupa toda la página y el texto va encima (recuadro oscuro, claro o sin recuadro; abajo, arriba o en el centro). Se elige en Exportar o tocando la imagen en la vista del libro, y sale en el PDF y en el EPUB."],
   ["0.20.2", "Página de créditos propia: los derechos reservados y «escrita por… con la asistencia de Historias vivas» van solos en su página, y el capítulo 1 empieza en la siguiente (EPUB y PDF)."],
   ["0.20.1", "Se acabó el nombre repetido en la portada: la app ya no pone tu firma encima si la portada lleva tu nombre. Al subir una portada te pregunta si ya lo lleva; puedes cambiarlo en Imágenes con «Añadir mi firma encima»."],
@@ -4646,7 +4647,7 @@ function quoteSheet(i) {
 }
 var OPEN_SC = -1;
 function sceneImg(sc, i) {
-  var d = el("div", "simg" + (sc.il === "v" ? " v" : sc.il === "p" ? " p" : ""));
+  var d = el("div", "simg" + (sc.il === "v" ? " v" : sc.il === "p" || sc.il === "o" ? " p" : ""));
   if (sc.img) { var im = el("img"); im.src = sc.img; im.alt = "Ilustración de la escena"; d.appendChild(im); }
   var r0 = el("div", "row"), tg = el("button", "small", "Opciones de la escena");
   tg.setAttribute("aria-expanded", OPEN_SC === i ? "true" : "false");
@@ -4658,8 +4659,8 @@ function sceneImg(sc, i) {
   var advw = el("span"); advw.className = "adv"; advw.style.display = "contents"; r.appendChild(advw); var rr = r; r = advw;
   r.appendChild(fileBtn(sc.img ? "Cambiar imagen" : "Añadir imagen", "scene", i));
   if (sc.img) { var q = el("button", "small", "Quitar imagen"); q.onclick = function () { delete sc.img; save(); refreshImages(true); }; r.appendChild(q); }
-  var IL = { h: "Horizontal", v: "Vertical", p: "Página completa" }, ilb = el("button", "small", "Formato: " + IL[sc.il || "h"]);
-  ilb.onclick = function () { var n = { h: "v", v: "p", p: "h" }[sc.il || "h"]; if (n === "h") delete sc.il; else sc.il = n; save(); refreshImages(true); };
+  var IL = { h: "Horizontal", v: "Vertical", p: "Página completa", o: "Página completa con texto encima" }, ilb = el("button", "small", "Formato: " + IL[sc.il || "h"]);
+  ilb.onclick = function () { var n = { h: "v", v: "p", p: "o", o: "h" }[sc.il || "h"]; if (n === "h") delete sc.il; else sc.il = n; save(); refreshImages(true); };
   r.appendChild(ilb);
   if (!window.Native) r.appendChild(pasteBtn("scene", i));
   var p = el("button", "small", "Prompt de imagen"); p.onclick = function () { makePrompt("scene", i); }; r.appendChild(p);
@@ -4778,12 +4779,13 @@ function backClose(s) {
     (fits ? " Dentro del recuadro, escribe este texto de contraportada, bien legible y sin cambiar ni una palabra: «" + b + "»." : " Deja el recuadro vacío: el texto lo pondré yo.") +
     " En la parte inferior, el título «" + s.title + "» en pequeño." + authLine("Junto al título, incluye") + " Todos los personajes son adultos.";
 }
+function ovlZone(s, idx) { var L = layOf(s, idx), z = L.opos === "t" ? "el tercio superior" : L.opos === "c" ? "la franja central" : "el tercio inferior"; return "formato vertical 2:3 a sangre, para ocupar una página entera de libro con el texto de la escena impreso encima: deja " + z + " de la imagen más despejado y tranquilo (cielo, suelo, sombra, niebla o pared lisa), sin caras ni elementos importantes en esa zona, para que el texto se lea bien; el protagonismo de la escena va en el resto de la imagen"; }
 function localPrompt(s, kind, idx) {
   var base = "Historia: " + (s.syn || s.title) + " Género: " + gtxt(s) + ". Protagonista(s): " + protTxt(s) + ".";
   if (kind === "cover") return "Ilustración de portada de novela. " + base + " Composición cinematográfica centrada en el protagonista, atmósfera y paleta propias del género, ilustración digital detallada." + coverClose(s);
   if (kind === "back") return "Contraportada de novela. " + base + " Atmósfera y paleta propias del género, ilustración digital detallada." + backClose(s);
   var t = s.scenes[idx].t.replace(/\s+/g, " ").slice(0, 450);
-  var fm = cur && cur.scenes[idx] && cur.scenes[idx].il; var ft = fm === "p" ? "formato vertical 2:3, a página completa como una página de novela gráfica, composición dramática" : fm === "v" ? "formato vertical 2:3" : "formato horizontal 3:2"; return "Ilustración de una escena de novela, " + ft + ", sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
+  var fm = cur && cur.scenes[idx] && cur.scenes[idx].il; var ft = fm === "o" ? ovlZone(s, idx) : fm === "p" ? "formato vertical 2:3, a página completa como una página de novela gráfica, composición dramática" : fm === "v" ? "formato vertical 2:3" : "formato horizontal 3:2"; return "Ilustración de una escena de novela, " + ft + ", sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
 }
 async function makePrompt(kind, idx) {
   var s = cur; if (!s) return;
@@ -4794,7 +4796,7 @@ async function makePrompt(kind, idx) {
   if (!sample) { $("pstat").textContent = "Versión básica (sin IA)."; return; }
   $("pstat").textContent = "Preparando un prompt más visual…"; $("pcopy").disabled = true;
   try {
-    var q = "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). " + (kind === "cover" ? "Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final." : ((s.scenes[idx].il === "p" || s.scenes[idx].il === "v") ? "Formato vertical 2:3" + (s.scenes[idx].il === "p" ? ", a página completa como una página de novela gráfica" : "") + ", sin texto ni letras en la imagen." : "Formato horizontal 3:2, sin texto ni letras en la imagen.")) + " Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local;
+    var q = "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). " + (kind === "cover" ? "Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final." : (s.scenes[idx].il === "o" ? "Formato: " + ovlZone(s, idx) + ". Sin texto ni letras en la imagen." : (s.scenes[idx].il === "p" || s.scenes[idx].il === "v") ? "Formato vertical 2:3" + (s.scenes[idx].il === "p" ? ", a página completa como una página de novela gráfica" : "") + ", sin texto ni letras en la imagen." : "Formato horizontal 3:2, sin texto ni letras en la imagen.")) + " Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local;
     var r = await ask(q), t = String(r.text || "").trim();
     if (t) { $("ptxt").value = kind === "cover" ? t + coverClose(s) : t; $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; }
   } catch (e) { $("pstat").textContent = "No pude mejorarlo con IA; te dejo la versión básica."; }
@@ -5681,9 +5683,9 @@ function libSheet() {
   });
 }
 function libSheetKeep() {}
-function layOf(s, i) { var L = (s.lay && s.lay[i]) || {}, sz = L.sz || (s.scenes[i] && s.scenes[i].il === "p" ? "f" : "n"); return { sz: sz, ipb: !!L.ipb, spb: !!L.spb, off: !!L.off, top: !!L.top, cap: String(L.cap || "").slice(0, 160), ost: L.ost === "l" || L.ost === "n" ? L.ost : "d", opos: L.opos === "t" || L.opos === "c" ? L.opos : "b" }; }
+function layOf(s, i) { var L = (s.lay && s.lay[i]) || {}, sz = L.sz || (s.scenes[i] && s.scenes[i].il === "p" ? "f" : s.scenes[i] && s.scenes[i].il === "o" ? "o" : "n"); return { sz: sz, ipb: !!L.ipb, spb: !!L.spb, off: !!L.off, top: !!L.top, cap: String(L.cap || "").slice(0, 160), ost: L.ost === "l" || L.ost === "n" ? L.ost : "d", opos: L.opos === "t" || L.opos === "c" ? L.opos : "b" }; }
 function ovlCtl(s, i, LY) {
-  var w = el("div", "ovlctl"); w.appendChild(el("p", "hint", "La imagen ocupa toda la página y el texto de la escena va encima, dentro de un recuadro para que se lea bien. Si el texto no cabe, sigue en otra página con la misma imagen."));
+  var w = el("div", "ovlctl"); w.appendChild(el("p", "hint", "La imagen ocupa toda la página y el texto de la escena va encima, dentro de un recuadro para que se lea bien. Si el texto no cabe, sigue en otra página con la misma imagen. Consejo: en la escena, pon «Formato: Página completa con texto encima» antes de pedir el «Prompt de imagen», y la imagen saldrá con la zona del texto despejada."));
   function sel(lab, key, opts, val) { var l = el("label", null, lab + " "), x = el("select"); opts.forEach(function (o) { var op = el("option", null, o[1]); op.value = o[0]; x.appendChild(op); }); x.value = val; x.onchange = function () { layMut(s, i)[key] = x.value; save(); }; l.appendChild(x); l.style.cssText = "display:block;margin:.25rem 0"; w.appendChild(l); }
   sel("Recuadro:", "ost", [["d", "Oscuro, letra blanca"], ["l", "Claro, letra negra"], ["n", "Sin recuadro (solo sombra)"]], LY.ost);
   sel("Posición del texto:", "opos", [["b", "Abajo"], ["t", "Arriba"], ["c", "En el centro"]], LY.opos);
@@ -7049,6 +7051,7 @@ var GUIDE = {
     ["Prompt para la contraportada", "Junto a la portada: un prompt para crear la parte de atrás del libro a juego con tu portada (misma paleta, estilo y tipografía), con tu texto de contraportada y tu nombre. Si tienes portada y una IA con visión, El Cronista la mira primero. «Subir mi contraportada» la añade al final del PDF y del EPUB."],
     ["Firma encima de la portada", "Si tu portada ya trae tu nombre en el diseño, la app no pone nada encima. Solo si marcas «Añadir mi firma encima» en Imágenes (o respondes «No, añádelo tú» al subirla) pone tu firma sobre la portada."],
     ["Página completa con el texto encima", "En Exportar (o tocando una imagen en la vista del libro), elige el tamaño «Página completa con el texto encima»: la imagen ocupa toda la página y el texto va encima en un recuadro oscuro, claro o sin recuadro, abajo, arriba o en el centro. Funciona en el PDF y en el EPUB."],
+    ["Formato: Página completa con texto encima", "En las opciones de una escena, el botón «Formato» tiene esta opción. Al pedir el «Prompt de imagen», la IA de imágenes recibe la orden de hacer una imagen vertical a página entera con una zona despejada (abajo, arriba o en el centro) para el texto. En el libro, esa imagen sale ya a página completa con el texto encima."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

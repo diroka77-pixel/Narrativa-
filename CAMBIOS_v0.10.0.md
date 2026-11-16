@@ -501,3 +501,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Nuevo tamaño de imagen «Página completa con el texto encima»: la imagen a sangre y el texto de la escena encima en un recuadro (oscuro, claro o sin recuadro; abajo, arriba o centro). Si no cabe, sigue en otra página con la misma imagen. Si es la primera escena del capítulo, el título del capítulo va sobre la imagen.
 - PDF y EPUB (en EPUB depende de que el lector admita imágenes de fondo).
 - Prueba: Exportar → imágenes de escena → elegir el tamaño nuevo → Ver libro / PDF.
+
+## v0.21.1 — Formato de imagen «Página completa con texto encima»
+- Botón «Formato» de la escena: Horizontal → Vertical → Página completa → Página completa con texto encima.
+- El prompt pide imagen vertical a sangre con una zona despejada (según la posición del texto) y el libro la coloca a página completa con el texto encima.
+- Prueba: escena → Formato hasta «con texto encima» → Prompt de imagen → comprobar que menciona la zona despejada.
