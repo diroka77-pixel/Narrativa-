@@ -1,0 +1,24 @@
+const {chromium}=require('playwright');
+const URL='file:///home/claude/v091/assets/index.html';
+(async()=>{const b=await chromium.launch();const p=await (await b.newContext({viewport:{width:390,height:844}})).newPage();const errs=[];p.on('pageerror',e=>errs.push(String(e)));
+await p.addInitScript(()=>{window.claude={use:async()=>null};localStorage.setItem('hv:welcome','1');localStorage.setItem('hv:author',JSON.stringify({name:'DJ Rodríguez'}))});
+await p.goto(URL);await p.waitForTimeout(600);
+const r=await p.evaluate(async()=>{const o={};
+ const cv=document.createElement('canvas');cv.width=600;cv.height=900;const g=cv.getContext('2d');g.fillStyle='#a03';g.fillRect(0,0,600,900);const IMG=cv.toDataURL('image/jpeg');
+ const long='Las gotas de lluvia ácida chisporroteaban sobre la gabardina. '.repeat(40);
+ const s={id:'o',title:'Neón',syn:'x',genre:'Ciencia ficción',genres:[],scenes:[{t:'Primera escena normal. '.repeat(20),m:{}},{t:long+'\n\n'+long,m:{},img:IMG},{t:'Tras la imagen. '.repeat(20),m:{}}],lore:[],turn:3,at:Date.now(),state:{},opts:[],premise:'p',prot:[],ce:[],memory:'',lay:{1:{sz:'o',ost:'d',opos:'b'}}};
+ LIB.length=0;LIB.push(s);openStory(s);
+ const L=bookLayout(s,(await bookFonts(s)).f);const ov=L.pages.filter(pg=>pg.kind==='ovl');o.ovl=ov.length;
+ o.full=ov.every(pg=>{const im=pg.items[0];return im.t==='img'&&im.x<=0.01&&im.y<=0.01&&im.w>=L.W-0.1&&im.h>=L.H-0.1});
+ o.panel=ov.every(pg=>pg.items.some(i=>i.t==='rect'&&i.op>0)&&pg.items.some(i=>i.t==='txt'&&i.col&&i.col[0]===1));
+ const txt=pg=>pg.items.filter(i=>i.t==='txt').map(i=>i.text).join(' ');
+ o.notElsewhere=!L.pages.filter(pg=>pg.kind!=='ovl').some(pg=>/chisporroteaban/.test(txt(pg)));
+ o.after=L.pages.some(pg=>pg.kind!=='ovl'&&/Tras la imagen/.test(txt(pg)));
+ o.noNum=!ov.some(pg=>pg.items.some(i=>i.t==='txt'&&/^\d+$/.test(i.text)));
+ const d=await PDFLib.PDFDocument.load(await pdfDoc(s));o.pdf=d.getPageCount()>0;
+ s.lay[1].ost='l';s.lay[1].opos='t';const L2=bookLayout(s,(await bookFonts(s)).f);const p2=L2.pages.find(pg=>pg.kind==='ovl');const rc=p2.items.find(i=>i.t==='rect');o.light=rc.fill[0]===1&&rc.y<L2.H/3;
+ const f=buildEpubFiles(s,{uid:'x',author:'DJ'});const c=Object.keys(f).filter(k=>/c\d+\.xhtml$/.test(k)).map(k=>f[k]).join('');o.epub=/<div class="ovl" style="background-image:url\(img1\.jpg\)"><div class="ot ol pt">/.test(c)&&/\.ovl\{/.test(f['OEBPS/style.css']);
+ const sl=layOf(s,1);o.lo=sl.sz+sl.ost+sl.opos;
+ return o});
+console.log(JSON.stringify(r));
+if(!(r.ovl>=2&&r.full&&r.panel&&r.notElsewhere&&r.after&&r.noNum&&r.pdf&&r.light&&r.epub&&r.lo==='olt')||errs.length){console.log('FALLA',errs);process.exit(1)}console.log('OK texto sobre imagen');await b.close()})()

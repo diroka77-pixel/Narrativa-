@@ -173,3 +173,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - EPUB: cada parte empieza en página nueva; los créditos (© y «con la asistencia de Historias vivas») van solos y el capítulo 1 empieza en la siguiente.
 - PDF: nueva página de créditos tras la del título.
 - Prueba: exporta EPUB y ábrelo en tu lector; la página de créditos no debe llevar texto del capítulo.
+
+## v0.21.0 — Página completa con el texto encima
+- Nuevo tamaño de imagen «Página completa con el texto encima»: la imagen a sangre y el texto de la escena encima en un recuadro (oscuro, claro o sin recuadro; abajo, arriba o centro). Si no cabe, sigue en otra página con la misma imagen. Si es la primera escena del capítulo, el título del capítulo va sobre la imagen.
+- PDF y EPUB (en EPUB depende de que el lector admita imágenes de fondo).
+- Prueba: Exportar → imágenes de escena → elegir el tamaño nuevo → Ver libro / PDF.
