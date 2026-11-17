@@ -724,7 +724,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 </div>
 <div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="twist" class="small">Sorpréndeme</button><button id="more" class="small" aria-expanded="false" aria-controls="moremenu">⋯ Más</button></div>
 <div class="tail" id="moremenu" hidden style="margin-top:.4rem;padding:.6rem;border-radius:14px;background:var(--card);border:1px solid var(--line)"><p class="hint" style="flex-basis:100%;margin:.2rem 0 0">Corregir y recordar</p><button id="nocuadra" class="small">Esto no cuadra</button><button id="memnow" class="small">Qué recuerda ahora</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Moverme por la historia</p><button id="idxb" class="small">🔎 Índice y buscador</button><button id="rewb" class="small">↩ Volver a una escena</button><button id="recapb" class="small">Anteriormente… (resumen)</button><button id="rvw" class="small">Revisar el libro</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Sacar el libro</p><button id="layb2" class="small">🎨 Maquetación del libro</button><button id="exp" class="small">Exportar para leer</button></div>
-<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📕 El mundo del libro en PDF: tarjetas, lore, personajes y más</button><button class="small" id="fichat" style="flex-basis:100%">📕 El mundo del libro en texto (.txt)</button><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📕 El mundo del libro en PDF: tarjetas, lore, personajes y más</button><button class="small" id="fichat" style="flex-basis:100%">📕 El mundo del libro en texto (.txt)</button><label id="expimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Imágenes al exportar: <select id="expimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="all">Con todas las imágenes</option><option value="cov">Sin imágenes (solo portada y contraportada)</option><option value="txt">Solo texto, para imprimir o editar (sin portada ni contraportada)</option></select></label><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.21.1";
+var VERSION = "0.22.0";
 var NEWS = [
+  ["0.22.0", "Exportar con o sin imágenes: elige «Con todas las imágenes», «Sin imágenes (solo portada y contraportada)» o «Solo texto, para imprimir o editar». Vale para EPUB, PDF y FB2, y el FB2 ya incluye la contraportada."],
   ["0.21.1", "El «Formato» de la imagen de una escena tiene la opción «Página completa con texto encima»: el prompt de imagen pide una imagen vertical a página entera con una zona despejada para el texto, y en el libro sale así automáticamente."],
   ["0.21.0", "Nuevo acabado: «Página completa con el texto encima». La imagen de una escena ocupa toda la página y el texto va encima (recuadro oscuro, claro o sin recuadro; abajo, arriba o en el centro). Se elige en Exportar o tocando la imagen en la vista del libro, y sale en el PDF y en el EPUB."],
   ["0.20.2", "Página de créditos propia: los derechos reservados y «escrita por… con la asistencia de Historias vivas» van solos en su página, y el capítulo 1 empieza en la siguiente (EPUB y PDF)."],
@@ -5710,9 +5711,9 @@ function buildEpubFiles(s, meta) {
   ecss += "\n.pg{page-break-before:always;break-before:page}\n.ovl{page-break-before:always;break-before:page;page-break-after:always;break-after:page;min-height:95vh;background-size:cover;background-position:center;background-repeat:no-repeat;display:flex;flex-direction:column;justify-content:flex-end;padding:6% 5%;box-sizing:border-box}\n.ovl .ot{padding:1em 1.2em;border-radius:.4em}\n.ovl .ot.pt{margin-bottom:auto}\n.ovl .ot.pc{margin:auto 0}\n.ovl .od{background:rgba(10,10,15,.66);color:#fff}\n.ovl .ol{background:rgba(255,250,240,.82);color:#111}\n.ovl .on{color:#fff;text-shadow:0 0 3px #000,0 0 6px #000}\n.cred{margin-top:30%;min-height:85vh;page-break-before:always;break-before:page;page-break-after:always;break-after:page}\n.cred p.c{margin:.6em 0;font-size:.9em;text-indent:0;text-align:center}\np.f{text-indent:0}\np.fd::first-letter{float:left;font-size:3.2em;line-height:.8;padding:.06em .08em 0 0;font-weight:bold}\np.sep{text-indent:0;text-align:center;margin:1.2em 0;letter-spacing:.2em;line-height:1.1}\nhr.sep{border:0;border-top:1px solid #888;width:30%;margin:1.4em auto}\n.gap{height:1.3em}\nh2.ch{margin:1.2em 0 1.2em}";
   f["OEBPS/style.css"] = ecss;
   var cimg = s.cover ? dataBytes(covUrl(s)) : null, cname = cimg ? "cover.jpg" : "cover.svg";
-  if (cimg) f["OEBPS/cover.jpg"] = cimg; else f["OEBPS/cover.svg"] = coverSvg(s);
-  f["OEBPS/title.xhtml"] = xhtml(s.title, '<img class="cv" src="' + cname + '" alt="Portada"/><h1 class="t">' + xe(s.title) + '</h1>' + (byline() ? '<p class="t" style="font-style:italic">' + xe(byline()) + '</p>' : ((meta && meta.author) ? '<p class="t" style="font-style:italic">' + xe(meta.author) + '</p>' : '')));
-  var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/><item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/><item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
+  var _nc = !!s.noCov; if (_nc) {} else if (cimg) f["OEBPS/cover.jpg"] = cimg; else f["OEBPS/cover.svg"] = coverSvg(s);
+  f["OEBPS/title.xhtml"] = xhtml(s.title, (_nc ? "" : '<img class="cv" src="' + cname + '" alt="Portada"/>') + '<h1 class="t">' + xe(s.title) + '</h1>' + (byline() ? '<p class="t" style="font-style:italic">' + xe(byline()) + '</p>' : ((meta && meta.author) ? '<p class="t" style="font-style:italic">' + xe(meta.author) + '</p>' : '')));
+  var items = '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/><item id="css" href="style.css" media-type="text/css"/>' + (_nc ? "" : '<item id="cover" href="' + cname + '" media-type="' + (cimg ? "image/jpeg" : "image/svg+xml") + '" properties="cover-image"/>') + '<item id="title" href="title.xhtml" media-type="application/xhtml+xml"/>';
   var spine = '<itemref idref="title"/>', nav = '<li><a href="title.xhtml">Portada</a></li>';
   var _au = (meta && meta.author) || byline();
   var _bk = s.back ? dataBytes(s.back) : null;
@@ -5753,7 +5754,7 @@ function buildEpubFiles(s, meta) {
   if (_bk) { f["OEBPS/back.jpg"] = _bk; f["OEBPS/back.xhtml"] = xhtml("Contraportada", '<img class="cv" src="back.jpg" alt="Contraportada"/>'); items += '<item id="backimg" href="back.jpg" media-type="image/jpeg"/><item id="back" href="back.xhtml" media-type="application/xhtml+xml"/>'; spine += '<itemref idref="back"/>'; nav += '<li><a href="back.xhtml">Contraportada</a></li>'; }
   items += imgItems;
   f["OEBPS/nav.xhtml"] = xhtml("Índice", '<nav epub:type="toc" id="toc"><h2>Índice</h2><ol>' + nav + '</ol></nav>');
-  f["OEBPS/content.opf"] = '<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bid" xml:lang="es" prefix="hv: urn:historiasvivas:vocab#"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bid">' + xe(id) + '</dc:identifier><dc:title>' + xe(s.title) + '</dc:title><dc:language>es</dc:language><dc:creator>' + xe(meta.author || "Historias vivas") + '</dc:creator><dc:contributor>Historias vivas (con asistencia de IA)</dc:contributor><meta name="cover" content="cover"/><meta property="dcterms:modified">' + (meta.at || new Date().toISOString().replace(/\.\d+Z$/, "Z")) + '</meta><meta property="hv:work-id">' + xe(meta.uid) + '</meta>' + (meta.aid ? '<meta property="hv:author-id">' + xe(meta.aid) + '</meta>' : "") + (meta.v ? '<meta property="hv:export-date">' + xe(meta.at) + '</meta><meta property="hv:version">' + meta.v + '</meta>' : "") + '<meta property="hv:ai-assisted">true</meta></metadata><manifest>' + items + '</manifest><spine>' + spine + '</spine></package>';
+  f["OEBPS/content.opf"] = '<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="bid" xml:lang="es" prefix="hv: urn:historiasvivas:vocab#"><metadata xmlns:dc="http://purl.org/dc/elements/1.1/"><dc:identifier id="bid">' + xe(id) + '</dc:identifier><dc:title>' + xe(s.title) + '</dc:title><dc:language>es</dc:language><dc:creator>' + xe(meta.author || "Historias vivas") + '</dc:creator><dc:contributor>Historias vivas (con asistencia de IA)</dc:contributor>' + (_nc ? "" : '<meta name="cover" content="cover"/>') + '<meta property="dcterms:modified">' + (meta.at || new Date().toISOString().replace(/\.\d+Z$/, "Z")) + '</meta><meta property="hv:work-id">' + xe(meta.uid) + '</meta>' + (meta.aid ? '<meta property="hv:author-id">' + xe(meta.aid) + '</meta>' : "") + (meta.v ? '<meta property="hv:export-date">' + xe(meta.at) + '</meta><meta property="hv:version">' + meta.v + '</meta>' : "") + '<meta property="hv:ai-assisted">true</meta></metadata><manifest>' + items + '</manifest><spine>' + spine + '</spine></package>';
   return f;
 }
 /* Diccionario: mantén pulsada una palabra del texto */
@@ -5805,6 +5806,7 @@ function fb2Doc(s) {
   var cover = "";
   if (s.cover) { bin += '<binary id="cover.jpg" content-type="image/jpeg">' + b64(covUrl(s)) + '</binary>'; cover = '<coverpage><image l:href="#cover.jpg"/></coverpage>'; }
   var body = '<title><p>' + xe(s.title) + '</p></title>';
+  var backS = s.back ? '<section><title><p>Contraportada</p></title><image l:href="#back.jpg"/></section>' : ""; if (s.back) bin += '<binary id="back.jpg" content-type="image/jpeg">' + b64(s.back) + '</binary>';
   chs.forEach(function (ch, i) {
     var sec = '<section><title><p>Capítulo ' + (i + 1) + (ctitle(s, i + 1) ? ' · ' + xe(ctitle(s, i + 1)) : '') + '</p></title>';
     ch.forEach(function (sc) {
@@ -5824,6 +5826,7 @@ function fb2Doc(s) {
     });
     body += gs + '</section>';
   }
+  body += backS;
   var d = new Date().toISOString().slice(0, 10);
   return '<?xml version="1.0" encoding="utf-8"?>\n<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0" xmlns:l="http://www.w3.org/1999/xlink"><description><title-info><genre>prose_contemporary</genre><author><first-name>Historias</first-name><last-name>vivas</last-name></author><book-title>' + xe(s.title) + '</book-title><lang>es</lang>' + cover + '</title-info><document-info><author><nickname>Historias vivas</nickname></author><date value="' + d + '">' + d + '</date><id>hv-' + xe(s.id) + '</id><version>1.0</version></document-info></description><body>' + body + '</body>' + bin + '</FictionBook>';
 }
@@ -6676,10 +6679,21 @@ $("hldef").onclick = function () { var h = HL.sel; if (!h) return; var w = h.tex
 $("hlfic").onclick = function () { var h = HL.sel; if (!h) return; var si = h.a; try { window.getSelection().removeAllRanges(); } catch (e) {} hlHide(); cardSheet(h.text, si); };
 $("hlcopy").onclick = function () { var h = HL.sel; if (!h) return; try { navigator.clipboard.writeText(h.text); toast("Copiado"); } catch (e) { toast("Copia el texto con el menú del teléfono."); } };
 
+function expMode() { var v = ""; try { v = localStorage.getItem("hv:expimg") || ""; } catch (e) {} return v === "cov" || v === "txt" ? v : "all"; }
+function expView(s, mode) {
+  mode = mode || expMode(); if (mode === "all") return s;
+  regOf(s); var v = Object.assign({}, s);
+  v.scenes = s.scenes.map(function (sc) { var c = Object.assign({}, sc); delete c.img; return c; });
+  v.lore = (s.lore || []).map(function (c) { var d = Object.assign({}, c); delete d.img; delete d.sheet; return d; });
+  if (s.lay) { v.lay = {}; Object.keys(s.lay).forEach(function (k) { var L = Object.assign({}, s.lay[k]); if (L.sz === "o" || L.sz === "f") L.sz = "n"; v.lay[k] = L; }); }
+  if (mode === "txt") { delete v.cover; delete v.back; v.noCov = true; v.book = Object.assign({}, s.book || {}, { bg: "" }); }
+  return v;
+}
+(function () { var se = $("expimg"); if (!se) return; se.value = expMode(); se.onchange = function () { try { localStorage.setItem("hv:expimg", se.value); } catch (e) {} }; })();
 async function exportAs(fmt) {
-  var s = cur; if (!s || !s.scenes.length) return;
+  var s0 = cur; if (!s0 || !s0.scenes.length) return;
   if (fmt !== "txt" && fmt !== "md") await askAuthor();
-  var dl = null;
+  var s = expView(s0), dl = null;
   try { dl = await claude.use("downloads"); } catch (e) {}
   if (!dl) { emsg("Guardar archivos no está disponible en esta vista."); return; }
   var slug = s.title.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "historia";
@@ -7052,6 +7066,7 @@ var GUIDE = {
     ["Firma encima de la portada", "Si tu portada ya trae tu nombre en el diseño, la app no pone nada encima. Solo si marcas «Añadir mi firma encima» en Imágenes (o respondes «No, añádelo tú» al subirla) pone tu firma sobre la portada."],
     ["Página completa con el texto encima", "En Exportar (o tocando una imagen en la vista del libro), elige el tamaño «Página completa con el texto encima»: la imagen ocupa toda la página y el texto va encima en un recuadro oscuro, claro o sin recuadro, abajo, arriba o en el centro. Funciona en el PDF y en el EPUB."],
     ["Formato: Página completa con texto encima", "En las opciones de una escena, el botón «Formato» tiene esta opción. Al pedir el «Prompt de imagen», la IA de imágenes recibe la orden de hacer una imagen vertical a página entera con una zona despejada (abajo, arriba o en el centro) para el texto. En el libro, esa imagen sale ya a página completa con el texto encima."],
+    ["Exportar con o sin imágenes", "En ⋯ Más → Exportar, «Imágenes al exportar»: con todas las imágenes, sin imágenes (solo portada y contraportada) o solo texto para imprimir o editar (sin portada, contraportada ni imágenes). Vale para EPUB, PDF y FB2. Tu historia no cambia: solo el archivo que sacas."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

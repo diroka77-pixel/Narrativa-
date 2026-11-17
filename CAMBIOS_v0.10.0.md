@@ -506,3 +506,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Botón «Formato» de la escena: Horizontal → Vertical → Página completa → Página completa con texto encima.
 - El prompt pide imagen vertical a sangre con una zona despejada (según la posición del texto) y el libro la coloca a página completa con el texto encima.
 - Prueba: escena → Formato hasta «con texto encima» → Prompt de imagen → comprobar que menciona la zona despejada.
+
+## v0.22.0 — Exportar con o sin imágenes
+- Selector «Imágenes al exportar»: con todas / sin imágenes (solo portada y contraportada) / solo texto para imprimir o editar (sin portada ni contraportada). EPUB, PDF y FB2. La historia guardada no cambia.
+- FB2 incluye la contraportada.
+- Prueba: ⋯ Más → Exportar → elegir cada opción → sacar EPUB, PDF y FB2.
