@@ -511,3 +511,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Selector «Imágenes al exportar»: con todas / sin imágenes (solo portada y contraportada) / solo texto para imprimir o editar (sin portada ni contraportada). EPUB, PDF y FB2. La historia guardada no cambia.
 - FB2 incluye la contraportada.
 - Prueba: ⋯ Más → Exportar → elegir cada opción → sacar EPUB, PDF y FB2.
+
+## v0.22.1 — Ilustraciones más cuidadas en el EPUB
+- Las imágenes ocupan todo el ancho (antes salían a su tamaño en píxeles, pequeñas) y no se parten entre páginas.
+- «Ilustraciones en el EPUB»: automático (verticales en página propia centrada, horizontales a todo el ancho) / cada una en su página / todas a todo el ancho.
+- Prueba: exportar EPUB y mirar las páginas con imagen en tu lector.
