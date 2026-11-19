@@ -193,3 +193,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - Las imágenes ocupan todo el ancho (antes salían a su tamaño en píxeles, pequeñas) y no se parten entre páginas.
 - «Ilustraciones en el EPUB»: automático (verticales en página propia centrada, horizontales a todo el ancho) / cada una en su página / todas a todo el ancho.
 - Prueba: exportar EPUB y mirar las páginas con imagen en tu lector.
+
+## v0.23.0 — Prompts de escena más detallados
+- El prompt de imagen de escena lee la escena entera (antes 450 caracteres), las fichas de los personajes que aparecen (descripción, ficha fija, canon del autor, físico, ánimo), los lugares/objetos del lore nombrados y el final de la escena anterior como contexto.
+- La IA escribe 180–260 palabras: plano, cada personaje con rasgos exactos, ropa, pose y expresión, lugar, luz, clima, paleta y estilo.
+- Prueba: escena con varios personajes → Prompt de imagen → comprobar que salen sus rasgos y no personajes ausentes.

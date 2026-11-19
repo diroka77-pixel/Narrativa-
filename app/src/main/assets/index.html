@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.22.1";
+var VERSION = "0.23.0";
 var NEWS = [
+  ["0.23.0", "Prompts de imagen de escena mucho más detallados: leen la escena entera, las fichas de los personajes que aparecen (aspecto, ropa, canon) y los lugares del lore, y describen plano, pose, expresión, luz y clima del momento más visual."],
   ["0.22.1", "Ilustraciones más cuidadas en el EPUB: ya no salen como fotos pequeñas pegadas. Ocupan todo el ancho y, si son verticales, van en su propia página, centradas y grandes. Puedes elegirlo en Exportar → «Ilustraciones en el EPUB»."],
   ["0.22.0", "Exportar con o sin imágenes: elige «Con todas las imágenes», «Sin imágenes (solo portada y contraportada)» o «Solo texto, para imprimir o editar». Vale para EPUB, PDF y FB2, y el FB2 ya incluye la contraportada."],
   ["0.21.1", "El «Formato» de la imagen de una escena tiene la opción «Página completa con texto encima»: el prompt de imagen pide una imagen vertical a página entera con una zona despejada para el texto, y en el libro sale así automáticamente."],
@@ -4782,12 +4783,35 @@ function backClose(s) {
     " En la parte inferior, el título «" + s.title + "» en pequeño." + authLine("Junto al título, incluye") + " Todos los personajes son adultos.";
 }
 function ovlZone(s, idx) { var L = layOf(s, idx), z = L.opos === "t" ? "el tercio superior" : L.opos === "c" ? "la franja central" : "el tercio inferior"; return "formato vertical 2:3 a sangre, para ocupar una página entera de libro con el texto de la escena impreso encima: deja " + z + " de la imagen más despejado y tranquilo (cielo, suelo, sombra, niebla o pared lisa), sin caras ni elementos importantes en esa zona, para que el texto se lea bien; el protagonismo de la escena va en el resto de la imagen"; }
+function sceneCtx(s, idx) {
+  var sc = s.scenes[idx], txt = String(sc.t || ""), low = nk(txt), out = { cast: [], places: [], prev: "", text: txt.replace(/\s+/g, " ").trim() };
+  var has = function (n) { n = nk(n || ""); if (!n || n.length < 3) return false; if (low.indexOf(n) >= 0) return true; var f = n.split(" ")[0]; return f.length >= 4 && low.indexOf(f) >= 0; };
+  var seen = {};
+  try { var m = ensureMem(s); Object.keys(m.chars || {}).forEach(function (k) { var c = m.chars[k], names = [c.name].concat(c.alias || []); if (!names.some(has)) return; seen[nk(c.name)] = 1;
+    var pr = (s.prot || []).filter(function (p) { return nk(p.name) === nk(c.name); })[0], pph = pr ? physTxt(pr).replace(/^[^(]*\(?|\)$/g, "") : "";
+    var bits = [c.desc && nk(c.desc) !== nk(c.name) ? c.desc : "", pr && pr.desc, pph, c.body && "físico: " + c.body, fixTxt(c), c.mood && "ánimo ahora: " + c.mood].filter(Boolean).join("; ").replace(/\s+/g, " ").slice(0, 900); out.cast.push(c.name + (bits ? ": " + bits : "")); }); } catch (e) {}
+  (s.prot || []).forEach(function (p) { if (!seen[nk(p.name)] && has(p.name)) { seen[nk(p.name)] = 1; out.cast.push(physTxt(p) + (p.desc ? ": " + p.desc : "")); } });
+  (s.lore || []).forEach(function (c) { if (!has(c.nombre)) return; var d = String(c.desc || "").replace(/\s+/g, " ").slice(0, 500);
+    if (/personaje|protagonista/.test(c.tipo || "")) { if (!seen[nk(c.nombre)]) { seen[nk(c.nombre)] = 1; out.cast.push(c.nombre + ": " + d); } }
+    else if (/lugar|faccion|facción|objeto|tecnolog/.test(c.tipo || "")) out.places.push(c.nombre + " (" + (c.tipo || "") + "): " + d); });
+  if (!out.cast.length) out.cast.push(protTxt(s));
+  if (idx > 0) out.prev = String(s.scenes[idx - 1].t || "").replace(/\s+/g, " ").trim().slice(-500);
+  return out;
+}
 function localPrompt(s, kind, idx) {
   var base = "Historia: " + (s.syn || s.title) + " Género: " + gtxt(s) + ". Protagonista(s): " + protTxt(s) + ".";
   if (kind === "cover") return "Ilustración de portada de novela. " + base + " Composición cinematográfica centrada en el protagonista, atmósfera y paleta propias del género, ilustración digital detallada." + coverClose(s);
   if (kind === "back") return "Contraportada de novela. " + base + " Atmósfera y paleta propias del género, ilustración digital detallada." + backClose(s);
-  var t = s.scenes[idx].t.replace(/\s+/g, " ").slice(0, 450);
-  var fm = cur && cur.scenes[idx] && cur.scenes[idx].il; var ft = fm === "o" ? ovlZone(s, idx) : fm === "p" ? "formato vertical 2:3, a página completa como una página de novela gráfica, composición dramática" : fm === "v" ? "formato vertical 2:3" : "formato horizontal 3:2"; return "Ilustración de una escena de novela, " + ft + ", sin texto ni letras. " + base + " Escena: " + t + " Mantén el aspecto de los personajes, estilo ilustración digital detallada, iluminación acorde a la escena. Todos los personajes son adultos.";
+  var X = sceneCtx(s, idx), t = X.text.slice(0, 1200);
+  var fm = cur && cur.scenes[idx] && cur.scenes[idx].il; var ft = fm === "o" ? ovlZone(s, idx) : fm === "p" ? "formato vertical 2:3, a página completa como una página de novela gráfica, composición dramática" : fm === "v" ? "formato vertical 2:3" : "formato horizontal 3:2"; return "Ilustración de una escena de novela, " + ft + ", sin texto ni letras. Género: " + gtxt(s) + ". Momento que hay que dibujar: " + t + " PERSONAJES (respeta exactamente su aspecto, ropa y rasgos): " + X.cast.join(" | ") + "." + (X.places.length ? " LUGARES Y ELEMENTOS DEL MUNDO: " + X.places.join(" | ") + "." : "") + " Dibuja solo a los personajes que aparecen en este momento, con su expresión y su acción concretas; plano y encuadre cinematográficos, iluminación, hora y clima acordes al texto; estilo de ilustración digital detallada, coherente con el resto del libro. Todos los personajes son adultos.";
+}
+function sceneQ(s, idx, local) {
+  var il = s.scenes[idx].il, X = sceneCtx(s, idx);
+  var fmt = il === "o" ? "Formato: " + ovlZone(s, idx) + "." : il === "p" ? "Formato vertical 2:3, a página completa como una página de novela gráfica." : il === "v" ? "Formato vertical 2:3." : "Formato horizontal 3:2.";
+  return "Eres director de arte de novelas ilustradas. Lee la ESCENA y escribe UN prompt en español para una IA generadora de imágenes, listo para pegar, de 180 a 260 palabras, fiel al texto (no inventes personajes, objetos ni lugares que no estén). Elige el instante más visual y significativo de la escena y descríbelo así, en un solo párrafo:\n" +
+    "1) Plano y encuadre (general, medio, primer plano, picado, contrapicado…) y qué ocupa el centro de la imagen.\n2) Cada personaje presente: nombre, rasgos físicos EXACTOS de su ficha (pelo, ojos, piel, complexión, cicatrices, tatuajes), ropa y accesorios, postura, gesto, expresión y lo que está haciendo en ese instante, y dónde está respecto a los demás.\n3) Lugar con detalles concretos que aparezcan en el texto, objetos importantes, hora del día, clima, fuentes de luz y sus colores.\n4) Ambiente y paleta de color, y estilo de ilustración (ilustración digital detallada, cinematográfica, coherente con una misma novela).\n" +
+    fmt + " Sin texto, letras, bocadillos ni marcas de agua en la imagen. Todos los personajes son adultos; nada sexual explícito; la violencia, sin regodearse en lo gráfico. Responde SOLO con el prompt, sin comillas, sin títulos ni explicaciones.\n\n" +
+    "GÉNERO: " + gtxt(s) + "\nFICHAS DE LOS PERSONAJES (canon, respétalas):\n- " + X.cast.join("\n- ") + (X.places.length ? "\nLUGARES Y ELEMENTOS DEL MUNDO:\n- " + X.places.join("\n- ") : "") + (X.prev ? "\nJUSTO ANTES (solo contexto, no lo dibujes): " + X.prev : "") + "\nESCENA:\n" + X.text.slice(0, 3500);
 }
 async function makePrompt(kind, idx) {
   var s = cur; if (!s) return;
@@ -4798,9 +4822,9 @@ async function makePrompt(kind, idx) {
   if (!sample) { $("pstat").textContent = "Versión básica (sin IA)."; return; }
   $("pstat").textContent = "Preparando un prompt más visual…"; $("pcopy").disabled = true;
   try {
-    var q = "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). " + (kind === "cover" ? "Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final." : (s.scenes[idx].il === "o" ? "Formato: " + ovlZone(s, idx) + ". Sin texto ni letras en la imagen." : (s.scenes[idx].il === "p" || s.scenes[idx].il === "v") ? "Formato vertical 2:3" + (s.scenes[idx].il === "p" ? ", a página completa como una página de novela gráfica" : "") + ", sin texto ni letras en la imagen." : "Formato horizontal 3:2, sin texto ni letras en la imagen.")) + " Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local;
+    var q = kind === "cover" ? "Escribe UN prompt en español para una IA generadora de imágenes, listo para pegar. Máximo 140 palabras, descripción visual concreta (personajes con su aspecto físico, lugar, luz, ambiente, composición, estilo de ilustración). Es para la portada de una novela: NO menciones el título ni el formato, los añadiré yo al final. Los personajes son siempre adultos. Mantén el aspecto de los protagonistas tal como se describe. Responde SOLO con el prompt, sin comillas ni explicaciones.\n\nDATOS:\n" + local : sceneQ(s, idx, local);
     var r = await ask(q), t = String(r.text || "").trim();
-    if (t) { $("ptxt").value = kind === "cover" ? t + coverClose(s) : t; $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; }
+    if (t) { $("ptxt").value = kind === "cover" ? t + coverClose(s) : t + (/adult/i.test(t) ? "" : " Todos los personajes son adultos."); $("pstat").textContent = "Listo. Puedes editarlo antes de copiarlo."; }
   } catch (e) { $("pstat").textContent = "No pude mejorarlo con IA; te dejo la versión básica."; }
   $("pcopy").disabled = false;
 }
@@ -7073,6 +7097,7 @@ var GUIDE = {
     ["Formato: Página completa con texto encima", "En las opciones de una escena, el botón «Formato» tiene esta opción. Al pedir el «Prompt de imagen», la IA de imágenes recibe la orden de hacer una imagen vertical a página entera con una zona despejada (abajo, arriba o en el centro) para el texto. En el libro, esa imagen sale ya a página completa con el texto encima."],
     ["Exportar con o sin imágenes", "En ⋯ Más → Exportar, «Imágenes al exportar»: con todas las imágenes, sin imágenes (solo portada y contraportada) o solo texto para imprimir o editar (sin portada, contraportada ni imágenes). Vale para EPUB, PDF y FB2. Tu historia no cambia: solo el archivo que sacas."],
     ["Ilustraciones en el EPUB", "En Exportar, «Ilustraciones en el EPUB»: automático (las verticales en su propia página, centradas y grandes; las horizontales a todo el ancho), cada una en su propia página, o todas a todo el ancho. Si en Preparar el libro le has dado a una imagen un tamaño concreto, se respeta."],
+    ["Prompts de escena más detallados", "El «Prompt de imagen» de una escena lee la escena entera, las fichas de los personajes que salen en ella (aspecto, ropa, canon del autor) y los lugares del lore que se nombran. Pide el plano, la pose, la expresión, la luz y el clima exactos del momento más visual, para que la imagen se parezca a lo que has escrito."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
