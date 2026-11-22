@@ -198,3 +198,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - El prompt de imagen de escena lee la escena entera (antes 450 caracteres), las fichas de los personajes que aparecen (descripción, ficha fija, canon del autor, físico, ánimo), los lugares/objetos del lore nombrados y el final de la escena anterior como contexto.
 - La IA escribe 180–260 palabras: plano, cada personaje con rasgos exactos, ropa, pose y expresión, lugar, luz, clima, paleta y estilo.
 - Prueba: escena con varios personajes → Prompt de imagen → comprobar que salen sus rasgos y no personajes ausentes.
+
+## v0.23.1 — Quitar una escena sin sustituirla
+- «⋯» de cada escena → «Quitar esta escena»: elimina solo esa escena; las siguientes se quedan; capítulos, títulos de capítulo y maquetación de imágenes se reajustan. Versión de seguridad antes.
+- «Borrar escena» pasa a llamarse «Borrar desde aquí y escribir otra cosa».
+- Prueba: quitar una escena del medio y comprobar que las de después siguen y los capítulos están bien.

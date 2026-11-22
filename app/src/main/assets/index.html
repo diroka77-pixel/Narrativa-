@@ -1258,8 +1258,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.23.0";
+var VERSION = "0.23.1";
 var NEWS = [
+  ["0.23.1", "Nueva opción «Quitar esta escena» en el «⋯» de cada escena: la elimina sin tener que escribir nada en su lugar, y las escenas de después se quedan. La antigua «Borrar escena» se llama ahora «Borrar desde aquí y escribir otra cosa»."],
   ["0.23.0", "Prompts de imagen de escena mucho más detallados: leen la escena entera, las fichas de los personajes que aparecen (aspecto, ropa, canon) y los lugares del lore, y describen plano, pose, expresión, luz y clima del momento más visual."],
   ["0.22.1", "Ilustraciones más cuidadas en el EPUB: ya no salen como fotos pequeñas pegadas. Ocupan todo el ancho y, si son verticales, van en su propia página, centradas y grandes. Puedes elegirlo en Exportar → «Ilustraciones en el EPUB»."],
   ["0.22.0", "Exportar con o sin imágenes: elige «Con todas las imágenes», «Sin imágenes (solo portada y contraportada)» o «Solo texto, para imprimir o editar». Vale para EPUB, PDF y FB2, y el FB2 ya incluye la contraportada."],
@@ -4181,6 +4182,29 @@ function rewriteSheet(i) {
     c.onclick = closeSheet; r.appendChild(y); r.appendChild(c); sh.appendChild(r);
   });
 }
+function removeScene(s, i) {
+  if (!s || busy || !s.scenes[i] || s.scenes.length < 2) return false;
+  try { verSnap(s, "Antes de quitar la escena " + (i + 1), true); } catch (e) {}
+  var last = i === s.scenes.length - 1, sc = s.scenes[i];
+  var oldCh = chEnds(s).length;
+  if (last && sc.pv) { var nb = busy; if (!rewindTo(i - 1)) s.scenes.splice(i, 1); }
+  else s.scenes.splice(i, 1);
+  if (s.ce) { var seen = {}, ne = []; s.ce.forEach(function (e) { var v = e > i ? e - 1 : e; if (v > 0 && v <= s.scenes.length && !seen[v]) { seen[v] = 1; ne.push(v); } }); ne.sort(function (a, b) { return a - b; });
+    var lostCh = oldCh - ne.length; if (lostCh > 0) { try { var m = ensureMem(s), ct = m.ctit || {}, chn = chOf(s, Math.max(0, i - 1)), nt = {}; Object.keys(ct).forEach(function (k) { var n = Number(k); if (n <= chn) nt[k] = ct[k]; else if (n > chn + lostCh) nt[String(n - lostCh)] = ct[k]; }); m.ctit = nt; } catch (e) {} }
+    if (ne.length) s.ce = ne; else delete s.ce; }
+  if (s.lay) { var nl = {}; Object.keys(s.lay).forEach(function (k) { var n = Number(k); if (n < i) nl[k] = s.lay[k]; else if (n > i) nl[String(n - 1)] = s.lay[k]; }); s.lay = nl; }
+  delete s.alt; save(); render(); try { refreshImages(true); } catch (e) {} return true;
+}
+function removeSceneSheet(i) {
+  var s = cur; if (!s || busy || !s.scenes[i]) return;
+  sheet("Quitar la escena " + (i + 1), function (sh) {
+    para(sh, "Se quita SOLO esta escena. Las demás se quedan como están, también las que vienen después, y no hace falta escribir nada en su lugar. Por seguridad, antes se guarda una versión en «Versiones» por si te arrepientes.", "");
+    var pr = el("p", "hint", "«" + String(s.scenes[i].t || "").replace(/\s+/g, " ").slice(0, 160) + "…»"); sh.appendChild(pr);
+    var r = el("div", "row"), y = el("button", "go", "Quitar escena"), c = el("button", null, "Cancelar");
+    y.onclick = function () { closeSheet(); if (removeScene(s, i)) toast("Escena quitada."); else toast("No se pudo quitar la escena."); };
+    c.onclick = closeSheet; r.appendChild(y); r.appendChild(c); sh.appendChild(r);
+  });
+}
 function eraseSheet(i) {
   var s = cur; if (!s || busy || !s.scenes[i] || i < 1 || !s.scenes[i].pv) return;
   var n = s.scenes.length - 1 - i;
@@ -4672,7 +4696,8 @@ function sceneImg(sc, i) {
   var ed = el("button", "small", "Editar texto"); ed.onclick = function () { editScene(i); }; r.appendChild(ed);
   var rvb = el("button", "small", "Revisar esta escena"); rvb.onclick = function () { reviewScene(i); }; r.appendChild(rvb);
   var pvb = el("button", "small", "Otro punto de vista"); pvb.onclick = function () { povSheet(i); }; r.appendChild(pvb);
-  if (i >= 1 && sc.pv) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); var erb = el("button", "small", "Borrar escena"); erb.onclick = function () { eraseSheet(i); }; r.appendChild(erb); }
+  if (cur.scenes.length > 1) { var qb = el("button", "small", "Quitar esta escena"); qb.onclick = function () { removeSceneSheet(i); }; r.appendChild(qb); }
+  if (i >= 1 && sc.pv) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); var erb = el("button", "small", "Borrar desde aquí y escribir otra cosa"); erb.onclick = function () { eraseSheet(i); }; r.appendChild(erb); }
   var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
   var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
   var ls2 = el("button", "small", "Escuchar desde aquí"); ls2.onclick = function () { startTalk(i, true); }; r.appendChild(ls2);
@@ -7098,6 +7123,7 @@ var GUIDE = {
     ["Exportar con o sin imágenes", "En ⋯ Más → Exportar, «Imágenes al exportar»: con todas las imágenes, sin imágenes (solo portada y contraportada) o solo texto para imprimir o editar (sin portada, contraportada ni imágenes). Vale para EPUB, PDF y FB2. Tu historia no cambia: solo el archivo que sacas."],
     ["Ilustraciones en el EPUB", "En Exportar, «Ilustraciones en el EPUB»: automático (las verticales en su propia página, centradas y grandes; las horizontales a todo el ancho), cada una en su propia página, o todas a todo el ancho. Si en Preparar el libro le has dado a una imagen un tamaño concreto, se respeta."],
     ["Prompts de escena más detallados", "El «Prompt de imagen» de una escena lee la escena entera, las fichas de los personajes que salen en ella (aspecto, ropa, canon del autor) y los lugares del lore que se nombran. Pide el plano, la pose, la expresión, la luz y el clima exactos del momento más visual, para que la imagen se parezca a lo que has escrito."],
+    ["Quitar esta escena", "En el «⋯» de cualquier escena: la quita y ya está, sin escribir nada en su lugar. Las escenas de después se quedan y los capítulos se ajustan solos. Antes se guarda una versión en «Versiones». Si lo que quieres es borrar desde ahí y escribir otra cosa, usa «Borrar desde aquí y escribir otra cosa»."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
