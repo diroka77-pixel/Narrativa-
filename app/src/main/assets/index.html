@@ -725,7 +725,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 <details class="pl" id="sug"><summary>Ver sugerencias (opcional)</summary><div class="opts" id="opts"></div></details>
 </div>
 <div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="twist" class="small">Sorpréndeme</button><button id="more" class="small" aria-expanded="false" aria-controls="moremenu">⋯ Más</button></div>
-<div class="tail" id="moremenu" hidden style="margin-top:.4rem;padding:.6rem;border-radius:14px;background:var(--card);border:1px solid var(--line)"><p class="hint" style="flex-basis:100%;margin:.2rem 0 0">Corregir y recordar</p><button id="nocuadra" class="small">Esto no cuadra</button><button id="memnow" class="small">Qué recuerda ahora</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Moverme por la historia</p><button id="idxb" class="small">🔎 Índice y buscador</button><button id="rewb" class="small">↩ Volver a una escena</button><button id="recapb" class="small">Anteriormente… (resumen)</button><button id="rvw" class="small">Revisar el libro</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Sacar el libro</p><button id="layb2" class="small">🎨 Maquetación del libro</button><button id="exp" class="small">Exportar para leer</button></div>
+<div class="tail" id="moremenu" hidden style="margin-top:.4rem;padding:.6rem;border-radius:14px;background:var(--card);border:1px solid var(--line)"><p class="hint" style="flex-basis:100%;margin:.2rem 0 0">Corregir y recordar</p><button id="nocuadra" class="small">Esto no cuadra</button><button id="memnow" class="small">Qué recuerda ahora</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Moverme por la historia</p><button id="idxb" class="small">🔎 Índice y buscador</button><button id="rewb" class="small">↩ Volver a una escena</button><button id="recsc" class="small">♻ Recuperar escenas borradas</button><button id="recapb" class="small">Anteriormente… (resumen)</button><button id="rvw" class="small">Revisar el libro</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Sacar el libro</p><button id="layb2" class="small">🎨 Maquetación del libro</button><button id="exp" class="small">Exportar para leer</button></div>
 <div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="expfold" style="flex-basis:100%">▴ Plegar el menú de exportar</button><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📕 El mundo del libro en PDF: tarjetas, lore, personajes y más</button><button class="small" id="fichat" style="flex-basis:100%">📕 El mundo del libro en texto (.txt)</button><label id="expimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Imágenes al exportar: <select id="expimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="all">Con todas las imágenes</option><option value="cov">Sin imágenes (solo portada y contraportada)</option><option value="txt">Solo texto, para imprimir o editar (sin portada ni contraportada)</option></select></label><label id="eimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Ilustraciones en el EPUB: <select id="eimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="auto">Automático: verticales en su propia página, horizontales a todo el ancho</option><option value="page">Cada ilustración en su propia página</option><option value="wide">Todas a todo el ancho dentro del texto</option></select></label><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
@@ -1260,8 +1260,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.23.2";
+var VERSION = "0.23.3";
 var NEWS = [
+  ["0.23.3", "Nuevo «♻ Recuperar escenas borradas» en ⋯ Más: devuelve a su sitio las escenas que se perdieron al borrar. Además, «Borrar y reescribir» y «Borrar desde aquí» solo aparecen en la última escena, para que nunca se lleven por delante las siguientes; en las demás está «Quitar esta escena»."],
   ["0.23.2", "Al quitar una escena te quedas en la que venía después (se ilumina un momento) y los menús se recogen. El cuadro de escribir y el menú de exportar ya se pueden plegar y desplegar cuando quieras."],
   ["0.23.1", "Nueva opción «Quitar esta escena» en el «⋯» de cada escena: la elimina sin tener que escribir nada en su lugar, y las escenas de después se quedan. La antigua «Borrar escena» se llama ahora «Borrar desde aquí y escribir otra cosa»."],
   ["0.23.0", "Prompts de imagen de escena mucho más detallados: leen la escena entera, las fichas de los personajes que aparecen (aspecto, ropa, canon) y los lugares del lore, y describen plano, pose, expresión, luz y clima del momento más visual."],
@@ -4284,6 +4285,7 @@ function idxSheet(q0) {
     drawBase(); if (q0) { q.value = q0; search(); } setTimeout(function () { try { q.focus(); } catch (e) {} }, 100);
   });
 }
+$("recsc").onclick = function () { $("moremenu").hidden = true; recoverScenesSheet(cur); };
 $("idxb").onclick = idxSheet; $("rewb").onclick = function () { $("moremenu").hidden = true; rewindSheet(); };
 function memNowSheet() {
   var s = cur; if (!s || !s.scenes.length) return; var m = ensureMem(s);
@@ -4704,7 +4706,7 @@ function sceneImg(sc, i) {
   var rvb = el("button", "small", "Revisar esta escena"); rvb.onclick = function () { reviewScene(i); }; r.appendChild(rvb);
   var pvb = el("button", "small", "Otro punto de vista"); pvb.onclick = function () { povSheet(i); }; r.appendChild(pvb);
   if (cur.scenes.length > 1) { var qb = el("button", "small", "Quitar esta escena"); qb.onclick = function () { removeSceneSheet(i); }; r.appendChild(qb); }
-  if (i >= 1 && sc.pv) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); var erb = el("button", "small", "Borrar desde aquí y escribir otra cosa"); erb.onclick = function () { eraseSheet(i); }; r.appendChild(erb); }
+  if (i >= 1 && sc.pv && i === cur.scenes.length - 1) { var rwb = el("button", "small", "Borrar y reescribir"); rwb.onclick = function () { rewriteSheet(i); }; r.appendChild(rwb); var erb = el("button", "small", "Borrar desde aquí y escribir otra cosa"); erb.onclick = function () { eraseSheet(i); }; r.appendChild(erb); }
   var bm = el("button", "small", sc.bm ? "Quitar marca" : "Marcar escena"); bm.onclick = function () { if (sc.bm) delete sc.bm; else sc.bm = true; save(); render(true); if ($("atlbox").open) renderAtlas(); }; r.appendChild(bm);
   var ls = el("button", "small", "Escuchar esta escena"); ls.onclick = function () { startTalk(i); }; r.appendChild(ls);
   var ls2 = el("button", "small", "Escuchar desde aquí"); ls2.onclick = function () { startTalk(i, true); }; r.appendChild(ls2);
@@ -7137,6 +7139,7 @@ var GUIDE = {
     ["Prompts de escena más detallados", "El «Prompt de imagen» de una escena lee la escena entera, las fichas de los personajes que salen en ella (aspecto, ropa, canon del autor) y los lugares del lore que se nombran. Pide el plano, la pose, la expresión, la luz y el clima exactos del momento más visual, para que la imagen se parezca a lo que has escrito."],
     ["Quitar esta escena", "En el «⋯» de cualquier escena: la quita y ya está, sin escribir nada en su lugar. Las escenas de después se quedan y los capítulos se ajustan solos. Antes se guarda una versión en «Versiones». Si lo que quieres es borrar desde ahí y escribir otra cosa, usa «Borrar desde aquí y escribir otra cosa»."],
     ["Plegar menús", "El cuadro de «¿Qué ocurre ahora?» tiene «▴ Plegar» para recogerlo y leer tranquilo; «▾ Abrir para escribir» lo vuelve a abrir (la app lo recuerda). El menú de exportar se pliega con «▴ Plegar el menú de exportar» o con el mismo botón de Exportar."],
+    ["♻ Recuperar escenas borradas", "En ⋯ Más. Busca en las copias de seguridad escenas que ya no están (por ejemplo, las que se borraron con «Borrar desde aquí») y las vuelve a poner en su sitio, sin tocar lo que tienes ahora."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
@@ -7559,6 +7562,41 @@ function storSheet() {
   });
 }
 $("dstor").onclick = function () { drawer(false); storSheet(); };
+function scKey(x) { return String(x && x.t || "").replace(/\s+/g, " ").trim().slice(0, 400); }
+function missingScenes(s, o) { var have = {}; s.scenes.forEach(function (x) { have[scKey(x)] = 1; }); return (o.scenes || []).filter(function (x) { var k = scKey(x); return k && !have[k]; }); }
+function mergeScenes(s, o) {
+  var have = {}; s.scenes.forEach(function (x, k) { have[scKey(x)] = k; });
+  var pos = -1, added = 0;
+  (o.scenes || []).forEach(function (x) { var k = scKey(x); if (!k) return; if (have[k] !== undefined) { pos = Math.max(pos, have[k]); return; }
+    var at = pos + 1, c = JSON.parse(JSON.stringify(x)); delete c.pv; s.scenes.splice(at, 0, c); added++;
+    Object.keys(have).forEach(function (kk) { if (have[kk] >= at) have[kk]++; }); have[k] = at; pos = at;
+    if (s.ce) s.ce = s.ce.map(function (e) { return e > at ? e + 1 : e; });
+    if (s.lay) { var nl = {}; Object.keys(s.lay).forEach(function (kk) { var n = Number(kk); nl[String(n >= at ? n + 1 : n)] = s.lay[kk]; }); s.lay = nl; } });
+  return added;
+}
+function recoverScenesSheet(s) {
+  if (!s) return;
+  sheet("Recuperar escenas borradas", function (sh) {
+    para(sh, "Busco en las copias de seguridad de esta historia escenas que ya no están. Al recuperarlas se vuelven a poner en su sitio, entre las escenas que tienes ahora, sin borrar nada de lo actual.", "");
+    var box = el("div"); box.appendChild(el("p", "hint", "Buscando…")); sh.appendChild(box);
+    verList(s.id).then(function (a) {
+      return Promise.all(a.map(function (r) { return recJs(r).then(function (js) { try { var o = JSON.parse(js); return { r: r, o: o, miss: missingScenes(s, o) }; } catch (e) { return null; } }, function () { return null; }); }));
+    }).then(function (L) {
+      box.innerHTML = ""; L = (L || []).filter(function (x) { return x && x.miss.length; });
+      if (!L.length) { box.appendChild(el("p", "hint", "No he encontrado escenas borradas en las copias guardadas. Si borraste hace mucho, puede que esas copias ya no existan.")); return; }
+      L.forEach(function (x) {
+        var d = el("div", "lore"); d.appendChild(el("b", null, "Copia del " + fmtDT(x.r.ts)));
+        d.appendChild(el("p", "hint", x.miss.length + (x.miss.length === 1 ? " escena que ya no tienes: " : " escenas que ya no tienes: ") + x.miss.slice(0, 3).map(function (m) { return "«" + String(m.t).replace(/\s+/g, " ").slice(0, 70) + "…»"; }).join(" · ")));
+        var b = el("button", "small go", "Recuperar estas escenas"); b.onclick = function () {
+          try { verSnap(s, "Antes de recuperar escenas", false); } catch (e) {}
+          var n = mergeScenes(s, x.o); delete s.alt; save(); closeSheet(); render(true); toast(n ? "Recuperadas " + n + " escenas." : "No había nada que recuperar.");
+        };
+        d.appendChild(b); box.appendChild(d);
+      });
+    }).catch(function () { box.innerHTML = ""; box.appendChild(el("p", "hint", "No se pudieron leer las copias de seguridad.")); });
+    closeBtn(sh);
+  });
+}
 function recoverSheet() {
   sheet("Recuperación", function (sh) {
     para(sh, "Aquí puedes recuperar historias borradas y ver el estado del almacén de seguridad.");

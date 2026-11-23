@@ -209,3 +209,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - «▴ Plegar» / «▾ Abrir para escribir» en el cuadro de «¿Qué ocurre ahora?» (se recuerda).
 - Exportar: botón «▴ Plegar el menú de exportar» y el propio botón alterna.
 - Prueba: quitar la escena 13 de 15 → debe verse la antigua 14; plegar/desplegar ambos menús.
+
+## v0.23.3 — Recuperar escenas borradas; borrado seguro
+- «♻ Recuperar escenas borradas» (⋯ Más): compara con las copias de seguridad y reinserta en su sitio las escenas que faltan, sin tocar lo actual.
+- «Borrar y reescribir» y «Borrar desde aquí…» solo en la última escena; en las demás, «Quitar esta escena» (no afecta a las siguientes).
+- Prueba: ⋯ Más → Recuperar escenas borradas → recuperar la copia de antes de borrar la escena 13.

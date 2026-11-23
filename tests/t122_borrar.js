@@ -9,8 +9,10 @@ const r=await p.evaluate(async()=>{const o={};const wait=ms=>new Promise(r=>setT
  let calls=0;sample=async()=>{calls++;return {text:JSON.stringify({escena:'Escena '+calls+' de la IA.',opciones:['x','y','z'],memoria:'mem'+calls})}};
  $('own').value='Diroka abre la puerta';$('do').click();await wait(300);$('own').value='Diroka huye';$('do').click();await wait(300);
  o.n0=s.scenes.length+'|'+calls+'|'+s.scenes[1].a;
- o.btn=!!btn('#sc-1 .scm','Borrar desde aquí y escribir otra cosa')+'|'+!btn('#sc-0 .scm','Borrar desde aquí y escribir otra cosa');
- btn('#sc-1 .scm','Borrar desde aquí y escribir otra cosa').click();o.sheet=/y las 1 siguientes/.test($('gsheet').textContent);btn('#gsheet','Borrar escena').click();await wait(300);
+ o.btn=!!btn('#sc-2 .scm','Borrar desde aquí y escribir otra cosa')+'|'+(!btn('#sc-1 .scm','Borrar desde aquí y escribir otra cosa')&&!btn('#sc-0 .scm','Borrar desde aquí y escribir otra cosa'));
+ btn('#sc-2 .scm','Borrar desde aquí y escribir otra cosa').click();o.sheet=!/siguientes/.test($('gsheet').textContent);btn('#gsheet','Borrar escena').click();await wait(300);
+ o.mid=s.scenes.length+'|'+$('own').value;
+ btn('#sc-1 .scm','Borrar desde aquí y escribir otra cosa').click();btn('#gsheet','Borrar escena').click();await wait(300);
  o.after=s.scenes.length+'|'+calls+'|'+JSON.stringify($('own').value)+'|'+s.memory;
  // escena del autor: vuelve el texto y el modo
  [].slice.call(document.querySelectorAll('#modes button')).filter(x=>x.textContent==='Texto completo sin modificar')[0].click();$('own').value='Mi escena propia.';$('do').click();await wait(300);
@@ -22,4 +24,5 @@ console.log(JSON.stringify(r));
 const c0=r.n0.split('|')[1];if(!/^3\|\d+\|Diroka abre la puerta$/.test(r.n0)||r.btn!=='true|true'||!r.sheet)fail('antes');
 if(r.after!=='1|'+c0+'|"Diroka abre la puerta"|mem0')fail('borrar '+r.after);
 if(r.own!=='1|Mi escena propia.|Texto completo sin modificar')fail('propia '+r.own);
+if(r.mid!=='2|Diroka huye')fail('medio '+r.mid);
 if(errs.length)fail('err');console.log('OK borrar escena');await b.close()})()
