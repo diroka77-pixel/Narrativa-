@@ -554,6 +554,8 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 #hero .hbyl{margin:-.3rem 0 .4rem;font:italic 600 1rem/1.2 Georgia,"Times New Roman",serif;letter-spacing:.04em;color:#fff;opacity:.9;text-shadow:0 1px 8px rgba(0,0,0,.8)}
 .bkcover .bka{font:italic 600 1rem/1.2 Georgia,serif;letter-spacing:.05em;opacity:.95}
 .bkcover .bkby{margin:-.4rem 0 0;font:italic .95rem/1.2 Georgia,serif;opacity:.85}
+.sc.flash{outline:2px solid var(--acc,#c33);outline-offset:6px;border-radius:6px;transition:outline-color 1.2s}
+#ctrl.fold > *:not(#ctrlq):not(#rpgmini){display:none !important}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -711,7 +713,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 <div class="err" id="err" role="alert" hidden></div>
 <div id="ctrl" hidden>
 <div id="rpgmini" hidden role="group" aria-label="Estado de la aventura"></div>
-<p class="hint" id="ctrlq" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora? <button class="small qpill" id="qpill2" hidden aria-label="Ver mis consultas de IA de hoy" style="margin:0 0 0 .4rem"></button></p>
+<p class="hint" id="ctrlq" style="margin:1.5rem 0 .5rem">¿Qué ocurre ahora? <button class="small qpill" id="qpill2" hidden aria-label="Ver mis consultas de IA de hoy" style="margin:0 0 0 .4rem"></button><button class="small" id="ctrlfold" aria-expanded="true" style="margin:0 0 0 .4rem;min-height:0;padding:.2rem .6rem">▴ Plegar</button></p>
 <div class="row" id="actors" hidden style="margin-bottom:.6rem;align-items:center"></div>
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
 <div class="row" id="rpgrisk" hidden style="margin-bottom:.6rem;align-items:center"><span class="hint">Riesgo de tu acción:</span><button class="small" data-r="Seguro">🟢 Seguro</button><button class="small on" data-r="Arriesgado">🟠 Arriesgado</button><button class="small" data-r="Temerario">🔴 Temerario</button></div>
@@ -724,7 +726,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 </div>
 <div class="tail"><button id="undo" class="small">Deshacer último turno</button><button id="regen" class="small">Otra versión</button><button id="twist" class="small">Sorpréndeme</button><button id="more" class="small" aria-expanded="false" aria-controls="moremenu">⋯ Más</button></div>
 <div class="tail" id="moremenu" hidden style="margin-top:.4rem;padding:.6rem;border-radius:14px;background:var(--card);border:1px solid var(--line)"><p class="hint" style="flex-basis:100%;margin:.2rem 0 0">Corregir y recordar</p><button id="nocuadra" class="small">Esto no cuadra</button><button id="memnow" class="small">Qué recuerda ahora</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Moverme por la historia</p><button id="idxb" class="small">🔎 Índice y buscador</button><button id="rewb" class="small">↩ Volver a una escena</button><button id="recapb" class="small">Anteriormente… (resumen)</button><button id="rvw" class="small">Revisar el libro</button><p class="hint" style="flex-basis:100%;margin:.4rem 0 0">Sacar el libro</p><button id="layb2" class="small">🎨 Maquetación del libro</button><button id="exp" class="small">Exportar para leer</button></div>
-<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📕 El mundo del libro en PDF: tarjetas, lore, personajes y más</button><button class="small" id="fichat" style="flex-basis:100%">📕 El mundo del libro en texto (.txt)</button><label id="expimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Imágenes al exportar: <select id="expimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="all">Con todas las imágenes</option><option value="cov">Sin imágenes (solo portada y contraportada)</option><option value="txt">Solo texto, para imprimir o editar (sin portada ni contraportada)</option></select></label><label id="eimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Ilustraciones en el EPUB: <select id="eimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="auto">Automático: verticales en su propia página, horizontales a todo el ancho</option><option value="page">Cada ilustración en su propia página</option><option value="wide">Todas a todo el ancho dentro del texto</option></select></label><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
+<div class="row" id="exprow" hidden style="margin-top:.6rem"><button class="small" id="expfold" style="flex-basis:100%">▴ Plegar el menú de exportar</button><button class="small" id="spellb" style="flex-basis:100%">✓ Revisar la ortografía</button><button class="small" id="polish" style="flex-basis:100%">✎ Pulir el texto antes de exportar</button><button class="small" id="layb" style="flex-basis:100%">🎨 Maquetación: letra, página, capítulos y vista previa</button><button class="small" id="prepb" style="flex-basis:100%">🛠 Preparar el libro: imágenes, páginas y vista previa</button><button class="small" id="versb" style="flex-basis:100%">🕓 Versiones anteriores de esta historia</button><button class="small" id="fichab" style="flex-basis:100%">📕 El mundo del libro en PDF: tarjetas, lore, personajes y más</button><button class="small" id="fichat" style="flex-basis:100%">📕 El mundo del libro en texto (.txt)</button><label id="expimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Imágenes al exportar: <select id="expimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="all">Con todas las imágenes</option><option value="cov">Sin imágenes (solo portada y contraportada)</option><option value="txt">Solo texto, para imprimir o editar (sin portada ni contraportada)</option></select></label><label id="eimgl" style="flex-basis:100%;display:block;margin:.3rem 0">Ilustraciones en el EPUB: <select id="eimg" style="width:100%;margin-top:.25rem;padding:.45rem"><option value="auto">Automático: verticales en su propia página, horizontales a todo el ancho</option><option value="page">Cada ilustración en su propia página</option><option value="wide">Todas a todo el ancho dentro del texto</option></select></label><button class="small" data-f="epub">EPUB</button><button class="small" data-f="pdf">PDF</button><button class="small" data-f="fb2">FB2</button></div>
 <p class="hint" id="emsg" hidden></p>
 </section>
 </main>
@@ -1258,8 +1260,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.23.1";
+var VERSION = "0.23.2";
 var NEWS = [
+  ["0.23.2", "Al quitar una escena te quedas en la que venía después (se ilumina un momento) y los menús se recogen. El cuadro de escribir y el menú de exportar ya se pueden plegar y desplegar cuando quieras."],
   ["0.23.1", "Nueva opción «Quitar esta escena» en el «⋯» de cada escena: la elimina sin tener que escribir nada en su lugar, y las escenas de después se quedan. La antigua «Borrar escena» se llama ahora «Borrar desde aquí y escribir otra cosa»."],
   ["0.23.0", "Prompts de imagen de escena mucho más detallados: leen la escena entera, las fichas de los personajes que aparecen (aspecto, ropa, canon) y los lugares del lore, y describen plano, pose, expresión, luz y clima del momento más visual."],
   ["0.22.1", "Ilustraciones más cuidadas en el EPUB: ya no salen como fotos pequeñas pegadas. Ocupan todo el ancho y, si son verticales, van en su propia página, centradas y grandes. Puedes elegirlo en Exportar → «Ilustraciones en el EPUB»."],
@@ -4193,7 +4196,11 @@ function removeScene(s, i) {
     var lostCh = oldCh - ne.length; if (lostCh > 0) { try { var m = ensureMem(s), ct = m.ctit || {}, chn = chOf(s, Math.max(0, i - 1)), nt = {}; Object.keys(ct).forEach(function (k) { var n = Number(k); if (n <= chn) nt[k] = ct[k]; else if (n > chn + lostCh) nt[String(n - lostCh)] = ct[k]; }); m.ctit = nt; } catch (e) {} }
     if (ne.length) s.ce = ne; else delete s.ce; }
   if (s.lay) { var nl = {}; Object.keys(s.lay).forEach(function (k) { var n = Number(k); if (n < i) nl[k] = s.lay[k]; else if (n > i) nl[String(n - 1)] = s.lay[k]; }); s.lay = nl; }
-  delete s.alt; save(); render(); try { refreshImages(true); } catch (e) {} return true;
+  delete s.alt; save(); render(true); try { refreshImages(true); } catch (e) {}
+  try { $("moremenu").hidden = true; $("more").textContent = "⋯ Más"; $("more").setAttribute("aria-expanded", "false"); expShow(false); } catch (e) {}
+  var gi = Math.min(i, s.scenes.length - 1);
+  setTimeout(function () { var e2 = $("sc-" + gi); if (!e2) return; if (document.body.classList.contains("paged")) { try { var b = $("book"), f = pgInfo(); pgGo(Math.floor((e2.offsetLeft - b.offsetLeft) / f.st)); } catch (x) {} } else { e2.scrollIntoView({ block: "start" }); setTimeout(function () { e2.scrollIntoView({ block: "start" }); }, 350); } e2.classList.add("flash"); setTimeout(function () { e2.classList.remove("flash"); }, 1600); }, 80);
+  return true;
 }
 function removeSceneSheet(i) {
   var s = cur; if (!s || busy || !s.scenes[i]) return;
@@ -4201,7 +4208,7 @@ function removeSceneSheet(i) {
     para(sh, "Se quita SOLO esta escena. Las demás se quedan como están, también las que vienen después, y no hace falta escribir nada en su lugar. Por seguridad, antes se guarda una versión en «Versiones» por si te arrepientes.", "");
     var pr = el("p", "hint", "«" + String(s.scenes[i].t || "").replace(/\s+/g, " ").slice(0, 160) + "…»"); sh.appendChild(pr);
     var r = el("div", "row"), y = el("button", "go", "Quitar escena"), c = el("button", null, "Cancelar");
-    y.onclick = function () { closeSheet(); if (removeScene(s, i)) toast("Escena quitada."); else toast("No se pudo quitar la escena."); };
+    y.onclick = function () { closeSheet(); var nxt = i < s.scenes.length - 1; if (removeScene(s, i)) toast(nxt ? "Escena quitada. Ahora estás en la que venía después." : "Escena quitada."); else toast("No se pudo quitar la escena."); };
     c.onclick = closeSheet; r.appendChild(y); r.appendChild(c); sh.appendChild(r);
   });
 }
@@ -6771,7 +6778,12 @@ async function exportAs(fmt) {
   }
 }
 $("recapb").onclick = function () { if (cur) recapSheet(cur); };
-$("exp").onclick = function () { $("exprow").hidden = !$("exprow").hidden; };
+function expShow(v) { $("exprow").hidden = !v; $("exp").textContent = v ? "▴ Plegar exportar" : "Exportar para leer"; }
+$("exp").onclick = function () { expShow($("exprow").hidden); if (!$("exprow").hidden) $("exprow").scrollIntoView({ block: "nearest", behavior: "smooth" }); };
+$("expfold").onclick = function () { expShow(false); };
+function ctrlFold(v, keep) { $("ctrl").classList.toggle("fold", !!v); var b = $("ctrlfold"); b.textContent = v ? "▾ Abrir para escribir" : "▴ Plegar"; b.setAttribute("aria-expanded", v ? "false" : "true"); if (!keep) try { localStorage.setItem("hv:ctrlfold", v ? "1" : "0"); } catch (e) {} }
+$("ctrlfold").onclick = function (e) { e.stopPropagation(); ctrlFold(!$("ctrl").classList.contains("fold")); };
+try { ctrlFold(localStorage.getItem("hv:ctrlfold") === "1", true); } catch (e) {}
 Array.prototype.forEach.call($("exprow").querySelectorAll("button[data-f]"), function (b) { b.onclick = function () { exportAs(b.getAttribute("data-f")); }; });
 $("polish").onclick = function () { polishSheet(); };
 function u8b64(u) { var s = "", i, n = 8192; for (i = 0; i < u.length; i += n) s += String.fromCharCode.apply(null, u.subarray(i, i + n)); return btoa(s); }
@@ -7124,6 +7136,7 @@ var GUIDE = {
     ["Ilustraciones en el EPUB", "En Exportar, «Ilustraciones en el EPUB»: automático (las verticales en su propia página, centradas y grandes; las horizontales a todo el ancho), cada una en su propia página, o todas a todo el ancho. Si en Preparar el libro le has dado a una imagen un tamaño concreto, se respeta."],
     ["Prompts de escena más detallados", "El «Prompt de imagen» de una escena lee la escena entera, las fichas de los personajes que salen en ella (aspecto, ropa, canon del autor) y los lugares del lore que se nombran. Pide el plano, la pose, la expresión, la luz y el clima exactos del momento más visual, para que la imagen se parezca a lo que has escrito."],
     ["Quitar esta escena", "En el «⋯» de cualquier escena: la quita y ya está, sin escribir nada en su lugar. Las escenas de después se quedan y los capítulos se ajustan solos. Antes se guarda una versión en «Versiones». Si lo que quieres es borrar desde ahí y escribir otra cosa, usa «Borrar desde aquí y escribir otra cosa»."],
+    ["Plegar menús", "El cuadro de «¿Qué ocurre ahora?» tiene «▴ Plegar» para recogerlo y leer tranquilo; «▾ Abrir para escribir» lo vuelve a abrir (la app lo recuerda). El menú de exportar se pliega con «▴ Plegar el menú de exportar» o con el mismo botón de Exportar."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [

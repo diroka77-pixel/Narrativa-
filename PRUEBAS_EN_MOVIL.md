@@ -203,3 +203,9 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - «⋯» de cada escena → «Quitar esta escena»: elimina solo esa escena; las siguientes se quedan; capítulos, títulos de capítulo y maquetación de imágenes se reajustan. Versión de seguridad antes.
 - «Borrar escena» pasa a llamarse «Borrar desde aquí y escribir otra cosa».
 - Prueba: quitar una escena del medio y comprobar que las de después siguen y los capítulos están bien.
+
+## v0.23.2 — Seguir leyendo tras quitar una escena; menús plegables
+- Tras «Quitar esta escena» la vista va a la escena que venía después (se ilumina), y se recogen «⋯ Más» y Exportar.
+- «▴ Plegar» / «▾ Abrir para escribir» en el cuadro de «¿Qué ocurre ahora?» (se recuerda).
+- Exportar: botón «▴ Plegar el menú de exportar» y el propio botón alterna.
+- Prueba: quitar la escena 13 de 15 → debe verse la antigua 14; plegar/desplegar ambos menús.

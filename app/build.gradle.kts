@@ -11,8 +11,8 @@ android {
         applicationId = "com.mibiblioteca.narrador"
         minSdk = 29
         targetSdk = 36
-        versionCode = 66
-        versionName = "0.23.1"
+        versionCode = 67
+        versionName = "0.23.2"
     }
     signingConfigs {
         getByName("debug") {
