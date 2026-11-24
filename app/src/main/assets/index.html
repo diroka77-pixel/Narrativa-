@@ -1260,8 +1260,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.23.4";
+var VERSION = "0.23.5";
 var NEWS = [
+  ["0.23.5", "La cursiva ya se conserva: al pegar un texto con cursiva (pensamientos, palabras extranjeras…) se guarda entre *asteriscos* y sale en cursiva en la historia, el EPUB, el PDF y el FB2. También puedes escribirla tú así: *texto*."],
   ["0.23.4", "«Texto completo sin modificar» ahora pega tu texto al momento, sin pasar por la IA (sin «El narrador está escribiendo» y sin gastar consultas). El Cronista lo lee cuando le pidas la siguiente escena. Si quieres que lo lea ya, marca la casilla."],
   ["0.23.3", "Nuevo «♻ Recuperar escenas borradas» en ⋯ Más: devuelve a su sitio las escenas que se perdieron al borrar. Además, «Borrar y reescribir» y «Borrar desde aquí» solo aparecen en la última escena, para que nunca se lleven por delante las siguientes; en las demás está «Quitar esta escena»."],
   ["0.23.2", "Al quitar una escena te quedas en la que venía después (se ilumina un momento) y los menús se recogen. El cuadro de escribir y el menú de exportar ya se pueden plegar y desplegar cuando quieras."],
@@ -4161,6 +4162,7 @@ function verbTurn(txt) {
 }
 $("own").addEventListener("input", function () { var n = $("own").value.length, c = $("longsc"); if (n > 1500 && !c.dataset.t && !c.checked) { c.checked = true; if ($("wopts")) $("wopts").open = true; woptsLabel(); } if (n > 1500) { $("longh").hidden = false; $("longh").textContent = "Texto largo (" + Math.round($("own").value.trim().split(/\s+/).length) + " palabras): se escribirá una escena larga que lo desarrolle entero. Desmarca la casilla si prefieres una escena normal."; } else $("longh").hidden = true; });
 $("longsc").addEventListener("change", function () { $("longsc").dataset.t = "1"; woptsLabel(); });
+starPaste($("own"));
 $("undo").onclick = function () { undoTurn(); };
 $("versb").onclick = function () { if (cur) versSheet(cur); };
 function regenWith(note) {
@@ -5532,7 +5534,46 @@ function cleanScene(t) {
   t = t.replace(/\s*\n*\s*¿(?:Qué|Y qué|Cómo|Qué vas a|Qué quieres)[^?¿\n]{0,40}(?:decides|haces|harás|quieres hacer|hacer a continuación)[^?¿\n]{0,25}\?\s*$/i, "");
   return t.replace(/\s+$/, "");
 }
-function paras(t) { return cleanScene(t).split(/\n\s*\n/).map(function (p) { return "<p>" + xe(p.trim()) + "</p>"; }).join("\n"); }
+var EM_RE = /\*(?=\S)([^*\n]*?\S)\*/g;
+function emH(h, tag) { return String(h).replace(EM_RE, "<" + (tag || "em") + ">$1</" + (tag || "em") + ">"); }
+function emStrip(x) { return String(x).replace(EM_RE, "$1"); }
+function emDom(root) {
+  if (!root) return; var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), list = [], n;
+  while ((n = tw.nextNode())) { if (n.nodeValue.indexOf("*") < 0) continue; var pe = n.parentNode; if (!pe || pe.closest("textarea,input,[data-full],.noem")) continue; list.push(n); }
+  list.forEach(function (tn) { var v = tn.nodeValue; EM_RE.lastIndex = 0; if (!EM_RE.test(v)) return; EM_RE.lastIndex = 0;
+    var fr = document.createDocumentFragment(), last = 0, m; while ((m = EM_RE.exec(v))) { if (m.index > last) fr.appendChild(document.createTextNode(v.slice(last, m.index))); var em = document.createElement("em"); em.textContent = m[1]; fr.appendChild(em); last = m.index + m[0].length; }
+    if (last < v.length) fr.appendChild(document.createTextNode(v.slice(last))); tn.parentNode.replaceChild(fr, tn); });
+}
+(function () { try { var bk = document.getElementById("book"); if (!bk || !window.MutationObserver) return; var pend = 0; new MutationObserver(function () { if (pend) return; pend = 1; setTimeout(function () { pend = 0; emDom(bk); }, 30); }).observe(bk, { childList: true, subtree: true, characterData: true }); } catch (e) {} })();
+/* Pegar con formato: la cursiva de otra app se guarda como *texto* */
+function htmlToStarText(html) {
+  var d = document.createElement("div"); d.innerHTML = String(html).replace(/<!--[\s\S]*?-->/g, "").replace(/<(script|style)[\s\S]*?<\/\1>/gi, ""); var out = "";
+  function isIt(e) { var tg = e.tagName; if (tg === "I" || tg === "EM" || tg === "CITE") return true; var fs = e.style && e.style.fontStyle; return fs === "italic" || fs === "oblique"; }
+  function isNotIt(e) { var fs = e.style && e.style.fontStyle; return fs === "normal"; }
+  function walk(nd, it) {
+    if (nd.nodeType === 3) { var v = nd.nodeValue.replace(/[\r\n\t]+/g, " "); if (!v) return; if (it && v.trim()) { var a = v.match(/^\s*/)[0], z = v.match(/\s*$/)[0]; out += a + "\u0001" + v.trim() + "\u0002" + z; } else out += v; return; }
+    if (nd.nodeType !== 1) return; var tg = nd.tagName;
+    if (tg === "BR") { out += "\n"; return; }
+    var blk = /^(P|DIV|H[1-6]|LI|BLOCKQUOTE|TR|SECTION|ARTICLE)$/.test(tg);
+    if (blk && out && !/\n\n$/.test(out)) out += /\n$/.test(out) ? "\n" : "\n\n";
+    var it2 = isNotIt(nd) ? false : (it || isIt(nd));
+    for (var c = nd.firstChild; c; c = c.nextSibling) walk(c, it2);
+    if (blk && !/\n\n$/.test(out)) out += /\n$/.test(out) ? "\n" : "\n\n";
+  }
+  walk(d, false);
+  out = out.replace(/\u0002(\s*)\u0001/g, "$1").replace(/\u0001/g, "*").replace(/\u0002/g, "*");
+  return out.replace(/[ \u00a0]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").replace(/^\s+|\s+$/g, "");
+}
+function starPaste(ta) {
+  if (!ta) return;
+  ta.addEventListener("paste", function (e) {
+    try { var cd = e.clipboardData || window.clipboardData; if (!cd) return; var h = cd.getData("text/html"); if (!h || !/<(i|em|cite)\b|font-style\s*:\s*(italic|oblique)/i.test(h)) return;
+      var txt = htmlToStarText(h); if (!txt) return; e.preventDefault();
+      var a = ta.selectionStart, b = ta.selectionEnd, v = ta.value; ta.value = v.slice(0, a) + txt + v.slice(b); ta.selectionStart = ta.selectionEnd = a + txt.length; ta.dispatchEvent(new Event("input"));
+      try { toast("Pegado con cursiva: lo que va entre *asteriscos* saldrá en cursiva."); } catch (x) {} } catch (x) {}
+  });
+}
+function paras(t) { return cleanScene(t).split(/\n\s*\n/).map(function (p) { return "<p>" + emH(xe(p.trim())) + "</p>"; }).join("\n"); }
 /* ---------- v0.10: registro de creación (autor, UUID, huella SHA-256, ficha PDF, biblioteca) ---------- */
 function hvHex(u8) { var o = ""; for (var i = 0; i < u8.length; i++) o += ("0" + u8[i].toString(16)).slice(-2); return o; }
 function hvUuid() {
@@ -5875,7 +5916,7 @@ function fb2Doc(s) {
   chs.forEach(function (ch, i) {
     var sec = '<section><title><p>Capítulo ' + (i + 1) + (ctitle(s, i + 1) ? ' · ' + xe(ctitle(s, i + 1)) : '') + '</p></title>';
     ch.forEach(function (sc) {
-      String(sc.t).split(/\n\s*\n/).forEach(function (p) { if (p.trim()) sec += '<p>' + xe(p.trim()) + '</p>'; });
+      String(sc.t).split(/\n\s*\n/).forEach(function (p) { if (p.trim()) sec += '<p>' + emH(xe(p.trim()), "emphasis") + '</p>'; });
       if (sc.img) { var id = "img" + (++ic) + ".jpg"; bin += '<binary id="' + id + '" content-type="image/jpeg">' + b64(sc.img) + '</binary>'; sec += '<image l:href="#' + id + '"/>'; }
     });
     body += sec + '</section>';
@@ -6074,15 +6115,26 @@ function bookLayout(s, fonts) {
     if (line.length) lines.push({ w: line, ind: ind(), last: true });
     return lines;
   }
+  var IT_ON = false;
   function emit(p, ln, yy) {
+    if (IT_ON || ln.w.some(function (w) { return w.indexOf("*") >= 0; })) return emitIt(p, ln, yy);
     var f = fonts.R, n = ln.w.length, ws = ln.w.map(function (w) { return f.widthOfTextAtSize(w, FS); }), sum = ws.reduce(function (a, b) { return a + b; }, 0), avail = TW - ln.ind, gap = SPACE, x = lm(p) + ln.ind;
     if (o.just && !ln.last && n > 1) { var g = (avail - sum) / (n - 1); if (g >= SPACE * 0.55 && g <= SPACE * 2.8) gap = g; }
     if (ln.cap) p.items.push({ t: "txt", x: lm(p), y: yy + LH, s: ln.cap.s, f: "B", text: ln.cap.ch });
     if (gap === SPACE) { p.items.push({ t: "txt", x: x, y: yy, s: FS, f: "R", text: ln.w.join(" ") }); return; }
     ln.w.forEach(function (w, k) { p.items.push({ t: "txt", x: x, y: yy, s: FS, f: "R", text: w }); x += ws[k] + gap; });
   }
+  function emitIt(p, ln, yy) {
+    var ps = ln.w.map(function (w) { var s0 = w, open = false; if (/^\*(?=\S)/.test(s0) && !IT_ON) { s0 = s0.slice(1); IT_ON = true; open = true; }
+      var cl = /\*([.,;:!?…»”"')\]]*)$/.exec(s0); if (cl && IT_ON && (s0.length > cl[0].length || !open)) { s0 = s0.slice(0, cl.index) + cl[1]; IT_ON = false; return { s: s0, it: true }; } return { s: s0, it: IT_ON }; });
+    var n = ps.length, ws = ps.map(function (q) { return (q.it ? fonts.I : fonts.R).widthOfTextAtSize(q.s, FS); }), sum = ws.reduce(function (a, b) { return a + b; }, 0), avail = TW - ln.ind, gap = SPACE, x = lm(p) + ln.ind;
+    if (o.just && !ln.last && n > 1) { var g = (avail - sum) / (n - 1); if (g >= SPACE * 0.55 && g <= SPACE * 2.8) gap = g; }
+    if (ln.cap) p.items.push({ t: "txt", x: lm(p), y: yy + LH, s: ln.cap.s, f: "B", text: ln.cap.ch });
+    ps.forEach(function (q, k) { if (q.s) p.items.push({ t: "txt", x: x, y: yy, s: FS, f: q.it ? "I" : "R", text: q.s }); x += ws[k] + gap; });
+  }
   function para(text, noInd, drop) {
-    var tx0 = pdfSafe(text), lines = null, i = 0, guard = 0;
+    IT_ON = false; var tx0 = pdfSafe(text), lines = null, i = 0, guard = 0;
+    if (/^\*/.test(tx0.trim())) drop = false;
     if (drop && o.drop && tx0.trim().length > 80 && /^[A-Za-zÀ-ÿñÑ]/.test(tx0.trim())) {
       var ch0 = tx0.trim().charAt(0), cs = LH * 2.05, cw = fonts.B.widthOfTextAtSize(ch0, cs) + 3, l2 = wrapLines(tx0.trim().slice(1), fonts.R, FS, TW, 0, 2, cw, o.just && o.hyph);
       if (l2.length >= 3) { l2[0].cap = { ch: ch0, s: cs }; lines = l2; }
@@ -6149,7 +6201,7 @@ function bookLayout(s, fonts) {
     var hd = null; if (head && LY.opos !== "t" && pages.length && pages[pages.length - 1].kind === "chap" && pages[pages.length - 1] === cur) { hd = pages.pop().items; }
     cur = null; var dm = jpgDims(sc.img), pad = FS * 1.2, px = W * 0.08, pw = W * 0.84, tw = pw - 2 * pad, maxH = (H - mt - mb) * (LY.opos === "c" ? 0.6 : 0.5), per = Math.max(3, Math.floor((maxH - 2 * pad) / LH));
     var dark = LY.ost !== "l", col = dark ? [1, 1, 1] : [0.07, 0.07, 0.07], all = [];
-    String(sc.t).split(/\n\s*\n/).forEach(function (p, k) { if (!p.trim()) return; wrapLines(pdfSafe(p.trim()), fonts.R, FS, tw, k ? FS * 1.4 : 0, 0, 0, false).forEach(function (ln) { all.push(ln); }); });
+    String(sc.t).split(/\n\s*\n/).forEach(function (p, k) { if (!p.trim()) return; wrapLines(pdfSafe(emStrip(p.trim())), fonts.R, FS, tw, k ? FS * 1.4 : 0, 0, 0, false).forEach(function (ln) { all.push(ln); }); });
     if (!all.length) all.push({ w: [""], ind: 0, last: true });
     for (var q = 0; q < all.length; q += per) {
       var chunk = all.slice(q, q + per), pg = newPage("ovl"), kb = Math.max(W / dm.w, H / dm.h), iw = dm.w * kb, ih = dm.h * kb;
@@ -7145,6 +7197,7 @@ var GUIDE = {
     ["Plegar menús", "El cuadro de «¿Qué ocurre ahora?» tiene «▴ Plegar» para recogerlo y leer tranquilo; «▾ Abrir para escribir» lo vuelve a abrir (la app lo recuerda). El menú de exportar se pliega con «▴ Plegar el menú de exportar» o con el mismo botón de Exportar."],
     ["♻ Recuperar escenas borradas", "En ⋯ Más. Busca en las copias de seguridad escenas que ya no están (por ejemplo, las que se borraron con «Borrar desde aquí») y las vuelve a poner en su sitio, sin tocar lo que tienes ahora."],
     ["Pegar texto sin IA", "Con «Texto completo sin modificar», tu texto se pega en el libro al momento, sin llamar a la IA ni gastar consultas. El Cronista lo lee cuando le pidas la siguiente escena (aunque hayas pegado varias seguidas). Si quieres que lo lea ya para proponerte cómo seguir, marca la casilla de debajo."],
+    ["Cursiva", "Si pegas un texto con cursiva (de Google Docs, Word, Gemini…), la app la conserva: la guarda entre *asteriscos* y la muestra en cursiva en la historia, el EPUB, el PDF y el FB2. También puedes escribirla tú: *esto saldrá en cursiva*."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
@@ -7237,7 +7290,7 @@ function editScene(i) {
   var s = cur, sc = s.scenes[i]; if (!sc) return;
   sheet("Editar la escena " + (i + 1), function (sh) {
     para(sh, "Cambia el texto como quieras. Si cambias un hecho importante, usa «Guardar y actualizar la memoria» para que El Cronista lo recuerde.");
-    var ta = el("textarea"); ta.value = sc.t; ta.style.minHeight = "14rem"; ta.setAttribute("aria-label", "Texto de la escena"); sh.appendChild(ta);
+    var ta = el("textarea"); ta.value = sc.t; ta.style.minHeight = "14rem"; ta.setAttribute("aria-label", "Texto de la escena"); sh.appendChild(ta); starPaste(ta); sh.appendChild(el("p", "hint", "Cursiva: escribe el texto entre asteriscos, *así*."));
     var r = el("div", "row"); r.style.marginTop = ".6rem";
     var ok = el("button", "go", "Guardar cambios"); ok.style.flex = "1";
     ok.onclick = function () { var t = ta.value.trim(); if (!t) return; if (t !== sc.t) sc.ed = (sc.ed || []).concat(Date.now()).slice(-20); sc.t = t; if (i === s.scenes.length - 1) s.last = t; save(); closeSheet(); render(true); };

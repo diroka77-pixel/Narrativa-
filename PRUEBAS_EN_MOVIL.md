@@ -219,3 +219,8 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - «Texto completo sin modificar» pega el texto al momento, sin llamar a la IA (no le afecta que Gemini esté saturado). Casilla opcional para que El Cronista lo lea ya.
 - Las escenas pegadas quedan marcadas y entran en el contexto del siguiente turno de IA (aunque sean varias), y entonces se desmarcan.
 - Prueba: con Gemini saturado o sin conexión, pegar un texto → debe aparecer en el libro al instante.
+
+## v0.23.5 — Cursiva
+- Al pegar texto con cursiva (HTML del portapapeles: <i>, <em>, font-style:italic) en el cuadro de escribir o al editar una escena, se guarda como *texto*.
+- Se muestra en cursiva en la historia y sale en cursiva en EPUB (<em>), FB2 (<emphasis>) y PDF (fuente cursiva).
+- Prueba: copiar desde Google Docs un párrafo con una frase en cursiva → pegar con «Texto completo sin modificar» → comprobar en pantalla y en el EPUB/PDF.
