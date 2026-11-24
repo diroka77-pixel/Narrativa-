@@ -537,3 +537,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - «♻ Recuperar escenas borradas» (⋯ Más): compara con las copias de seguridad y reinserta en su sitio las escenas que faltan, sin tocar lo actual.
 - «Borrar y reescribir» y «Borrar desde aquí…» solo en la última escena; en las demás, «Quitar esta escena» (no afecta a las siguientes).
 - Prueba: ⋯ Más → Recuperar escenas borradas → recuperar la copia de antes de borrar la escena 13.
+
+## v0.23.4 — Pegar texto del autor sin IA
+- «Texto completo sin modificar» pega el texto al momento, sin llamar a la IA (no le afecta que Gemini esté saturado). Casilla opcional para que El Cronista lo lea ya.
+- Las escenas pegadas quedan marcadas y entran en el contexto del siguiente turno de IA (aunque sean varias), y entonces se desmarcan.
+- Prueba: con Gemini saturado o sin conexión, pegar un texto → debe aparecer en el libro al instante.

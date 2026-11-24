@@ -718,7 +718,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 <div class="row" id="modes" style="margin-bottom:.6rem"></div>
 <div class="row" id="rpgrisk" hidden style="margin-bottom:.6rem;align-items:center"><span class="hint">Riesgo de tu acción:</span><button class="small" data-r="Seguro">🟢 Seguro</button><button class="small on" data-r="Arriesgado">🟠 Arriesgado</button><button class="small" data-r="Temerario">🔴 Temerario</button></div>
 <button id="dict" class="small" hidden style="margin-bottom:.5rem">Dictar con la voz</button>
-<p class="hint" id="verbh" hidden style="margin:.2rem 0 .4rem">Tu texto entrará en el libro tal cual, sin cambiar ni una coma. El Cronista solo lo lee para recordarlo y proponerte cómo seguir (gasta una consulta).</p>
+<p class="hint" id="verbh" hidden style="margin:.2rem 0 .4rem">Tu texto se pega en el libro tal cual, al momento, sin pasar por la IA. El Cronista lo leerá cuando le pidas la siguiente escena.<br><label class="chk"><input type="checkbox" id="verbai"> Que El Cronista lo lea ya, para proponerme cómo seguir (gasta una consulta)</label></p>
 <textarea id="own" style="min-height:5.5rem" placeholder="Por ejemplo: Erik se asoma al acantilado y ve una aldea ardiendo a lo lejos"></textarea>
 <details class="pl" id="wopts"><summary>Tono y longitud (opcional)</summary><label class="chk" id="longl" style="display:block;margin:.5rem 0 0"><input type="checkbox" id="longsc"> Escena larga (3 o 4 folios): que desarrolle todo lo que he escrito</label><p class="hint" id="longh" hidden></p></details>
 <button class="go" id="do" style="margin-top:.6rem">Continuar</button>
@@ -1260,8 +1260,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.23.3";
+var VERSION = "0.23.4";
 var NEWS = [
+  ["0.23.4", "«Texto completo sin modificar» ahora pega tu texto al momento, sin pasar por la IA (sin «El narrador está escribiendo» y sin gastar consultas). El Cronista lo lee cuando le pidas la siguiente escena. Si quieres que lo lea ya, marca la casilla."],
   ["0.23.3", "Nuevo «♻ Recuperar escenas borradas» en ⋯ Más: devuelve a su sitio las escenas que se perdieron al borrar. Además, «Borrar y reescribir» y «Borrar desde aquí» solo aparecen en la última escena, para que nunca se lleven por delante las siguientes; en las demás está «Quitar esta escena»."],
   ["0.23.2", "Al quitar una escena te quedas en la que venía después (se ilumina un momento) y los menús se recogen. El cuadro de escribir y el menú de exportar ya se pueden plegar y desplegar cuando quieras."],
   ["0.23.1", "Nueva opción «Quitar esta escena» en el «⋯» de cada escena: la elimina sin tener que escribir nada en su lugar, y las escenas de después se quedan. La antigua «Borrar escena» se llama ahora «Borrar desde aquí y escribir otra cosa»."],
@@ -3413,7 +3414,9 @@ function tailTxt(s) {
   return "\nFINAL EXACTO DEL TEXTO HASTA AHORA (lo último que ha leído el lector" + (sc.own ? "; lo escribió el autor" : "") + "):\n«" + tx + "»\nCONTINUIDAD: tu escena empieza en el instante inmediatamente posterior a ese final, como el siguiente párrafo del mismo libro. Mismo lugar, mismo momento y mismos personajes presentes, salvo que la acción del jugador diga otra cosa. No repitas, no resumas ni vuelvas a describir lo que ya pasó; si alguien estaba hablando o a punto de hacer algo, retómalo ahí. Mantén el tiempo verbal, la persona narrativa y el tono de ese final.";
 }
 function recentTxt(s, n) {
-  var r = (s.scenes || []).slice(-(n || 3));
+  var sc0 = s.scenes || [], st = Math.max(0, sc0.length - (n || 3));
+  for (var u = Math.max(0, sc0.length - 10); u < st; u++) if (sc0[u].unread) { st = u; break; }
+  var r = sc0.slice(st);
   if (!r.length) return s.last || "(ninguna)";
   return r.map(function (sc) { return (sc.a ? "[El jugador: " + sc.a + "]\n" : "") + sc.t; }).join("\n---\n");
 }
@@ -4086,7 +4089,7 @@ async function turn(action, shown, extra) {
     if (!cand) throw new Error("vacío");
     ensureMem(s); s.prev = { rpg: s.rpg ? rpgState(s.rpg) : null, ce: s.ce ? s.ce.slice() : null, mem: snapMem(s), memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls, len: s.scenes.length, lore: (s.lore || []).length };
     try { vocabDeep(s, cand); } catch (e) {}
-    cand.escena = verb ? verb : vocabApply(s, cleanScene(cand.escena)); if (Array.isArray(cand.opciones)) cand.opciones = cand.opciones.map(function (o) { return vocabApply(s, o); }); s.scenes.push({ a: shown || "", t: cand.escena, d: Date.now() }); if (verb) s.scenes[s.scenes.length - 1].own = 1; try { if (s.nextTone) s.scenes[s.scenes.length - 1].tn = s.nextTone; goalAdd(cand.escena); } catch (e) {} try { var _om = /^\[COMIENZO DEL CAPÍTULO (\d+) ESCRITO POR EL ESCRITOR\]\n([\s\S]*?)\n\[FIN DEL TEXTO/.exec(action), _lsc = s.scenes[s.scenes.length - 1]; try { pvKeep(s, _lsc); } catch (e) {} if (_om) { _lsc.orig = _om[2]; _lsc.op = "polish"; _lsc.opch = +_om[1]; } else if (/^\[IDEA DEL ESCRITOR PARA EL COMIENZO/.test(action)) _lsc.op = "idea"; } catch (e) {}
+    cand.escena = verb ? verb : vocabApply(s, cleanScene(cand.escena)); if (Array.isArray(cand.opciones)) cand.opciones = cand.opciones.map(function (o) { return vocabApply(s, o); }); s.scenes.forEach(function (x) { delete x.unread; }); s.scenes.push({ a: shown || "", t: cand.escena, d: Date.now() }); if (verb) s.scenes[s.scenes.length - 1].own = 1; try { if (s.nextTone) s.scenes[s.scenes.length - 1].tn = s.nextTone; goalAdd(cand.escena); } catch (e) {} try { var _om = /^\[COMIENZO DEL CAPÍTULO (\d+) ESCRITO POR EL ESCRITOR\]\n([\s\S]*?)\n\[FIN DEL TEXTO/.exec(action), _lsc = s.scenes[s.scenes.length - 1]; try { pvKeep(s, _lsc); } catch (e) {} if (_om) { _lsc.orig = _om[2]; _lsc.op = "polish"; _lsc.opch = +_om[1]; } else if (/^\[IDEA DEL ESCRITOR PARA EL COMIENZO/.test(action)) _lsc.op = "idea"; } catch (e) {}
     s.last = cand.escena; s.memory = cand.memoria || s.memory;
     var _n = s.scenes.length, _mm = ensureMem(s);
     if (!memOk(cand.mem) && !Array.isArray(cand.hechos_nuevos)) { dg(s, "memMiss"); _mm.miss = (_mm.miss || []).concat([_n]).slice(-60); if (!(window.hvIsManual && window.hvIsManual())) setTimeout(function () { repairMem(s, _n).then(function () { if ($("atlbox").open) renderAtlas(); }); }, 400); }
@@ -4152,7 +4155,8 @@ $("do").onclick = function () {
 };
 function verbTurn(txt) {
   var s = cur; if (!s || busy || !txt.trim()) return;
-  if (!sample) { var _pv = { len: s.scenes.length, memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls }; s.scenes.push({ a: "✍ Escena escrita por el autor", t: txt, d: Date.now(), own: 1, pv: _pv }); s.last = txt; s.turn++; s.opts = []; try { goalAdd(txt); } catch (e) {} $("own").value = ""; save(); render(); toast("Escena añadida tal cual. Sin IA conectada, El Cronista no ha podido anotarla en su memoria."); return; }
+  var wantAi = !!($("verbai") && $("verbai").checked);
+  if (!sample || !wantAi) { var _pv = { len: s.scenes.length, memory: s.memory, last: s.last, turn: s.turn, state: s.state, now: s.now, opts: s.opts, fin: s.fin, ls: s.ls, ce: s.ce ? s.ce.slice() : null }; s.scenes.push({ a: "✍ Escena escrita por el autor", t: txt, d: Date.now(), own: 1, unread: 1, pv: _pv }); s.last = txt; s.turn++; s.opts = []; try { goalAdd(txt); } catch (e) {} $("own").value = ""; try { $("own").dispatchEvent(new Event("input")); } catch (e) {} save(); render(); toast(sample ? "Texto pegado tal cual. El Cronista lo leerá cuando le pidas la siguiente escena." : "Texto pegado tal cual."); return; }
   VERB = txt; turn("[ESCENA COMPLETA ESCRITA POR EL AUTOR]\n" + txt, "✍ Escena escrita por el autor");
 }
 $("own").addEventListener("input", function () { var n = $("own").value.length, c = $("longsc"); if (n > 1500 && !c.dataset.t && !c.checked) { c.checked = true; if ($("wopts")) $("wopts").open = true; woptsLabel(); } if (n > 1500) { $("longh").hidden = false; $("longh").textContent = "Texto largo (" + Math.round($("own").value.trim().split(/\s+/).length) + " palabras): se escribirá una escena larga que lo desarrolle entero. Desmarca la casilla si prefieres una escena normal."; } else $("longh").hidden = true; });
@@ -7140,6 +7144,7 @@ var GUIDE = {
     ["Quitar esta escena", "En el «⋯» de cualquier escena: la quita y ya está, sin escribir nada en su lugar. Las escenas de después se quedan y los capítulos se ajustan solos. Antes se guarda una versión en «Versiones». Si lo que quieres es borrar desde ahí y escribir otra cosa, usa «Borrar desde aquí y escribir otra cosa»."],
     ["Plegar menús", "El cuadro de «¿Qué ocurre ahora?» tiene «▴ Plegar» para recogerlo y leer tranquilo; «▾ Abrir para escribir» lo vuelve a abrir (la app lo recuerda). El menú de exportar se pliega con «▴ Plegar el menú de exportar» o con el mismo botón de Exportar."],
     ["♻ Recuperar escenas borradas", "En ⋯ Más. Busca en las copias de seguridad escenas que ya no están (por ejemplo, las que se borraron con «Borrar desde aquí») y las vuelve a poner en su sitio, sin tocar lo que tienes ahora."],
+    ["Pegar texto sin IA", "Con «Texto completo sin modificar», tu texto se pega en el libro al momento, sin llamar a la IA ni gastar consultas. El Cronista lo lee cuando le pidas la siguiente escena (aunque hayas pegado varias seguidas). Si quieres que lo lea ya para proponerte cómo seguir, marca la casilla de debajo."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
