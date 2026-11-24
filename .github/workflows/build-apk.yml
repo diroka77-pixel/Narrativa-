@@ -53,7 +53,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="prueba-v0.23.5-c70"
-          cp app/build/outputs/apk/debug/*.apk HistoriasVivas-v0.23.5-c70.apk
+          TAG="prueba-v0.24.0-c71"
+          cp app/build/outputs/apk/debug/*.apk HistoriasVivas-v0.24.0-c71.apk
           gh release delete "$TAG" --yes --cleanup-tag || true
-          gh release create "$TAG" HistoriasVivas-v0.23.5-c70.apk --prerelease --target "$GITHUB_SHA" --title "Versión de prueba v0.23.5 (c70)" --notes "APK de depuración para probar en el móvil. Generado automáticamente."
+          gh release create "$TAG" HistoriasVivas-v0.24.0-c71.apk --prerelease --target "$GITHUB_SHA" --title "Versión de prueba v0.24.0 (c71)" --notes "APK de depuración para probar en el móvil. Generado automáticamente."

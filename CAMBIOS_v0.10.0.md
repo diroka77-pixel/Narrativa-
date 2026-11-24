@@ -547,3 +547,8 @@ Cada escena (salvo la primera) tiene un botón «Borrar y reescribir». Borra es
 - Al pegar texto con cursiva (HTML del portapapeles: <i>, <em>, font-style:italic) en el cuadro de escribir o al editar una escena, se guarda como *texto*.
 - Se muestra en cursiva en la historia y sale en cursiva en EPUB (<em>), FB2 (<emphasis>) y PDF (fuente cursiva).
 - Prueba: copiar desde Google Docs un párrafo con una frase en cursiva → pegar con «Texto completo sin modificar» → comprobar en pantalla y en el EPUB/PDF.
+
+## v0.24.0 — Contador de palabras y fondo con la portada al leer
+- Píldora «✍ N palabras» arriba en la historia (todas las escenas); al tocarla, desglose por capítulo, páginas aproximadas y minutos de lectura.
+- Con «Fondo: la portada de mi historia» (menú ☰), la portada de la historia abierta se ve de fondo también al leer/escribir; los tonos de lectura pasan a ser ligeramente translúcidos para que se intuya.
+- Prueba: activar el fondo de portada, abrir la novela y comprobar el fondo y el contador.

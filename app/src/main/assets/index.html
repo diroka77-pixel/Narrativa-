@@ -556,6 +556,13 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 .bkcover .bkby{margin:-.4rem 0 0;font:italic .95rem/1.2 Georgia,serif;opacity:.85}
 .sc.flash{outline:2px solid var(--acc,#c33);outline-offset:6px;border-radius:6px;transition:outline-color 1.2s}
 #ctrl.fold > *:not(#ctrlq):not(#rpgmini){display:none !important}
+.wcpill{border-radius:999px;font-variant-numeric:tabular-nums}
+body.bgcov .rd.t-noche{background:rgba(8,12,20,.8)}
+body.bgcov .rd.t-papel{background:rgba(250,246,238,.9)}
+body.bgcov .rd.t-dia{background:rgba(255,255,255,.9)}
+body.bgcov .rd.t-sepia{background:rgba(241,228,200,.9)}
+body.bgcov .rd.t-perg{background:rgba(230,213,168,.9)}
+body.bgcov #bgart{filter:saturate(.85)}
 /* v0.10.1: modo claro, texto suelto legible sobre el fondo */
 :root[data-theme="light"] #ctrl{background:rgba(255,251,244,.97);color:var(--ink);border-radius:16px;padding:.2rem .9rem .9rem;margin-top:1rem;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 :root[data-theme="light"] #ctrl details.pl:not([open]){color:#3e3327}
@@ -688,7 +695,7 @@ body.imm.paged #imx{top:calc(5px + env(safe-area-inset-top,0px));right:10px}
 </section>
 
 <section id="play" hidden>
-<div class="row" style="align-items:center;margin-bottom:.4rem"><button class="small" id="back2">← Mis historias</button></div>
+<div class="row" style="align-items:center;margin-bottom:.4rem"><button class="small" id="back2">← Mis historias</button><button class="small wcpill" id="wcpill" aria-label="Palabras escritas en la novela" style="margin-left:auto">✍ 0 palabras</button></div>
 <h2 id="ptitle" style="margin-top:.4rem"></h2>
 <p class="hint" id="forkinfo" hidden style="margin:.1rem 0 .4rem"></p>
 <div id="rpghud" hidden role="group" aria-label="Estado de la aventura"></div>
@@ -1028,7 +1035,8 @@ function accGet() { try { var a = localStorage.getItem("hv:accent") || ""; retur
 function applyTheme(g, v, seed) {
   CUR_TH = { g: g, v: v || 0, seed: seed || "home" };
   var t = GT(g), rt = document.documentElement, light = rt.getAttribute("data-theme") === "light";
-  var _hc = null; try { if (localStorage.getItem("hv:homecover") === "1" && !$("lib").hidden) { var _ls = lastStory(); if (_ls && _ls.cover) _hc = _ls.cover; } } catch (e) {}
+  var _hc = null, _inSt = false; try { if (localStorage.getItem("hv:homecover") === "1") { if (!$("lib").hidden) { var _ls = lastStory(); if (_ls && _ls.cover) _hc = _ls.cover; } else if (!$("play").hidden && cur && cur.cover) { _hc = cur.cover; _inSt = true; } } } catch (e) {}
+  document.body.classList.toggle("bgcov", _inSt);
   $("bgart").style.backgroundImage = "url(\"" + (_hc || realArtPath(g, CUR_TH.seed, CUR_TH.v)) + "\")";
   var _ac = accGet(); if (_ac && ACCS[_ac]) { var _lt = light || (!rt.getAttribute("data-theme") && window.matchMedia && matchMedia("(prefers-color-scheme:light)").matches), _c = ACCS[_ac][_lt ? 1 : 0]; rt.style.setProperty("--acc", _c[0]); rt.style.setProperty("--acc2", _c[1]); rt.style.setProperty("--accink", lum(_c[0]) > .55 ? "#1a1000" : "#ffffff"); }
   else if (light) { ["--acc", "--acc2", "--accink"].forEach(function (n) { rt.style.removeProperty(n); }); }
@@ -1260,8 +1268,9 @@ function renderLib() {
   ir.parentNode.appendChild(ft);
 }
 // v0.9: versión visible y notas de las funciones nativas incorporadas.
-var VERSION = "0.23.5";
+var VERSION = "0.24.0";
 var NEWS = [
+  ["0.24.0", "Contador de palabras arriba en cada historia (tócalo para ver el desglose por capítulo). Y si eliges de fondo la portada de tu historia, ahora también se ve mientras lees y escribes, suave y por detrás del texto."],
   ["0.23.5", "La cursiva ya se conserva: al pegar un texto con cursiva (pensamientos, palabras extranjeras…) se guarda entre *asteriscos* y sale en cursiva en la historia, el EPUB, el PDF y el FB2. También puedes escribirla tú así: *texto*."],
   ["0.23.4", "«Texto completo sin modificar» ahora pega tu texto al momento, sin pasar por la IA (sin «El narrador está escribiendo» y sin gastar consultas). El Cronista lo lee cuando le pidas la siguiente escena. Si quieres que lo lea ya, marca la casilla."],
   ["0.23.3", "Nuevo «♻ Recuperar escenas borradas» en ⋯ Más: devuelve a su sitio las escenas que se perdieron al borrar. Además, «Borrar y reescribir» y «Borrar desde aquí» solo aparecen en la última escena, para que nunca se lleven por delante las siguientes; en las demás está «Quitar esta escena»."],
@@ -2266,6 +2275,21 @@ function startTyper() {
 function goalKey(d) { d = d || new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
 function goalGet() { var g = null; try { g = JSON.parse(localStorage.getItem("hv:goal") || "null"); } catch (e) {} if (!g || typeof g !== "object") g = {}; if (!g.days || typeof g.days !== "object") g.days = {}; g.goal = Math.max(0, Math.min(20000, Math.round(Number(g.goal) || 0))); return g; }
 function goalSet(g) { var ks = Object.keys(g.days).sort(); while (ks.length > 90) delete g.days[ks.shift()]; try { localStorage.setItem("hv:goal", JSON.stringify(g)); } catch (e) {} }
+function wcOf(t) { return (emStrip(String(t || "")).match(/[0-9A-Za-zÀ-ÿñÑ]+(?:[’'-][0-9A-Za-zÀ-ÿñÑ]+)*/g) || []).length; }
+function wcStory(s) { return (s && s.scenes || []).reduce(function (a, sc) { return a + wcOf(sc.t); }, 0); }
+function wcUpdate() { var b = $("wcpill"); if (!b) return; var s = cur; if (!s) { b.hidden = true; return; } b.hidden = false; var n = wcStory(s); b.textContent = "✍ " + n.toLocaleString("es-ES") + (n === 1 ? " palabra" : " palabras"); }
+function wcSheet() {
+  var s = cur; if (!s) return;
+  sheet("Palabras de la novela", function (sh) {
+    var tot = wcStory(s), n = chCount(s);
+    sh.appendChild(el("p", "wcbig", tot.toLocaleString("es-ES") + " palabras")).style.cssText = "font:700 2rem/1.2 Georgia,serif;margin:.2rem 0 .6rem;text-align:center";
+    para(sh, "En " + s.scenes.length + (s.scenes.length === 1 ? " escena" : " escenas") + " y " + n + (n === 1 ? " capítulo" : " capítulos") + ". " + (function () { var pg = Math.max(1, Math.round(tot / 280)), mn = Math.max(1, Math.round(tot / 230)); return "Unas " + pg + (pg === 1 ? " página" : " páginas") + " de libro (a 280 palabras por página) y " + mn + (mn === 1 ? " minuto" : " minutos") + " de lectura."; })(), "");
+    var lst = el("div");
+    for (var c = 1; c <= n; c++) { var st = chStartIdx(s, c), en = c < n ? chStartIdx(s, c + 1) : s.scenes.length, w = 0; for (var k = st; k < en; k++) w += wcOf(s.scenes[k].t);
+      var row = el("div", "row"); row.style.cssText = "justify-content:space-between;border-bottom:1px solid var(--line);padding:.35rem 0"; row.appendChild(el("span", null, "Capítulo " + c + (ctitle(s, c) ? " · " + ctitle(s, c) : ""))); row.appendChild(el("b", null, w.toLocaleString("es-ES"))); lst.appendChild(row); }
+    sh.appendChild(lst); closeBtn(sh);
+  });
+}
 function goalAdd(txt) { if (typeof goalOff === "function" && goalOff()) return; var n = String(txt || "").trim().split(/\s+/).filter(function (x) { return x; }).length; if (!n) return; var g = goalGet(), k = goalKey(), b = g.days[k] || 0; g.days[k] = b + n; goalSet(g); if (g.goal > 0 && b < g.goal && b + n >= g.goal) setTimeout(function () { toast("Meta de hoy cumplida: " + (b + n) + " palabras."); hvBuzz([40, 40, 120]); }, 1200); }
 function goalStreak(g) { var n = 0, d = new Date(), need = g.goal > 0 ? g.goal : 1; if ((g.days[goalKey(d)] || 0) < need) d.setDate(d.getDate() - 1); while ((g.days[goalKey(d)] || 0) >= need && n < 400) { n++; d.setDate(d.getDate() - 1); } return n; }
 function goalCard() {
@@ -2644,7 +2668,7 @@ function comicBar(s) {
 }
 function render(keep) {
   var fi = FRESH; FRESH = -1; stopTyper(true);
-  var s = cur, book = $("book"); book.innerHTML = "";
+  var s = cur, book = $("book"); book.innerHTML = ""; try { wcUpdate(); } catch (e) {}
   var reduce = reduced(), cmx = comicOn(s); try { comicBar(s); book.classList.toggle("cmx", cmx); } catch (e) {}
   var st0 = Math.max(0, s.scenes.length - WIN);
   if (st0 > 0) { var mb = el("button", "small", "Cargar escenas anteriores (" + st0 + ")"); mb.style.margin = ".6rem 0"; mb.onclick = function () { WIN += 20; render(true); }; book.appendChild(mb); }
@@ -4163,6 +4187,7 @@ function verbTurn(txt) {
 $("own").addEventListener("input", function () { var n = $("own").value.length, c = $("longsc"); if (n > 1500 && !c.dataset.t && !c.checked) { c.checked = true; if ($("wopts")) $("wopts").open = true; woptsLabel(); } if (n > 1500) { $("longh").hidden = false; $("longh").textContent = "Texto largo (" + Math.round($("own").value.trim().split(/\s+/).length) + " palabras): se escribirá una escena larga que lo desarrolle entero. Desmarca la casilla si prefieres una escena normal."; } else $("longh").hidden = true; });
 $("longsc").addEventListener("change", function () { $("longsc").dataset.t = "1"; woptsLabel(); });
 starPaste($("own"));
+$("wcpill").onclick = wcSheet;
 $("undo").onclick = function () { undoTurn(); };
 $("versb").onclick = function () { if (cur) versSheet(cur); };
 function regenWith(note) {
@@ -4538,7 +4563,7 @@ function takeImage(f, kind, idx) {
       imgMsg("No hay espacio para guardar la imagen en este navegador. Quita alguna imagen o usa una más pequeña."); return;
     }
     refreshImages(true);
-    if (kind === "cover" && byline()) askCovSigned(s);
+    if (kind === "cover") { try { if (window.reTheme) reTheme(); } catch (e) {} if (byline()) askCovSigned(s); }
   });
 }
 function askCovSigned(s) {
@@ -7198,6 +7223,8 @@ var GUIDE = {
     ["♻ Recuperar escenas borradas", "En ⋯ Más. Busca en las copias de seguridad escenas que ya no están (por ejemplo, las que se borraron con «Borrar desde aquí») y las vuelve a poner en su sitio, sin tocar lo que tienes ahora."],
     ["Pegar texto sin IA", "Con «Texto completo sin modificar», tu texto se pega en el libro al momento, sin llamar a la IA ni gastar consultas. El Cronista lo lee cuando le pidas la siguiente escena (aunque hayas pegado varias seguidas). Si quieres que lo lea ya para proponerte cómo seguir, marca la casilla de debajo."],
     ["Cursiva", "Si pegas un texto con cursiva (de Google Docs, Word, Gemini…), la app la conserva: la guarda entre *asteriscos* y la muestra en cursiva en la historia, el EPUB, el PDF y el FB2. También puedes escribirla tú: *esto saldrá en cursiva*."],
+    ["Contador de palabras", "Arriba, junto a «← Mis historias»: las palabras que lleva tu novela entre todas las escenas y capítulos. Tócalo para ver el desglose por capítulo, las páginas aproximadas y el tiempo de lectura."],
+    ["Fondo con tu portada", "Menú ☰ → «Fondo»: si eliges la portada de tu historia, se ve de fondo en el inicio y también mientras lees y escribes, suave y por detrás del texto."],
     ["Sorpréndeme", "Propone giros para que elijas uno."],
     ["⋯ Más", "Despliega más herramientas (ver siguiente apartado)."]]],
   more: ["Herramientas de ⋯ Más", "Para corregir, moverte y sacar el libro.", [
@@ -7377,7 +7404,7 @@ $("dov").onclick = function () { drawer(false); };
 $("home").onclick = goHome; $("dhome").onclick = goHome;
 $("dchars").onclick = function () { drawer(false); renderChars(); view("chars"); };
 var THEMES = ["auto", "light", "dark"], ti = 0, TN = { auto: "automático", light: "claro", dark: "oscuro" };
-function hcLabel() { var on = false; try { on = localStorage.getItem("hv:homecover") === "1"; } catch (e) {} $("dhcov").textContent = "Fondo de inicio: " + (on ? "portada de mi última historia" : "del género"); }
+function hcLabel() { var on = false; try { on = localStorage.getItem("hv:homecover") === "1"; } catch (e) {} $("dhcov").textContent = "Fondo: " + (on ? "la portada de mi historia (también al leer)" : "del género"); }
 $("dlib").onclick = function () { drawer(false); libSheet(); };
 $("dhcov").onclick = function () { var on = false; try { on = localStorage.getItem("hv:homecover") === "1"; localStorage.setItem("hv:homecover", on ? "0" : "1"); } catch (e) {} hcLabel(); if (window.reTheme) reTheme(); if (!on && !(lastStory() || {}).cover) toast("Tu última historia aún no tiene portada. Añádela en «Título, portada e imágenes»."); };
 hcLabel();
