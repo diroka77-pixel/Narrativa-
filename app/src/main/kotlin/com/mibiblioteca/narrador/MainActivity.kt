@@ -140,7 +140,7 @@ class MainActivity : ComponentActivity() {
         window.statusBarColor = Color.BLACK
         window.navigationBarColor = Color.BLACK
         setContentView(LinearLayout(this).apply { setBackgroundColor(Color.BLACK) })
-        showAccessGate(savedInstanceState)
+        openApp(savedInstanceState)
     }
 
     private fun showAccessGate(savedInstanceState: Bundle?) {

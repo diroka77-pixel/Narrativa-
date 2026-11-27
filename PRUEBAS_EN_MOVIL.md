@@ -229,3 +229,7 @@ Marca lo que funcione y apunta lo que falle (qué pulsaste y qué pasó).
 - Píldora «✍ N palabras» arriba en la historia (todas las escenas); al tocarla, desglose por capítulo, páginas aproximadas y minutos de lectura.
 - Con «Fondo: la portada de mi historia» (menú ☰), la portada de la historia abierta se ve de fondo también al leer/escribir; los tonos de lectura pasan a ser ligeramente translúcidos para que se intuya.
 - Prueba: activar el fondo de portada, abrir la novela y comprobar el fondo y el contador.
+
+## v0.24.1 — Sin contraseña al entrar
+- Se quita la pantalla de «Acceso protegido» (contraseña) al abrir la app.
+- Prueba: abrir la app; debe entrar directamente.
